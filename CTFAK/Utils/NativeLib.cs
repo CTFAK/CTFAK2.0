@@ -6,7 +6,7 @@ namespace CTFAK.Utils
     public static class NativeLib
     {
 //#if WIN64
-        private const string _dllPath = "x64\\Decrypter-x64.dll";
+        private const string _dllPath = "x64\\CTFAK-Native.dll";
 //#else
 //        private const string _dllPath = "x86\\Decrypter-x86.dll";
 //#endif
@@ -31,6 +31,11 @@ namespace CTFAK.Utils
 
         [DllImport(_dllPath, EntryPoint = "decompressOld", CharSet = CharSet.Auto)]
         public static extern int decompressOld(IntPtr source, int source_size, IntPtr output, int output_size);
+
+        [DllImport(_dllPath, EntryPoint = "ConvertImage", CharSet = CharSet.Auto)]
+        public static extern void ConvertImage(IntPtr result, int width, int height,int alpha,int size, IntPtr imageData);
+        [DllImport("kernel32.dll")]
+        static extern uint GetLastError();
 
     }
 }

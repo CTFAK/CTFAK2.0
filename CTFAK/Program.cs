@@ -4,6 +4,7 @@ using CTFAK.Utils;
 using Joveler.Compression.ZLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -40,11 +41,15 @@ namespace CTFAK
 
             ZLibInit.GlobalInit(libPath);
 
-            var reader = new ByteReader(@"D:\fnaf\FiveNightsAtFreddys2.exe",System.IO.FileMode.Open);
-            //var reader = new ByteReader(@"D:\fnaf\sl.exe",System.IO.FileMode.Open);
+            //var reader = new ByteReader(@"D:\fnaf\FiveNightsAtFreddys2.exe",System.IO.FileMode.Open);
+            var reader = new ByteReader(@"D:\fnaf\sl.exe", System.IO.FileMode.Open);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
             gameParser = new ExeFileReader();
             gameParser.LoadGame(reader);
-            Logger.Log("Finished", true, ConsoleColor.Green);
+            stopwatch.Stop();
+            Logger.Log($"Finished in {stopwatch.Elapsed.Seconds} seconds", true, ConsoleColor.Green);
             Console.ReadKey();
 
         }

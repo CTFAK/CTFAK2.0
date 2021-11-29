@@ -31,7 +31,7 @@ namespace CTFAK.Memory
             keyPtr = NativeLib.make_key(data1Ptr, data2Ptr, data3Ptr, MagicChar);
             byte[] key = new byte[256];
             Marshal.Copy(keyPtr, key, 0, 256);
-            Marshal.FreeHGlobal(keyPtr);
+            //Marshal.FreeHGlobal(keyPtr);
             _decryptionKey = key;
             //Logger.Log($"First 16-Bytes of key: {_decryptionKey.GetHex(16)}", true, ConsoleColor.Yellow);
             //File.WriteAllBytes($"{Settings.DumpPath}\\key.bin", _decryptionKey);

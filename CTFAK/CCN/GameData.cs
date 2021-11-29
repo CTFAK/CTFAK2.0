@@ -1,4 +1,5 @@
 ﻿using CTFAK.CCN.Chunks;
+using CTFAK.CCN.Chunks.Banks;
 using CTFAK.CCN.Chunks.Frame;
 using CTFAK.CCN.Chunks.Objects;
 using CTFAK.Memory;
@@ -38,7 +39,7 @@ namespace CTFAK.CCN
         //public FontBank Fonts;
         //public SoundBank Sounds;
         //public MusicBank Music;
-        //public ImageBank Images;
+        public ImageBank images;
 
         //public GlobalValues GValues;
         //public GlobalStrings GStrings;
@@ -126,6 +127,10 @@ namespace CTFAK.CCN
                             newObjInfo.Read();
                             frameitems.Add(newObjInfo);
                         }
+                        break;
+                    case 26214:
+                        images = new ImageBank(chunkReader);
+                        images.Read();
                         break;
 
                 }

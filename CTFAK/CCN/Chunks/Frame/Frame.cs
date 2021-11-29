@@ -88,7 +88,6 @@ namespace CTFAK.CCN.Chunks.Frame
                         {
                             var objInst = new ObjectInstance(chunkReader);
                             objInst.Read();
-                            Logger.Log($"Found object: {Program.gameParser.getGameData().frameitems.Find(a => a.handle == objInst.handle)?.name}");
                             objects.Add(objInst);
                         }
                         break; 

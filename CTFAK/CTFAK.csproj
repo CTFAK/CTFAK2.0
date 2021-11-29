@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="CCN\Chunks\AppHeader.cs" />
     <Compile Include="CCN\Chunks\AppMenu.cs" />
+    <Compile Include="CCN\Chunks\Banks\ImageBank.cs" />
     <Compile Include="CCN\Chunks\Chunk.cs" />
     <Compile Include="CCN\Chunks\FrameHandles.cs" />
     <Compile Include="CCN\Chunks\Frame\Frame.cs" />
