@@ -41,8 +41,8 @@ namespace CTFAK
 
             ZLibInit.GlobalInit(libPath);
 
-            //var reader = new ByteReader(@"D:\fnaf\FiveNightsAtFreddys2.exe",System.IO.FileMode.Open);
-            var reader = new ByteReader(@"D:\fnaf\sl.exe", System.IO.FileMode.Open);
+            var reader = new ByteReader(@"D:\fnaf\FiveNightsAtFreddys2.exe",System.IO.FileMode.Open);
+            //var reader = new ByteReader(@"D:\fnaf\sl.exe", System.IO.FileMode.Open);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             

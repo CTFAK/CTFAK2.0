@@ -83,7 +83,7 @@ namespace CTFAK.CCN.Chunks.Banks
             var HotspotY = imageReader.ReadInt16();
             var ActionX = imageReader.ReadInt16();
             var ActionY = imageReader.ReadInt16();
-            var _transparent = imageReader.ReadColor();
+            var _transparent = imageReader.ReadInt32();
             //Logger.Log($"Loading image {Handle} with size {width}x{height}");
             byte[] imageData;
             if (Flags["LZX"])
@@ -96,60 +96,20 @@ namespace CTFAK.CCN.Chunks.Banks
             }
             else imageData = imageReader.ReadBytes((int)(size));
 
-            IntPtr resultAlloted = Marshal.AllocHGlobal(width * height * 4);
+            /*IntPtr resultAllocated = Marshal.AllocHGlobal(width * height * 4);
             IntPtr imageAllocated = Marshal.AllocHGlobal(size);
             
             
             Marshal.Copy(imageData, 0, imageAllocated, imageData.Length);
 
-            NativeLib.ConvertImage(resultAlloted, width, height,Flags["Alpha"]?1:0,size,imageAllocated);
+            NativeLib.ConvertImage(resultAllocated, width, height,Flags["Alpha"]?1:0,size,imageAllocated, _transparent);
 
             byte[] colorArray = new byte[width * height * 4];
-            Marshal.Copy(resultAlloted, colorArray, 0, colorArray.Length);
-            /*int stride = width * 4;
-            int pad = GetPadding(width, 3);
-            int position = 0;
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    colorArray[(y * stride) + (x * 4) + 0] = imageData[position];
-                    colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
-                    colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
-                    colorArray[(y * stride) + (x * 4) + 3] = 255;
-                    position += 3;
-                }
+            Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
+            Marshal.FreeHGlobal(resultAllocated);
+            Marshal.FreeHGlobal(imageAllocated);*/
 
-                position += pad * 3;
-            }
-            if (Flags["Alpha"])
-            {
-                int alphaSize = size - position;
-                alphaSize = size - alphaSize;
-
-                int aPad = GetPadding(width, 1, 4);
-                byte[,] alpha = new byte[width, height];
-                for (int i = 0; i < height; i++)
-                {
-                    for (int j = 0; j < width; j++)
-                    {
-                        alpha[j, i] = imageData[alphaSize];
-                        alphaSize += 1;
-                    }
-
-                    alphaSize += aPad;
-                }
-
-                int aStride = width * 4;
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        colorArray[(y * aStride) + (x * 4) + 3] = alpha[x, y];
-                    }
-                }
-            }*/
-            using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
+            /*using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
             {
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
                         bmp.Width,
@@ -163,7 +123,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 bmp.UnlockBits(bmpData);
                 bmp.Save($"Images\\{Handle}.png");
                 //Logger.Log("Trying again");
-            }
+            }*/
 
         }
 

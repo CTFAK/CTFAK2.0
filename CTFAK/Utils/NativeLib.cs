@@ -33,7 +33,7 @@ namespace CTFAK.Utils
         public static extern int decompressOld(IntPtr source, int source_size, IntPtr output, int output_size);
 
         [DllImport(_dllPath, EntryPoint = "ConvertImage", CharSet = CharSet.Auto)]
-        public static extern void ConvertImage(IntPtr result, int width, int height,int alpha,int size, IntPtr imageData);
+        public static extern void ConvertImage(IntPtr result, int width, int height,int alpha,int size, IntPtr imageData, int transparentColor);
         [DllImport("kernel32.dll")]
         static extern uint GetLastError();
 

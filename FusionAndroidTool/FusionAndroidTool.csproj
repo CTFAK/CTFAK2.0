@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A2B1CC79-6BBA-4AEF-99C9-4E0CF426AA0A}</ProjectGuid>
+    <ProjectGuid>{99D02326-ED99-404C-895F-CA596701FEAB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CTFAK</RootNamespace>
-    <AssemblyName>CTFAK</AssemblyName>
+    <RootNamespace>FusionAndroidTool</RootNamespace>
+    <AssemblyName>FusionAndroidTool</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,15 +34,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <OutputPath>bin\x64\Release\</OutputPath>
+  <PropertyGroup>
+    <ApplicationIcon>fat.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zlib, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ionic.Zlib.1.9.1.5\lib\Ionic.Zlib.dll</HintPath>
+    </Reference>
     <Reference Include="Joveler.Compression.ZLib, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Joveler.Compression.ZLib.4.1.0\lib\net451\Joveler.Compression.ZLib.dll</HintPath>
     </Reference>
@@ -73,55 +71,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CCN\Chunks\AppHeader.cs" />
-    <Compile Include="CCN\Chunks\AppMenu.cs" />
-    <Compile Include="CCN\Chunks\Banks\ImageBank.cs" />
-    <Compile Include="CCN\Chunks\Chunk.cs" />
-    <Compile Include="CCN\Chunks\FrameHandles.cs" />
-    <Compile Include="CCN\Chunks\Frame\Events.cs" />
-    <Compile Include="CCN\Chunks\Frame\Frame.cs" />
-    <Compile Include="CCN\Chunks\Objects\Animations.cs" />
-    <Compile Include="CCN\Chunks\Objects\Backdrop.cs" />
-    <Compile Include="CCN\Chunks\Objects\Counters.cs" />
-    <Compile Include="CCN\Chunks\Objects\Movements.cs" />
-    <Compile Include="CCN\Chunks\Objects\ObjectCommon.cs" />
-    <Compile Include="CCN\Chunks\Objects\ObjectInfo.cs" />
-    <Compile Include="CCN\Chunks\Objects\Text.cs" />
-    <Compile Include="CCN\Chunks\StringChunk.cs" />
-    <Compile Include="CCN\Constants.cs" />
-    <Compile Include="CCN\GameData.cs" />
-    <Compile Include="EXE\PackData.cs" />
-    <Compile Include="FileReaders\ExeFileReader.cs" />
-    <Compile Include="FileReaders\IFileReader.cs" />
-    <Compile Include="Memory\ByteReader.cs" />
-    <Compile Include="Memory\ByteWriter.cs" />
-    <Compile Include="Memory\BitDict.cs" />
-    <Compile Include="Memory\Decompression.cs" />
-    <Compile Include="Memory\Decryption.cs" />
-    <Compile Include="MFA\AGMIBank.cs" />
-    <Compile Include="MFA\MFAChunkList.cs" />
-    <Compile Include="MFA\MFAData.cs" />
-    <Compile Include="MFA\MFAEvents.cs" />
-    <Compile Include="MFA\MFAFrame.cs" />
-    <Compile Include="MFA\MFALayer.cs" />
-    <Compile Include="MFA\MFAObjectInfo.cs" />
-    <Compile Include="MFA\MFAObjectLoaders\MFAAnimationObject.cs" />
-    <Compile Include="MFA\MFAObjectLoaders\MFAMovements.cs" />
-    <Compile Include="MFA\MFAObjectLoaders\MFAObjectLoader.cs" />
-    <Compile Include="MFA\MFATransition.cs" />
-    <Compile Include="MFA\MFAValueList.cs" />
+    <Compile Include="ASCIIArt.cs" />
+    <Compile Include="ByteReader.cs" />
+    <Compile Include="ByteWriter.cs" />
+    <Compile Include="Decompression.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\Logger.cs" />
-    <Compile Include="Utils\NativeLib.cs" />
-    <Compile Include="Utils\Settings.cs" />
-    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="fat.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Joveler.Compression.ZLib.4.1.0\build\net451\Joveler.Compression.ZLib.targets" Condition="Exists('..\packages\Joveler.Compression.ZLib.4.1.0\build\net451\Joveler.Compression.ZLib.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
