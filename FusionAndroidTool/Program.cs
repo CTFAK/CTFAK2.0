@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -199,7 +200,7 @@ namespace FusionAndroidTool
                         position += 2;
                     }
 
-                    position += pad * 2;
+                    position += pad;// * 2;
                 }
             }
             else if (unk==2)
@@ -238,7 +239,7 @@ namespace FusionAndroidTool
             }
             else if (unk == 3)
             {
-                int pad = GetPadding(width, 3);
+                int pad = GetPadding(width, 3,4);
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -253,7 +254,9 @@ namespace FusionAndroidTool
 
                         position += 3;
                     }
-                    if (height * width * 3 != imageData.Length && height * width * 3 + height * 3 != imageData.Length && height * width * 3 + height != imageData.Length)
+                    position += pad;
+                    
+                    /*if (height * width * 3 != imageData.Length && height * width * 3 + height * 3 != imageData.Length && height * width * 3 + height != imageData.Length)
                     {
                         position += 2;
                     }
@@ -264,7 +267,7 @@ namespace FusionAndroidTool
                     else if (height * width * 3 + height == imageData.Length)
                     {
                         position++;
-                    }
+                    }*/
 
 
                 }
@@ -335,23 +338,9 @@ namespace FusionAndroidTool
         }
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
-            int pad = bytes - ((width * pointSize) % bytes);
-            if (pad == bytes)
-            {
-                return 0;
-            }
-
-            return (int)Math.Ceiling((double)((double)pad / (double)pointSize));
-        }public static double GetPaddingNoCeil(int width, int pointSize, int bytes = 2)
-        {
-            int pad = bytes - ((width * pointSize) % bytes);
-            /*if (pad == bytes)
-            {
-                return 0;
-            }*/
-
-            return ((double)((double)pad / (double)pointSize));
+            return (bytes - ((width * pointSize) % bytes)) % bytes;
         }
+
         public static void ClearCurrentConsoleLine()
         {
             int currentLineCursor = Console.CursorTop;

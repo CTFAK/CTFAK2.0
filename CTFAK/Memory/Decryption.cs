@@ -20,10 +20,11 @@ namespace CTFAK.Memory
             // return;
             IntPtr keyPtr;
             var combined = "";
-            combined += data1;
+            combined += data1 ?? "";
             combined += data2;
-            combined += data3;
+            combined += data3 ?? "";
             Logger.Log("Combined data " + combined, true, ConsoleColor.Yellow);
+            keyPtr = Marshal.AllocHGlobal(256);
             var data1Ptr = Marshal.StringToHGlobalAnsi(data1);
             var data2Ptr = Marshal.StringToHGlobalAnsi(data2);
             var data3Ptr = Marshal.StringToHGlobalAnsi(data3);

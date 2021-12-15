@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Joveler.Compression.ZLib;
 using DeflateStream = System.IO.Compression.DeflateStream;

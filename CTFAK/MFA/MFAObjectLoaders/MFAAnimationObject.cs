@@ -1,4 +1,5 @@
-﻿using CTFAK.Memory;
+﻿using CTFAK.CCN.Chunks;
+using CTFAK.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace CTFAK.MFA.MFAObjectLoaders
 {
-    public class AnimationObject : ObjectLoader
+    public class MFAAnimationObject : ObjectLoader
     {
-        public Dictionary<int, Animation> Items = new Dictionary<int, Animation>();
+        public Dictionary<int, MFAAnimation> Items = new Dictionary<int, MFAAnimation>();
         public bool _isExt;
 
         public override void Read()
@@ -21,7 +22,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
                 var animationCount = reader.ReadUInt32();
                 for (int i = 0; i < animationCount; i++)
                 {
-                    var item = new Animation(reader);
+                    var item = new MFAAnimation(reader);
                     item.Read();
                     Items.Add(i, item);
                 }
@@ -45,7 +46,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
             {
                 Writer.WriteInt8(1);
                 Writer.WriteUInt32((uint)Items.Count);
-                foreach (Animation animation in Items.Values)
+                foreach (MFAAnimation animation in Items.Values)
                 {
                     animation.Write(Writer);
                 }
@@ -54,37 +55,34 @@ namespace CTFAK.MFA.MFAObjectLoaders
         }
 
 
-        public AnimationObject(ByteReader reader) : base(reader) { }
+        public MFAAnimationObject(ByteReader reader) : base(reader) { }
     }
 
-    public class Animation : DataLoader
+    public class MFAAnimation : ChunkLoader
     {
         public string Name = "";
-        public List<AnimationDirection> Directions;
+        public List<MFAAnimationDirection> Directions;
 
         public override void Write(ByteWriter Writer)
         {
             Writer.AutoWriteUnicode(Name);
             Writer.WriteInt32(Directions.Count);
-            foreach (AnimationDirection direction in Directions)
+            foreach (MFAAnimationDirection direction in Directions)
             {
                 direction.Write(Writer);
             }
         }
 
-        public override void Print()
-        {
-            Logger.Log($"   Found animation: {Name} ");
-        }
+
 
         public override void Read()
         {
-            Name = Reader.AutoReadUnicode();
-            var directionCount = Reader.ReadInt32();
-            Directions = new List<AnimationDirection>();
+            Name = reader.AutoReadUnicode();
+            var directionCount = reader.ReadInt32();
+            Directions = new List<MFAAnimationDirection>();
             for (int i = 0; i < directionCount; i++)
             {
-                var direction = new AnimationDirection(Reader);
+                var direction = new MFAAnimationDirection(reader);
                 direction.Read();
                 Directions.Add(direction);
             }
@@ -92,10 +90,10 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
         }
-        public Animation(ByteReader reader) : base(reader) { }
+        public MFAAnimation(ByteReader reader) : base(reader) { }
     }
 
-    public class AnimationDirection : DataLoader
+    public class MFAAnimationDirection : ChunkLoader
     {
         public string Name = "Animation-UNKNOWN";
         public int Index;
@@ -120,22 +118,21 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
         }
 
-        public override void Print() { }
 
         public override void Read()
         {
-            Index = Reader.ReadInt32();
-            MinSpeed = Reader.ReadInt32();
-            MaxSpeed = Reader.ReadInt32();
-            Repeat = Reader.ReadInt32();
-            BackTo = Reader.ReadInt32();
-            var animCount = Reader.ReadInt32();
+            Index = reader.ReadInt32();
+            MinSpeed = reader.ReadInt32();
+            MaxSpeed = reader.ReadInt32();
+            Repeat = reader.ReadInt32();
+            BackTo = reader.ReadInt32();
+            var animCount = reader.ReadInt32();
             for (int i = 0; i < animCount; i++)
             {
-                Frames.Add(Reader.ReadInt32());
+                Frames.Add(reader.ReadInt32());
             }
 
         }
-        public AnimationDirection(ByteReader reader) : base(reader) { }
+        public MFAAnimationDirection(ByteReader reader) : base(reader) { }
     }
 }

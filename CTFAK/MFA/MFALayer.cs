@@ -6,7 +6,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MFA
 {
-    public class Layer : ChunkLoader
+    public class MFALayer : ChunkLoader
     {
         public string Name = "ERROR";
         public float XCoefficient;
@@ -47,7 +47,7 @@ namespace CTFAK.MFA
 
 
         }
-        public Layer(ByteReader reader) : base(reader)
+        public MFALayer(ByteReader reader) : base(reader)
         {
         }
     }

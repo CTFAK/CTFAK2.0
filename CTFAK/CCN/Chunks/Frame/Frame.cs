@@ -44,6 +44,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public int width;
         public int height;
         public Color background;
+        public Events events;
         public BitDict flags = new BitDict(new string[]
         {
             "XCoefficient",
@@ -59,6 +60,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
         });
         public List<ObjectInstance> objects = new List<ObjectInstance>();
+        public Layers layers;
 
         public Frame(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -90,7 +92,16 @@ namespace CTFAK.CCN.Chunks.Frame
                             objInst.Read();
                             objects.Add(objInst);
                         }
-                        break; 
+                        break;
+                    case 13117:
+                        events = new Events(chunkReader);
+                        events.Read();
+                        break;
+                    case 13121:
+                        layers = new Layers(chunkReader);
+                        layers.Read();
+                        break;
+
                 }
             }
 
@@ -102,5 +113,125 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             throw new NotImplementedException();
         }
+    }
+    public class Layers : ChunkLoader
+    {
+        public List<Layer> Items;
+
+        public Layers(ByteReader reader) : base(reader)
+        {
+        }
+
+
+
+        public override void Read()
+        {
+            Items = new List<Layer>();
+            var count = reader.ReadUInt32();
+            for (int i = 0; i < count; i++)
+            {
+                Layer item = new Layer(reader);
+                item.Read();
+                Items.Add(item);
+            }
+
+        }
+
+        public override void Write(ByteWriter Writer)
+        {
+            Writer.WriteInt32(Items.Count);
+            foreach (Layer layer in Items)
+            {
+                layer.Write(Writer);
+            }
+        }
+
+
+
+    }
+
+    public class Layer : ChunkLoader
+    {
+        public string Name;
+        public BitDict Flags = new BitDict(new string[]
+        {
+            "XCoefficient",
+            "YCoefficient",
+            "DoNotSaveBackground",
+            "",
+            "Visible",
+            "WrapHorizontally",
+            "WrapVertically",
+            "", "", "", "",
+            "", "", "", "", "",
+            "Redraw",
+            "ToHide",
+            "ToShow"
+        }
+
+        );
+        public float XCoeff;
+        public float YCoeff;
+        public int NumberOfBackgrounds;
+        public int BackgroudIndex;
+
+
+        public Layer(ByteReader reader) : base(reader)
+        {
+        }
+
+
+
+        public override void Read()
+        {
+            Flags.flag = reader.ReadUInt32();
+            XCoeff = reader.ReadSingle();
+            YCoeff = reader.ReadSingle();
+            NumberOfBackgrounds = reader.ReadInt32();
+            BackgroudIndex = reader.ReadInt32();
+            Name = reader.ReadUniversal();
+        }
+
+        public override void Write(ByteWriter Writer)
+        {
+            Writer.WriteInt32((int)Flags.flag);
+            Writer.WriteSingle(XCoeff);
+            Writer.WriteSingle(YCoeff);
+            Writer.WriteInt32(NumberOfBackgrounds);
+            Writer.WriteInt32(BackgroudIndex);
+            Writer.WriteUnicode(Name);
+        }
+
+
+
+    }
+
+    public class FramePalette : ChunkLoader
+    {
+        public List<Color> Items;
+
+        public FramePalette(ByteReader reader) : base(reader)
+        {
+        }
+
+
+
+        public override void Read()
+        {
+            Items = new List<Color>();
+            for (int i = 0; i < 257; i++)
+            {
+                Items.Add(reader.ReadColor());
+            }
+        }
+
+        public override void Write(ByteWriter Writer)
+        {
+            foreach (Color item in Items)
+            {
+                Writer.WriteColor(item);
+            }
+        }
+
     }
 }

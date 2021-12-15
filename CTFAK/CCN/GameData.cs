@@ -20,7 +20,7 @@ namespace CTFAK.CCN
         private int productBuild;
 
         public string name;
-        public string author;
+        public string author="";
         public string copyright;
         public string aboutText;
         public string doc;
@@ -36,18 +36,17 @@ namespace CTFAK.CCN
         public AppHeader header;
         //public ExtentedHeader ExtHeader;
 
-        //public FontBank Fonts;
-        //public SoundBank Sounds;
-        //public MusicBank Music;
+        public FontBank Fonts;
+        public SoundBank Sounds;
+        public MusicBank Music;
         public ImageBank images;
 
         //public GlobalValues GValues;
         //public GlobalStrings GStrings;
-        //public FrameItems TestItems;
 
         //public Extensions Ext;
 
-        public List<ObjectInfo> frameitems = new List<ObjectInfo>();
+        public Dictionary<int,ObjectInfo> frameitems = new Dictionary<int, ObjectInfo>();
 
         public List<Frame> frames = new List<Frame>();
         public FrameHandles frameHandles;
@@ -125,12 +124,24 @@ namespace CTFAK.CCN
                         {
                             var newObjInfo = new ObjectInfo(chunkReader);
                             newObjInfo.Read();
-                            frameitems.Add(newObjInfo);
+                            frameitems.Add(newObjInfo.handle,newObjInfo);
                         }
                         break;
                     case 26214:
                         images = new ImageBank(chunkReader);
                         images.Read();
+                        break;
+                    case 26215:
+                        Fonts = new FontBank(chunkReader);
+                        Fonts.Read();
+                        break;
+                    case 21216:
+                        Sounds = new SoundBank(chunkReader);
+                        Sounds.Read();
+                        break;
+                    case 21217:
+                        Music = new MusicBank(chunkReader);
+                        Music.Read();
                         break;
 
                 }

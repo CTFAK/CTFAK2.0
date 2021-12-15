@@ -2,6 +2,7 @@
 using CTFAK.Memory;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public short[] Qualifiers = new short[8];
         public MFAValueList Values;
         public MFAValueList Strings;
-        public Movements Movements;
+        public MFAMovements Movements;
         public Behaviours Behaviours;
 
         public override void Write(ByteWriter Writer)
@@ -48,30 +49,30 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
         public override void Read()
         {
-            ObjectFlags = Reader.ReadInt32();
-            NewObjectFlags = Reader.ReadInt32();
-            BackgroundColor = Reader.ReadColor();
-            var end = Reader.Tell() + 2 * (8 + 1);
+            ObjectFlags = reader.ReadInt32();
+            NewObjectFlags = reader.ReadInt32();
+            BackgroundColor = reader.ReadColor();
+            var end = reader.Tell() + 2 * (8 + 1);
             for (int i = 0; i < 8; i++)
             {
-                var value = Reader.ReadInt16();
+                var value = reader.ReadInt16();
                 // if(value==-1)
                 // {
                 // break;
                 // }
                 Qualifiers[i] = value;
             }
-            Reader.Seek(end);
+            reader.Seek(end);
 
-            Values = new MFAValueList(Reader);
+            Values = new MFAValueList(reader);
             Values.Read();
-            Strings = new MFAValueList(Reader);
+            Strings = new MFAValueList(reader);
             Strings.Read();
-            Movements = new Movements(Reader);
+            Movements = new MFAMovements(reader);
             Movements.Read();
-            Behaviours = new Behaviours(Reader);
+            Behaviours = new Behaviours(reader);
             Behaviours.Read();
-            Reader.Skip(2);//Transitions
+            reader.Skip(2);//Transitions
                            // Print();
 
 

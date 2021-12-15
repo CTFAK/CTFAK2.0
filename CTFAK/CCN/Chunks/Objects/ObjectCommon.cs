@@ -136,8 +136,8 @@ namespace CTFAK.CCN.Chunks.Objects
                 _counterOffset = reader.ReadUInt16();
                 _systemObjectOffset = reader.ReadUInt16();
                 reader.Skip(2);
-                Flags.flag = reader.ReadUInt32();
-                //reader.Skip(2);
+                Flags.flag = (uint)reader.ReadInt16();
+                reader.Skip(2);
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {

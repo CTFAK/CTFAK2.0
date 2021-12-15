@@ -10,7 +10,7 @@ namespace CTFAK.CCN.Chunks
     public class StringChunk : ChunkLoader
     {
         public StringChunk(ByteReader reader) : base(reader) { }
-        public string value;
+        public string value="";
         public override void Read()
         {
             value = reader.ReadWideString();

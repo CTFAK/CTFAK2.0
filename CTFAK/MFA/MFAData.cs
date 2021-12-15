@@ -1,4 +1,5 @@
 ﻿using CTFAK.CCN.Chunks;
+using CTFAK.CCN.Chunks.Banks;
 using CTFAK.Memory;
 using CTFAK.MMFParser.MFA.Loaders;
 using CTFAK.Utils;
@@ -11,7 +12,7 @@ using System.IO;
 
 namespace CTFAK.MFA
 {
-    public class MFA
+    public class MFAData
     {
         public static readonly string FontBankId = "ATNF";
         public static readonly string ImageBankId = "AGMI";
@@ -106,7 +107,7 @@ namespace CTFAK.MFA
         private int GraphicMode;
         private int IcoCount;
         private int QualCount;
-        public Controls Controls;
+        public MFAControls Controls;
         public List<int> IconImages;
         public List<Tuple<int, string, string, int, string>> Extensions;
         public List<Tuple<string, int>> CustomQuals;
@@ -253,7 +254,7 @@ namespace CTFAK.MFA
 
         public void Read(ByteReader reader)
         {
-
+            reader.ReadAscii(4);
             MfaBuild = reader.ReadInt32();
             Product = reader.ReadInt32();
             BuildVersion = reader.ReadInt32();
@@ -262,7 +263,8 @@ namespace CTFAK.MFA
             Name = reader.AutoReadUnicode();
             Description = reader.AutoReadUnicode();
             Path = reader.AutoReadUnicode();
-            Stamp = reader.ReadBytes(reader.ReadInt32());
+            var stampLen = reader.ReadInt32();
+            Stamp = reader.ReadBytes(stampLen);
 
             if (reader.ReadAscii(4) != FontBankId) throw new Exception("Invalid Font Bank");
             Fonts = new FontBank(reader);
@@ -284,10 +286,13 @@ namespace CTFAK.MFA
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Image Bank");
             Images = new AGMIBank(reader);
             Images.Read();
-
-            //Helper.CheckPattern(Helper.AutoReadUnicode(reader), Name);
+            var nam = reader.AutoReadUnicode();
+            Debug.Assert(Name == nam);
+            
             Author = reader.AutoReadUnicode();
-            //Helper.CheckPattern(Helper.AutoReadUnicode(reader), Description);
+            var desc = reader.AutoReadUnicode();
+            Debug.Assert(Description == desc);
+            //Helper.CheckPattern(, Description);
             Copyright = reader.AutoReadUnicode();
             Company = reader.AutoReadUnicode();
             Version = reader.AutoReadUnicode();
@@ -318,13 +323,17 @@ namespace CTFAK.MFA
                 BinaryFiles.Add(reader.ReadBytes(reader.ReadInt32()));
             }
 
-            Controls = new Controls(reader);
+            Controls = new MFAControls(reader);
             Controls.Read();
 
             MenuSize = reader.ReadUInt32();
             var currentPosition = reader.Tell();
-            Menu = new AppMenu(reader);
-            Menu.Read();
+            try
+            {
+                Menu = new AppMenu(reader);
+                Menu.Read();
+            }
+            catch { }
             reader.Seek(MenuSize + currentPosition);
 
             windowMenuIndex = reader.ReadInt32();

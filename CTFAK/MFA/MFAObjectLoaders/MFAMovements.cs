@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace CTFAK.MFA.MFAObjectLoaders
 {
-    public class Movements : ChunkLoader
+    public class MFAMovements : ChunkLoader
     {
-        public List<Movement> Items = new List<Movement>();
+        public List<MFAMovement> Items = new List<MFAMovement>();
         public override void Write(ByteWriter Writer)
         {
             Writer.WriteUInt32((uint)Items.Count);
-            foreach (Movement movement in Items)
+            foreach (MFAMovement movement in Items)
             {
                 movement.Write(Writer);
             }
@@ -29,7 +29,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
             var count = reader.ReadUInt32();
             for (int i = 0; i < count; i++)
             {
-                var item = new Movement(reader);
+                var item = new MFAMovement(reader);
                 item.Read();
                 Items.Add(item);
 
@@ -37,10 +37,10 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
         }
-        public Movements(ByteReader reader) : base(reader) { }
+        public MFAMovements(ByteReader reader) : base(reader) { }
     }
 
-    public class Movement : ChunkLoader
+    public class MFAMovement : ChunkLoader
     {
         public string Name = "ERROR";
         public string Extension;
@@ -115,6 +115,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
 
         }
-        public Movement(ByteReader reader) : base(reader) { }
+        public MFAMovement(ByteReader reader) : base(reader) { }
     }
 }

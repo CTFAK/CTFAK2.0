@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CTFAK.CCN.Chunks;
+using CTFAK.CCN.Chunks.Frame;
 using CTFAK.Memory;
 using CTFAK.Utils;
 

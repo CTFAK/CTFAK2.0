@@ -14,12 +14,12 @@ namespace CTFAK.MFA
         public int SizeY;
         public Color Background;
         public int MaxObjects;
-        public List<FrameItem> Items = new List<FrameItem>();
+        public List<MFAObjectInfo> Items = new List<MFAObjectInfo>();
         public int Handle;
         public int LastViewedX;
         public int LastViewedY;
-        public List<ItemFolder> Folders = new List<ItemFolder>();
-        public List<FrameInstance> Instances = new List<FrameInstance>();
+        public List<MFAItemFolder> Folders = new List<MFAItemFolder>();
+        public List<MFAObjectInstance> Instances = new List<MFAObjectInstance>();
         public BitDict Flags = new BitDict(new string[]
         {
             "GrabDesktop",
@@ -40,7 +40,7 @@ namespace CTFAK.MFA
         public List<Color> Palette;
         public int StampHandle;
         public int ActiveLayer;
-        public List<Layer> Layers = new List<Layer>();
+        public List<MFALayer> Layers = new List<MFALayer>();
         public MFAEvents Events;
         public MFAChunkList Chunks;
         public MFATransition FadeIn;
@@ -149,7 +149,7 @@ namespace CTFAK.MFA
             int layersCount = reader.ReadInt32();
             for (int i = 0; i < layersCount; i++)
             {
-                var layer = new Layer(reader);
+                var layer = new MFALayer(reader);
                 layer.Read();
                 Layers.Add(layer);
             }
@@ -168,7 +168,7 @@ namespace CTFAK.MFA
             var frameItemsCount = reader.ReadInt32();
             for (int i = 0; i < frameItemsCount; i++)
             {
-                var frameitem = new FrameItem(reader);
+                var frameitem = new MFAObjectInfo(reader);
                 frameitem.Read();
 
                 Items.Add(frameitem);
@@ -176,14 +176,14 @@ namespace CTFAK.MFA
             var folderCount = reader.ReadInt32();
             for (int i = 0; i < folderCount; i++)
             {
-                var folder = new ItemFolder(reader);
+                var folder = new MFAItemFolder(reader);
                 folder.Read();
                 Folders.Add(folder);
             }
             var instancesCount = reader.ReadInt32();
             for (int i = 0; i < instancesCount; i++)
             {
-                var inst = new FrameInstance(reader);
+                var inst = new MFAObjectInstance(reader);
                 inst.Read();
                 Instances.Add(inst);
             }
@@ -201,7 +201,6 @@ namespace CTFAK.MFA
             Chunks = new MFAChunkList(reader);
             // Chunks.Log = true;
             Chunks.Read();
-            if (Events.Items.Count == 0) MFA.emptyEvents = Events;
 
         }
     }

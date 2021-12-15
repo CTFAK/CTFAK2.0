@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -58,6 +59,14 @@ namespace CTFAK.CCN.Chunks.Banks
         public int width;
         public int height;
         public byte graphicMode;
+        private int checksum;
+        private int references;
+        private byte[] imageData;
+        private short HotspotX;
+        private short HotspotY;
+        private short ActionX;
+        private short ActionY;
+        private int transparent;
 
         public Image(ByteReader reader):base(reader)
         {
@@ -68,24 +77,24 @@ namespace CTFAK.CCN.Chunks.Banks
             Handle = reader.ReadInt32();
             if (!IsMFA && Settings.Build >= 284) Handle -= 1;
             ByteReader imageReader;
-            imageReader = Decompressor.DecompressAsReader(reader, out var a);
-            var checksum = imageReader.ReadInt32();
-            var references = imageReader.ReadInt32();
+            imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
+            checksum = imageReader.ReadInt32();
+            references = imageReader.ReadInt32();
             var size = imageReader.ReadInt32();
-            //TODO: MFA
+            if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
             width = imageReader.ReadInt16();
             height = imageReader.ReadInt16();
 
             graphicMode = imageReader.ReadByte();
             Flags.flag = imageReader.ReadByte();
             imageReader.Skip(2);
-            var HotspotX = imageReader.ReadInt16();
-            var HotspotY = imageReader.ReadInt16();
-            var ActionX = imageReader.ReadInt16();
-            var ActionY = imageReader.ReadInt16();
-            var _transparent = imageReader.ReadInt32();
+             HotspotX = imageReader.ReadInt16();
+             HotspotY = imageReader.ReadInt16();
+             ActionX = imageReader.ReadInt16();
+             ActionY = imageReader.ReadInt16();
+            transparent = imageReader.ReadInt32();
             //Logger.Log($"Loading image {Handle} with size {width}x{height}");
-            byte[] imageData;
+
             if (Flags["LZX"])
             {
                 uint decompressedSize = imageReader.ReadUInt32();
@@ -129,7 +138,45 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Write(ByteWriter writer)
         {
-            throw new NotImplementedException();
+            ByteWriter chunk = new ByteWriter(new MemoryStream());
+            chunk.WriteInt32(checksum);
+            chunk.WriteInt32(references);
+            byte[] compressedImg = null;
+            Flags["LZX"] = true;
+            if (Flags["LZX"])
+            {
+                compressedImg = Decompressor.compress_block(imageData);
+                chunk.WriteUInt32((uint)compressedImg.Length + 4);
+            }
+            else
+            {
+                chunk?.WriteUInt32((uint)(imageData?.Length ?? 0));
+            }
+
+            chunk.WriteInt16((short)width);
+            chunk.WriteInt16((short)height);
+            chunk.WriteInt8((byte)graphicMode);
+            chunk.WriteInt8((byte)Flags.flag);
+            chunk.WriteInt16(0);
+            chunk.WriteInt16((short)HotspotX);
+            chunk.WriteInt16((short)HotspotY);
+            chunk.WriteInt16((short)ActionX);
+            chunk.WriteInt16((short)ActionY);
+            chunk.WriteInt32(transparent);
+            if (Flags["LZX"])
+            {
+                chunk.WriteInt32(imageData.Length);
+                chunk.WriteBytes(compressedImg);
+            }
+
+            else
+            {
+                chunk.WriteBytes(imageData);
+            }
+
+            writer.WriteInt32(Handle);
+            // writer.WriteInt32(Handle-1);//FNAC3 FIX
+            writer.WriteWriter(chunk);
         }
     }
 }

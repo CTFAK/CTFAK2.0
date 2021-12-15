@@ -1,7 +1,9 @@
 ﻿using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
+using CTFAK.MFA.MFAObjectLoaders;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,7 +53,7 @@ namespace CTFAK.MFA
 
             ObjectType = reader.ReadInt32();
             Handle = reader.ReadInt32();
-            Name = Helper.AutoReadUnicode(reader);
+            Name = reader.AutoReadUnicode();
             Transparent = reader.ReadInt32();
 
             InkEffect = reader.ReadInt32();
@@ -66,31 +68,30 @@ namespace CTFAK.MFA
                 IconHandle = reader.ReadInt32();
             }
             else throw new InvalidDataException("invalid icon");
-            Chunks = new ChunkList(reader);
+            Chunks = new MFAChunkList(reader);
             Chunks.Log = true;
             Chunks.Read();
 
-            if (MFA.defaultObjChunks == null) MFA.defaultObjChunks = Chunks;
             if (ObjectType >= 32)//extension base
             {
-                Loader = new ExtensionObject(reader);
+                Loader = new MFAExtensionObject(reader);
 
             }
             else if (ObjectType == 0)
             {
-                Loader = new QuickBackdrop(reader);
+                Loader = new MFAQuickBackdrop(reader);
             }
             else if (ObjectType == 1)
             {
-                Loader = new Backdrop(reader);
+                Loader = new MFABackdrop(reader);
             }
             else if (ObjectType == 7)
             {
-                Loader = new Counter(reader);
+                Loader = new MFACounter(reader);
             }
             else if (ObjectType == 2)
             {
-                Loader = new Active(reader);
+                Loader = new MFAActive(reader);
             }
             else throw new NotImplementedException("Unsupported object: " + ObjectType);
             Loader.Read();

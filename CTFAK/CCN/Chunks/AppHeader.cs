@@ -65,7 +65,7 @@ namespace CTFAK.CCN.Chunks
         public override void Read()
         {
             var start = reader.Tell();
-            //if (!Settings.Old) Size = Reader.ReadInt32();
+            Size = reader.ReadInt32();
             Flags.flag = (uint)reader.ReadInt16();
 
             NewFlags.flag = (uint)reader.ReadInt16();

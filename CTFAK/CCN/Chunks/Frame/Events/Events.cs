@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CTFAK.Memory;
+using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Utils;
 
 
@@ -433,11 +434,11 @@ namespace CTFAK.CCN.Chunks.Frame
             Code = reader.ReadInt16();
 
 
-            //var actualLoader = Helper.LoadParameter(Code, reader);
-            //this.Loader = actualLoader;
+            var actualLoader = Parameter.LoadParameter(Code, reader);
+            this.Loader = actualLoader;
             //// Loader?.Read();
-            //if (Loader != null) Loader.Read();
-            //else throw new Exception("Loader is null: " + Code);
+            if (Loader != null) Loader.Read();
+            else throw new Exception("Loader is null: " + Code);
 
             reader.Seek(currentPosition + size);
 
@@ -462,11 +463,124 @@ namespace CTFAK.CCN.Chunks.Frame
                 else return null;
             }
         }
-        public override string ToString()
+        public static ChunkLoader LoadParameter(int code, ByteReader reader)
         {
-            if (Loader != null) return Loader.ToString();
-            else throw new Exception($"Unkown Parameter: {Code} ");
+            ChunkLoader item = null;
+            if (code == 1)
+            {
+                item = new ParamObject(reader);
+            }
+
+            if (code == 2)
+            {
+                item = new Time(reader);
+            }
+            if (code == 3 || code == 4 || code == 10 || code == 11 || code == 12 || code == 17 || code == 26 || code == 31 ||
+                code == 43 || code == 57 || code == 58 || code == 60 || code == 61)
+            {
+                item = new Short(reader);
+            }
+            if (code == 5 || code == 25 || code == 29 || code == 34 || code == 48 || code == 56)
+            {
+                item = new Int(reader);
+            }
+            if (code == 6 || code == 7 || code == 35 || code == 36)
+            {
+                item = new Sample(reader);
+            }
+            if (code == 9 || code == 21)
+            {
+                item = new Create(reader);
+            }
+            if (code == 13)
+            {
+                item = new Every(reader);
+            }
+            if (code == 14 || code == 44)
+            {
+                item = new KeyParameter(reader);
+            }
+            if (code == 15 || code == 22 || code == 23 || code == 27 || code == 28 || code == 45 || code == 46 || code == 52 || code == 53 || code == 54 || code == 59 || code == 62)
+            {
+                item = new ExpressionParameter(reader);
+            }
+            if (code == 16)
+            {
+                item = new Position(reader);
+            }
+            if (code == 18)
+            {
+                item = new Shoot(reader);
+            }
+            if (code == 19)
+            {
+                item = new Zone(reader);
+            }
+            if (code == 24)
+            {
+                item = new Colour(reader);
+            }
+
+            if (code == 40)
+            {
+                item = new Filename(reader);
+            }
+            if (code == 50)
+            {
+                item = new AlterableValue(reader);
+            }
+
+            if (code == 32)
+            {
+                item = new Click(reader);
+            }
+
+            if (code == 33)
+            {
+                item = new MMFParser.EXE.Loaders.Events.Parameters.Program(reader);
+            }
+
+            if (code == 55)
+            {
+                item = new Extension(reader);
+            }
+
+            if (code == 38)
+            {
+                item = new CTFAK.MMFParser.EXE.Loaders.Events.Parameters.Group(reader);
+            }
+
+            if (code == 39)
+            {
+                item = new GroupPointer(reader);
+            }
+
+            if (code == 49)
+            {
+                item = new GlobalValue(reader);
+            }
+
+            if (code == 41 || code == 64)
+            {
+                item = new StringParam(reader);
+            }
+
+            if (code == 47 || code == 51)
+            {
+                item = new TwoShorts(reader);
+            }
+
+
+
+
+
+
+
+
+
+            return item;
         }
+
     }
 
 
