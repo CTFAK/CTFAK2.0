@@ -8,7 +8,7 @@ namespace CTFAK.MFA
 {
     public class MFALayer : ChunkLoader
     {
-        public string Name = "ERROR";
+        public string Name = "Ass";
         public float XCoefficient;
         public float YCoefficient;
 

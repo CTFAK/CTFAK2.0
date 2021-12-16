@@ -47,7 +47,7 @@ namespace CTFAK
             
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var reader = new ByteReader(@"D:\anus.exe", System.IO.FileMode.Open);
+            var reader = new ByteReader(@"D:\test.exe", System.IO.FileMode.Open);
 
 
             gameParser = new ExeFileReader();

@@ -21,7 +21,7 @@ namespace CTFAK.Memory
             IntPtr keyPtr;
             var combined = "";
             combined += data1 ?? "";
-            combined += data2;
+            combined += data2 ?? "";
             combined += data3 ?? "";
             Logger.Log("Combined data " + combined, true, ConsoleColor.Yellow);
             keyPtr = Marshal.AllocHGlobal(256);

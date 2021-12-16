@@ -18,6 +18,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public int y;
         public short parentType;
         public short layer;
+        public short flags;
         public short parentHandle;
         public ObjectInstance(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -30,7 +31,7 @@ namespace CTFAK.CCN.Chunks.Frame
             parentType = reader.ReadInt16();
             parentHandle = reader.ReadInt16();
             layer = reader.ReadInt16();
-            var res = reader.ReadInt16();
+            flags = reader.ReadInt16();
         }
 
         public override void Write(ByteWriter writer)
@@ -61,6 +62,7 @@ namespace CTFAK.CCN.Chunks.Frame
         });
         public List<ObjectInstance> objects = new List<ObjectInstance>();
         public Layers layers;
+        public List<Color> palette;
 
         public Frame(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -101,6 +103,12 @@ namespace CTFAK.CCN.Chunks.Frame
                         layers = new Layers(chunkReader);
                         layers.Read();
                         break;
+                    case 13111:
+                        var pal = new FramePalette(chunkReader);
+                        pal.Read();
+                        palette = pal.Items;
+                        break;
+
 
                 }
             }
@@ -189,7 +197,7 @@ namespace CTFAK.CCN.Chunks.Frame
             YCoeff = reader.ReadSingle();
             NumberOfBackgrounds = reader.ReadInt32();
             BackgroudIndex = reader.ReadInt32();
-            Name = reader.ReadUniversal();
+            Name = reader.ReadWideString();
         }
 
         public override void Write(ByteWriter Writer)
@@ -234,4 +242,5 @@ namespace CTFAK.CCN.Chunks.Frame
         }
 
     }
+
 }

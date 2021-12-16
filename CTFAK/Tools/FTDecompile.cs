@@ -115,8 +115,7 @@ namespace CTFAK.Tools
                 var newItem = TranslateObject(item);
                 if (newItem.Loader == null)
                 {
-                    continue;
-                    // throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
+                    throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
                 }
                 FrameItems.Add(newItem.Handle, newItem);
             }
@@ -170,9 +169,9 @@ namespace CTFAK.Tools
                 newFrame.Password = "";
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
-                //if (frame.Palette == null) continue;
-                newFrame.Palette = new List<Color>();
-                //newFrame.Palette = frame.Palette;
+                if (frame.palette == null) continue;
+
+                newFrame.Palette = frame.palette;
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
                 //LayerInfo
@@ -380,6 +379,7 @@ namespace CTFAK.Tools
             newItem.InkEffectParameter = (uint)item.InkEffectValue;
             newItem.AntiAliasing = 0;
             newItem.Flags = item.Flags;
+            
             // newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte) (item.InkEffectValue);
             // newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = Color.White;
 
