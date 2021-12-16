@@ -325,7 +325,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read();
                 Items.Add(item);
             }
-            Logger.Log(this);
+            //Logger.Log(this);
 
 
 
@@ -396,7 +396,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read();
                 Items.Add(item);
             }
-            Logger.Log(this);
+            //Logger.Log(this);
 
         }
         public override string ToString()

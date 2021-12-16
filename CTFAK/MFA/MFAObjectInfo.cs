@@ -93,6 +93,10 @@ namespace CTFAK.MFA
             {
                 Loader = new MFAActive(reader);
             }
+            else if(ObjectType==3)
+            {
+                Loader = new MFAText(reader);
+            }
             else throw new NotImplementedException("Unsupported object: " + ObjectType);
             Loader.Read();
 

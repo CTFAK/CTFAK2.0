@@ -37,6 +37,7 @@ namespace CTFAK.CCN.Chunks.Objects
                         handle = chunkReader.ReadInt16();
                         ObjectType = chunkReader.ReadInt16();
                         Flags = chunkReader.ReadInt16();
+                        var res = chunkReader.ReadInt16();
                         InkEffect = chunkReader.ReadInt16();
                         InkEffectValue = chunkReader.ReadInt16();
                         break;

@@ -23,7 +23,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
             if (Debug)
             {
-                //TODO
+         
             }
             var count = reader.ReadInt32();
             int offset = 0;
@@ -72,6 +72,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public override void Read()
         {
             Handle = reader.ReadUInt32();
+
             var dataReader = Decompressor.DecompressAsReader(reader, out var decompSize);
             var currentPos = dataReader.Tell();
             Checksum = dataReader.ReadInt32();

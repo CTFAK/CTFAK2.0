@@ -80,6 +80,7 @@
     <Compile Include="CCN\Chunks\Banks\MusicBank.cs" />
     <Compile Include="CCN\Chunks\Banks\SoundBank.cs" />
     <Compile Include="CCN\Chunks\Chunk.cs" />
+    <Compile Include="CCN\Chunks\Extensions.cs" />
     <Compile Include="CCN\Chunks\FrameHandles.cs" />
     <Compile Include="CCN\Chunks\Frame\Events\AlterableValue.cs" />
     <Compile Include="CCN\Chunks\Frame\Events\Click.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="MFA\MFAObjectLoaders\MFAExtensionObject.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFAMovements.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFAObjectLoader.cs" />
+    <Compile Include="MFA\MFAObjectLoaders\MFAText.cs" />
     <Compile Include="MFA\MFATransition.cs" />
     <Compile Include="MFA\MFAValueList.cs" />
     <Compile Include="Program.cs" />

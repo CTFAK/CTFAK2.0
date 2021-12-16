@@ -9,5 +9,7 @@ namespace CTFAK.Utils
     class Settings
     {
         public static int Build;
+
+        public static object DumpPath { get; internal set; }
     }
 }

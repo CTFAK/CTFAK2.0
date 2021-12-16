@@ -1,4 +1,5 @@
 ﻿using CTFAK.CCN;
+using CTFAK.CCN.Chunks;
 using CTFAK.CCN.Chunks.Frame;
 using CTFAK.CCN.Chunks.Objects;
 using CTFAK.FileReaders;
@@ -73,7 +74,7 @@ namespace CTFAK.Tools
             var newFlags = game.header.NewFlags;
             mfa.Extensions.Clear();
 
-            /*displaySettings["MaximizedOnBoot"] = flags["Maximize"];
+            displaySettings["MaximizedOnBoot"] = flags["Maximize"];
             displaySettings["ResizeDisplay"] = flags["MDI"];
             displaySettings["FullscreenAtStart"] = flags["FullscreenAtStart"];
             displaySettings["AllowFullscreen"] = flags["FullscreenSwitch"];
@@ -87,7 +88,7 @@ namespace CTFAK.Tools
             // displaySettings["NoCenter"] = flags["MDI"];
             displaySettings["DisableClose"] = newFlags["DisableClose"];
             displaySettings["HiddenAtStart"] = newFlags["HiddenAtStart"];
-            displaySettings["MDI"] = newFlags["MDI"];*/
+            displaySettings["MDI"] = newFlags["MDI"];
 
 
             //mfa.GraphicFlags = graphicSettings;
@@ -111,7 +112,7 @@ namespace CTFAK.Tools
             {
                 var key = game.frameitems.Keys.ToArray()[i];
                 var item = game.frameitems[key];
-                var newItem = TranslateObject(item);
+                var newItem = TranslateObject(game,item);
                 if (newItem.Loader == null)
                 {
                     throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
@@ -225,7 +226,7 @@ namespace CTFAK.Tools
                             newInstance.Y = instance.y;
                             newInstance.Handle = instance.handle;
                             // newInstance.Flags = ((instance.FrameItem.Properties.Loader as ObjectCommon)?.Preferences?.flag ?? (uint)instance.FrameItem.Flags);
-                            newInstance.Flags = 0;
+                            newInstance.Flags = (uint)instance.flags;
 
                             newInstance.ParentType = (uint)instance.parentType;
                             newInstance.ItemHandle = (uint)(instance.objectInfo);
@@ -366,7 +367,7 @@ namespace CTFAK.Tools
 
 
 
-        public static MFAObjectInfo TranslateObject(ObjectInfo item)
+        public static MFAObjectInfo TranslateObject(GameData game, ObjectInfo item)
         {
             var newItem = new MFAObjectInfo(null);
             newItem.Chunks = new MFAChunkList(null);
@@ -530,7 +531,7 @@ namespace CTFAK.Tools
 
                 if ((int)item.ObjectType >= 32)
                 {
-                    /*var newExt = new ExtensionObject(null);
+                    var newExt = new MFAExtensionObject(null);
                     {
                         newExt.ObjectFlags = newObject.ObjectFlags;
                         newExt.NewObjectFlags = newObject.NewObjectFlags;
@@ -544,7 +545,7 @@ namespace CTFAK.Tools
                     }
                     // if (Settings.GameType != GameType.OnePointFive)
                     {
-                        var exts = Program.CleanData.Extensions;
+                        Extensions exts = game.extensions;
                         Extension ext = null;
                         foreach (var testExt in exts.Items)
                         {
@@ -564,13 +565,12 @@ namespace CTFAK.Tools
                         var tuple = new Tuple<int, string, string, int, string>(ext.Handle, ext.Name, "",
                             ext.MagicNumber, ext.SubType);
                         // mfa.Extensions.Add(tuple);
-                    }*/
-                    throw new NotImplementedException("EXTENSION OBJECTS ARE NOT IMPLEMENTED");
+                    }
 
                 }
                 else if (item.ObjectType == (int)Constants.ObjectType.Text)
                 {
-                    /*var text = itemLoader.Text;
+                    var text = itemLoader.Text;
                     var newText = new MFAText(null);
                     //Shit Section
                     {
@@ -591,7 +591,7 @@ namespace CTFAK.Tools
                         newText.Font = 0;
                         newText.Color = Color.Black;
                         newText.Flags = 0;
-                        newText.Items = new List<Paragraph>(){new Paragraph((ByteReader) null)
+                        newText.Items = new List<MFAParagraph>(){new MFAParagraph(null)
                         {
                             Value="ERROR"
                         }};
@@ -604,10 +604,10 @@ namespace CTFAK.Tools
                         newText.Font = paragraph.FontHandle;
                         newText.Color = paragraph.Color;
                         newText.Flags = paragraph.Flags.flag;
-                        newText.Items = new List<Paragraph>();
-                        foreach (EXE.Loaders.Objects.Paragraph exePar in text.Items)
+                        newText.Items = new List<MFAParagraph>();
+                        foreach (Paragraph exePar in text.Items)
                         {
-                            var newPar = new Paragraph((ByteReader)null);
+                            var newPar = new MFAParagraph((ByteReader)null);
                             newPar.Value = exePar.Value;
                             newPar.Flags = exePar.Flags.flag;
                             newText.Items.Add(newPar);
@@ -615,8 +615,8 @@ namespace CTFAK.Tools
                     }
 
 
-                    newItem.Loader = newText;*/
-                    throw new NotImplementedException("TEXT OBJECT IS NOT IMPLEMENTED");
+                    newItem.Loader = newText;
+
                 }
                 else if (item.ObjectType == (int)Constants.ObjectType.Lives || item.ObjectType == (int)Constants.ObjectType.Score)
                 {

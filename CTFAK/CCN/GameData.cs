@@ -50,7 +50,7 @@ namespace CTFAK.CCN
 
         public List<Frame> frames = new List<Frame>();
         public FrameHandles frameHandles;
-        //public Extensions Extensions;
+        public Extensions extensions;
 
         public void Read(ByteReader reader)
         {
@@ -95,7 +95,11 @@ namespace CTFAK.CCN
                         var extPath = new ExtPath(chunkReader);
                         extPath.Read();
                         break;
-                        //FOUR CHUNKS SKIPPED FFS
+                    case 8756:
+                        extensions = new Extensions(chunkReader);
+                        extensions.Read();
+                        break;
+                    //FOUR CHUNKS SKIPPED FFS
                     case 8747:
                         var frameHandles = new FrameHandles(chunkReader);
                         frameHandles.Read();
