@@ -46,7 +46,6 @@ namespace CTFAK.EXE
 
             uint count = reader.ReadUInt32();
 
-            Logger.Log($"Found {count} Pack Files", true, ConsoleColor.Blue);
 
             long offset = reader.Tell();
             for (int i = 0; i < count; i++)

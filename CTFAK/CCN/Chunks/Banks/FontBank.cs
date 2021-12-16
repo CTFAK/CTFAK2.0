@@ -1,4 +1,5 @@
 ﻿using CTFAK.Memory;
+using CTFAK.MFA;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public override void Read()
         {
 
-            if (Debug)
-            {
-         
-            }
+          
             var count = reader.ReadInt32();
             int offset = 0;
             if (Settings.Build > 284 && !Debug) offset = -1;
@@ -33,6 +31,7 @@ namespace CTFAK.CCN.Chunks.Banks
             for (int i = 0; i < count; i++)
             {
                 var item = new FontItem(reader);
+                item.Compressed = Compressed;
                 item.Read();
                 item.Handle += (uint)offset;
                 Items.Add(item);
@@ -72,8 +71,13 @@ namespace CTFAK.CCN.Chunks.Banks
         public override void Read()
         {
             Handle = reader.ReadUInt32();
-
-            var dataReader = Decompressor.DecompressAsReader(reader, out var decompSize);
+            ByteReader dataReader = null;
+            if (Compressed)
+            {
+                dataReader = Decompressor.DecompressAsReader(reader, out var decompSize);
+            }
+            else dataReader = reader;
+            
             var currentPos = dataReader.Tell();
             Checksum = dataReader.ReadInt32();
             References = dataReader.ReadInt32();
@@ -138,7 +142,7 @@ namespace CTFAK.CCN.Chunks.Banks
             _clipPrecision = reader.ReadByte();
             _quality = reader.ReadByte();
             _pitchAndFamily = reader.ReadByte();
-            _faceName = reader.ReadUniversal(32);
+            _faceName = reader.ReadWideString(32);
         }
 
         public override void Write(ByteWriter Writer)

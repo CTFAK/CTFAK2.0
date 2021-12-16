@@ -29,7 +29,6 @@ namespace CTFAK.MMFParser.MFA.Loaders
             }
 
             var count = reader.ReadInt32();
-            Logger.Log($"Number of image items: {count.ToString()}");
 
             for (int i = 0; i < count; i++)
             {

@@ -63,6 +63,8 @@ namespace CTFAK.CCN.Chunks.Frame
         public List<ObjectInstance> objects = new List<ObjectInstance>();
         public Layers layers;
         public List<Color> palette;
+        public Transition fadeIn;
+        public Transition fadeOut;
 
         public Frame(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -107,6 +109,14 @@ namespace CTFAK.CCN.Chunks.Frame
                         var pal = new FramePalette(chunkReader);
                         pal.Read();
                         palette = pal.Items;
+                        break;
+                    case 13115:
+                        fadeIn = new Transition(chunkReader);
+                        fadeIn.Read();
+                        break;
+                    case 13116:
+                        fadeOut = new Transition(chunkReader);
+                        fadeOut.Read();
                         break;
 
 

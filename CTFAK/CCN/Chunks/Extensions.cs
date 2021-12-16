@@ -75,7 +75,6 @@ namespace CTFAK.CCN.Chunks
             string[] arr;
             arr = reader.ReadWideString().Split('.');
             Name = arr[0];
-            Logger.Log("Found Extension: " + Name + " with id " + Handle);
             Ext = arr[1];
             SubType = reader.ReadUniversal();
             reader.Seek(currentPosition + size);

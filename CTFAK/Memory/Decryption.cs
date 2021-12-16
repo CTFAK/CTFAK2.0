@@ -24,7 +24,6 @@ namespace CTFAK.Memory
             if (data2 == null) data2 = "";
             if (data3 == null) data3 = "";
 
-            Logger.Log("Combined data " + combined, true, ConsoleColor.Yellow);
             keyPtr = Marshal.AllocHGlobal(256);
             var data1Ptr = Marshal.StringToHGlobalAnsi(data1);
             var data2Ptr = Marshal.StringToHGlobalAnsi(data2);

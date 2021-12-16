@@ -33,7 +33,6 @@ namespace CTFAK.FileReaders
 
             var firstShort = reader.PeekUInt16();
             bool retard = false;
-            Logger.Log("First Short: " + firstShort.ToString("X2"), true, ConsoleColor.Yellow);
             //if (firstShort == 0x7777) Settings.GameType = GameType.Normal;
             //else if (firstShort == 0x222c) Settings.GameType = GameType.OnePointFive;
             return (int)reader.Tell();
@@ -41,7 +40,6 @@ namespace CTFAK.FileReaders
         public int CalculateEntryPoint(ByteReader exeReader)
         {
             var sig = exeReader.ReadAscii(2);
-            Logger.Log("EXE Header: " + sig, true, ConsoleColor.Yellow);
             if (sig != "MZ") Logger.Log("Invalid executable signature", true, ConsoleColor.Red);
 
             exeReader.Seek(60);
@@ -51,7 +49,6 @@ namespace CTFAK.FileReaders
 
             exeReader.Seek(hdrOffset);
             var peHdr = exeReader.ReadAscii(2);
-            Logger.Log("PE Header: " + peHdr, true, ConsoleColor.Yellow);
             exeReader.Skip(4);
 
             var numOfSections = exeReader.ReadUInt16();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CTFAK.FileReaders
 {
-    interface IFileReader
+    public interface IFileReader
     {
 
         GameData getGameData();

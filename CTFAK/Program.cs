@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,29 +37,81 @@ namespace CTFAK
                     arch = "arm64";
                     break;
             }
-            string libPath = Path.Combine(arch, "zlibwapi.dll");
+            string libPath = Path.Combine(arch, "zlibwapi-fast.dll");
 
             if (!File.Exists(libPath))
                 throw new PlatformNotSupportedException($"Unable to find native library [{libPath}].");
 
             ZLibInit.GlobalInit(libPath);
 
-            //var reader = new ByteReader(@"D:\fnaf\FiveNightsAtFreddys2.exe",System.IO.FileMode.Open);
+
+            Directory.CreateDirectory("Plugins");
+            Directory.CreateDirectory("Dumps");
 
 
 
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var reader = new ByteReader(@"D:\test.exe", System.IO.FileMode.Open);
 
+            ASCIIArt.DrawArt();
+            ASK_FOR_PATH:
+            string path = string.Empty;
+            if (args.Length == 0)
+            {
+                Console.Write("Game path: ");
+                path = Console.ReadLine();
 
+            }
+            else path = args[0];
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("ERROR: File not found");
+                goto ASK_FOR_PATH;
+            }
+            var readStopwatch = new Stopwatch();
+            readStopwatch.Start();
+            Console.Clear();
+            ASCIIArt.DrawArt();
+            Console.WriteLine("Reading game with default method");
+            var reader = new ByteReader(path, System.IO.FileMode.Open);
             gameParser = new ExeFileReader();
             gameParser.LoadGame(reader);
-            var tool = new FTDecompile();
-            tool.Execute(gameParser);
-            stopwatch.Stop();
-            Logger.Log($"Finished in {stopwatch.Elapsed.Seconds} seconds", true, ConsoleColor.Green);
+            readStopwatch.Stop();
+            Console.Clear();
+            ASCIIArt.DrawArt();
+            Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
+
+            
+            var types = Assembly.GetExecutingAssembly().GetTypes();
+            List<IFusionTool> availableTools = new List<IFusionTool>();
+            foreach (var rawType in types)
+            {
+                if (rawType.GetInterface(typeof(IFusionTool).FullName) != null)
+                availableTools.Add((IFusionTool)Activator.CreateInstance(rawType));
+            }
+            foreach (var item in Directory.GetFiles("Plugins","*.dll"))
+            {
+                var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
+                foreach (var pluginType in newAsm.GetTypes())
+                {
+                    if (pluginType.GetInterface(typeof(IFusionTool).FullName) != null)
+                        availableTools.Add((IFusionTool)Activator.CreateInstance(pluginType));
+                }
+            }
+            Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
+            for (int i = 0; i < availableTools.Count; i++)
+            {
+                Console.WriteLine($"{i+1}. {availableTools[i].Name}");
+            }
+            var key = Console.ReadLine();
+            var toolSelect = int.Parse(key);
+            IFusionTool selectedTool = availableTools[toolSelect-1];
+            Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
+            var executeStopwatch = new Stopwatch();
+            executeStopwatch.Start();
+            selectedTool.Execute(gameParser);
+            executeStopwatch.Stop();
+            Console.WriteLine($"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds");
+
             Console.ReadKey();
 
         }

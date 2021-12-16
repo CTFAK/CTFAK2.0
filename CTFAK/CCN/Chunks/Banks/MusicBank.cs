@@ -26,7 +26,6 @@ namespace CTFAK.CCN.Chunks.Banks
             Items = new List<MusicFile>();
             // if (!Settings.DoMFA)return;
             NumOfItems = reader.ReadInt32();
-            Console.WriteLine(NumOfItems);
             for (int i = 0; i < NumOfItems; i++)
             {
                 var item = new MusicFile(reader);

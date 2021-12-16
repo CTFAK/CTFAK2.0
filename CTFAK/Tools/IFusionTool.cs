@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CTFAK.Tools
 {
-    interface IFusionTool
+    public interface IFusionTool
     {
         string Name { get; }
         void Execute(IFileReader reader);

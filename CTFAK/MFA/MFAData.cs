@@ -268,7 +268,7 @@ namespace CTFAK.MFA
 
             if (reader.ReadAscii(4) != FontBankId) throw new Exception("Invalid Font Bank");
             Fonts = new FontBank(reader);
-            Fonts.Debug = true;
+            Fonts.Compressed = false;
             Fonts.Read();
 
             if (reader.ReadAscii(4) != SoundBankId) throw new Exception("Invalid Sound Bank");

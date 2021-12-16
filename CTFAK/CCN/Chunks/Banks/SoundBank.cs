@@ -30,36 +30,22 @@ namespace CTFAK.CCN.Chunks.Banks
             //if (!Settings.DoMFA) reader.Seek(0);//Reset the reader to avoid bugs when dumping more than once
             Items = new List<SoundItem>();
             NumOfItems = reader.ReadInt32();
-            Logger.Log("Found " + NumOfItems + " sounds", true, ConsoleColor.Green);
             //if (!Settings.DumpSounds) return;
 
             for (int i = 0; i < NumOfItems; i++)
             {
-                /*if (MainForm.BreakSounds)
-                {
-                    MainForm.BreakSounds = false;
-                    break;
-                }*/
+
                 var item = new SoundItem(reader);
-                /*if (Settings.Old && !Settings.DoMFA)
-                {
-                    var oldSound = new OldSound(Reader);
-                    oldSound.Read();
-                    oldSound.CopyDataToSound(ref item);
-                }*/
-                //else
-                {
+                
                     item.IsCompressed = IsCompressed;
                     item.Read();
-                }
+                
 
 
                 Items.Add(item);
 
-
             }
 
-            Logger.Log("Sounds Success", true, ConsoleColor.Green);
         }
         public override void Write(ByteWriter writer)
         {

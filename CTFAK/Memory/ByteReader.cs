@@ -140,8 +140,7 @@ namespace CTFAK.Memory
 
         public string ReadUniversal(int len = -1)
         {
-            return "ERROR";
-            //if (Settings.Unicode) return ReadWideString(len);
+            return ReadWideString(len);
             // return ReadAscii(len);
         }
         public Color ReadColor()

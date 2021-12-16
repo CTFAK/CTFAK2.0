@@ -194,7 +194,6 @@ namespace CTFAK.MFA
             Writer.WriteUInt16(FrameType);
             if (Items.Count > 0)
             {
-                Console.WriteLine("Writing EventData");
                 Writer.WriteAscii(EventData);
 
                 ByteWriter newWriter = new ByteWriter(new MemoryStream());
@@ -215,7 +214,6 @@ namespace CTFAK.MFA
 
             if (Objects?.Count > 0)
             {
-                Console.WriteLine("Writing EventObjects");
                 Writer.WriteAscii(ObjectData);
                 Writer.WriteUInt32((uint)Objects.Count);
                 foreach (EventObject eventObject in Objects)

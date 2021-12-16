@@ -55,7 +55,6 @@ namespace CTFAK.CCN
         public void Read(ByteReader reader)
         {
             string magic = reader.ReadAscii(4); //Reading header
-            Logger.Log("MAGIC HEADER: " + magic);
             //Checking for header
             //if (magic == Constants.UnicodeGameHeader) Settings.Unicode = true;//PAMU
             //else if (magic == Constants.GameHeader) Settings.Unicode = false;//PAME
@@ -101,14 +100,13 @@ namespace CTFAK.CCN
                         break;
                     //FOUR CHUNKS SKIPPED FFS
                     case 8747:
-                        var frameHandles = new FrameHandles(chunkReader);
+                        frameHandles = new FrameHandles(chunkReader);
                         frameHandles.Read();
                         break;
                     case 8750:
                         var editorFile = new EditorFilename(chunkReader);
                         editorFile.Read();
                         editorFilename = editorFile.value;
-                        Logger.Log($"Using {(Settings.Build > 284 ? ("New") : ("Old"))} Key");
                         if (Settings.Build > 284) Decryption.MakeKey(name, copyright, editorFilename);
                         else Decryption.MakeKey(editorFilename,name, copyright);
                         break;
@@ -137,9 +135,10 @@ namespace CTFAK.CCN
                         break;
                     case 26215:
                         Fonts = new FontBank(chunkReader);
+                        Fonts.Compressed = true;
                         Fonts.Read();
                         break;
-                    case 21216:
+                    case 26216:
                         Sounds = new SoundBank(chunkReader);
                         Sounds.Read();
                         break;

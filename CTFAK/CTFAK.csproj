@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ASCIIArt.cs" />
     <Compile Include="CCN\Chunks\AppHeader.cs" />
     <Compile Include="CCN\Chunks\AppMenu.cs" />
     <Compile Include="CCN\Chunks\Banks\FontBank.cs" />
@@ -153,7 +154,6 @@
     <Compile Include="MFA\MFAValueList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools\FTDecompile.cs" />
     <Compile Include="Tools\IFusionTool.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\NativeLib.cs" />

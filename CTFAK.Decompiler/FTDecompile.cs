@@ -39,7 +39,7 @@ namespace CTFAK.Tools
             if (game.Sounds != null && game.Sounds.Items != null)
             {
 
-                foreach (var item in game.Sounds?.Items)
+                foreach (var item in game.Sounds.Items)
                 {
                     mfa.Sounds.Items.Add(item);
                 }
@@ -127,7 +127,7 @@ namespace CTFAK.Tools
             Dictionary<int, int> indexHandles = new Dictionary<int, int>();
             if(game.frameHandles!=null)
             {
-                foreach (var pair in game.frameHandles?.Items)
+                foreach (var pair in game.frameHandles.Items)
                 {
                     var key = pair.Key;
                     var handle = pair.Value;
@@ -135,9 +135,9 @@ namespace CTFAK.Tools
                     else indexHandles[handle] = key;
                 }
             }
-            
 
 
+            Logger.Log($"Prepating to translate {game.frames.Count} frames");
             for (int a = 0; a < game.frames.Count; a++)
             {
                 var frame = game.frames[a];
@@ -145,15 +145,15 @@ namespace CTFAK.Tools
                 var newFrame = new MFAFrame(null);
                 newFrame.Chunks = new MFAChunkList(null);//MFA.MFA.emptyFrameChunks;
                 newFrame.Handle = a;
-                indexHandles.TryGetValue(a, out newFrame.Handle);
+                if (!indexHandles.TryGetValue(a, out newFrame.Handle)) Logger.Log("Error while getting frame handle");
 
                 newFrame.Name = frame.name;
                 newFrame.SizeX = frame.width;
                 newFrame.SizeY = frame.height;
 
                 newFrame.Background = frame.background;
-                //newFrame.FadeIn = frame.FadeIn != null ? ConvertTransition(frame.FadeIn) : null;
-                //newFrame.FadeOut = frame.FadeOut != null ? ConvertTransition(frame.FadeOut) : null;
+                newFrame.FadeIn = frame.fadeIn != null ? ConvertTransition(frame.fadeIn) : null;
+                newFrame.FadeOut = frame.fadeOut != null ? ConvertTransition(frame.fadeOut) : null;
                 var mfaFlags = newFrame.Flags;
                 var originalFlags = frame.flags;
 
@@ -169,9 +169,8 @@ namespace CTFAK.Tools
                 newFrame.Password = "";
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
-                if (frame.palette == null) continue;
 
-                newFrame.Palette = frame.palette;
+                newFrame.Palette = frame.palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
                 //LayerInfo
@@ -345,7 +344,7 @@ namespace CTFAK.Tools
                 }
                 mfa.Frames.Add(newFrame);
             }
-            mfa.Write(new ByteWriter(new FileStream("kok.mfa", FileMode.Create)));
+            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
         }
 
         public static MFATransition ConvertTransition(Transition gameTrans)

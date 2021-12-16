@@ -34,6 +34,47 @@ namespace CTFAK.CCN.Chunks.Banks
     }
     public class Image : ChunkLoader
     {
+        private Bitmap realBitmap;
+        public Bitmap bitmap
+        {
+            get
+            {
+                if(realBitmap==null)
+                {
+                    IntPtr resultAllocated = Marshal.AllocHGlobal(width * height * 4);
+                    IntPtr imageAllocated = Marshal.AllocHGlobal(imageData.Length);
+
+
+                    Marshal.Copy(imageData, 0, imageAllocated, imageData.Length);
+
+                    NativeLib.ConvertImage(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+
+                    byte[] colorArray = new byte[width * height * 4];
+                    Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
+                    Marshal.FreeHGlobal(resultAllocated);
+                    Marshal.FreeHGlobal(imageAllocated);
+
+                    using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
+                    {
+                        BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
+                                bmp.Width,
+                                bmp.Height),
+                            ImageLockMode.WriteOnly,
+                            bmp.PixelFormat);
+
+                        IntPtr pNative = bmpData.Scan0;
+                        Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
+
+                        bmp.UnlockBits(bmpData);
+                        //bmp.Save($"Images\\{Handle}.png");
+                        //Logger.Log("Trying again");
+                    }
+                    
+                }
+                return realBitmap;
+
+            }
+        }
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
             int pad = bytes - ((width * pointSize) % bytes);
@@ -105,34 +146,7 @@ namespace CTFAK.CCN.Chunks.Banks
             }
             else imageData = imageReader.ReadBytes((int)(size));
 
-            /*IntPtr resultAllocated = Marshal.AllocHGlobal(width * height * 4);
-            IntPtr imageAllocated = Marshal.AllocHGlobal(size);
             
-            
-            Marshal.Copy(imageData, 0, imageAllocated, imageData.Length);
-
-            NativeLib.ConvertImage(resultAllocated, width, height,Flags["Alpha"]?1:0,size,imageAllocated, _transparent);
-
-            byte[] colorArray = new byte[width * height * 4];
-            Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
-            Marshal.FreeHGlobal(resultAllocated);
-            Marshal.FreeHGlobal(imageAllocated);*/
-
-            /*using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
-            {
-                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                        bmp.Width,
-                        bmp.Height),
-                    ImageLockMode.WriteOnly,
-                    bmp.PixelFormat);
-
-                IntPtr pNative = bmpData.Scan0;
-                Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
-
-                bmp.UnlockBits(bmpData);
-                bmp.Save($"Images\\{Handle}.png");
-                //Logger.Log("Trying again");
-            }*/
 
         }
 
