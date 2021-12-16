@@ -97,20 +97,27 @@ namespace CTFAK
                         availableTools.Add((IFusionTool)Activator.CreateInstance(pluginType));
                 }
             }
+        SELECT_TOOL:
             Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
+            Console.WriteLine("0. Exit CTFAK");
             for (int i = 0; i < availableTools.Count; i++)
             {
                 Console.WriteLine($"{i+1}. {availableTools[i].Name}");
             }
             var key = Console.ReadLine();
             var toolSelect = int.Parse(key);
+            if (toolSelect == 0) Environment.Exit(0);
             IFusionTool selectedTool = availableTools[toolSelect-1];
             Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
             var executeStopwatch = new Stopwatch();
             executeStopwatch.Start();
             selectedTool.Execute(gameParser);
             executeStopwatch.Stop();
+            Console.Clear();
+            
+            ASCIIArt.DrawArt();
             Console.WriteLine($"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds");
+            goto SELECT_TOOL;
 
             Console.ReadKey();
 

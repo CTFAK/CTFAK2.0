@@ -53,22 +53,21 @@ namespace CTFAK.CCN.Chunks.Banks
                     Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
                     Marshal.FreeHGlobal(resultAllocated);
                     Marshal.FreeHGlobal(imageAllocated);
+                    realBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
-                    using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
-                    {
-                        BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                                bmp.Width,
-                                bmp.Height),
+                        BitmapData bmpData = realBitmap.LockBits(new Rectangle(0, 0,
+                                realBitmap.Width,
+                                realBitmap.Height),
                             ImageLockMode.WriteOnly,
-                            bmp.PixelFormat);
+                            realBitmap.PixelFormat);
 
                         IntPtr pNative = bmpData.Scan0;
                         Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
 
-                        bmp.UnlockBits(bmpData);
+                    realBitmap.UnlockBits(bmpData);
                         //bmp.Save($"Images\\{Handle}.png");
                         //Logger.Log("Trying again");
-                    }
+                    
                     
                 }
                 return realBitmap;

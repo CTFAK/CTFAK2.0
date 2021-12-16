@@ -16,7 +16,7 @@ namespace CTFAK
                         @"                                               " };
         public static void DrawArt()
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             foreach (var item in art)
             {
                 Console.WriteLine(item);

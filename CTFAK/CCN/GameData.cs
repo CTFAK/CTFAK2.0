@@ -110,6 +110,11 @@ namespace CTFAK.CCN
                         if (Settings.Build > 284) Decryption.MakeKey(name, copyright, editorFilename);
                         else Decryption.MakeKey(editorFilename,name, copyright);
                         break;
+                    case 8751:
+                        var trgtFile = new TargetFilename(chunkReader);
+                        trgtFile.Read();
+                        targetFilename = trgtFile.value;
+                        break;
                     case 8763:
                         var cprght = new Copyright(chunkReader);
                         cprght.Read();
