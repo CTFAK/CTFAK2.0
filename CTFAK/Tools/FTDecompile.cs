@@ -73,7 +73,7 @@ namespace CTFAK.Tools
             var newFlags = game.header.NewFlags;
             mfa.Extensions.Clear();
 
-            displaySettings["MaximizedOnBoot"] = flags["Maximize"];
+            /*displaySettings["MaximizedOnBoot"] = flags["Maximize"];
             displaySettings["ResizeDisplay"] = flags["MDI"];
             displaySettings["FullscreenAtStart"] = flags["FullscreenAtStart"];
             displaySettings["AllowFullscreen"] = flags["FullscreenSwitch"];
@@ -87,11 +87,11 @@ namespace CTFAK.Tools
             // displaySettings["NoCenter"] = flags["MDI"];
             displaySettings["DisableClose"] = newFlags["DisableClose"];
             displaySettings["HiddenAtStart"] = newFlags["HiddenAtStart"];
-            displaySettings["MDI"] = newFlags["MDI"];
+            displaySettings["MDI"] = newFlags["MDI"];*/
 
 
-            mfa.GraphicFlags = graphicSettings;
-            mfa.DisplayFlags = displaySettings;
+            //mfa.GraphicFlags = graphicSettings;
+            //mfa.DisplayFlags = displaySettings;
             mfa.WindowX = game.header.WindowWidth;
             mfa.WindowY = game.header.WindowHeight;
             mfa.BorderColor = game.header.BorderColor;
@@ -102,7 +102,6 @@ namespace CTFAK.Tools
             mfa.BuildType = 0;
             mfa.BuildPath = game.targetFilename;
             mfa.CommandLine = "";
-            mfa.FrameRate = 60;
             mfa.Aboutbox = game.aboutText ?? "Decompiled with CTFAK 2.0";
             //TODO: Controls
 
@@ -345,7 +344,7 @@ namespace CTFAK.Tools
                 }
                 mfa.Frames.Add(newFrame);
             }
-            mfa.Write(new ByteWriter(new FileStream("kok.mfa",FileMode.Create)));
+            mfa.Write(new ByteWriter(new FileStream("kok.mfa", FileMode.Create)));
         }
 
         public static MFATransition ConvertTransition(Transition gameTrans)

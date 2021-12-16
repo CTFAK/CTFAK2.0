@@ -426,6 +426,7 @@ namespace CTFAK.MFA
 
         public static void AutoWriteUnicode(this ByteWriter writer, string value)
         {
+            if (value == null) value = "";
             writer.WriteInt16((short)value.Length);
             writer.Skip(1);
             writer.WriteInt8(0x80);

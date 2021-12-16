@@ -14,6 +14,7 @@ namespace CTFAK.CCN.Chunks
         public override void Read()
         {
             value = reader.ReadWideString();
+            if (value == null) value = "";
         }
 
         public override void Write(ByteWriter writer)
