@@ -379,16 +379,20 @@ namespace CTFAK.Tools
             newItem.AntiAliasing = 0;
             newItem.Flags = item.Flags;
             
-            // newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte) (item.InkEffectValue);
-            // newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = Color.White;
+
 
             newItem.IconHandle = 12;
-
+            if(item.InkEffect!=1)
+            {
+                newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
+                newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
+            }
+            
 
 
             if (item.ObjectType == (int)Constants.ObjectType.QuickBackdrop)
             {
-                /*var backdropLoader = item.properties as Backdrop;
+                var backdropLoader = item.properties as Quickbackdrop;
                 var backdrop = new MFAQuickBackdrop((ByteReader)null);
                 backdrop.ObstacleType = (uint)backdropLoader.ObstacleType;
                 backdrop.CollisionType = (uint)backdropLoader.CollisionType;
@@ -401,8 +405,7 @@ namespace CTFAK.Tools
                 backdrop.Color2 = backdropLoader.Shape.Color2;
                 backdrop.Flags = backdropLoader.Shape.GradFlags;
                 backdrop.Image = backdropLoader.Shape.Image;
-                newItem.Loader = backdrop;*/
-                throw new NotImplementedException("QUICKBACKDROP IS NOT IMPLEMENTED");
+                newItem.Loader = backdrop;
 
             }
             else if (item.ObjectType == (int)Constants.ObjectType.Backdrop)
@@ -619,8 +622,8 @@ namespace CTFAK.Tools
                 }
                 else if (item.ObjectType == (int)Constants.ObjectType.Lives || item.ObjectType == (int)Constants.ObjectType.Score)
                 {
-                    /*var counter = itemLoader.Counters;
-                    var lives = new Counter(null);
+                    var counter = itemLoader.Counters;
+                    var lives = new MFALives(null);
                     {
                         lives.ObjectFlags = newObject.ObjectFlags;
                         lives.NewObjectFlags = newObject.NewObjectFlags;
@@ -639,8 +642,7 @@ namespace CTFAK.Tools
                     lives.Font = counter?.Font ?? 0;
                     lives.Width = (int)(counter?.Width ?? 0);
                     lives.Height = (int)(counter?.Height ?? 0);
-                    newItem.Loader = lives;*/
-                    throw new NotImplementedException("LIVES OBJECT IS NOT IMPLEMENTED");
+                    newItem.Loader = lives;
 
                 }
                 else if (item.ObjectType == (int)Constants.ObjectType.Counter)

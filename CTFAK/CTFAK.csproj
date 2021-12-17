@@ -150,6 +150,7 @@
     <Compile Include="MFA\MFAObjectLoaders\MFABehaviours.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFACounter.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFAExtensionObject.cs" />
+    <Compile Include="MFA\MFAObjectLoaders\MFALives.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFAMovements.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFAObjectLoader.cs" />
     <Compile Include="MFA\MFAObjectLoaders\MFAText.cs" />

@@ -26,6 +26,18 @@ namespace CTFAK.Utils
 
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
+        public static string GetHex(this byte[] data, int count = -1, int position = 0)
+        {
+            var actualCount = count;
+            if (actualCount == -1) actualCount = data.Length;
+            string temp = "";
+            for (int i = 0; i < actualCount; i++)
+            {
+                temp += data[i].ToString("X2");
+                temp += " ";
+            }
+            return temp;
+        }
         public static T[] To1DArray<T>(T[,] input)
         {
             // Step 1: get total size of 2D array, and allocate 1D array.

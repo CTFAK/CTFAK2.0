@@ -9,7 +9,7 @@ namespace CTFAK.Utils
         static Logger()
         {
             File.Delete("Latest.log");
-            _writer = new StreamWriter("Latest.log", true);
+            _writer = new StreamWriter("Latest.log", false);
             _writer.AutoFlush = true;
         }
 
@@ -36,7 +36,7 @@ namespace CTFAK.Utils
 
 
             _writer.WriteLine(actualText);
-
+            _writer.Flush();
 
             //if (logToConsole) MainConsole.Message(text);
 

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CTFAK
@@ -45,9 +46,25 @@ namespace CTFAK
             ZLibInit.GlobalInit(libPath);
 
 
+
+
+            /*var mfa = new MFAData();
+            mfa.Read(new ByteReader("D:\\test.mfa", FileMode.Open));
+            mfa.Write(new ByteWriter(new FileStream("ass.mfa", FileMode.Create)));
+            Console.ReadKey();
+            return;*/
+
+            Console.Title = $"CTFAK {Assembly.GetExecutingAssembly().GetName().Version }";
             Directory.CreateDirectory("Plugins");
             Directory.CreateDirectory("Dumps");
-
+            ASCIIArt.DrawArt2();
+            ASCIIArt.DrawArt();
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("by 1987kostya");
+            Console.ResetColor();
+            Thread.Sleep(700);
+            Console.Clear();
+            
 
 
 
@@ -75,6 +92,7 @@ namespace CTFAK
             var reader = new ByteReader(path, System.IO.FileMode.Open);
             gameParser = new ExeFileReader();
             gameParser.LoadGame(reader);
+            reader.Dispose();
             readStopwatch.Stop();
             Console.Clear();
             ASCIIArt.DrawArt();
@@ -111,7 +129,15 @@ namespace CTFAK
             Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
             var executeStopwatch = new Stopwatch();
             executeStopwatch.Start();
-            selectedTool.Execute(gameParser);
+            try
+            {
+                selectedTool.Execute(gameParser);
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ex);
+                Console.ReadKey();
+            }
             executeStopwatch.Stop();
             Console.Clear();
             
