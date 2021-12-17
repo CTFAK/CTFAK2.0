@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +9,19 @@ namespace CTFAK
 {
     public static class ASCIIArt
     {
+        public static string version;
+        static ASCIIArt()
+        {
+            var description = Assembly
+                        .GetExecutingAssembly()
+                        .GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)
+                        .OfType<AssemblyDescriptionAttribute>()
+                        .FirstOrDefault()?
+                        .Description ?? "";
+            version = description;
+
+        }
+
         static string[] art = {@" ____  _____  _____ ____  _  __   ____    ____ ",
                         @"/   _\/__ __\/    //  _ \/ |/ /  /_   \  /  _ \",
                         @"|  /    / \  |  __\| / \||   /    /   /  | / \|",
@@ -37,6 +51,10 @@ namespace CTFAK
              @"             (/#                   (/%            ",
              @"                   (///////////(                  "
         };
+        public static void SetStatus(string msg)
+        {
+            Console.Title = $"{version}. Status: {msg}";
+        }
         public static void DrawArt()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -44,7 +62,9 @@ namespace CTFAK
             {
                 Console.WriteLine(item);
             }
+            Console.WriteLine(version);
             Console.ForegroundColor = ConsoleColor.White;
+
         }
         public static void DrawArt2()
         {

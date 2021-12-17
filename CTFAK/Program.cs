@@ -54,7 +54,7 @@ namespace CTFAK
             Console.ReadKey();
             return;*/
 
-            Console.Title = $"CTFAK {Assembly.GetExecutingAssembly().GetName().Version }";
+            ASCIIArt.SetStatus("Idle");
             Directory.CreateDirectory("Plugins");
             Directory.CreateDirectory("Dumps");
             ASCIIArt.DrawArt2();
@@ -71,6 +71,7 @@ namespace CTFAK
 
             ASCIIArt.DrawArt();
             ASK_FOR_PATH:
+            ASCIIArt.SetStatus("Waiting for file");
             string path = string.Empty;
             if (args.Length == 0)
             {
@@ -88,6 +89,7 @@ namespace CTFAK
             readStopwatch.Start();
             Console.Clear();
             ASCIIArt.DrawArt();
+            ASCIIArt.SetStatus("Reading game");
             Console.WriteLine("Reading game with default method");
             var reader = new ByteReader(path, System.IO.FileMode.Open);
             gameParser = new ExeFileReader();
@@ -116,6 +118,7 @@ namespace CTFAK
                 }
             }
         SELECT_TOOL:
+            ASCIIArt.SetStatus("Selecting tool");
             Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
             Console.WriteLine("0. Exit CTFAK");
             for (int i = 0; i < availableTools.Count; i++)
@@ -129,6 +132,7 @@ namespace CTFAK
             Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
             var executeStopwatch = new Stopwatch();
             executeStopwatch.Start();
+            ASCIIArt.SetStatus($"Executing {selectedTool.Name}");
             try
             {
                 selectedTool.Execute(gameParser);

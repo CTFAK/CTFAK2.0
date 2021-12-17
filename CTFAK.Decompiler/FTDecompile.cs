@@ -174,7 +174,7 @@ namespace CTFAK.Tools
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
                 //LayerInfo
-                // if(frame.Layers==null) continue;
+                if(frame.layers==null) continue;
                 if (true)//Settings.GameType != GameType.OnePointFive && frame.Layers != null)
                 {
                     var count = frame.layers.Items.Count;

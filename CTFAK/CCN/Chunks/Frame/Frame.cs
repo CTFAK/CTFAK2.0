@@ -75,7 +75,8 @@ namespace CTFAK.CCN.Chunks.Frame
                 var chunkData = newChunk.Read();
                 var chunkReader = new ByteReader(chunkData);
                 if (newChunk.Id == 32639) break;
-                switch(newChunk.Id)
+                if (reader.Tell() >= reader.Size()) break;
+                switch (newChunk.Id)
                 {
                     case 13109:
                         var frameName = new StringChunk(chunkReader);
