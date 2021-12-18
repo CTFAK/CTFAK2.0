@@ -1,0 +1,41 @@
+name: Building
+
+on: [push]
+
+env:
+  SOLUTION_FILE_PATH: .
+  
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore Nuget
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Compile (release)
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Copy template file to CTFAK directory
+      run: |
+           mkdir BINARY
+           cd Dependencies
+           copy template.mfa "D:\a\CTFAK2.0\CTFAK2.0\BINARY"
+           cd ..
+           cd CTFAK\bin\
+           Xcopy /E /I Release "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
+         
+    - name: Upload CTFAK (release)
+      uses: actions/upload-artifact@v2
+      with:
+       name: CTFAK_release
+       path: CTFAK\bin\Release      
