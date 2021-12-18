@@ -35,6 +35,7 @@ namespace CTFAK.CCN.Chunks.Banks
     public class Image : ChunkLoader
     {
         private Bitmap realBitmap;
+        
         public Bitmap bitmap
         {
             get
@@ -74,6 +75,54 @@ namespace CTFAK.CCN.Chunks.Banks
 
             }
         }
+        public void FromBitmap(Bitmap bmp)
+        {
+            width = bmp.Width;
+            height = bmp.Height;
+            Flags["Alpha"] = true;
+            graphicMode = 4;
+
+                var bitmapData = bmp.LockBits(new Rectangle(0, 0,
+                                bmp.Width,
+                                bmp.Height),
+                            ImageLockMode.ReadOnly,
+                            PixelFormat.Format24bppRgb);
+                var length = bitmapData.Stride * bitmapData.Height;
+
+                byte[] bytes = new byte[length];
+
+                // Copy bitmap to byte[]
+                Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
+                bmp.UnlockBits(bitmapData);
+
+            imageData = new byte[width * height * 4];
+            int position = 0;
+            int pad = GetPadding(width, 3);
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    imageData[position] = bytes[position];
+                    imageData[position+1] = bytes[position+1];
+                    imageData[position+2] = bytes[position+2];
+                    position += 3;
+                }
+                
+                position += 3 * pad;
+            }
+            
+            int aPad = GetPadding(width, 1, 4);
+            int alphaPos = position;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    imageData[alphaPos] = 255;
+                    alphaPos += 1;
+                }
+                alphaPos += aPad;
+            }
+        }
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
             int pad = bytes - ((width * pointSize) % bytes);
@@ -85,7 +134,7 @@ namespace CTFAK.CCN.Chunks.Banks
             return (int)Math.Ceiling((double)((float)pad / (float)pointSize));
         }
         public bool IsMFA;
-        BitDict Flags = new BitDict(new string[]
+        public BitDict Flags = new BitDict(new string[]
        {
             "RLE",
             "RLEW",
@@ -106,7 +155,7 @@ namespace CTFAK.CCN.Chunks.Banks
         private short HotspotY;
         private short ActionX;
         private short ActionY;
-        private int transparent;
+        public int transparent;
 
         public Image(ByteReader reader):base(reader)
         {

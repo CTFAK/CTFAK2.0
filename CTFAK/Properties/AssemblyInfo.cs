@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные с этой сборкой.
 [assembly: AssemblyTitle("CTFAK")]
-[assembly: AssemblyDescription("CTFAK Alpha 2.0.2")]
+[assembly: AssemblyDescription("CTFAK Alpha 2.0.3")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("1987kostya")]
 [assembly: AssemblyProduct("CTFAK")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.2")]
+[assembly: AssemblyVersion("2.0.3.0")]
 [assembly: AssemblyFileVersion("1.0.0")]

@@ -21,6 +21,7 @@ namespace CTFAK.Tools
     class FTDecompile : IFusionTool
     {
         public string Name => "Decompiler";
+        public static int lastAllocatedHandleImg=15;
 
         public static Dictionary<int, MFAObjectInfo> FrameItems;
         public void Execute(IFileReader reader)
@@ -60,7 +61,53 @@ namespace CTFAK.Tools
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
+            foreach (var item in mfa.Icons.Items)
+            {
+                try
+                {
 
+
+                    switch (item.Key)
+                    {
+                        case 2:
+                        case 5:
+                        case 8:
+                            item.Value.FromBitmap(reader.getIcons()[16]);
+                            break;
+                        case 1:
+                        case 4:
+                        case 7:
+                            item.Value.FromBitmap(reader.getIcons()[32]);
+                            break;
+                        case 0:
+                        case 3:
+                        case 6:
+                            item.Value.FromBitmap(reader.getIcons()[48]);
+                            break;
+                        case 9:
+                            item.Value.FromBitmap(reader.getIcons()[128]);
+                            break;
+                        case 10:
+                            item.Value.FromBitmap(reader.getIcons()[256]);
+                            break;
+                        
+                            
+
+                        default:
+                            break;
+                    }
+                }
+                catch
+                {
+                    Logger.LogWarning($"Requested icon is not found: {item.Key} - {item.Value.width}");
+                }
+                
+            }
+            var imageNull = new CCN.Chunks.Banks.Image(null);
+            imageNull.Handle = 14;
+            imageNull.transparent = 0x3aebca;
+            imageNull.FromBitmap((Bitmap)Bitmap.FromFile("emptyIco.png"));
+            mfa.Icons.Items.Add(14, imageNull);
             // game.Images.Images.Clea r();
 
             mfa.Author = game.author;
@@ -112,7 +159,7 @@ namespace CTFAK.Tools
             {
                 var key = game.frameitems.Keys.ToArray()[i];
                 var item = game.frameitems[key];
-                var newItem = TranslateObject(game,item);
+                var newItem = TranslateObject(mfa,game,item);
                 if (newItem.Loader == null)
                 {
                     throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
@@ -141,7 +188,9 @@ namespace CTFAK.Tools
             for (int a = 0; a < game.frames.Count; a++)
             {
                 var frame = game.frames[a];
-                // if(frame.Palette==null|| frame.Events==null|| frame.Objects==null) continue;
+                
+                if (frame.name == "") continue;
+                //if(frame.Palette==null|| frame.Events==null|| frame.Objects==null) continue;
                 var newFrame = new MFAFrame(null);
                 newFrame.Chunks = new MFAChunkList(null);//MFA.MFA.emptyFrameChunks;
                 newFrame.Handle = a;
@@ -169,7 +218,7 @@ namespace CTFAK.Tools
                 newFrame.Password = "";
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
-
+                if (frame.palette == null) continue;
                 newFrame.Palette = frame.palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
@@ -278,6 +327,7 @@ namespace CTFAK.Tools
                         }
 
                         newFrame.Events.Items = frame.events.Items;
+
                         Dictionary<int, Quailifer> qualifiers = new Dictionary<int, Quailifer>();
                         foreach (Quailifer quailifer in frame.events.QualifiersList.Values)
                         {
@@ -301,8 +351,9 @@ namespace CTFAK.Tools
                             newFrame.Events.Objects.Add(qualItem);
 
                         }
-                        foreach (EventGroup eventGroup in newFrame.Events.Items)
+                        for (int eg = 0;eg<newFrame.Events.Items.Count;eg++)//foreach (EventGroup eventGroup in newFrame.Events.Items)
                         {
+                            var eventGroup = newFrame.Events.Items[eg];
                             foreach (Action action in eventGroup.Actions)
                             {
                                 foreach (var quailifer in qualifiers)
@@ -315,6 +366,7 @@ namespace CTFAK.Tools
                                         if (objInfoFld == null) continue;
                                         if ((int)objInfoFld?.GetValue(param?.Loader) ==
                                             quailifer.Value?.ObjectInfo)
+                                            newFrame.Events.Items.Remove(eventGroup);
                                             param.Loader?.GetType().GetField("ObjectInfo")
                                                 .SetValue(param.Loader, quailifer.Key);
                                     }
@@ -342,6 +394,7 @@ namespace CTFAK.Tools
 
                     }
                 }
+                Logger.Log($"Translating frame {frame.name} - {a}");
                 mfa.Frames.Add(newFrame);
             }
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
@@ -366,7 +419,7 @@ namespace CTFAK.Tools
 
 
 
-        public static MFAObjectInfo TranslateObject(GameData game, ObjectInfo item)
+        public static MFAObjectInfo TranslateObject(MFAData mfa, GameData game, ObjectInfo item)
         {
             var newItem = new MFAObjectInfo(null);
             newItem.Chunks = new MFAChunkList(null);
@@ -378,11 +431,50 @@ namespace CTFAK.Tools
             newItem.InkEffectParameter = (uint)item.InkEffectValue;
             newItem.AntiAliasing = 0;
             newItem.Flags = item.Flags;
-            
 
 
-            newItem.IconHandle = 12;
-            if(item.InkEffect!=1)
+
+            bool noicon = false;
+            switch(item.ObjectType)
+            {
+                case 2://active
+                    var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
+                    var imgAct = game.images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
+                    FTDecompile.lastAllocatedHandleImg++;
+                    var imageAct = new CCN.Chunks.Banks.Image(null);
+                    imageAct.Handle = lastAllocatedHandleImg;
+                    //imageAct.transparent = game.images.Items[imgHandleAct].transparent;
+                    imageAct.FromBitmap(imgAct);
+                    mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
+                    break;
+                case 7://counters
+                    var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
+                    var imgCntr = game.images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
+                    FTDecompile.lastAllocatedHandleImg++;
+                    var imageCntr = new CCN.Chunks.Banks.Image(null);
+                    imageCntr.Handle = lastAllocatedHandleImg;
+                    //imageCntr.transparent = game.images.Items[imgHandleCntr].transparent;
+                    imageCntr.FromBitmap(imgCntr);
+                    mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
+
+                    break;
+                case 0://quickbackdrop
+                case 1://backdrop
+                    var imgHandleBack = ((Backdrop)item.properties).Image;
+                    var imgBack = game.images.Items[imgHandleBack].bitmap.resizeImage(new Size(32, 32));
+                    FTDecompile.lastAllocatedHandleImg++;
+                    var imageBack = new CCN.Chunks.Banks.Image(null);
+                    imageBack.Handle = lastAllocatedHandleImg;
+                    //imageBack.transparent = game.images.Items[imgHandleBack].transparent;
+                    imageBack.FromBitmap(imgBack);
+                    mfa.Icons.Items.Add(lastAllocatedHandleImg, imageBack);
+                    break;
+                default:
+                    noicon = true;
+                    break;
+            }
+            newItem.IconHandle = noicon ? 14:lastAllocatedHandleImg;
+            if (item.InkEffect!=1)
             {
                 newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
                 newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;

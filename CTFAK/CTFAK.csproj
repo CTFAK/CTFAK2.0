@@ -126,8 +126,9 @@
     <Compile Include="CCN\Chunks\StringChunk.cs" />
     <Compile Include="CCN\Constants.cs" />
     <Compile Include="CCN\GameData.cs" />
+    <Compile Include="EXE\IconExtractor.cs" />
     <Compile Include="EXE\PackData.cs" />
-    <Compile Include="FileReaders\ExeFileReader.cs" />
+    <Compile Include="EXE\ExeFileReader.cs" />
     <Compile Include="FileReaders\IFileReader.cs" />
     <Compile Include="Memory\ByteReader.cs" />
     <Compile Include="Memory\ByteWriter.cs" />

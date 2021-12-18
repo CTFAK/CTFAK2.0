@@ -250,7 +250,7 @@ namespace CTFAK.CCN.Chunks.Frame
             //Alterable Values:
             if (num == -42) num = -27;
             //Global Values
-            //if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33) num = -8;
+            if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33) num = -8;
             cond.Num = num;
         }
         public static void FixActions(ref Action act)

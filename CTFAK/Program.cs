@@ -91,10 +91,9 @@ namespace CTFAK
             ASCIIArt.DrawArt();
             ASCIIArt.SetStatus("Reading game");
             Console.WriteLine("Reading game with default method");
-            var reader = new ByteReader(path, System.IO.FileMode.Open);
+            
             gameParser = new ExeFileReader();
-            gameParser.LoadGame(reader);
-            reader.Dispose();
+            gameParser.LoadGame(path);
             readStopwatch.Stop();
             Console.Clear();
             ASCIIArt.DrawArt();

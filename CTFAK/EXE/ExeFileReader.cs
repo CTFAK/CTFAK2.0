@@ -4,6 +4,7 @@ using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,30 @@ namespace CTFAK.FileReaders
     {
 
         public GameData game;
-        public void LoadGame(ByteReader reader)
+        public Dictionary<int, Bitmap> icons = new Dictionary<int, Bitmap>();
+        
+
+        public void LoadGame(string exePath)
         {
+            
+            var icoExt = new IconExtractor(exePath);
+            var icos = icoExt.GetAllIcons();
+            foreach (var icon in icos)
+            {
+                
+                icons.Add(icon.Width, icon.ToBitmap());
+            }
+
+            if (!icons.ContainsKey(16)) icons.Add(16, icons[32].resizeImage(new Size(16, 16)));
+            if (!icons.ContainsKey(48)) icons.Add(48, icons[32].resizeImage(new Size(48, 48)));
+            if (!icons.ContainsKey(128)) icons.Add(128, icons[32].resizeImage(new Size(128, 128)));
+            if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
+
+
+            var reader = new ByteReader(exePath, System.IO.FileMode.Open);
             ReadHeader(reader);
             var packData = new PackData();
             packData.Read(reader);
-
             game = new GameData();
             game.Read(reader);
         }
@@ -93,6 +112,11 @@ namespace CTFAK.FileReaders
         public GameData getGameData()
         {
             return game;
+        }
+
+        public Dictionary<int,Bitmap> getIcons()
+        {
+            return icons;
         }
     }
 }
