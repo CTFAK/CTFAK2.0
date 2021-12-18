@@ -31,7 +31,6 @@ jobs:
       with:
         url: "https://cdn.discordapp.com/attachments/808199033990152253/921667566546587668/template.mfa"
         target: D:\a\CTFAK2.0\CTFAK2.0\
-        auto-match: true
 
     - name: Copy template file to CTFAK directory
       run: |
