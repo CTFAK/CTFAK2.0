@@ -32,8 +32,12 @@ namespace CTFAK.Utils
         [DllImport(_dllPath, EntryPoint = "decompressOld", CharSet = CharSet.Auto)]
         public static extern int decompressOld(IntPtr source, int source_size, IntPtr output, int output_size);
 
-        [DllImport(_dllPath, EntryPoint = "ConvertImage", CharSet = CharSet.Auto)]
-        public static extern void ConvertImage(IntPtr result, int width, int height,int alpha,int size, IntPtr imageData, int transparentColor);
+        [DllImport(_dllPath, EntryPoint = "ReadPoint", CharSet = CharSet.Auto)]
+        public static extern void ReadPoint(IntPtr result, int width, int height,int alpha,int size, IntPtr imageData, int transparentColor);
+        [DllImport(_dllPath, EntryPoint = "ReadSixteen", CharSet = CharSet.Auto)]
+        public static extern void ReadSixteen(IntPtr result, int width, int height, int alpha, int size, IntPtr imageData, int transparentColor);
+        [DllImport(_dllPath, EntryPoint = "ReadFifteen", CharSet = CharSet.Auto)]
+        public static extern void ReadFifteen(IntPtr result, int width, int height, int alpha, int size, IntPtr imageData, int transparentColor);
         [DllImport("kernel32.dll")]
         static extern uint GetLastError();
 

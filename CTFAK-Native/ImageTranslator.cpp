@@ -14,7 +14,7 @@ int GetPadding(int width, int pointSize, int bytes = 2)
     return ceil((double)((float)pad / (float)pointSize));
 }
 extern "C" {
-	DllExport void ConvertImage(char* result, int width, int height, int alpha,int size, char* imageData,int transparentColor)
+	DllExport void ReadPoint(char* result, int width, int height, int alpha,int size, char* imageData,int transparentColor)
 	{
 
             int stride = width * 4;
@@ -24,11 +24,11 @@ extern "C" {
             {
                 for (int x = 0; x < width; x++)
                 {
-
-                    result[(y * stride) + (x * 4) + 0] = imageData[position];
-                    result[(y * stride) + (x * 4) + 1] = imageData[position + 1];
-                    result[(y * stride) + (x * 4) + 2] = imageData[position + 2];
-                    result[(y * stride) + (x * 4) + 3] = 255;
+                    int newPos = (y * stride) + (x * 4);
+                    result[ newPos+ 0] = imageData[position];
+                    result[newPos + 1] = imageData[position + 1];
+                    result[newPos + 2] = imageData[position + 2];
+                    result[newPos + 3] = 255;
                     if (!alpha)
                     {
                         char t1 = (transparentColor & 0x000000ff);
@@ -65,4 +65,101 @@ extern "C" {
 
 
 	}
+    DllExport void ReadFifteen(char* result, int width, int height, int alpha, int size, char* imageData, int transparentColor)
+    {
+
+        int stride = width * 4;
+        int pad = GetPadding(width, 2);
+        int position = 0;
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                UINT16 newShort = (UINT16)(imageData[position] | imageData[position + 1] << 8);
+                byte r = (byte)((newShort & 31744) >> 10);
+                byte g = (byte)((newShort & 992) >> 5);
+                byte b = (byte)((newShort & 31));
+
+                r = (byte)(r << 3);
+                g = (byte)(g << 3);
+                b = (byte)(b << 3);
+                result[(y * stride) + (x * 4) + 2] = r;
+                result[(y * stride) + (x * 4) + 1] = g;
+                result[(y * stride) + (x * 4) + 0] = b;
+                result[(y * stride) + (x * 4) + 3] = 255;
+                position += 2;
+            }
+
+            position += pad * 2;
+        
+        }
+
+        if (alpha)
+        {
+            int alphaSize = size - position;
+            alphaSize = size - alphaSize;
+
+            int aPad = GetPadding(width, 1, 4);
+            int aStride = width * 4;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    result[(y * aStride) + (x * 4) + 3] = imageData[alphaSize];
+                    alphaSize += 1;
+                }
+                alphaSize += aPad;
+            }
+        }
+
+
+    }
+    DllExport void ReadSixteen(char* result, int width, int height, int alpha, int size, char* imageData, int transparentColor)
+    {
+
+        int stride = width * 4;
+        int pad = GetPadding(width, 2);
+        int position = 0;
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                UINT16 newShort = (UINT16)(imageData[position] | imageData[position + 1] << 8);
+                byte r = (byte)((newShort & 63488) >> 11);
+                byte g = (byte)((newShort & 2016) >> 5);
+                byte b = (byte)((newShort & 31));
+
+                r = (byte)(r << 3);
+                g = (byte)(g << 2);
+                b = (byte)(b << 3);
+                result[(y * stride) + (x * 4) + 2] = r;
+                result[(y * stride) + (x * 4) + 1] = g;
+                result[(y * stride) + (x * 4) + 0] = b;
+                result[(y * stride) + (x * 4) + 3] = 255;
+                position += 2;
+            }
+
+            position += pad * 2;
+        }
+        
+        if (alpha)
+        {
+            int alphaSize = size - position;
+            alphaSize = size - alphaSize;
+
+            int aPad = GetPadding(width, 1, 4);
+            int aStride = width * 4;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    result[(y * aStride) + (x * 4) + 3] = imageData[alphaSize];
+                    alphaSize += 1;
+                }
+                alphaSize += aPad;
+            }
+        }
+
+
+    }
 }

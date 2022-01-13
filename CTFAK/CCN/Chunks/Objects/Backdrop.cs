@@ -18,15 +18,33 @@ namespace CTFAK.CCN.Chunks.Objects
         Fine = 0,
         Box = 1
     }
-    public class Backdrop : ChunkLoader
+    public class BackdropLoader:ChunkLoader
     {
-
         public int Size;
         public Obstacle ObstacleType;
         public Collision CollisionType;
         public int Width;
         public int Height;
         public int Image;
+        public BackdropLoader(ByteReader reader):base(reader)
+        {
+
+        }
+
+        public override void Read()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+    public class Backdrop : BackdropLoader
+    {
+
+        
 
         public Backdrop(ByteReader reader) : base(reader)
         {
@@ -52,7 +70,7 @@ namespace CTFAK.CCN.Chunks.Objects
         }
 
     }
-    public class Quickbackdrop : ChunkLoader
+    public class Quickbackdrop : BackdropLoader
     {
         public int Size;
         public Obstacle ObstacleType;

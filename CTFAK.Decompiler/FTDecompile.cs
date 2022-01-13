@@ -435,46 +435,55 @@ namespace CTFAK.Tools
 
 
             bool noicon = false;
-            switch(item.ObjectType)
+            try
             {
-                case 2://active
-                    var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
-                    var imgAct = game.images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
-                    FTDecompile.lastAllocatedHandleImg++;
-                    var imageAct = new CCN.Chunks.Banks.Image(null);
-                    imageAct.Handle = lastAllocatedHandleImg;
-                    //imageAct.transparent = game.images.Items[imgHandleAct].transparent;
-                    imageAct.FromBitmap(imgAct);
-                    mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
-                    break;
-                case 7://counters
-                    var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
-                    var imgCntr = game.images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
-                    FTDecompile.lastAllocatedHandleImg++;
-                    var imageCntr = new CCN.Chunks.Banks.Image(null);
-                    imageCntr.Handle = lastAllocatedHandleImg;
-                    //imageCntr.transparent = game.images.Items[imgHandleCntr].transparent;
-                    imageCntr.FromBitmap(imgCntr);
-                    mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
 
-                    break;
-                case 0://quickbackdrop
-                case 1://backdrop
-                    var imgHandleBack = ((Backdrop)item.properties).Image;
-                    var imgBack = game.images.Items[imgHandleBack].bitmap.resizeImage(new Size(32, 32));
-                    FTDecompile.lastAllocatedHandleImg++;
-                    var imageBack = new CCN.Chunks.Banks.Image(null);
-                    imageBack.Handle = lastAllocatedHandleImg;
-                    //imageBack.transparent = game.images.Items[imgHandleBack].transparent;
-                    imageBack.FromBitmap(imgBack);
-                    mfa.Icons.Items.Add(lastAllocatedHandleImg, imageBack);
-                    break;
-                default:
-                    noicon = true;
-                    break;
+
+                switch (item.ObjectType)
+                {
+                    case 2://active
+                        var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
+                        var imgAct = game.images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
+                        FTDecompile.lastAllocatedHandleImg++;
+                        var imageAct = new CCN.Chunks.Banks.Image(null);
+                        imageAct.Handle = lastAllocatedHandleImg;
+                        //imageAct.transparent = game.images.Items[imgHandleAct].transparent;
+                        imageAct.FromBitmap(imgAct);
+                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
+                        break;
+                    case 7://counters
+                        var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
+                        var imgCntr = game.images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
+                        FTDecompile.lastAllocatedHandleImg++;
+                        var imageCntr = new CCN.Chunks.Banks.Image(null);
+                        imageCntr.Handle = lastAllocatedHandleImg;
+                        //imageCntr.transparent = game.images.Items[imgHandleCntr].transparent;
+                        imageCntr.FromBitmap(imgCntr);
+                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
+
+                        break;
+                    case 0://quickbackdrop
+                    case 1://backdrop
+                        var imgHandleBack = ((Backdrop)item.properties).Image;
+                        var imgBack = game.images.Items[imgHandleBack].bitmap.resizeImage(new Size(32, 32));
+                        FTDecompile.lastAllocatedHandleImg++;
+                        var imageBack = new CCN.Chunks.Banks.Image(null);
+                        imageBack.Handle = lastAllocatedHandleImg;
+                        //imageBack.transparent = game.images.Items[imgHandleBack].transparent;
+                        imageBack.FromBitmap(imgBack);
+                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageBack);
+                        break;
+                    default:
+                        noicon = true;
+                        break;
+                }
+            }
+            catch
+            {
+                noicon = true;
             }
             newItem.IconHandle = noicon ? 14:lastAllocatedHandleImg;
-            if (item.InkEffect!=1)
+            if (item.InkEffect!=1&&!Program.parameters.Contains("notrans"))
             {
                 newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
                 newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;

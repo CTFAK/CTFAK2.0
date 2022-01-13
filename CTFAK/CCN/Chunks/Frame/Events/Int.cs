@@ -3,9 +3,9 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Int : Short
+    class Int : ParameterCommon
     {
-        public new int Value;
+        public int Value;
 
         public Int(ByteReader reader) : base(reader) { }
         public override void Read()

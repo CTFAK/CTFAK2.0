@@ -17,6 +17,7 @@ namespace FusionAndroidTool
 {
     class Program
     {
+        public static string parameters;
         static string AppName;
         static void Main(string[] args)
         {
@@ -58,8 +59,11 @@ namespace FusionAndroidTool
             {
                 Console.Write(".ccn file path: ");
                 path = Console.ReadLine();
+                path = path.Replace("\"", "");
             }
             else path = args[0];
+            
+
             if (!File.Exists(path))
             {
                 Console.WriteLine("File not found. Press any key to exit");

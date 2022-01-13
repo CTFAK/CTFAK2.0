@@ -66,8 +66,10 @@ namespace CTFAK.CCN.Chunks.Frame
                 {
                     var size = reader.ReadInt32();
                     var endPosition = reader.Tell() + size;
+                    int i = 0;
                     while (true)
                     {
+                        i++;
                         var eg = new EventGroup(reader);
                         eg.Read();
                         Items.Add(eg);
@@ -175,9 +177,11 @@ namespace CTFAK.CCN.Chunks.Frame
             // Logger.Log($"Cond: {NumberOfConditions},Act: {NumberOfActions}");
             for (int i = 0; i < NumberOfConditions; i++)
             {
+               
                 var item = new Condition(reader);
                 item.Read();
                 Conditions.Add(item);
+                
             }
 
             for (int i = 0; i < NumberOfActions; i++)
@@ -250,7 +254,7 @@ namespace CTFAK.CCN.Chunks.Frame
             //Alterable Values:
             if (num == -42) num = -27;
             //Global Values
-            if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33) num = -8;
+            //if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33) num = -8;
             cond.Num = num;
         }
         public static void FixActions(ref Action act)
@@ -306,12 +310,8 @@ namespace CTFAK.CCN.Chunks.Frame
             var currentPosition = reader.Tell();
             var size = reader.ReadUInt16();
 
-            ObjectType = old ? reader.ReadSByte() : reader.ReadInt16();
-            Num = old ? reader.ReadSByte() : reader.ReadInt16();
-            if ((int)ObjectType > 2 && Num < 48)
-            {
-                if (old) Num -= 32;
-            }
+            ObjectType =reader.ReadInt16();
+            Num = reader.ReadInt16();
             ObjectInfo = reader.ReadUInt16();
             ObjectInfoList = reader.ReadInt16();
             Flags = reader.ReadSByte();
@@ -326,7 +326,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 Items.Add(item);
             }
             //Logger.Log(this);
-
+            //Console.ReadKey();
 
 
         }
@@ -432,7 +432,7 @@ namespace CTFAK.CCN.Chunks.Frame
             var currentPosition = reader.Tell();
             var size = reader.ReadInt16();
             Code = reader.ReadInt16();
-
+            //Console.WriteLine(Code);
 
             var actualLoader = Parameter.LoadParameter(Code, reader);
             this.Loader = actualLoader;
@@ -569,6 +569,7 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 item = new TwoShorts(reader);
             }
+            if (code == 68) item = new MultipleVariables(reader);
 
 
 

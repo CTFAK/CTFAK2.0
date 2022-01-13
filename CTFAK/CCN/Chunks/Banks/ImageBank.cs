@@ -42,18 +42,30 @@ namespace CTFAK.CCN.Chunks.Banks
             {
                 if(realBitmap==null)
                 {
+
+                    byte[] colorArray = null;
+                    colorArray = new byte[width * height * 4];
                     IntPtr resultAllocated = Marshal.AllocHGlobal(width * height * 4);
                     IntPtr imageAllocated = Marshal.AllocHGlobal(imageData.Length);
 
-
                     Marshal.Copy(imageData, 0, imageAllocated, imageData.Length);
-
-                    NativeLib.ConvertImage(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
-
-                    byte[] colorArray = new byte[width * height * 4];
+                    switch (graphicMode)
+                    {
+                        case 4:          
+                            NativeLib.ReadPoint(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            break;
+                        case 6:
+                            NativeLib.ReadFifteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            break;
+                        case 7:
+                            NativeLib.ReadSixteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            break;
+                    }
                     Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
                     Marshal.FreeHGlobal(resultAllocated);
                     Marshal.FreeHGlobal(imageAllocated);
+
+
                     realBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
                         BitmapData bmpData = realBitmap.LockBits(new Rectangle(0, 0,

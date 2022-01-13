@@ -17,9 +17,11 @@ using System.Threading.Tasks;
 
 namespace CTFAK
 {
-    class Program
+    public class Program
     {
         public static IFileReader gameParser;
+        public static string parameters;
+
         static void Main(string[] args)
         {
             string arch = null;
@@ -80,6 +82,9 @@ namespace CTFAK
 
             }
             else path = args[0];
+            Console.Write("Parameters: ");
+            var loadParams = Console.ReadLine();
+            parameters = loadParams;
             if (!File.Exists(path))
             {
                 Console.WriteLine("ERROR: File not found");
