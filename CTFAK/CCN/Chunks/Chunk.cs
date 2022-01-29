@@ -39,6 +39,7 @@ namespace CTFAK.CCN.Chunks
             {
                 case ChunkFlags.Encrypted:
                     ChunkData = Decryption.DecryptChunk(dataReader.ReadBytes(Size), Size);
+
                     break;
                 case ChunkFlags.CompressedAndEncrypted:
                     ChunkData = Decryption.DecodeMode3(dataReader.ReadBytes(Size), Size, Id, out var DecompressedSize);

@@ -29,12 +29,12 @@ namespace CTFAK.EXE
             if (uheader == "PAMU")
             {
                 //Settings.GameType = GameType.Normal;
-                //Settings.Unicode = true;
+                Settings.Unicode = true;
             }
             else if (uheader == "PAME")
             {
                 //Settings.GameType = GameType.MMFTwo;
-                //Settings.Unicode = false;
+                Settings.Unicode = false;
             }
             reader.Seek(start + 16);
 

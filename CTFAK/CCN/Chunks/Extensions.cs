@@ -72,8 +72,15 @@ namespace CTFAK.CCN.Chunks
             MagicNumber = reader.ReadInt32();
             VersionLs = reader.ReadInt32();
             VersionMs = reader.ReadInt32();
+            var extName = reader.ReadWideString();
+            if(extName.Length==0)
+            {
+
+                reader.Seek(currentPosition + size);
+                return;
+            }
             string[] arr;
-            arr = reader.ReadWideString().Split('.');
+            arr = extName.Split('.');
             Name = arr[0];
             Ext = arr[1];
             SubType = reader.ReadUniversal();

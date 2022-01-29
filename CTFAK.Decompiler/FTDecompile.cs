@@ -222,6 +222,10 @@ namespace CTFAK.Tools
                 newFrame.Palette = frame.palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Left = frame.virtualRect.left;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect.top;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect.right;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect.bottom;
                 //LayerInfo
                 if(frame.layers==null) continue;
                 if (true)//Settings.GameType != GameType.OnePointFive && frame.Layers != null)
@@ -272,9 +276,11 @@ namespace CTFAK.Tools
                             var newInstance = new MFAObjectInstance((ByteReader)null);
                             newInstance.X = instance.x;
                             newInstance.Y = instance.y;
-                            newInstance.Handle = instance.handle;
+                            newInstance.Handle = i;//instance.handle;
+                            if (instance.parentType != 0) newInstance.Flags = 8;
+                            else newInstance.Flags = 0;
                             // newInstance.Flags = ((instance.FrameItem.Properties.Loader as ObjectCommon)?.Preferences?.flag ?? (uint)instance.FrameItem.Flags);
-                            newInstance.Flags = (uint)instance.flags;
+                            //newInstance.Flags = (uint)instance.flags;
 
                             newInstance.ParentType = (uint)instance.parentType;
                             newInstance.ItemHandle = (uint)(instance.objectInfo);
@@ -402,10 +408,13 @@ namespace CTFAK.Tools
 
         public static MFATransition ConvertTransition(Transition gameTrans)
         {
+            var newName = "";
+            newName = gameTrans.Name;
+            newName = newName.ToLower();
             var mfaTrans = new MFATransition((ByteReader)null)
             {
                 Module = "cctrans.dll",//gameTrans.ModuleFile,
-                Name = "Transition",
+                Name = newName,
                 Id = gameTrans.Module,
                 TransitionId = gameTrans.Name,
                 Flags = gameTrans.Flags,

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CTFAK.CCN.Chunks.Banks
@@ -34,8 +35,55 @@ namespace CTFAK.CCN.Chunks.Banks
     }
     public class Image : ChunkLoader
     {
-        private Bitmap realBitmap;
-        
+        public Bitmap realBitmap;
+        public static (byte[], int) ReadPoint(byte[] data, int width, int height, int threads)
+        {
+            byte[] colorArray = new byte[width * height * 4];
+            int stride = width * 4;
+            int pad = GetPadding(width, 3);
+            var tasks = new Task[threads];
+
+            var size = width * height;
+            if (size < threads)
+            {
+                // Log Warning: "Image has less pixels than the amount of threads assigned. Using less threads."
+                threads = size;
+            }
+
+            var part = size / threads;
+            for (var a = 0; a < threads; a++)
+            {
+                var posX = part * a % width;
+                var posY = part * a / width;
+                var almostDone = a + 1 == threads;
+                var next = part * (a + 1);
+                var endX = (almostDone ? width : next % width);
+                var endY = (almostDone ? height : next / width);
+                tasks[a] = Task.Run(() => ReadPointThreaded(data, colorArray, stride, pad, width, height, posX, posY, endX, endY));
+            }
+            foreach (var t in tasks)
+                t.Wait();
+
+            return (colorArray, 0);
+        }
+
+        private static void ReadPointThreaded(byte[] data, byte[] colorArray, int stride, int pad, int width, int height, int startX, int startY, int maxX, int maxY)
+        {
+            for (int y = startY; y < maxY; y++)
+            {
+                if (y + 1 == maxY)
+                    width = maxX;
+                for (int x = startX; x < width; x++)
+                {
+                    var position = x * 3 + y * width + y * pad * 3;
+                    colorArray[(y * stride) + (x * 4) + 0] = data[position];
+                    colorArray[(y * stride) + (x * 4) + 1] = data[position + 1];
+                    colorArray[(y * stride) + (x * 4) + 2] = data[position + 2];
+                    colorArray[(y * stride) + (x * 4) + 3] = 255;
+                }
+                startX = 0;
+            }
+        }
         public Bitmap bitmap
         {
             get
@@ -45,6 +93,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
                     byte[] colorArray = null;
                     colorArray = new byte[width * height * 4];
+
                     IntPtr resultAllocated = Marshal.AllocHGlobal(width * height * 4);
                     IntPtr imageAllocated = Marshal.AllocHGlobal(imageData.Length);
 
@@ -64,8 +113,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
                     Marshal.FreeHGlobal(resultAllocated);
                     Marshal.FreeHGlobal(imageAllocated);
-
-
+                    //colorArray = ReadPoint(imageData, width, height, 4).Item1;
                     realBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
                         BitmapData bmpData = realBitmap.LockBits(new Rectangle(0, 0,
@@ -137,13 +185,7 @@ namespace CTFAK.CCN.Chunks.Banks
         }
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
-            int pad = bytes - ((width * pointSize) % bytes);
-            if (pad == bytes)
-            {
-                return 0;
-            }
-
-            return (int)Math.Ceiling((double)((float)pad / (float)pointSize));
+            return (bytes - ((width * pointSize) % bytes)) % bytes;
         }
         public bool IsMFA;
         public BitDict Flags = new BitDict(new string[]
@@ -160,13 +202,13 @@ namespace CTFAK.CCN.Chunks.Banks
         public int width;
         public int height;
         public byte graphicMode;
-        private int checksum;
-        private int references;
-        private byte[] imageData;
-        private short HotspotX;
-        private short HotspotY;
-        private short ActionX;
-        private short ActionY;
+        public int checksum;
+        public int references;
+        public byte[] imageData;
+        public short HotspotX;
+        public short HotspotY;
+        public short ActionX;
+        public short ActionY;
         public int transparent;
 
         public Image(ByteReader reader):base(reader)

@@ -107,7 +107,10 @@ namespace CTFAK.CCN.Chunks.Objects
                 _extensionOffset = reader.ReadUInt16();
                 _counterOffset = reader.ReadUInt16();
                 Flags.flag = reader.ReadUInt16();
-                reader.Skip(2);
+                var penisFlags = reader.ReadInt16();
+                if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
+
+
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
@@ -157,7 +160,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeoutOffset = reader.ReadUInt32();
             }
 
-
+            
             if (_animationsOffset > 0)
             {
                 reader.Seek(currentPosition + _animationsOffset);

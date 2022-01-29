@@ -32,6 +32,27 @@ namespace CTFAK.CCN.Chunks.Frame
             parentHandle = reader.ReadInt16();
             layer = reader.ReadInt16();
             flags = reader.ReadInt16();
+
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class VirtualRect : ChunkLoader
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+        public VirtualRect(ByteReader reader) : base(reader) { }
+        public override void Read()
+        {
+            left = reader.ReadInt32();
+            top = reader.ReadInt32();
+            right = reader.ReadInt32();
+            bottom = reader.ReadInt32();
         }
 
         public override void Write(ByteWriter writer)
@@ -65,6 +86,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public List<Color> palette;
         public Transition fadeIn;
         public Transition fadeOut;
+        public VirtualRect virtualRect;
 
         public Frame(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -119,6 +141,12 @@ namespace CTFAK.CCN.Chunks.Frame
                         fadeOut = new Transition(chunkReader);
                         fadeOut.Read();
                         break;
+                    case 13122:
+                        virtualRect = new VirtualRect(chunkReader);
+                        virtualRect.Read();
+                        break;
+
+                        
 
 
                 }

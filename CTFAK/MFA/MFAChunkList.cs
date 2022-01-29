@@ -26,7 +26,8 @@ namespace CTFAK.MFA
                 }
             }
             var newChunk = new MFAChunk(null);
-            newChunk.Id = 45;
+            if (typeof(T)==typeof(Opacity)) newChunk.Id = 45;
+            else if (typeof(T)==typeof(FrameVirtualRect)) newChunk.Id = 33;
             newChunk.Loader = new T();
             Items.Add(newChunk);
             return (T)newChunk.Loader;
@@ -110,6 +111,7 @@ namespace CTFAK.MFA
             {
                 case 33:
                     Loader = new FrameVirtualRect(dataReader);
+
                     break;
 
                 case 45:
@@ -189,7 +191,11 @@ namespace CTFAK.MFA
         public int Top;
         public int Right;
         public int Bottom;
-        public FrameVirtualRect(ByteReader reader) : base(reader) { }
+        public FrameVirtualRect(ByteReader dataReader) : base(dataReader) { }
+        public FrameVirtualRect() : base()
+        {
+
+        }
         public override void Read()
         {
             Left = reader.ReadInt32();

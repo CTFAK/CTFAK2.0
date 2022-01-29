@@ -180,6 +180,7 @@ namespace CTFAK.CCN.Chunks.Frame
                
                 var item = new Condition(reader);
                 item.Read();
+                Fixer.FixConditions(ref item);
                 Conditions.Add(item);
                 
             }
@@ -188,6 +189,7 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 var item = new Action(reader);
                 item.Read();
+                Fixer.FixActions(ref item);
                 Actions.Add(item);
             }
             reader.Seek(currentPosition + Size);
@@ -228,14 +230,12 @@ namespace CTFAK.CCN.Chunks.Frame
             foreach (Condition condition in Conditions)
             {
                 var cond = condition;
-                Fixer.FixConditions(ref cond);
                 condition.Write(newWriter);
             }
 
             foreach (Action action in Actions)
             {
                 var act = action;
-                Fixer.FixActions(ref act);
                 act.Write(newWriter);
             }
             Writer.WriteInt16((short)((newWriter.Size() + 2) * -1));
@@ -254,12 +254,24 @@ namespace CTFAK.CCN.Chunks.Frame
             //Alterable Values:
             if (num == -42) num = -27;
             //Global Values
-            //if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33) num = -8;
+                if(cond.ObjectType==-1)
+                if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33)
+                    num = -8;
             cond.Num = num;
         }
         public static void FixActions(ref Action act)
         {
             var num = act.Num;
+            var type = act.ObjectType;
+            if(type==-1)
+            {
+                if (num == 27 || num == 28 || num == 29 || num == 30)
+                    num = 3;
+                if (num == 31 || num == 32 || num == 33 || num == 34)
+                    num = 4;
+                if (num == 35 || num == 36 || num == 37 || num == 38)
+                    num = 5;
+            }
             act.Num = num;
         }
 
@@ -325,6 +337,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read();
                 Items.Add(item);
             }
+            
             //Logger.Log(this);
             //Console.ReadKey();
 

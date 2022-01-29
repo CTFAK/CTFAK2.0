@@ -60,6 +60,7 @@ namespace CTFAK.CCN.Chunks.Objects
                             InkEffectValue = chunkReader.ReadByte();
                         }
                         
+                        
                         break;
                     case 17478:        
                         if (ObjectType == 0) properties = new Quickbackdrop(chunkReader);
@@ -73,6 +74,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 }
                 
             }
+            
         }
 
         public override void Write(ByteWriter writer)

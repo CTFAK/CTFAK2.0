@@ -108,7 +108,7 @@ namespace CTFAK.CCN.Chunks.Banks
             References = reader.ReadUInt32();
             var decompressedSize = reader.ReadInt32();
             Flags = reader.ReadUInt32();
-            var reserved = reader.ReadInt32();
+            var res = reader.ReadInt32();
             var nameLenght = reader.ReadInt32();
             ByteReader soundData;
             if (IsCompressed)

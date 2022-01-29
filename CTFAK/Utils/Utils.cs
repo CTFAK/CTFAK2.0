@@ -11,6 +11,12 @@ namespace CTFAK.Utils
 {
     public static class Utils
     {
+
+        public static string ReadUniversal(this ByteReader reader, int len=-1)
+        {
+            if (Settings.Unicode) return reader.ReadWideString(len);
+            else return reader.ReadAscii(len);
+        }
         public static byte[] GetBuffer(this ByteWriter writer)
         {
             var buf = ((MemoryStream)writer.BaseStream).GetBuffer();

@@ -11,7 +11,7 @@ namespace Dumper
     {
         public static string ClearName(string ogName)
         {
-            var str = string.Join("_", ogName.Split(Path.GetInvalidFileNameChars()));
+            var str = string.Join("", ogName.Split(Path.GetInvalidFileNameChars()));
             str = str.Replace("?", "");
             return str;
         }

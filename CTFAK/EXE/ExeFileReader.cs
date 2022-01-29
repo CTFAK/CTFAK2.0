@@ -13,6 +13,7 @@ namespace CTFAK.FileReaders
 {
     class ExeFileReader : IFileReader
     {
+        public string Name => "Normal EXE";
 
         public GameData game;
         public Dictionary<int, Bitmap> icons = new Dictionary<int, Bitmap>();
@@ -117,6 +118,10 @@ namespace CTFAK.FileReaders
         public Dictionary<int,Bitmap> getIcons()
         {
             return icons;
+        }
+
+        public void PatchMethods()
+        {
         }
     }
 }

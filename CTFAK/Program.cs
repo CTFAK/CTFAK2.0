@@ -72,6 +72,7 @@ namespace CTFAK
 
 
             ASCIIArt.DrawArt();
+
             ASK_FOR_PATH:
             ASCIIArt.SetStatus("Waiting for file");
             string path = string.Empty;
@@ -82,22 +83,71 @@ namespace CTFAK
 
             }
             else path = args[0];
-            Console.Write("Parameters: ");
-            var loadParams = Console.ReadLine();
-            parameters = loadParams;
+            
             if (!File.Exists(path))
             {
                 Console.WriteLine("ERROR: File not found");
                 goto ASK_FOR_PATH;
             }
+            Console.Write("Parameters: ");
+            var loadParams = Console.ReadLine();
+            parameters = loadParams;
+
+            Console.WriteLine("Press Enter to read game with default reader. Any other key to choose reader");
+            var consolekey = Console.ReadKey().Key;
+
+            Console.Clear();
+            ASCIIArt.DrawArt();
+           
+            var types = Assembly.GetExecutingAssembly().GetTypes();
+            if (consolekey==ConsoleKey.Enter)
+            {
+                gameParser = new ExeFileReader();
+            }
+            else
+            {
+                
+                List<IFileReader> availableReaders = new List<IFileReader>();
+
+                foreach (var rawType in types)
+                {
+                    if (rawType.GetInterface(typeof(IFileReader).FullName) != null)
+                        availableReaders.Add((IFileReader)Activator.CreateInstance(rawType));
+                }
+                foreach (var item in Directory.GetFiles("Plugins", "*.dll"))
+                {
+                    var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
+                    foreach (var pluginType in newAsm.GetTypes())
+                    {
+                        if (pluginType.GetInterface(typeof(IFileReader).FullName) != null)
+                            availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
+                    }
+                }
+
+SELECT_READER:
+                ASCIIArt.SetStatus("Selecting tool");
+                Console.WriteLine($"{availableReaders.Count} tool(s) available\n\nSelect tool: ");
+                Console.WriteLine("0. Exit CTFAK");
+                for (int i = 0; i < availableReaders.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {availableReaders[i].Name}");
+                }
+                var key1 = Console.ReadLine();
+                var readerSelect = int.Parse(key1);
+                if (readerSelect == 0) Environment.Exit(0);
+                gameParser = availableReaders[readerSelect - 1];
+            }
+
+
             var readStopwatch = new Stopwatch();
             readStopwatch.Start();
             Console.Clear();
             ASCIIArt.DrawArt();
             ASCIIArt.SetStatus("Reading game");
-            Console.WriteLine("Reading game with default method");
+            Console.WriteLine($"Reading game with \"{gameParser.Name}\"");
+            gameParser.PatchMethods();
             
-            gameParser = new ExeFileReader();
+            
             gameParser.LoadGame(path);
             readStopwatch.Stop();
             Console.Clear();
@@ -105,7 +155,8 @@ namespace CTFAK
             Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
 
             
-            var types = Assembly.GetExecutingAssembly().GetTypes();
+
+
             List<IFusionTool> availableTools = new List<IFusionTool>();
             foreach (var rawType in types)
             {
