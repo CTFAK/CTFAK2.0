@@ -21,7 +21,7 @@ namespace CTFAK.CCN.Chunks
 
         public override void Read()
         {
-
+ 
             var count = reader.ReadUInt16();
             PreloadExtensions = reader.ReadUInt16();
             Items = new List<Extension>();
@@ -30,6 +30,7 @@ namespace CTFAK.CCN.Chunks
                 var ext = new Extension(reader);
                 ext.Read();
                 Items.Add(ext);
+
             }
         }
 
@@ -81,9 +82,10 @@ namespace CTFAK.CCN.Chunks
             }
             string[] arr;
             arr = extName.Split('.');
+
             Name = arr[0];
             Ext = arr[1];
-            SubType = reader.ReadUniversal();
+            SubType = reader.ReadWideString();
             reader.Seek(currentPosition + size);
 
             var newString = string.Empty;

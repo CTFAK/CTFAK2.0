@@ -11,6 +11,8 @@ namespace CTFAK.Utils
         public static int Build;
         public static bool Unicode;
         public static bool Old;
+        public static bool twofiveplus;
+        public static bool isMFA;
         public enum GameType
         {
             NORMAL,

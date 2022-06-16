@@ -87,6 +87,7 @@
     <Compile Include="CCN\Chunks\Banks\MusicBank.cs" />
     <Compile Include="CCN\Chunks\Banks\SoundBank.cs" />
     <Compile Include="CCN\Chunks\Chunk.cs" />
+    <Compile Include="CCN\Chunks\ChunkList.cs" />
     <Compile Include="CCN\Chunks\Extensions.cs" />
     <Compile Include="CCN\Chunks\FrameHandles.cs" />
     <Compile Include="CCN\Chunks\Frame\Events\AlterableValue.cs" />

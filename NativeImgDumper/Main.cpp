@@ -37,6 +37,30 @@ public:
 		}
 		return str;
 	}
+	std::wstring readUnicode(int len = -1)
+	{
+		std::wstring str(L"");
+		if (len >= 0)
+		{
+			for (size_t i = 0; i < len; i++)
+			{
+				wchar_t c;
+				(*file).read((char*)&c, 2);
+				str += c;
+			}
+		}
+		else
+		{
+			while (true)
+			{
+				wchar_t c;
+				(*file).read((char*)&c, 2);
+				if (c == 0)break;
+				str += c;
+			}
+		}
+		return str;
+	}
 	void seek(int pos)
 	{
 		(*file).seekg(pos);
@@ -57,9 +81,14 @@ public:
 		(*file).read((char*)(&num), 2);
 		return num;
 	}
+
 	int tell()
 	{
 		return (*file).tellg();
+	}
+	bool check(int size)
+	{
+		return file->left >= size;
 	}
 };
 
@@ -107,12 +136,64 @@ int main(int argc, char* argv)
 		reader.seek(entry + 40);
 	}
 	reader.seek(possition);
-	short firstShort = reader.readInt16();
-	std::cout << firstShort << std::endl;
+	int start = reader.tell();
+	reader.skip(8);
+	int headerSize = reader.readInt32();
+	int dataSize = reader.readInt32();
+	reader.seek(start + dataSize - 32);
+	reader.readAscii(4); //PAMU header
+	reader.seek(start + 28);
+
+
+	int count = reader.readInt32();
+	int offset = reader.tell();
+	for (size_t i = 0; i < count; i++)
+	{
+		int nameLen = reader.readInt16();
+		std::wstring namee = reader.readUnicode(nameLen);
+		std::wcout << namee << std::endl;
+		reader.readInt32();//bingo
+		int dataLen = reader.readInt32();
+		reader.skip(dataLen);
+	}
+
+	//CCN
+
+	reader.readAscii(4); //PAMU header, once again
+
+	int runtimeVersion = reader.readInt16();
+	int runtimeSubversion = reader.readInt16();
+	int productVersion = reader.readInt32();
+	int productBuild = reader.readInt32();
+	std::cout << "Game build number: " << productBuild << std::endl;
+	while (true)
+	{
+		int chunkId = reader.readInt16();
+		int chunkFlag = reader.readInt16();
+		int chunkSize = reader.readInt32();
+		if (chunkId == 26214)
+		{
+
+			int imageCount = reader.readInt32();
+			std::cout << "Imagebank Found. " << imageCount << " images" << std::endl;
+			for (size_t imgNum = 0; imgNum < imageCount; imgNum++)
+			{
+				int imgHandle = reader.readInt32();
+
+			}
 
 
 
 
+
+
+
+
+
+			break;
+		}
+		else reader.skip(chunkSize);
+	}
 
 
 

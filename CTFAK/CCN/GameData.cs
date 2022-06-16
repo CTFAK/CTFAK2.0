@@ -6,6 +6,7 @@ using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,16 +65,36 @@ namespace CTFAK.CCN
             productVersion = reader.ReadInt32();
             productBuild = reader.ReadInt32();
             Settings.Build = productBuild;
+            string gameExeName = Path.GetFileName(Program.path);
+            Directory.CreateDirectory($"CHUNK_TRACE\\{gameExeName}");
+            int chunkIndex = 0;
             while(true)
             {
                 var newChunk = new Chunk(reader);
                 var chunkData = newChunk.Read();
                 var chunkReader = new ByteReader(chunkData);
                 if (newChunk.Id == 32639) break;
+                if (newChunk.Id == 8787) Settings.twofiveplus = true;
                 if (reader.Tell() >= reader.Size()) break;
+                if (Program.parameters.Contains("-trace_chunks"))
+                {
+                    string chunkName="";
+                    if(!ChunkList.ChunkNames.TryGetValue(newChunk.Id, out chunkName))
+                    {
+                        chunkName = $"UNKOWN-{newChunk.Id}";
+                    }
+                    
+                    Logger.Log($"Encountered chunk: {chunkName}, chunk flag: {newChunk.Flag}, exe size: {newChunk.Size}, decompressed size: {chunkData.Length}");
+                    File.WriteAllBytes($"CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin",chunkData);
+                    Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin");
+                }
 
+                chunkIndex++;
                 switch (newChunk.Id)
                 {
+                    case 4386:
+                        //TODO: CHUNK_PREVIEW
+                        break;
                     case 8739:
                         header = new AppHeader(chunkReader);
                         header.Read();
@@ -96,15 +117,30 @@ namespace CTFAK.CCN
                         var extPath = new ExtPath(chunkReader);
                         extPath.Read();
                         break;
-                    case 8756:
-                        extensions = new Extensions(chunkReader);
-                        extensions.Read();
+                    case 8744:
+                        //TODO: CHUNK_EXTENSIONS
                         break;
-                    //FOUR CHUNKS SKIPPED FFS
+                    case 8745:
+                        var count = chunkReader.ReadInt32();
+                        for (int i = 0; i < count; i++)
+                        {
+                            var newObjInfo = new ObjectInfo(chunkReader);
+                            newObjInfo.Read();
+                            frameitems.Add(newObjInfo.handle,newObjInfo);
+                        }
+                        break;
+                    case 8746:
+                        //TODO: CHUNK_GLOBALEVENT
+                        break;
                     case 8747:
                         frameHandles = new FrameHandles(chunkReader);
                         frameHandles.Read();
                         break;
+                    case 8748:
+                        //TODO: CHUNK_EXTDATA
+                        break;
+                    case 8749:
+                        //TODO: CHUNK_ADDITIONAL_EXTENSION
                     case 8750:
                         var editorFile = new EditorFilename(chunkReader);
                         editorFile.Read();
@@ -117,25 +153,32 @@ namespace CTFAK.CCN
                         trgtFile.Read();
                         targetFilename = trgtFile.value;
                         break;
+                    case 8752:
+                        //TODO: CHUNK_APPDOC
+                        break;
+                    case 8753:
+                        //TODO: CHUNK_OTHEREXTS
+                        break;
+                    case 8754:
+                        //TODO: CHUNK_GLOBALVALUES;
+                        break;
+                    case 8756:
+                        extensions = new Extensions(chunkReader);
+                        extensions.Read();
+                        break;
+                    
+                    
                     case 8763:
-                        var cprght = new Copyright(chunkReader);
-                        cprght.Read();
-                        copyright = cprght.value;
+                        var copyrightChunk = new Copyright(chunkReader);
+                        copyrightChunk.Read();
+                        copyright = copyrightChunk.value;
                         break;
                     case 13107:
                         var frame = new Frame(chunkReader);
                         frame.Read();
                         frames.Add(frame);
                         break;
-                    case 8745:
-                        var count = chunkReader.ReadInt32();
-                        for (int i = 0; i < count; i++)
-                        {
-                            var newObjInfo = new ObjectInfo(chunkReader);
-                            newObjInfo.Read();
-                            frameitems.Add(newObjInfo.handle,newObjInfo);
-                        }
-                        break;
+                    
                     case 26214:
                         images = new ImageBank(chunkReader);
                         images.Read();

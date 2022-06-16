@@ -36,54 +36,7 @@ namespace CTFAK.CCN.Chunks.Banks
     public class Image : ChunkLoader
     {
         public Bitmap realBitmap;
-        public static (byte[], int) ReadPoint(byte[] data, int width, int height, int threads)
-        {
-            byte[] colorArray = new byte[width * height * 4];
-            int stride = width * 4;
-            int pad = GetPadding(width, 3);
-            var tasks = new Task[threads];
-
-            var size = width * height;
-            if (size < threads)
-            {
-                // Log Warning: "Image has less pixels than the amount of threads assigned. Using less threads."
-                threads = size;
-            }
-
-            var part = size / threads;
-            for (var a = 0; a < threads; a++)
-            {
-                var posX = part * a % width;
-                var posY = part * a / width;
-                var almostDone = a + 1 == threads;
-                var next = part * (a + 1);
-                var endX = (almostDone ? width : next % width);
-                var endY = (almostDone ? height : next / width);
-                tasks[a] = Task.Run(() => ReadPointThreaded(data, colorArray, stride, pad, width, height, posX, posY, endX, endY));
-            }
-            foreach (var t in tasks)
-                t.Wait();
-
-            return (colorArray, 0);
-        }
-
-        private static void ReadPointThreaded(byte[] data, byte[] colorArray, int stride, int pad, int width, int height, int startX, int startY, int maxX, int maxY)
-        {
-            for (int y = startY; y < maxY; y++)
-            {
-                if (y + 1 == maxY)
-                    width = maxX;
-                for (int x = startX; x < width; x++)
-                {
-                    var position = x * 3 + y * width + y * pad * 3;
-                    colorArray[(y * stride) + (x * 4) + 0] = data[position];
-                    colorArray[(y * stride) + (x * 4) + 1] = data[position + 1];
-                    colorArray[(y * stride) + (x * 4) + 2] = data[position + 2];
-                    colorArray[(y * stride) + (x * 4) + 3] = 255;
-                }
-                startX = 0;
-            }
-        }
+        
         public Bitmap bitmap
         {
             get
@@ -210,6 +163,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public short ActionX;
         public short ActionY;
         public int transparent;
+        
 
         public Image(ByteReader reader):base(reader)
         {
@@ -217,36 +171,64 @@ namespace CTFAK.CCN.Chunks.Banks
         }
         public override void Read()
         {
-            Handle = reader.ReadInt32();
-            if (!IsMFA && Settings.Build >= 284) Handle -= 1;
-            ByteReader imageReader;
-            imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
-            checksum = imageReader.ReadInt32();
-            references = imageReader.ReadInt32();
-            var size = imageReader.ReadInt32();
-            if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
-            width = imageReader.ReadInt16();
-            height = imageReader.ReadInt16();
-
-            graphicMode = imageReader.ReadByte();
-            Flags.flag = imageReader.ReadByte();
-            imageReader.Skip(2);
-             HotspotX = imageReader.ReadInt16();
-             HotspotY = imageReader.ReadInt16();
-             ActionX = imageReader.ReadInt16();
-             ActionY = imageReader.ReadInt16();
-            transparent = imageReader.ReadInt32();
-            //Logger.Log($"Loading image {Handle} with size {width}x{height}");
-
-            if (Flags["LZX"])
+            if (Settings.twofiveplus&&!IsMFA)
             {
-                uint decompressedSize = imageReader.ReadUInt32();
+                Handle = reader.ReadInt32();
 
-                imageData = Decompressor.DecompressBlock(imageReader,
-                    (int)(imageReader.Size() - imageReader.Tell()),
-                    (int)decompressedSize);
+                var unk2 = reader.ReadInt32();
+                var unk = reader.ReadInt32();
+                //Flags.flag = reader.ReadUInt32();
+                var unk3 = reader.ReadInt32();
+                var dataSize = reader.ReadInt32();
+                width = reader.ReadInt16(); //width
+                height = reader.ReadInt16(); //height
+                var unk6 = reader.ReadInt16();
+                var unk7 = reader.ReadInt16();
+                HotspotX = reader.ReadInt16();
+                HotspotY = reader.ReadInt16();
+                ActionX = reader.ReadInt16();
+                ActionY = reader.ReadInt16();
+                transparent = reader.ReadInt32();
+                var decompressedSize = reader.ReadInt32();
+                var rawImg = reader.ReadBytes(dataSize - 4);
+                byte[] target = new byte[decompressedSize];
+                //LZ4Codec.Decode(rawImg, target);
+                graphicMode = 16;
             }
-            else imageData = imageReader.ReadBytes((int)(size));
+            else
+            {
+                Handle = reader.ReadInt32();
+                if (!IsMFA && Settings.Build >= 284) Handle -= 1;
+                ByteReader imageReader;
+                imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
+                checksum = imageReader.ReadInt32();
+                references = imageReader.ReadInt32();
+                var size = imageReader.ReadInt32();
+                if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
+                width = imageReader.ReadInt16();
+                height = imageReader.ReadInt16();
+
+                graphicMode = imageReader.ReadByte();
+                Flags.flag = imageReader.ReadByte();
+                imageReader.Skip(2);
+                HotspotX = imageReader.ReadInt16();
+                HotspotY = imageReader.ReadInt16();
+                ActionX = imageReader.ReadInt16();
+                ActionY = imageReader.ReadInt16();
+                transparent = imageReader.ReadInt32();
+                //Logger.Log($"Loading image {Handle} with size {width}x{height}");
+
+                if (Flags["LZX"])
+                {
+                    uint decompressedSize = imageReader.ReadUInt32();
+
+                    imageData = Decompressor.DecompressBlock(imageReader,
+                        (int)(imageReader.Size() - imageReader.Tell()),
+                        (int)decompressedSize);
+                }
+                else imageData = imageReader.ReadBytes((int)(size));
+            }
+            
 
             
 

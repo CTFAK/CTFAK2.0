@@ -204,7 +204,7 @@ namespace FusionAndroidTool
                         position += 2;
                     }
 
-                    position += pad;// * 2;
+                    position += pad*2;
                 }
             }
             else if (unk==2)
@@ -243,7 +243,7 @@ namespace FusionAndroidTool
             }
             else if (unk == 3)
             {
-                int pad = GetPadding(width, 3,4);
+                int pad = GetPadding(width, 3,4,true);
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -340,9 +340,22 @@ namespace FusionAndroidTool
 
             }
         }
-        public static int GetPadding(int width, int pointSize, int bytes = 2)
+        public static int GetPadding(int width, int pointSize, int bytes = 2,bool gaylord=false)
         {
-            return (bytes - ((width * pointSize) % bytes)) % bytes;
+            if(gaylord)
+            {
+                return (bytes - ((width * pointSize) % bytes)) % bytes;
+            }
+
+            int pad = bytes - ((width * pointSize) % bytes);
+            if (pad == bytes)
+            {
+                return 0;
+            }
+
+            return (int)Math.Ceiling((double)((float)pad / (float)pointSize));
+
+            
         }
 
         public static void ClearCurrentConsoleLine()

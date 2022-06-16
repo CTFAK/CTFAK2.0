@@ -23,8 +23,8 @@ namespace CTFAK.CCN.Chunks
         }
         ByteReader reader;
         public short Id;
-        private ChunkFlags Flag;
-        private int Size;
+        public ChunkFlags Flag;
+        public int Size;
 
         public byte[] Read()
         {

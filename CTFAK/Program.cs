@@ -21,6 +21,7 @@ namespace CTFAK
     {
         public static IFileReader gameParser;
         public static string parameters;
+        public static string path;
 
         static void Main(string[] args)
         {
@@ -75,7 +76,7 @@ namespace CTFAK
 
             ASK_FOR_PATH:
             ASCIIArt.SetStatus("Waiting for file");
-            string path = string.Empty;
+            path = string.Empty;
             if (args.Length == 0)
             {
                 Console.Write("Game path: ");
