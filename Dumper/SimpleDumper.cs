@@ -23,12 +23,13 @@ namespace Dumper
             int i = 0;
             foreach (var image in images.Values)
             {
-                
-                tasks[i]= Task.Run(() =>
+                var newTask = new Task(() =>
                 {
                     var bmp = image.bitmap;
                     bmp.Save($"Dumps\\{outPath}\\Images\\{image.Handle}.png");
                 });
+                tasks[i] = newTask;
+                newTask.Start();
                 i++;
             }
             foreach (var item in tasks)

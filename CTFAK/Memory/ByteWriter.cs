@@ -15,9 +15,7 @@ namespace CTFAK.Memory
         {
         }
 
-        public ByteWriter(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
-        {
-        }
+
 
         public ByteWriter(byte[] data) : base(new MemoryStream(data))
         {

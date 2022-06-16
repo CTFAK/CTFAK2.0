@@ -3,7 +3,7 @@ using CTFAK.Memory;
 using CTFAK.MFA;
 using CTFAK.Tools;
 using CTFAK.Utils;
-using Joveler.Compression.ZLib;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,28 +25,7 @@ namespace CTFAK
 
         static void Main(string[] args)
         {
-            string arch = null;
-            switch (RuntimeInformation.ProcessArchitecture)
-            {
-                case Architecture.X86:
-                    arch = "x86";
-                    break;
-                case Architecture.X64:
-                    arch = "x64";
-                    break;
-                case Architecture.Arm:
-                    arch = "armhf";
-                    break;
-                case Architecture.Arm64:
-                    arch = "arm64";
-                    break;
-            }
-            string libPath = Path.Combine(arch, "zlibwapi-fast.dll");
-
-            if (!File.Exists(libPath))
-                throw new PlatformNotSupportedException($"Unable to find native library [{libPath}].");
-
-            ZLibInit.GlobalInit(libPath);
+           
 
 
 
