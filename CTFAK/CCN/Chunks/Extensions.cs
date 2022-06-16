@@ -82,7 +82,7 @@ namespace CTFAK.CCN.Chunks
             }
             string[] arr;
             arr = extName.Split('.');
-
+            if (!extName.Contains(".")) return;
             Name = arr[0];
             Ext = arr[1];
             SubType = reader.ReadWideString();
