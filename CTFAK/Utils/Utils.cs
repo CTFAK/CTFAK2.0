@@ -11,7 +11,12 @@ namespace CTFAK.Utils
 {
     public static class Utils
     {
-
+        public static string ClearName(string ogName)
+        {
+            var str = string.Join("", ogName.Split(Path.GetInvalidFileNameChars()));
+            str = str.Replace("?", "");
+            return str;
+        }
         public static string ReadUniversal(this ByteReader reader, int len=-1)
         {
             if (Settings.Unicode) return reader.ReadWideString(len);

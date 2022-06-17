@@ -5,6 +5,7 @@ using System.Linq;
 using CTFAK.Memory;
 using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Utils;
+using Microsoft.AspNetCore.Localization;
 
 
 namespace CTFAK.CCN.Chunks.Frame
@@ -39,6 +40,7 @@ namespace CTFAK.CCN.Chunks.Frame
             // if (Settings.GameType == GameType.OnePointFive) return;
             while (true)
             {
+                if (reader.Size() >= reader.Tell()) break;
                 var identifier = reader.ReadAscii(4);
                 if (identifier == Header)
                 {
@@ -50,7 +52,7 @@ namespace CTFAK.CCN.Chunks.Frame
                         NumberOfConditions.Add(reader.ReadInt16());
                     }
 
-                    var qualifierCount = reader.ReadInt16(); //should be 0, so i dont care
+                    var qualifierCount = reader.ReadInt16(); 
                     for (int i = 0; i < qualifierCount; i++)
                     {
                         var newQualifier = new Quailifer(reader);
@@ -60,10 +62,13 @@ namespace CTFAK.CCN.Chunks.Frame
                 }
                 else if (identifier == EventCount)
                 {
+                    
+                    if(Settings.android)reader.ReadInt32();
                     var size = reader.ReadInt32();
                 }
                 else if (identifier == EventgroupData)
                 {
+                    if(Settings.android)reader.ReadInt32();
                     var size = reader.ReadInt32();
                     var endPosition = reader.Tell() + size;
                     int i = 0;
@@ -144,11 +149,20 @@ namespace CTFAK.CCN.Chunks.Frame
         public override void Read()
         {
             var currentPosition = reader.Tell();
-            Size = reader.ReadInt16() * -1;
+            Size = reader.ReadInt16();
             NumberOfConditions = reader.ReadByte();
             NumberOfActions = reader.ReadByte();
             Flags = reader.ReadUInt16();
 
+            
+            if (Settings.android)
+            {
+                var line = reader.ReadUInt16();
+                IsRestricted = reader.ReadInt32();
+                RestrictCpt = reader.ReadInt32();
+            }
+            else
+            {
                 if (Settings.Build >= 284)
                 {
                     if (isMFA)
@@ -172,12 +186,15 @@ namespace CTFAK.CCN.Chunks.Frame
                     Identifier = reader.ReadInt16();
                     Undo = reader.ReadInt16();
                 }
+            }
+
+                
             
 
             // Logger.Log($"Cond: {NumberOfConditions},Act: {NumberOfActions}");
             for (int i = 0; i < NumberOfConditions; i++)
             {
-               
+                if (reader.Size() >= reader.Tell()) break;
                 var item = new Condition(reader);
                 item.Read();
                 Fixer.FixConditions(ref item);
@@ -187,13 +204,15 @@ namespace CTFAK.CCN.Chunks.Frame
 
             for (int i = 0; i < NumberOfActions; i++)
             {
+                if (reader.Size() >= reader.Tell()) break;
                 var item = new Action(reader);
                 item.Read();
                 Fixer.FixActions(ref item);
                 Actions.Add(item);
             }
             reader.Seek(currentPosition + Size);
-            // Logger.Log($"COND:{NumberOfConditions}, ACT: {NumberOfActions}");
+            Logger.Log(Size);
+            //Logger.Log($"COND:{NumberOfConditions}, ACT: {NumberOfActions}");
 
         }
 
@@ -337,6 +356,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read();
                 Items.Add(item);
             }
+            reader.Seek(currentPosition+size);
             
             //Logger.Log(this);
             //Console.ReadKey();
@@ -391,6 +411,7 @@ namespace CTFAK.CCN.Chunks.Frame
             var old = false;
             var currentPosition = reader.Tell();
             var size = reader.ReadUInt16();
+
             ObjectType = old ? reader.ReadSByte() : reader.ReadInt16();
             Num = old ? reader.ReadSByte() : reader.ReadInt16();
             if ((int)ObjectType >= 2 && Num >= 48)
@@ -409,6 +430,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read();
                 Items.Add(item);
             }
+            reader.Seek(currentPosition+size);
             //Logger.Log(this);
 
         }

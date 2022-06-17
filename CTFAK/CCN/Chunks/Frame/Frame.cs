@@ -100,6 +100,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 if (reader.Tell() >= reader.Size()) break;
                 switch (newChunk.Id)
                 {
+                    
                     case 13109:
                         var frameName = new StringChunk(chunkReader);
                         frameName.Read();

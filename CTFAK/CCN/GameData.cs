@@ -74,7 +74,7 @@ namespace CTFAK.CCN
                 var chunkData = newChunk.Read();
                 var chunkReader = new ByteReader(chunkData);
                 if (newChunk.Id == 32639) break;
-                if (newChunk.Id == 8787) Settings.twofiveplus = true;
+                if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
                 if (reader.Tell() >= reader.Size()) break;
                 if (Program.parameters.Contains("-trace_chunks"))
                 {
@@ -193,6 +193,7 @@ namespace CTFAK.CCN
                         Sounds.Read();
                         break;
                     case 21217:
+
                         Music = new MusicBank(chunkReader);
                         Music.Read();
                         break;

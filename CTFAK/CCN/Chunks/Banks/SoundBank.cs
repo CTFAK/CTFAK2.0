@@ -35,6 +35,7 @@ namespace CTFAK.CCN.Chunks.Banks
             for (int i = 0; i < NumOfItems; i++)
             {
 
+                if (Settings.android) continue;
                 var item = new SoundItem(reader);
                 
                     item.IsCompressed = IsCompressed;

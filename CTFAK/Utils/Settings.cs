@@ -10,9 +10,11 @@ namespace CTFAK.Utils
     {
         public static int Build;
         public static bool Unicode;
-        public static bool Old;
-        public static bool twofiveplus;
+        public static bool Old=>gameType==GameType.MMF15;
+        public static bool twofiveplus=>gameType == GameType.TWOFIVEPLUS;
+        public static bool android=>gameType == GameType.ANDROID;
         public static bool isMFA;
+        public static GameType gameType;
         public enum GameType
         {
             NORMAL,
@@ -20,6 +22,7 @@ namespace CTFAK.Utils
             MMF15,
             CNC,
             ANDROID,
+            TWOFIVEPLUS,
             UNKNOWN
         }
         public static object DumpPath { get; internal set; }

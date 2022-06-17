@@ -19,10 +19,10 @@ namespace CTFAK.FileReaders
         public Dictionary<int, Bitmap> icons = new Dictionary<int, Bitmap>();
         
 
-        public void LoadGame(string exePath)
+        public void LoadGame(string gamePath)
         {
-            
-            var icoExt = new IconExtractor(exePath);
+            Settings.gameType = Settings.GameType.NORMAL;
+            var icoExt = new IconExtractor(gamePath);
             var icos = icoExt.GetAllIcons();
             foreach (var icon in icos)
             {
@@ -36,7 +36,7 @@ namespace CTFAK.FileReaders
             if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
 
 
-            var reader = new ByteReader(exePath, System.IO.FileMode.Open);
+            var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             ReadHeader(reader);
             var packData = new PackData();
             packData.Read(reader);

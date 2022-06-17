@@ -72,39 +72,34 @@ namespace CTFAK
             Console.Write("Parameters: ");
             var loadParams = Console.ReadLine();
             parameters = loadParams;
-
-            Console.WriteLine("Press Enter to read game with default reader. Any other key to choose reader");
-            var consolekey = Console.ReadKey().Key;
-
-            Console.Clear();
-            ASCIIArt.DrawArt();
-           
+            
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            if (consolekey==ConsoleKey.Enter)
+            List<IFileReader> availableReaders = new List<IFileReader>();
+
+            foreach (var rawType in types)
+            {
+                if (rawType.GetInterface(typeof(IFileReader).FullName) != null)
+                    availableReaders.Add((IFileReader)Activator.CreateInstance(rawType));
+            }
+            foreach (var item in Directory.GetFiles("Plugins", "*.dll"))
+            {
+                var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
+                foreach (var pluginType in newAsm.GetTypes())
+                {
+                    if (pluginType.GetInterface(typeof(IFileReader).FullName) != null)
+                        availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
+                }
+            }
+            
+            if (Path.GetExtension(path)==".exe")
             {
                 gameParser = new ExeFileReader();
             }
             else
             {
-                
-                List<IFileReader> availableReaders = new List<IFileReader>();
-
-                foreach (var rawType in types)
-                {
-                    if (rawType.GetInterface(typeof(IFileReader).FullName) != null)
-                        availableReaders.Add((IFileReader)Activator.CreateInstance(rawType));
-                }
-                foreach (var item in Directory.GetFiles("Plugins", "*.dll"))
-                {
-                    var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
-                    foreach (var pluginType in newAsm.GetTypes())
-                    {
-                        if (pluginType.GetInterface(typeof(IFileReader).FullName) != null)
-                            availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
-                    }
-                }
-
-SELECT_READER:
+                SELECT_READER:
+                Console.Clear();
+                ASCIIArt.DrawArt();
                 ASCIIArt.SetStatus("Selecting tool");
                 Console.WriteLine($"{availableReaders.Count} tool(s) available\n\nSelect tool: ");
                 Console.WriteLine("0. Exit CTFAK");
@@ -116,7 +111,16 @@ SELECT_READER:
                 var readerSelect = int.Parse(key1);
                 if (readerSelect == 0) Environment.Exit(0);
                 gameParser = availableReaders[readerSelect - 1];
+
+                
+                
             }
+            
+            
+
+
+                
+            
 
 
             var readStopwatch = new Stopwatch();
@@ -134,9 +138,9 @@ SELECT_READER:
             ASCIIArt.DrawArt();
             Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
 
-            
 
 
+            Settings.gameType = Settings.GameType.NORMAL;
             List<IFusionTool> availableTools = new List<IFusionTool>();
             foreach (var rawType in types)
             {

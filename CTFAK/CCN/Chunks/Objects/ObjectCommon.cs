@@ -3,6 +3,7 @@ using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,7 +98,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public override void Read()
         {
             var currentPosition = reader.Tell();
-            if (Settings.Build >= 284)
+            if (Settings.Build >= 284&&Settings.gameType==Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
                 _animationsOffset = reader.ReadUInt16();
@@ -130,7 +131,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-            else
+            else if(Settings.gameType==Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
                 _movementsOffset = reader.ReadUInt16();
@@ -159,13 +160,51 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
+            else if (Settings.android)
+            {
+
+                currentPosition = reader.Tell();
+                
+                var size = reader.ReadInt32();
+                File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
+                reader.Skip(-size+4);
+                _movementsOffset = reader.ReadUInt16();
+                _animationsOffset = reader.ReadUInt16();
+                
+                var version = reader.ReadUInt16();
+                _counterOffset = reader.ReadUInt16();
+                _systemObjectOffset = reader.ReadUInt16();
+                _valuesOffset = reader.ReadUInt16();
+                reader.Skip(2);
+                Flags.flag = reader.ReadUInt16();
+                
+                reader.Skip(2);
+                for (int i = 0; i < 8; i++)
+                {
+                    _qualifiers[i] = reader.ReadInt16();
+                }
+                _extensionOffset = reader.ReadUInt16();
+                reader.Skip(2);
+                _stringsOffset = reader.ReadUInt16();
+                NewFlags.flag = reader.ReadUInt32();
+                Preferences.flag = reader.ReadUInt16();
+                Identifier = reader.ReadAscii(4);
+                BackColor = reader.ReadColor();
+                _fadeinOffset = reader.ReadUInt32();
+                _fadeoutOffset = reader.ReadUInt32();
+            }
 
             
             if (_animationsOffset > 0)
             {
+                Console.WriteLine("ANIMS FOUND: "+Parent.name);
                 reader.Seek(currentPosition + _animationsOffset);
                 Animations = new Animations(reader);
                 Animations.Read();
+            }
+            else
+            {
+                //Console.WriteLine("NOT FOUND");
             }
 
 

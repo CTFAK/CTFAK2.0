@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -28,6 +29,7 @@ namespace CTFAK.CCN.Chunks.Banks
             NumOfItems = reader.ReadInt32();
             for (int i = 0; i < NumOfItems; i++)
             {
+                if (Settings.android) continue;
                 var item = new MusicFile(reader);
                 item.Read();
                 Items.Add(item);

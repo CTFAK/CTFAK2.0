@@ -19,13 +19,28 @@ namespace CTFAK.CCN.Chunks.Banks
         public ImageBank(ByteReader reader) : base(reader) { }
         public override void Read()
         {
-            var count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
+            if (Settings.android)
             {
-                var newImg = new Image(reader);
-                newImg.Read();
-                Items.Add(newImg.Handle, newImg);
+                var maxHandle = reader.ReadInt16();
+                var count = reader.ReadInt16();
+                for (int i = 0; i < count; i++)
+                {
+                    var newImg = new Image(reader);
+                    newImg.Read();
+                    Items.Add(newImg.Handle, newImg);
+                }
             }
+            else
+            {
+                var count = reader.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    var newImg = new Image(reader);
+                    newImg.Read();
+                    Items.Add(newImg.Handle, newImg);
+                }
+            }
+            
         }
 
         public override void Write(ByteWriter writer)
@@ -88,6 +103,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
             }
         }
+
         public void FromBitmap(Bitmap bmp)
         {
             width = bmp.Width;
@@ -95,35 +111,39 @@ namespace CTFAK.CCN.Chunks.Banks
             Flags["Alpha"] = true;
             graphicMode = 4;
 
-                var bitmapData = bmp.LockBits(new Rectangle(0, 0,
-                                bmp.Width,
-                                bmp.Height),
-                            ImageLockMode.ReadOnly,
-                            PixelFormat.Format24bppRgb);
-                var length = bitmapData.Stride * bitmapData.Height;
+            var bitmapData = bmp.LockBits(new Rectangle(0, 0,
+                    bmp.Width,
+                    bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int copyPad = GetPadding(width, 4);
+            var length = bitmapData.Height*bitmapData.Stride+copyPad*3;
 
-                byte[] bytes = new byte[length];
+            byte[] bytes = new byte[length];
 
-                // Copy bitmap to byte[]
-                Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
-                bmp.UnlockBits(bitmapData);
+            // Copy bitmap to byte[]
+            Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
+            bmp.UnlockBits(bitmapData);
 
-            imageData = new byte[width * height * 4];
+            imageData = new byte[width * height * 5];
             int position = 0;
-            int pad = GetPadding(width, 3);
+            int pad = GetPadding(width, 4);
+
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
                     imageData[position] = bytes[position];
-                    imageData[position+1] = bytes[position+1];
-                    imageData[position+2] = bytes[position+2];
+                    imageData[position + 1] = bytes[position + 1];
+                    imageData[position + 2] = bytes[position + 2];
                     position += 3;
                 }
-                
+
                 position += 3 * pad;
             }
-            
+
+
+
             int aPad = GetPadding(width, 1, 4);
             int alphaPos = position;
             for (int y = 0; y < height; y++)
@@ -133,9 +153,11 @@ namespace CTFAK.CCN.Chunks.Banks
                     imageData[alphaPos] = 255;
                     alphaPos += 1;
                 }
+
                 alphaPos += aPad;
             }
         }
+        
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
             return (bytes - ((width * pointSize) % bytes)) % bytes;
@@ -195,7 +217,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 //LZ4Codec.Decode(rawImg, target);
                 graphicMode = 16;
             }
-            else
+            else if(Settings.gameType==Settings.GameType.NORMAL)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
@@ -227,6 +249,40 @@ namespace CTFAK.CCN.Chunks.Banks
                         (int)decompressedSize);
                 }
                 else imageData = imageReader.ReadBytes((int)(size));
+            }
+            else if (Settings.android)
+            {
+                Handle = reader.ReadInt16();
+                var unk = (uint)reader.ReadInt32();
+
+                width = reader.ReadInt16(); //width
+                height = reader.ReadInt16(); //height
+                HotspotX = reader.ReadInt16();
+                HotspotY = reader.ReadInt16();
+                ActionX = reader.ReadInt16();
+                ActionY = reader.ReadInt16();
+                var size = reader.ReadInt32();
+                var thefuk1 = reader.PeekByte();
+                Logger.Log($"Loading image {Handle}, size {width}x{height}, mode: {unk}");
+                ByteReader imageReader;
+
+                if (thefuk1 == 255)
+                {
+                    imageData = reader.ReadBytes(size);
+                    //return;
+                }
+                else
+                {
+                    imageReader = new ByteReader(Decompressor.DecompressBlock(reader, size));
+                    imageReader.Seek(0);
+                    imageData = imageReader.ReadBytes();
+                }
+
+                var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
+                imageData = newImage.imageData;
+                //Flags["Alpha"] = true;
+                graphicMode = 4;
+                
             }
             
 
