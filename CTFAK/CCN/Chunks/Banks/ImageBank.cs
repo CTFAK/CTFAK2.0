@@ -117,7 +117,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 ImageLockMode.ReadOnly,
                 PixelFormat.Format24bppRgb);
             int copyPad = GetPadding(width, 4);
-            var length = bitmapData.Height*bitmapData.Stride+copyPad*3;
+            var length = bitmapData.Height * bitmapData.Stride+copyPad*3;
 
             byte[] bytes = new byte[length];
 

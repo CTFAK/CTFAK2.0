@@ -4,6 +4,7 @@ using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,6 +125,7 @@ namespace CTFAK.CCN.Chunks.Frame
                     case 13117:
                         events = new Events(chunkReader);
                         events.Read();
+                        //File.WriteAllBytes($"FNAFWorldTest\\{name}",chunkReader.ReadBytes());
                         break;
                     case 13121:
                         layers = new Layers(chunkReader);

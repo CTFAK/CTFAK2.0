@@ -167,7 +167,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 
                 var size = reader.ReadInt32();
                 //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
-                reader.Skip(-size+4);
+                //reader.Skip(-size+4);
                 _movementsOffset = reader.ReadUInt16();
                 _animationsOffset = reader.ReadUInt16();
                 
@@ -175,10 +175,10 @@ namespace CTFAK.CCN.Chunks.Objects
                 _counterOffset = reader.ReadUInt16();
                 _systemObjectOffset = reader.ReadUInt16();
                 _valuesOffset = reader.ReadUInt16();
-                reader.Skip(2);
                 Flags.flag = reader.ReadUInt16();
+                var penisFlags = reader.ReadInt16();
+                if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
                 
-                reader.Skip(2);
                 for (int i = 0; i < 8; i++)
                 {
                     _qualifiers[i] = reader.ReadInt16();
