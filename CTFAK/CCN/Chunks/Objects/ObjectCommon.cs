@@ -166,7 +166,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 currentPosition = reader.Tell();
                 
                 var size = reader.ReadInt32();
-                File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
+                //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
                 reader.Skip(-size+4);
                 _movementsOffset = reader.ReadUInt16();
                 _animationsOffset = reader.ReadUInt16();
@@ -197,7 +197,7 @@ namespace CTFAK.CCN.Chunks.Objects
             
             if (_animationsOffset > 0)
             {
-                Console.WriteLine("ANIMS FOUND: "+Parent.name);
+                //Console.WriteLine("ANIMS FOUND: "+Parent.name);
                 reader.Seek(currentPosition + _animationsOffset);
                 Animations = new Animations(reader);
                 Animations.Read();
