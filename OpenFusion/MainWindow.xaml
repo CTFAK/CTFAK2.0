@@ -6,7 +6,8 @@
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         xmlns:local="clr-namespace:OpenFusion"
         mc:Ignorable="d"
-        Title="OpenFusion rendering test" Height="720" Width="1280">
+        Title="OpenFusion rendering test" Height="720" Width="1280"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <glWpfControl:GLWpfControl x:Name="OpenTkControl" Render="OpenTkControl_OnRender"/>
         </Grid>

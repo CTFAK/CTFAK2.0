@@ -44,19 +44,20 @@ namespace OpenFusion
 
         private void OpenTkControl_OnRender(TimeSpan obj)
         {
+            Title = ((1/obj.TotalMilliseconds)*1000).ToString();
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.ClearColor(0, 0, 0.3f, 1.0f);
             
             foreach (var drawable in objects)
             {
-                drawable.OnRender();
+                drawable.OnRender(this);
             }
             
             
         }
         List<Drawable> objects = new List<Drawable>()
         {
-            new Drawable(0,0)
+            new Drawable(900,100,200,200)
         };
 
         private void OpenTkControl_OnInitialized(object sender, EventArgs e)
@@ -68,7 +69,7 @@ namespace OpenFusion
         private void OpenTkControl_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             Console.WriteLine($"Size changed: {e.NewSize}");
-            GL.Viewport(0, 0, 200,200);
+            //GL.Viewport(0, 0, 200,200);
 
         }
     }
