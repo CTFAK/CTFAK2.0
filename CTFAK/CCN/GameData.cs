@@ -65,6 +65,7 @@ namespace CTFAK.CCN
             productVersion = reader.ReadInt32();
             productBuild = reader.ReadInt32();
             Settings.Build = productBuild;
+            Logger.Log("Fusion Build: "+productBuild);
             string gameExeName = Path.GetFileName(Program.path);
             Directory.CreateDirectory($"CHUNK_TRACE\\{gameExeName}");
             int chunkIndex = 0;
@@ -126,6 +127,7 @@ namespace CTFAK.CCN
                         {
                             var newObjInfo = new ObjectInfo(chunkReader);
                             newObjInfo.Read();
+                            if(!newObjInfo.name.Contains("OS"))
                             frameitems.Add(newObjInfo.handle,newObjInfo);
                         }
                         break;

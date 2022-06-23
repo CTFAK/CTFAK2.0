@@ -13,15 +13,15 @@ namespace CTFAK.CCN.Chunks.Objects
 {
     public class ObjectCommon : ChunkLoader
     {
-        private ushort _valuesOffset;
-        private ushort _stringsOffset;
+        private short _valuesOffset;
+        private short _stringsOffset;
         private uint _fadeinOffset;
         private uint _fadeoutOffset;
-        private ushort _movementsOffset;
-        private ushort _animationsOffset;
-        private ushort _systemObjectOffset;
-        private ushort _counterOffset;
-        private ushort _extensionOffset;
+        private short _movementsOffset;
+        private short _animationsOffset;
+        private short _systemObjectOffset;
+        private short _counterOffset;
+        private short _extensionOffset;
         public string Identifier;
 
         public Animations Animations;
@@ -101,12 +101,12 @@ namespace CTFAK.CCN.Chunks.Objects
             if (Settings.Build >= 284&&Settings.gameType==Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
-                _animationsOffset = reader.ReadUInt16();
-                _movementsOffset = reader.ReadUInt16();
+                _animationsOffset = reader.ReadInt16();
+                _movementsOffset = reader.ReadInt16();
                 var version = reader.ReadUInt16();
                 reader.Skip(2);
-                _extensionOffset = reader.ReadUInt16();
-                _counterOffset = reader.ReadUInt16();
+                _extensionOffset = reader.ReadInt16();
+                _counterOffset = reader.ReadInt16();
                 Flags.flag = reader.ReadUInt16();
                 var penisFlags = reader.ReadInt16();
                 if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
@@ -120,10 +120,10 @@ namespace CTFAK.CCN.Chunks.Objects
 
                 reader.Seek(end);
 
-                _systemObjectOffset = reader.ReadUInt16();
+                _systemObjectOffset = reader.ReadInt16();
 
-                _valuesOffset = reader.ReadUInt16();
-                _stringsOffset = reader.ReadUInt16();
+                _valuesOffset = reader.ReadInt16();
+                _stringsOffset = reader.ReadInt16();
                 NewFlags.flag = reader.ReadUInt16();
                 Preferences.flag = reader.ReadUInt16();
                 Identifier = reader.ReadAscii(4);
@@ -134,13 +134,16 @@ namespace CTFAK.CCN.Chunks.Objects
             else if(Settings.gameType==Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
-                _movementsOffset = reader.ReadUInt16();
-                _animationsOffset = reader.ReadUInt16();
-                var version = reader.ReadUInt16();
-                _counterOffset = reader.ReadUInt16();
-                _systemObjectOffset = reader.ReadUInt16();
+                _movementsOffset = reader.ReadInt16();
+                _animationsOffset = reader.ReadInt16();
+                var version = reader.ReadInt16();
+                _counterOffset = reader.ReadInt16();
+                _systemObjectOffset = reader.ReadInt16();
                 reader.Skip(2);
-                Flags.flag = (uint)reader.ReadInt32();
+                Flags.flag = reader.ReadUInt16();
+                var penisFlags = reader.ReadInt16();
+                //reader.Skip(2);
+                if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
@@ -149,10 +152,10 @@ namespace CTFAK.CCN.Chunks.Objects
 
                 reader.Seek(end);
 
-                _extensionOffset = reader.ReadUInt16();
+                _extensionOffset = reader.ReadInt16();
 
-                _valuesOffset = reader.ReadUInt16();
-                _stringsOffset = reader.ReadUInt16();
+                _valuesOffset = reader.ReadInt16();
+                _stringsOffset = reader.ReadInt16();
                 NewFlags.flag = reader.ReadUInt16();
                 Preferences.flag = reader.ReadUInt16();
                 Identifier = reader.ReadAscii(2);
@@ -162,36 +165,74 @@ namespace CTFAK.CCN.Chunks.Objects
             }
             else if (Settings.android)
             {
-
-                currentPosition = reader.Tell();
-                
-                var size = reader.ReadInt32();
-                //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
-                //reader.Skip(-size+4);
-                _movementsOffset = reader.ReadUInt16();
-                _animationsOffset = reader.ReadUInt16();
-                
-                var version = reader.ReadUInt16();
-                _counterOffset = reader.ReadUInt16();
-                _systemObjectOffset = reader.ReadUInt16();
-                _valuesOffset = reader.ReadUInt16();
-                Flags.flag = reader.ReadUInt16();
-                var penisFlags = reader.ReadInt16();
-                if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
-                
-                for (int i = 0; i < 8; i++)
+                if (Settings.Build >= 290)
                 {
-                    _qualifiers[i] = reader.ReadInt16();
+                    
+                    var size = reader.ReadInt32();
+                    //Console.WriteLine("MY ASS");
+                    reader.Skip(-4);
+                    File.WriteAllBytes($"FNAFCTFPORTTEST\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size+4));
+                    reader.Skip(-size+4);
+                    currentPosition =0;
+                    
+                    _movementsOffset = reader.ReadInt16();
+                    var version = reader.ReadUInt16();
+                    _extensionOffset = reader.ReadInt16();
+                    _counterOffset = reader.ReadInt16();
+                    _valuesOffset = reader.ReadInt16();
+                    Flags.flag = reader.ReadUInt16();
+                    var penisFlags = reader.ReadInt16();
+                    if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
+                
+                    for (int i = 0; i < 8; i++)
+                    {
+                        _qualifiers[i] = reader.ReadInt16();
+                    }
+                    _systemObjectOffset = reader.ReadInt16();
+                    _animationsOffset = (short)(reader.ReadInt16());
+                    reader.Skip(2);
+                    _stringsOffset = reader.ReadInt16();
+                    NewFlags.flag = reader.ReadUInt32();
+                    Preferences.flag = reader.ReadUInt16();
+                    Identifier = reader.ReadAscii(4);
+                    BackColor = reader.ReadColor();
+                    _fadeinOffset = reader.ReadUInt32();
+                    _fadeoutOffset = reader.ReadUInt32();
+
                 }
-                _extensionOffset = reader.ReadUInt16();
-                reader.Skip(2);
-                _stringsOffset = reader.ReadUInt16();
-                NewFlags.flag = reader.ReadUInt32();
-                Preferences.flag = reader.ReadUInt16();
-                Identifier = reader.ReadAscii(4);
-                BackColor = reader.ReadColor();
-                _fadeinOffset = reader.ReadUInt32();
-                _fadeoutOffset = reader.ReadUInt32();
+                else
+                {
+                    var size = reader.ReadInt32();
+                    //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
+                    //reader.Skip(-size+4);
+                    _movementsOffset = reader.ReadInt16();
+                    _animationsOffset = reader.ReadInt16();
+                
+                    var version = reader.ReadInt16();
+                    _counterOffset = reader.ReadInt16();
+                    _systemObjectOffset = reader.ReadInt16();
+                    _valuesOffset = reader.ReadInt16();
+                    Flags.flag = reader.ReadUInt16();
+                    var penisFlags = reader.ReadInt16();
+                    if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
+                
+                    for (int i = 0; i < 8; i++)
+                    {
+                        _qualifiers[i] = reader.ReadInt16();
+                    }
+                    _extensionOffset = reader.ReadInt16();
+                    reader.Skip(2);
+                    _stringsOffset = reader.ReadInt16();
+                    NewFlags.flag = reader.ReadUInt32();
+                    Preferences.flag = reader.ReadUInt16();
+                    Identifier = reader.ReadAscii(4);
+                    BackColor = reader.ReadColor();
+                    _fadeinOffset = reader.ReadUInt32();
+                    _fadeoutOffset = reader.ReadUInt32();
+                }
+                //currentPosition = reader.Tell();
+                
+                
             }
 
             

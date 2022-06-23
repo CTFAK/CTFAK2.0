@@ -240,6 +240,11 @@ namespace CTFAK.CCN.Chunks.Frame
             NumberOfBackgrounds = reader.ReadInt32();
             BackgroudIndex = reader.ReadInt32();
             Name = reader.ReadWideString();
+            if (Settings.android)
+            {
+                XCoeff = 1;
+                YCoeff = 1;
+            }
         }
 
         public override void Write(ByteWriter Writer)

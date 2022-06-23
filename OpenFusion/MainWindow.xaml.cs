@@ -32,14 +32,21 @@ namespace OpenFusion
                 MajorVersion = 4,
                 MinorVersion = 5
             };
-            OpenTkControl.Start(settings);
+            /*OpenTkControl.Start(settings);
             while(!OpenTkControl.IsInitialized){}
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
             foreach (var obj in objects)
             {
                 obj.Init();
-            }
-            
+            }*/
+            this.Loaded += MainWindow_Loaded;
+
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+           
         }
 
         private void OpenTkControl_OnRender(TimeSpan obj)
@@ -71,6 +78,11 @@ namespace OpenFusion
             Console.WriteLine($"Size changed: {e.NewSize}");
             //GL.Viewport(0, 0, 200,200);
 
+        }
+
+        private void LoadMFA_OnClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

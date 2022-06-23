@@ -94,7 +94,7 @@ namespace OpenFusion.Engine
         }
         public void OnRender(MainWindow window)
         {
-            AdjustVertices((int)window.OpenTkControl.ActualWidth,(int)window.OpenTkControl.ActualHeight);
+            //AdjustVertices((int)window.OpenTkControl.ActualWidth,(int)window.OpenTkControl.ActualHeight);
             _shader.Use();
 
             // Bind the VAO

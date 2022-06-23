@@ -218,12 +218,6 @@ namespace CTFAK.Utils
                     newImage.FromBitmap(bmp);
                     return newImage;
 
-
-
-
-
-
-
             }
         }
     }

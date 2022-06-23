@@ -137,7 +137,8 @@ namespace CTFAK
             Console.Clear();
             ASCIIArt.DrawArt();
             Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
-
+            
+            
 
 
             Settings.gameType = Settings.GameType.NORMAL;
@@ -157,6 +158,10 @@ namespace CTFAK
                 }
             }
         SELECT_TOOL:
+            Console.WriteLine($"Game Information:");
+            Console.WriteLine($"Game Name: "+gameParser.getGameData().name);
+            Console.WriteLine($"Author: "+gameParser.getGameData().author);
+            Console.WriteLine($"FusionBuild: "+Settings.Build);
             ASCIIArt.SetStatus("Selecting tool");
             Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
             Console.WriteLine("0. Exit CTFAK");

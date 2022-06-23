@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Extended.Wpf.Toolkit" Version="4.3.0" />
       <PackageReference Include="OpenTK" Version="4.7.4" />
       <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.2" />
     </ItemGroup>

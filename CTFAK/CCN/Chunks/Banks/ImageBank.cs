@@ -117,45 +117,64 @@ namespace CTFAK.CCN.Chunks.Banks
                 ImageLockMode.ReadOnly,
                 PixelFormat.Format24bppRgb);
             int copyPad = GetPadding(width, 4);
-            var length = bitmapData.Height * bitmapData.Stride+copyPad*3;
+            var length = bitmapData.Height * bitmapData.Stride+copyPad*4;
 
             byte[] bytes = new byte[length];
-
+            int stride = bitmapData.Stride;
             // Copy bitmap to byte[]
             Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
             bmp.UnlockBits(bitmapData);
 
-            imageData = new byte[width * height * 5];
+            
+            
+            imageData = new byte[width * height * 6];
             int position = 0;
-            int pad = GetPadding(width, 4);
-
+            int pad = GetPadding(width, 3);
+            
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    imageData[position] = bytes[position];
-                    imageData[position + 1] = bytes[position + 1];
-                    imageData[position + 2] = bytes[position + 2];
+                    int newPos = (y * stride) + (x*3);
+                    imageData[position] = bytes[newPos];
+                    imageData[position + 1] = bytes[newPos + 1];
+                    imageData[position + 2] = bytes[newPos + 2];
                     position += 3;
                 }
 
                 position += 3 * pad;
             }
 
-
-
-            int aPad = GetPadding(width, 1, 4);
-            int alphaPos = position;
-            for (int y = 0; y < height; y++)
+            try
             {
-                for (int x = 0; x < width; x++)
-                {
-                    imageData[alphaPos] = 255;
-                    alphaPos += 1;
-                }
+                var bitmapDataAlpha = bmp.LockBits(new Rectangle(0, 0,
+                        bmp.Width,
+                        bmp.Height),
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb);
+                int copyPadAlpha = GetPadding(width, 1);
+                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride+copyPadAlpha*4;
 
-                alphaPos += aPad;
-            }
+                byte[] bytesAlpha = new byte[lengthAlpha];
+                int strideAlpha = bitmapDataAlpha.Stride;
+                // Copy bitmap to byte[]
+                Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
+                bmp.UnlockBits(bitmapDataAlpha);
+            
+                int aPad = GetPadding(width, 1, 4);
+                int alphaPos = position;
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x*4)+3];
+                        alphaPos += 1;
+                    }
+
+                    alphaPos += aPad;
+                }
+            }catch(Exception ex){Console.WriteLine(ex);}
+            
         }
         
         public static int GetPadding(int width, int pointSize, int bytes = 2)
@@ -277,10 +296,9 @@ namespace CTFAK.CCN.Chunks.Banks
                     imageReader.Seek(0);
                     imageData = imageReader.ReadBytes();
                 }
-
                 var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
                 imageData = newImage.imageData;
-                //Flags["Alpha"] = true;
+                Flags["Alpha"] = true;
                 graphicMode = 4;
                 
             }

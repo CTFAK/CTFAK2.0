@@ -4,12 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:OpenFusion"
         mc:Ignorable="d"
         Title="OpenFusion rendering test" Height="720" Width="1280"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <glWpfControl:GLWpfControl x:Name="OpenTkControl" Render="OpenTkControl_OnRender"/>
+        <Button Name="LoadMFA" Width="250" Height="250" Content="My ass" Click="LoadMFA_OnClick"/>
+        <!--<glWpfControl:GLWpfControl x:Name="OpenTkControl" Render="OpenTkControl_OnRender" Visibility="Hidden"/>-->
+        
         </Grid>
     
 </Window>
