@@ -59,11 +59,10 @@ namespace CTFAK
             if (args.Length == 0)
             {
                 Console.Write("Game path: ");
-                path = Console.ReadLine();
-
+                path = Console.ReadLine().Trim('"');
             }
             else path = args[0];
-            
+
             if (!File.Exists(path))
             {
                 Console.WriteLine("ERROR: File not found");
