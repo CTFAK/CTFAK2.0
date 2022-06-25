@@ -597,6 +597,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item = new TwoShorts(reader);
             }
             if (code == 68) item = new MultipleVariables(reader);
+            if (code == 69) item = new ChildEvent(reader);
 
 
 

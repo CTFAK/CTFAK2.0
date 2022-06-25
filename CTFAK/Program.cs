@@ -134,6 +134,12 @@ namespace CTFAK
             
             gameParser.LoadGame(path);
             readStopwatch.Stop();
+            if (Settings.twofiveplus)
+            {
+                Logger.LogWarning("This game uses 2.5+ and so it can't be decompiled");
+                Console.ReadKey();
+            }
+            
             Console.Clear();
             ASCIIArt.DrawArt();
             Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
