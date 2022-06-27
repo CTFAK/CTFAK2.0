@@ -25,9 +25,9 @@ namespace CTFAK
 
         static void Main(string[] args)
         {
-           
 
 
+            if (File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
 
 
             /*var mfa = new MFAData();
@@ -94,6 +94,10 @@ namespace CTFAK
             {
                 gameParser = new ExeFileReader();
             }
+            else if (Path.GetExtension(path) == ".apk")
+            {
+                gameParser = new ApkFileReader();
+            }
             else
             {
                 SELECT_READER:
@@ -108,6 +112,7 @@ namespace CTFAK
                 }
                 var key1 = Console.ReadLine();
                 var readerSelect = int.Parse(key1);
+                if (readerSelect == 0 && File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
                 if (readerSelect == 0) Environment.Exit(0);
                 gameParser = availableReaders[readerSelect - 1];
 
@@ -176,6 +181,7 @@ namespace CTFAK
             }
             var key = Console.ReadLine();
             var toolSelect = int.Parse(key);
+            if (toolSelect == 0 && File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
             if (toolSelect == 0) Environment.Exit(0);
             IFusionTool selectedTool = availableTools[toolSelect-1];
             Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
