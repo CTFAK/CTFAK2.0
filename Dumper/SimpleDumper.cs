@@ -7,9 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CTFAK.Utils;
 
 namespace Dumper
 {
+    public class AutoDumper : IFusionTool
+    {
+        public string Name => "Dump Everything";
+        public void Execute(IFileReader reader)
+        {
+            Logger.Log("Dumping images...");
+            new ImageDumper().Execute(reader);
+            Logger.Log("Image dumping done");
+            Logger.Log("Dumping sounds...");
+            new SoundDumper().Execute(reader);
+            Logger.Log("Sound dumping done");
+        }
+    }
     public class ImageDumper : IFusionTool
     {
         public string Name => "Image Dumper";

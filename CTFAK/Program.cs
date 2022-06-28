@@ -29,7 +29,9 @@ namespace CTFAK
 
             if (File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
 
-
+            String libraryFile = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "x64",
+                "CTFAK-Native.dll");
+            NativeLib.LoadLibrary(libraryFile);
             /*var mfa = new MFAData();
             mfa.Read(new ByteReader("D:\\test.mfa", FileMode.Open));
             mfa.Write(new ByteWriter(new FileStream("ass.mfa", FileMode.Create)));
@@ -167,10 +169,13 @@ namespace CTFAK
                 }
             }
         SELECT_TOOL:
+            Console.WriteLine("");
             Console.WriteLine($"Game Information:");
             Console.WriteLine($"Game Name: "+gameParser.getGameData().name);
             Console.WriteLine($"Author: "+gameParser.getGameData().author);
-            Console.WriteLine($"FusionBuild: "+Settings.Build);
+            Console.WriteLine($"Number of frames: "+gameParser.getGameData().frames.Count);
+            Console.WriteLine($"Fusion Build: "+Settings.Build);
+            Console.WriteLine("");
             ASCIIArt.SetStatus("Selecting tool");
             Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
             Console.WriteLine("0. Exit CTFAK");
