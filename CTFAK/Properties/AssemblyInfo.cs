@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные с этой сборкой.
 [assembly: AssemblyTitle("CTFAK")]
-[assembly: AssemblyDescription("CTFAK Alpha 2.1.1")]
+[assembly: AssemblyDescription("CTFAK Alpha 2.2")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("1987kostya")]
 [assembly: AssemblyProduct("CTFAK")]

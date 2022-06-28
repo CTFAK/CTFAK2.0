@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ionic.Zlib;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -240,34 +241,61 @@ namespace CTFAK.CCN.Chunks.Banks
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
-                ByteReader imageReader;
-                imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
-                checksum = imageReader.ReadInt32();
-                references = imageReader.ReadInt32();
-                var size = imageReader.ReadInt32();
-                if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
-                width = imageReader.ReadInt16();
-                height = imageReader.ReadInt16();
 
-                graphicMode = imageReader.ReadByte();
-                Flags.flag = imageReader.ReadByte();
-                imageReader.Skip(2);
-                HotspotX = imageReader.ReadInt16();
-                HotspotY = imageReader.ReadInt16();
-                ActionX = imageReader.ReadInt16();
-                ActionY = imageReader.ReadInt16();
-                transparent = imageReader.ReadInt32();
-                //Logger.Log($"Loading image {Handle} with size {width}x{height}");
-
-                if (Flags["LZX"])
+                byte[] newImageData=null;
+                if (!IsMFA)
                 {
-                    uint decompressedSize = imageReader.ReadUInt32();
-
-                    imageData = Decompressor.DecompressBlock(imageReader,
-                        (int)(imageReader.Size() - imageReader.Tell()),
-                        (int)decompressedSize);
+                    Int32 decompSize = reader.ReadInt32();
+                    Int32 compSize = reader.ReadInt32();
+                    newImageData = reader.ReadBytes(compSize);
                 }
-                else imageData = imageReader.ReadBytes((int)(size));
+                    
+                    
+                    ByteReader imageReader;
+                    var imageReadingTask = new Task(() =>
+                    {
+                        if (IsMFA)
+                        {
+                            imageReader = reader;
+                        }
+                        else
+                        {
+                            imageReader = new ByteReader(ZlibStream.UncompressBuffer(newImageData));
+                        }
+                    
+                        
+                        checksum = imageReader.ReadInt32();
+                        references = imageReader.ReadInt32();
+                        var size = imageReader.ReadInt32();
+                        if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
+                        width = imageReader.ReadInt16();
+                        height = imageReader.ReadInt16();
+
+                        graphicMode = imageReader.ReadByte();
+                        Flags.flag = imageReader.ReadByte();
+                        imageReader.Skip(2);
+                        HotspotX = imageReader.ReadInt16();
+                        HotspotY = imageReader.ReadInt16();
+                        ActionX = imageReader.ReadInt16();
+                        ActionY = imageReader.ReadInt16();
+                        transparent = imageReader.ReadInt32();
+                        //Logger.Log($"Loading image {Handle} with size {width}x{height}");
+
+                        if (Flags["LZX"])
+                        {
+                            uint decompressedSize = imageReader.ReadUInt32();
+
+                            imageData = Decompressor.DecompressBlock(imageReader,
+                                (int)(imageReader.Size() - imageReader.Tell()),
+                                (int)decompressedSize);
+                        }
+                        else imageData = imageReader.ReadBytes((int)(size));
+                    });
+                    if(IsMFA) imageReadingTask.RunSynchronously();
+                    else imageReadingTask.Start();
+                //imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
+
+                
             }
             else if (Settings.android)
             {
