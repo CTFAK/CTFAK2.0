@@ -13,6 +13,7 @@ namespace Dumper
     class SortedImageDumper : IFusionTool
     {
         public string Name => "Sorted Image Dumper";
+        int imageNumber = 0;
 
         public void Execute(IFileReader reader)
         {
@@ -33,11 +34,17 @@ namespace Dumper
                     {
                         Directory.CreateDirectory(objectFolder);
                         images[bg.Image]?.bitmap.Save(objectFolder + "0.png");
+                        images[bg.Image]?.bitmap.Save($"{frameFolder}unsorted\\{imageNumber}.png");
+                        images[bg.Image]?.bitmap.Save($"Dumps\\{outPath}\\Sorted Images\\unsorted\\{imageNumber}.png");
+                        imageNumber++;
                     }
                     else if (oi.properties is Quickbackdrop qbg)
                     {
                         Directory.CreateDirectory(objectFolder);
                         images[qbg.Image]?.bitmap.Save(objectFolder + "0.png");
+                        images[qbg.Image]?.bitmap.Save($"{frameFolder}unsorted\\{imageNumber}.png");
+                        images[qbg.Image]?.bitmap.Save($"Dumps\\{outPath}\\Sorted Images\\unsorted\\{imageNumber}.png");
+                        imageNumber++;
                     }
                     else if(oi.properties is ObjectCommon common)
                     {
@@ -77,6 +84,9 @@ namespace Dumper
                                         var frm = frms[i];
                                         Directory.CreateDirectory(directionFolder);
                                         images[frm]?.bitmap.Save($"{directionFolder}{frm}.png");
+                                        images[frm]?.bitmap.Save($"{frameFolder}unsorted\\{imageNumber}.png");
+                                        images[frm]?.bitmap.Save($"Dumps\\{outPath}\\Sorted Images\\unsorted\\{imageNumber}.png");
+                                        imageNumber++;
                                     }
                                 }
                             }
@@ -90,6 +100,9 @@ namespace Dumper
                                 Directory.CreateDirectory(objectFolder);
 
                                 images[cntrFrm]?.bitmap.Save($"{objectFolder}{cntrFrm}.png");
+                                images[cntrFrm]?.bitmap.Save($"{frameFolder}unsorted\\{imageNumber}.png");
+                                images[cntrFrm]?.bitmap.Save($"Dumps\\{outPath}\\Sorted Images\\unsorted\\{imageNumber}.png");
+                                imageNumber++;
                             }
                         }
                     }

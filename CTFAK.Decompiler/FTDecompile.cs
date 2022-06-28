@@ -403,7 +403,8 @@ namespace CTFAK.Tools
                 Logger.Log($"Translating frame {frame.name} - {a}");
                 mfa.Frames.Add(newFrame);
             }
-            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
+            Directory.CreateDirectory($"Dumps\\{mfa.Name}");
+            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{mfa.Name}\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
         }
 
         public static MFATransition ConvertTransition(Transition gameTrans)
