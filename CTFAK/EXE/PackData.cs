@@ -82,7 +82,7 @@ namespace CTFAK.EXE
         public void Read(ByteReader exeReader)
         {
             UInt16 len = exeReader.ReadUInt16();
-            PackFilename = "TestName"; //exeReader.ReadWideString(len);
+            PackFilename = exeReader.ReadWideString(len);
             _bingo = exeReader.ReadInt32();
             Data = exeReader.ReadBytes(exeReader.ReadInt32());
 
