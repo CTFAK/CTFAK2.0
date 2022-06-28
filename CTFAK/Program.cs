@@ -25,9 +25,9 @@ namespace CTFAK
 
         static void Main(string[] args)
         {
-           
 
 
+            if (File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
 
 
             /*var mfa = new MFAData();
@@ -89,10 +89,17 @@ namespace CTFAK
                         availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
                 }
             }
-            
+
             if (Path.GetExtension(path)==".exe")
             {
                 gameParser = new ExeFileReader();
+            }
+            else if (Path.GetExtension(path) == ".apk")
+            {
+                if (File.Exists(Path.GetTempPath() + "application.ccn"))
+                    File.Delete(Path.GetTempPath() + "application.ccn");
+                path = new ApkFileReader().ExtractCCN(path);
+                gameParser = new EXE.CCNFileReader();
             }
             else
             {
@@ -110,9 +117,6 @@ namespace CTFAK
                 var readerSelect = int.Parse(key1);
                 if (readerSelect == 0) Environment.Exit(0);
                 gameParser = availableReaders[readerSelect - 1];
-
-                
-                
             }
             
             
