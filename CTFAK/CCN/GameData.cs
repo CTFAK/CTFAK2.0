@@ -223,7 +223,8 @@ namespace CTFAK.CCN
                 else
                 {
                     readingTasks.Add(newTask);
-                    newTask.Start();
+                    newTask.RunSynchronously();
+                    //newTask.Start(); //quite literally useless
                 }
                 
 

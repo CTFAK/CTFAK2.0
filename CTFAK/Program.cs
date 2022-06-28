@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Joveler.Compression.ZLib;
 
 namespace CTFAK
 {
@@ -26,6 +27,7 @@ namespace CTFAK
         static void Main(string[] args)
         {
 
+            ZLibInit.GlobalInit("x64\\zlibwapi.dll");
 
             if (File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
 

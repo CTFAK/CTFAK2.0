@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.InteropServices;
 using CTFAK.Utils;
 using Ionic.Zlib;
-
+using Joveler.Compression.ZLib;
+using ZLibStream = System.IO.Compression.ZLibStream;
 
 
 namespace CTFAK.Memory
@@ -71,7 +71,20 @@ namespace CTFAK.Memory
         {
 
 
-            return ZlibStream.CompressBuffer(data);
+            ZLibCompressOptions compOpts = new ZLibCompressOptions();
+            //compOpts.Level = ZLibCompLevel.Default;
+            compOpts.Level = ZLibCompLevel.Level5;
+            MemoryStream decompressedStream = new MemoryStream(data);
+            MemoryStream compressedStream = new MemoryStream();
+            byte[] compressedData = null;
+            Joveler.Compression.ZLib.ZLibStream zs = new Joveler.Compression.ZLib.ZLibStream(compressedStream, compOpts);
+            decompressedStream.CopyTo(zs);
+            zs.Close();
+
+            compressedData = compressedStream.GetBuffer();
+            Array.Resize<byte>(ref compressedData, (int) zs.TotalOut);
+
+            return compressedData;
         }
     }
 }

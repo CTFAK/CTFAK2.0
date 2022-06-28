@@ -47,7 +47,14 @@ namespace CTFAK.MMFParser.MFA.Loaders
             writer.WriteInt16((short)PaletteEntries);
             for (int i = 0; i < 256; i++) writer.WriteColor(Palette[i]);
             writer.WriteInt32(Items.Count);
-            foreach (var key in Items.Keys) Items[key].Write(writer);
+            foreach (var key in Items.Keys)
+            {
+                var newOffset = Items[key].WriteNew(writer);
+                writer.Seek(newOffset);
+            }
+
+
+        
         }
         public AGMIBank(ByteReader reader) : base(reader) { }
 

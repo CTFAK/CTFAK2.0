@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ionic.Zlib;
+using Joveler.Compression.ZLib;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -336,47 +337,48 @@ namespace CTFAK.CCN.Chunks.Banks
 
         }
 
-        public override void Write(ByteWriter writer)
+        public static List<Task> imageWritingTasks = new List<Task>();
+
+        public int WriteNew(ByteWriter writer)
         {
-            ByteWriter chunk = new ByteWriter(new MemoryStream());
-            chunk.WriteInt32(checksum);
-            chunk.WriteInt32(references);
+            var start = writer.Tell();
+            
             byte[] compressedImg = null;
             Flags["LZX"] = true;
-            if (Flags["LZX"])
-            {
+
                 compressedImg = Decompressor.compress_block(imageData);
-                chunk.WriteUInt32((uint)compressedImg.Length + 4);
-            }
-            else
-            {
-                chunk?.WriteUInt32((uint)(imageData?.Length ?? 0));
-            }
 
-            chunk.WriteInt16((short)width);
-            chunk.WriteInt16((short)height);
-            chunk.WriteInt8((byte)graphicMode);
-            chunk.WriteInt8((byte)Flags.flag);
-            chunk.WriteInt16(0);
-            chunk.WriteInt16((short)HotspotX);
-            chunk.WriteInt16((short)HotspotY);
-            chunk.WriteInt16((short)ActionX);
-            chunk.WriteInt16((short)ActionY);
-            chunk.WriteInt32(transparent);
-            if (Flags["LZX"])
-            {
-                chunk.WriteInt32(imageData.Length);
-                chunk.WriteBytes(compressedImg);
-            }
 
-            else
-            {
-                chunk.WriteBytes(imageData);
-            }
+                    
+                    writer.WriteInt32(Handle);
+                    writer.WriteInt32(checksum);//4
+                    writer.WriteInt32(references);//8
+                    writer.WriteUInt32((uint)compressedImg.Length + 4);//12
+                    writer.WriteInt16((short)width);//14
+                    writer.WriteInt16((short)height);//16
+                    writer.WriteInt8((byte)graphicMode);//17
+                    writer.WriteInt8((byte)Flags.flag);//18
+                    writer.WriteInt16(0);//20
+                    writer.WriteInt16((short)HotspotX);//22
+                    writer.WriteInt16((short)HotspotY);//24
+                    writer.WriteInt16((short)ActionX);//26
+                    writer.WriteInt16((short)ActionY);//28
+                    writer.WriteInt32(transparent);//32
 
-            writer.WriteInt32(Handle);
-            // writer.WriteInt32(Handle-1);//FNAC3 FIX
-            writer.WriteWriter(chunk);
+                    writer.WriteInt32(imageData.Length);//36
+                    writer.WriteBytes(compressedImg);
+                    
+                    //writer.WriteWriter(chunk);
+
+
+
+                    // writer.WriteInt32(Handle-1);//FNAC3 FIX
+            var chunkSize = 36 + compressedImg.Length;
+            return (int)(chunkSize+4+start);
+        }
+        public override void Write(ByteWriter writer)
+        {
+            
         }
     }
 }
