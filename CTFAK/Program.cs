@@ -89,14 +89,17 @@ namespace CTFAK
                         availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
                 }
             }
-            
+
             if (Path.GetExtension(path)==".exe")
             {
                 gameParser = new ExeFileReader();
             }
             else if (Path.GetExtension(path) == ".apk")
             {
-                gameParser = new ApkFileReader();
+                if (File.Exists(Path.GetTempPath() + "application.ccn"))
+                    File.Delete(Path.GetTempPath() + "application.ccn");
+                path = new ApkFileReader().ExtractCCN(path);
+                gameParser = new EXE.CCNFileReader();
             }
             else
             {
@@ -112,12 +115,8 @@ namespace CTFAK
                 }
                 var key1 = Console.ReadLine();
                 var readerSelect = int.Parse(key1);
-                if (readerSelect == 0 && File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
                 if (readerSelect == 0) Environment.Exit(0);
                 gameParser = availableReaders[readerSelect - 1];
-
-                
-                
             }
             
             
@@ -181,7 +180,6 @@ namespace CTFAK
             }
             var key = Console.ReadLine();
             var toolSelect = int.Parse(key);
-            if (toolSelect == 0 && File.Exists(Path.GetTempPath() + "application.ccn")) File.Delete(Path.GetTempPath() + "application.ccn");
             if (toolSelect == 0) Environment.Exit(0);
             IFusionTool selectedTool = availableTools[toolSelect-1];
             Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
