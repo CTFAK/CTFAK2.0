@@ -5,8 +5,10 @@ namespace CTFAK.Utils
 {
     public static class NativeLib
     {
+        [DllImport("Kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, SetLastError = false)] 
+        public static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
 //#if WIN64
-        private const string _dllPath = "x64\\CTFAK-Native.dll";
+        private const string _dllPath = "CTFAK-Native.dll";
 //#else
 //        private const string _dllPath = "x86\\Decrypter-x86.dll";
 //#endif
