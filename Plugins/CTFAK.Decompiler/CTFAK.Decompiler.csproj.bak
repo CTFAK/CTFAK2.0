@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\CTFAK\CTFAK.csproj" />
+  </ItemGroup>
+
+
+
+
+</Project>
