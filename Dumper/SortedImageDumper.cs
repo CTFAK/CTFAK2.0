@@ -13,10 +13,11 @@ namespace Dumper
     class SortedImageDumper : IFusionTool
     {
         public string Name => "Sorted Image Dumper";
+        int imageNumber = 0;
 
         public void Execute(IFileReader reader)
         {
-            var outPath = Path.GetFileNameWithoutExtension(reader.getGameData().targetFilename) ?? "dummyGame";
+            var outPath = reader.getGameData().name ?? "Unknown Game";
             var images = reader.getGameData().images.Items;
             var frames = reader.getGameData().frames;
             var objects = reader.getGameData().frameitems;
@@ -32,12 +33,18 @@ namespace Dumper
                     if (oi.properties is Backdrop bg)
                     {
                         Directory.CreateDirectory(objectFolder);
+                        Directory.CreateDirectory($"{frameFolder}{{unsorted}}");
                         images[bg.Image]?.bitmap.Save(objectFolder + "0.png");
+                        images[bg.Image]?.bitmap.Save($"{frameFolder}{{unsorted}}\\{imageNumber}.png");
+                        imageNumber++;
                     }
                     else if (oi.properties is Quickbackdrop qbg)
                     {
                         Directory.CreateDirectory(objectFolder);
+                        Directory.CreateDirectory($"{frameFolder}{{unsorted}}");
                         images[qbg.Image]?.bitmap.Save(objectFolder + "0.png");
+                        images[qbg.Image]?.bitmap.Save($"{frameFolder}{{unsorted}}\\{imageNumber}.png");
+                        imageNumber++;
                     }
                     else if(oi.properties is ObjectCommon common)
                     {
@@ -76,7 +83,10 @@ namespace Dumper
                                     {
                                         var frm = frms[i];
                                         Directory.CreateDirectory(directionFolder);
+                                        Directory.CreateDirectory($"{frameFolder}{{unsorted}}");
                                         images[frm]?.bitmap.Save($"{directionFolder}{frm}.png");
+                                        images[frm]?.bitmap.Save($"{frameFolder}{{unsorted}}\\{imageNumber}.png");
+                                        imageNumber++;
                                     }
                                 }
                             }
@@ -88,8 +98,10 @@ namespace Dumper
                             foreach (var cntrFrm in counter.Frames)
                             {
                                 Directory.CreateDirectory(objectFolder);
-
+                                Directory.CreateDirectory($"{frameFolder}{{unsorted}}");
                                 images[cntrFrm]?.bitmap.Save($"{objectFolder}{cntrFrm}.png");
+                                images[cntrFrm]?.bitmap.Save($"{frameFolder}{{unsorted}}\\{imageNumber}.png");
+                                imageNumber++;
                             }
                         }
                     }
