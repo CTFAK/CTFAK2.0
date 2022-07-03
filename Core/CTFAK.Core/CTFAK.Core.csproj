@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationIcon>CTFAK2.ico</ApplicationIcon>
     <AssemblyVersion>2.2.0.0</AssemblyVersion>
     <FileVersion>2.2.0.0</FileVersion>
     <NeutralLanguage>en</NeutralLanguage>
@@ -31,6 +30,26 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Remove="Resources\Active.png" />
+    <EmbeddedResource Include="Resources\Active.png" />
+    <None Remove="Resources\Backdrop.png" />
+    <EmbeddedResource Include="Resources\Backdrop.png" />
+    <None Remove="Resources\Counter.png" />
+    <EmbeddedResource Include="Resources\Counter.png" />
+    <None Remove="Resources\EmptyIcon.png" />
+    <EmbeddedResource Include="Resources\EmptyIcon.png" />
+    <None Remove="Resources\Formatted Text.png" />
+    <EmbeddedResource Include="Resources\Formatted Text.png" />
+    <None Remove="Resources\Lives.png" />
+    <EmbeddedResource Include="Resources\Lives.png" />
+    <None Remove="Resources\QandA.png" />
+    <EmbeddedResource Include="Resources\QandA.png" />
+    <None Remove="Resources\Score.png" />
+    <EmbeddedResource Include="Resources\Score.png" />
+    <None Remove="Resources\String.png" />
+    <EmbeddedResource Include="Resources\String.png" />
+    <None Remove="Resources\SubApp.png" />
+    <EmbeddedResource Include="Resources\SubApp.png" />
   </ItemGroup>
 
 

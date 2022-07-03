@@ -72,12 +72,7 @@ namespace CTFAK.CCN.Chunks.Objects
     }
     public class Quickbackdrop : BackdropLoader
     {
-        public int Size;
-        public Obstacle ObstacleType;
-        public Collision CollisionType;
-        public int Width;
-        public int Height;
-        public int Image;
+
         public Shape Shape;
 
         public Quickbackdrop(ByteReader reader) : base(reader)

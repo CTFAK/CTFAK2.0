@@ -18,6 +18,7 @@ namespace CTFAK.CCN.Chunks.Banks
 {
     public class ImageBank : ChunkLoader
     {
+        
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
         public ImageBank(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -42,6 +43,12 @@ namespace CTFAK.CCN.Chunks.Banks
                     newImg.Read();
                     Items.Add(newImg.Handle, newImg);
                 }
+                
+            }
+
+            foreach (var task in Image.imageReadingTasks)
+            {
+                task.Wait();
             }
             
         }
@@ -213,6 +220,8 @@ namespace CTFAK.CCN.Chunks.Banks
         {
 
         }
+
+        public static List<Task> imageReadingTasks = new List<Task>();
         public override void Read()
         {
             if (Settings.twofiveplus&&!IsMFA)
@@ -293,6 +302,7 @@ namespace CTFAK.CCN.Chunks.Banks
                         }
                         else imageData = imageReader.ReadBytes((int)(size));
                     });
+                    imageReadingTasks.Add(imageReadingTask);
                     if(IsMFA) imageReadingTask.RunSynchronously();
                     else imageReadingTask.Start();
                 //imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);

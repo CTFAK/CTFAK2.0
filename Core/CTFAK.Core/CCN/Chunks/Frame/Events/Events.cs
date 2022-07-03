@@ -332,7 +332,6 @@ namespace CTFAK.CCN.Chunks.Frame
 
         public override void Read()
         {
-            var old = false;
             var currentPosition = reader.Tell();
             var size = reader.ReadUInt16();
 

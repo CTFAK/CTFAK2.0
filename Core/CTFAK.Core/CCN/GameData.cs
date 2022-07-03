@@ -6,6 +6,7 @@ using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -79,11 +80,12 @@ namespace CTFAK.CCN
             List<Task> readingTasks = new List<Task>();
             while(true)
             {
+                if (reader.Tell() >= reader.Size()) break;
                 var newChunk = new Chunk(reader);
                 var chunkData = newChunk.Read();
                 if (newChunk.Id == 32639) break;
                 if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
-                if (reader.Tell() >= reader.Size()) break;
+                
                 var newTask = new Task(() =>
                 {
 
@@ -103,8 +105,8 @@ namespace CTFAK.CCN
 
                         Logger.Log(
                             $"Encountered chunk: {chunkName}, chunk flag: {newChunk.Flag}, exe size: {newChunk.Size}, decompressed size: {chunkData.Length}");
-                        //File.WriteAllBytes($"CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin",chunkData);
-                        //Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin");
+                        File.WriteAllBytes($"CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin",chunkData);
+                        Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin");
                     }
 
                     switch (newChunk.Id)
@@ -191,6 +193,28 @@ namespace CTFAK.CCN
                             var copyrightChunk = new Copyright(chunkReader);
                             copyrightChunk.Read();
                             copyright = copyrightChunk.value;
+                            break;
+                        
+                        case 8787: //2.5+ object headers:
+                            while (true)
+                            {
+                                if (chunkReader.Tell() >= chunkReader.Size()) break;
+                                var newObject = new ObjectInfo(null);
+                                newObject.handle = chunkReader.ReadInt16();
+                                newObject.ObjectType = chunkReader.ReadInt16();
+                                newObject.Flags = chunkReader.ReadInt16();
+                                chunkReader.Skip(10); //TODO: Fix object header reading for 2.5+
+                                
+                                frameitems.Add(newObject.handle,newObject);
+                            }
+                            break;
+                        case 8788: //2.5+ object names:
+                            for (int i = 0; i < frameitems.Count-2; i++)
+                            {
+                                var newName = "ass";//reader.ReadWideString();
+                                frameitems[i].name = newName;
+                            }
+
                             break;
                         case 13107:
                             var frame = new Frame(chunkReader);

@@ -11,7 +11,7 @@ namespace CTFAK.FileReaders
 {
     public class ApkFileReader
     {
-        public string ExtractCCN(string apkPath)
+        public static string ExtractCCN(string apkPath)
         {
             File.Delete(Path.GetTempPath() + "application.ccn");
             using (ZipArchive archive = ZipFile.OpenRead(apkPath))

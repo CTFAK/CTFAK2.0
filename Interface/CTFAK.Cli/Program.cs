@@ -78,7 +78,7 @@ public class Program
             {
                 if (File.Exists(Path.GetTempPath() + "application.ccn"))
                     File.Delete(Path.GetTempPath() + "application.ccn");
-                path = new ApkFileReader().ExtractCCN(path);
+                path = ApkFileReader.ExtractCCN(path);
                 gameParser = new CTFAK.EXE.CCNFileReader();
             }
             else

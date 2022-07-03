@@ -53,7 +53,6 @@ namespace CTFAK.FileReaders
 
 
             var firstShort = reader.PeekUInt16();
-            bool retard = false;
             //if (firstShort == 0x7777) Settings.GameType = GameType.Normal;
             //else if (firstShort == 0x222c) Settings.GameType = GameType.OnePointFive;
             return (int)reader.Tell();

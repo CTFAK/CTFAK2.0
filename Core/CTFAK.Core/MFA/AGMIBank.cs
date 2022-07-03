@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Threading.Tasks;
 using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
 
@@ -39,7 +41,8 @@ namespace CTFAK.MMFParser.MFA.Loaders
             }
         }
 
-
+        private List<Task> imageWriteTasks = new List<Task>();
+        private List<ByteWriter> imageWriters = new List<ByteWriter>();
         public override void Write(ByteWriter writer)
         {
             writer.WriteInt32(GraphicMode);
@@ -49,8 +52,24 @@ namespace CTFAK.MMFParser.MFA.Loaders
             writer.WriteInt32(Items.Count);
             foreach (var key in Items.Keys)
             {
-                var newOffset = Items[key].WriteNew(writer);
-                writer.Seek(newOffset);
+                var newWriter = new ByteWriter(new MemoryStream());
+                var writeTask = new Task(() =>
+                {
+                    var newOffset = Items[key].WriteNew(newWriter);
+                });
+                imageWriteTasks.Add(writeTask);
+                imageWriters.Add(newWriter);
+                writeTask.Start();
+            }
+
+            foreach (var task in imageWriteTasks)
+            {
+                task.Wait();
+            }
+
+            foreach (var newWriter in imageWriters)
+            {
+                writer.WriteWriter(newWriter);
             }
 
 

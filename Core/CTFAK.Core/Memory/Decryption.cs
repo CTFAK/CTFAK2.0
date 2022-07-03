@@ -19,7 +19,6 @@ namespace CTFAK.Memory
             // MakeKeyUnicode(data1,data2,data3);
             // return;
             IntPtr keyPtr;
-            var combined = "";
             if (data1 == null) data1 = "";
             if (data2 == null) data2 = "";
             if (data3 == null) data3 = "";
