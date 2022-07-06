@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.CCN.Chunks;
 
 namespace CTFAK.FileReaders
 {
@@ -21,6 +22,7 @@ namespace CTFAK.FileReaders
 
         public void LoadGame(string gamePath)
         {
+            Core.currentReader = this;
             Settings.gameType = Settings.GameType.NORMAL;
             var icoExt = new IconExtractor(gamePath);
             var icos = icoExt.GetAllIcons();
@@ -38,11 +40,29 @@ namespace CTFAK.FileReaders
 
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             ReadHeader(reader);
-            var packData = new PackData();
-            packData.Read(reader);
+            PackData packData=null;
+            if (Settings.Old)
+            {
+                Settings.Unicode = false;
+                while (true)
+                {
+                    if (reader.Tell() >= reader.Size()) break;
+                    var newChunk = new Chunk(reader);
+                    var chunkData = newChunk.Read();
+                    if (newChunk.Id == 32639) break;
+                }
+                
+            }
+            else
+            {
+                packData = new PackData();
+                packData.Read(reader);
+                
+            }
+            
             game = new GameData();
             game.Read(reader);
-            game.packData = packData;
+            if(!Settings.Old)game.packData = packData;
         }
 
         public int ReadHeader(ByteReader reader)
@@ -53,8 +73,8 @@ namespace CTFAK.FileReaders
 
 
             var firstShort = reader.PeekUInt16();
-            //if (firstShort == 0x7777) Settings.GameType = GameType.Normal;
-            //else if (firstShort == 0x222c) Settings.GameType = GameType.OnePointFive;
+            if (firstShort == 0x7777) Settings.gameType = Settings.GameType.NORMAL;
+            else if (firstShort == 0x222c) Settings.gameType = Settings.GameType.MMF15;
             return (int)reader.Tell();
         }
         public int CalculateEntryPoint(ByteReader exeReader)

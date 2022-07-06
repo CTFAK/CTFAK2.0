@@ -58,8 +58,12 @@ namespace CTFAK.CCN.Chunks.Objects
                 Size = reader.ReadInt32();
                 ObstacleType = (Obstacle)reader.ReadInt16();
                 CollisionType = (Collision)reader.ReadInt16();
-                Width = reader.ReadInt32();
-                Height = reader.ReadInt32();
+                if (!Settings.Old)
+                {
+                    Width = reader.ReadInt32();
+                    Height = reader.ReadInt32(); 
+                }
+                
                 Image = reader.ReadInt16();
 
         }

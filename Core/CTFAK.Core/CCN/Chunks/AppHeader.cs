@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
 {
@@ -65,7 +66,7 @@ namespace CTFAK.CCN.Chunks
         public override void Read()
         {
             var start = reader.Tell();
-            Size = reader.ReadInt32();
+            if(!Settings.Old) Size = reader.ReadInt32();
             Flags.flag = (uint)reader.ReadInt16();
 
             NewFlags.flag = (uint)reader.ReadInt16();
@@ -76,13 +77,11 @@ namespace CTFAK.CCN.Chunks
             InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);
             InitialLives = (int)(reader.ReadUInt32() ^ 0xffffffff);
             Controls = new Controls(reader);
-
-            // if (Settings.GameType == GameType.OnePointFive) Reader.Skip(56);
-            // else Controls.Read();
-            Controls.Read();
+            if(Settings.Old) reader.Skip(56);
+            else Controls.Read();
             BorderColor = reader.ReadColor();
             NumberOfFrames = reader.ReadInt32();
-            //if (Settings.Old) return;
+            if (Settings.Old) return;
             FrameRate = reader.ReadInt32();
             WindowsMenuIndex = reader.ReadInt32();
         }

@@ -36,7 +36,7 @@ namespace CTFAK.CCN.Chunks.Frame
             var parameterOffset = reader.ReadInt32();
             var parameterSize = reader.ReadInt32();
             reader.Seek(currentPos + nameOffset);
-            ModuleFile = reader.ReadWideString();
+            ModuleFile = reader.ReadUniversal();
             reader.Seek(currentPos + parameterOffset);
             ParameterData = reader.ReadBytes(parameterSize);
 

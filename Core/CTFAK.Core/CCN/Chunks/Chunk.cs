@@ -45,7 +45,14 @@ namespace CTFAK.CCN.Chunks
                     ChunkData = Decryption.DecodeMode3(dataReader.ReadBytes(Size), Size, Id, out var DecompressedSize);
                     break;
                 case ChunkFlags.Compressed:
-                    ChunkData = Decompressor.Decompress(dataReader, out DecompressedSize);
+                    if (Settings.Old)
+                    {
+                        var start = dataReader.Tell();
+                        ChunkData = Decompressor.DecompressOld(dataReader);
+                        dataReader.Seek(start + Size);
+                    }
+                    else ChunkData = Decompressor.Decompress(dataReader, out DecompressedSize);
+                    
                     break;
                 case ChunkFlags.NotCompressed:
                     ChunkData = dataReader.ReadBytes(Size);

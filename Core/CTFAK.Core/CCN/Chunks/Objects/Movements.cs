@@ -61,16 +61,64 @@ namespace CTFAK.CCN.Chunks.Objects
 
         public override void Read()
         {
-          
+
+            if (Settings.Old)
+            {
+                Player = reader.ReadUInt16();
+                Type = reader.ReadUInt16();
+                MovingAtStart = reader.ReadByte();
+                reader.Skip(3);
+                DirectionAtStart = reader.ReadInt32();
+                if (Type == 5 && Settings.Old)
+                {
+                    Type = 0;
+                    Loader = null;
+                    return;
+                }
+
+                switch (Type)
+                {
+                    case 1:
+                        Loader = new Mouse(reader);
+                        break;
+                    case 2:
+                        Loader = new RaceMovement(reader);
+                        break;
+                    case 3:
+                        Loader = new EightDirections(reader);
+                        break;
+                    case 4:
+                        Loader = new Ball(reader);
+                        break;
+                    case 5:
+                        Loader = new MovementPath(reader);
+                        break;
+                    case 9:
+                        Loader = new PlatformMovement(reader);
+                        break;
+                    case 14:
+                        Loader = new ExtensionsMovement(reader);
+                        break;
+
+
+                }
+
+                if (Loader == null && Type != 0) throw new Exception("Unsupported movement: " + Type);
+                Loader?.Read();
+
+            }
+            else
+            {
                 var nameOffset = reader.ReadInt32();
                 var movementId = reader.ReadInt32();
                 var newOffset = reader.ReadInt32();
                 DataSize = reader.ReadInt32();
-            reader.Seek(rootPos + newOffset);
+                reader.Seek(rootPos + newOffset);
+
                 Player = reader.ReadUInt16();
                 Type = reader.ReadUInt16();
                 MovingAtStart = reader.ReadByte();
-            reader.Skip(3);
+                reader.Skip(3);
                 DirectionAtStart = reader.ReadInt32();
                 switch (Type)
                 {
@@ -98,11 +146,13 @@ namespace CTFAK.CCN.Chunks.Objects
 
 
                 }
-                if (Loader == null && Type != 0) throw new Exception("Unsupported movement: " + Type);
+
+                if (Loader == null && Type != 0) return; //throw new Exception("Unsupported movement: "+Type);
                 Loader?.Read();
             }
+        }
 
-        
+
 
         public override void Write(ByteWriter Writer)
         {

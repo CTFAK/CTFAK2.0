@@ -13,7 +13,7 @@ namespace CTFAK.CCN.Chunks
         public string value="";
         public override void Read()
         {
-            value = reader.ReadWideString();
+            value = reader.ReadUniversal();
             if (value == null) value = "";
         }
 

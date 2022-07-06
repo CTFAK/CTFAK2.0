@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Text;
+using CTFAK.Utils;
 
 namespace CTFAK.Memory
 {
@@ -138,8 +139,12 @@ namespace CTFAK.Memory
 
         public string ReadUniversal(int len = -1)
         {
-            return ReadWideString(len);
-            // return ReadAscii(len);
+            if (Settings.Unicode)
+            {
+                return ReadWideString(len); 
+            }
+            else
+                return ReadAscii(len);
         }
         public Color ReadColor()
         {

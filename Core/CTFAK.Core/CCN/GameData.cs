@@ -17,6 +17,10 @@ namespace CTFAK.CCN
 {
     public class GameData
     {
+        public static event Core.SaveHandler OnChunkLoaded;
+        public static event Core.SaveHandler OnFrameLoaded;
+        
+        
         private short runtimeVersion;
         private short runtimeSubversion;
         private int productVersion;
@@ -80,14 +84,13 @@ namespace CTFAK.CCN
             List<Task> readingTasks = new List<Task>();
             while(true)
             {
+                OnChunkLoaded?.Invoke(chunkIndex,0);
                 if (reader.Tell() >= reader.Size()) break;
                 var newChunk = new Chunk(reader);
                 var chunkData = newChunk.Read();
                 if (newChunk.Id == 32639) break;
-                if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
-                
-                var newTask = new Task(() =>
-                {
+                if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS; 
+            
 
 
                     var chunkReader = new ByteReader(chunkData);
@@ -145,8 +148,7 @@ namespace CTFAK.CCN
                             {
                                 var newObjInfo = new ObjectInfo(chunkReader);
                                 newObjInfo.Read();
-                                if (!newObjInfo.name.Contains("OS"))
-                                    frameitems.Add(newObjInfo.handle, newObjInfo);
+                                frameitems.Add(newObjInfo.handle, newObjInfo);
                             }
 
                             break;
@@ -219,6 +221,7 @@ namespace CTFAK.CCN
                         case 13107:
                             var frame = new Frame(chunkReader);
                             frame.Read();
+                            OnFrameLoaded?.Invoke(frames.Count,header.NumberOfFrames);
                             frames.Add(frame);
                             break;
 
@@ -242,17 +245,7 @@ namespace CTFAK.CCN
                             break;
 
                     }
-                });
-                if (Decryption._decryptionKey == null)
-                {
-                    newTask.RunSynchronously();
-                }
-                else
-                {
-                    readingTasks.Add(newTask);
-                    newTask.RunSynchronously();
-                    //newTask.Start(); //quite literally useless
-                }
+
                 
 
             }

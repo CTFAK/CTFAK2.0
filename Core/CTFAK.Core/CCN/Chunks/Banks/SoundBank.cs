@@ -12,6 +12,8 @@ namespace CTFAK.CCN.Chunks.Banks
 {
     public class SoundBank : ChunkLoader
     {
+        public static event Core.SaveHandler OnSoundLoaded;
+        
         public int NumOfItems = 0;
         public int References = 0;
         public List<SoundItem> Items;
@@ -36,11 +38,13 @@ namespace CTFAK.CCN.Chunks.Banks
             {
 
                 if (Settings.android) continue;
+                if(Settings.Old) continue;
+                
                 var item = new SoundItem(reader);
                 
                     item.IsCompressed = IsCompressed;
                     item.Read();
-                
+                OnSoundLoaded?.Invoke(i,NumOfItems);
 
 
                 Items.Add(item);

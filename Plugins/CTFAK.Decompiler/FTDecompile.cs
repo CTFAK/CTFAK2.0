@@ -226,13 +226,12 @@ namespace CTFAK.Tools
                 newFrame.Palette = frame.palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
-                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Left = frame.virtualRect.left;
-                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect.top;
-                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect.right;
-                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect.bottom;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Left = frame.virtualRect?.left ?? 0;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect?.top ?? 0;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
+                newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
                 //LayerInfo
-                if(frame.layers==null) continue;
-                if (true)//Settings.GameType != GameType.OnePointFive && frame.Layers != null)
+                if (Settings.Old && frame.layers != null)
                 {
                     var count = frame.layers.Items.Count;
                     for (int i = 0; i < count; i++)
@@ -265,7 +264,7 @@ namespace CTFAK.Tools
                 var newFrameItems = new List<MFAObjectInfo>();
                 var newInstances = new List<MFAObjectInstance>();
                 if (frame.objects != null)
-                // if (false)
+                //if (false)
                 {
 
                     for (int i = 0; i < frame.objects.Count; i++)
@@ -311,15 +310,15 @@ namespace CTFAK.Tools
                     newFolder.Items = new List<uint>() { (uint)newFrameItem.Handle };
                     newFrame.Folders.Add(newFolder);
                 }
-                // if(false)
+                //if(false)
                 {
                     newFrame.Events = new MFAEvents((ByteReader)null);
                     newFrame.Events.Items = new List<EventGroup>();
                     newFrame.Events.Objects = new List<EventObject>();
                     newFrame.Events._ifMFA = true;
                     newFrame.Events.Version = 1028;
-                    // if(false)
-                    if (frame.events != null)
+                    if(false)
+                    //if (frame.events != null)
                     {
                         foreach (var item in newFrame.Items)
                         {

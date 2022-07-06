@@ -27,10 +27,19 @@ namespace CTFAK.CCN.Chunks.Frame
             handle = (ushort)reader.ReadInt16();
             objectInfo = (ushort)reader.ReadInt16();
 
-            x = reader.ReadInt32();
-            y = reader.ReadInt32();
+            if (Settings.Old)
+            {
+                y = reader.ReadInt16();
+                x = reader.ReadInt16();
+            }
+            else
+            {
+                x = reader.ReadInt32();
+                y = reader.ReadInt32();
+            }
             parentType = reader.ReadInt16();
             parentHandle = reader.ReadInt16();
+            if (Settings.Old) return;
             layer = reader.ReadInt16();
             flags = reader.ReadInt16();
 
@@ -108,10 +117,21 @@ namespace CTFAK.CCN.Chunks.Frame
                         name = frameName.value;
                         break;
                     case 13108:
-                        width = chunkReader.ReadInt32();
-                        height = chunkReader.ReadInt32();
-                        background = chunkReader.ReadColor();
-                        flags.flag = chunkReader.ReadUInt32();
+                        if (Settings.Old)
+                        {
+                            width = chunkReader.ReadInt16();
+                            height = chunkReader.ReadInt16();
+                            background = chunkReader.ReadColor();
+                            flags.flag = chunkReader.ReadUInt16();
+                        }
+                        else
+                        {
+                            width = chunkReader.ReadInt32();
+                            height = chunkReader.ReadInt32();
+                            background = chunkReader.ReadColor();
+                            flags.flag = chunkReader.ReadUInt32();
+                        }
+                        
                         break;
                     case 13112:
                         var count = chunkReader.ReadInt32();

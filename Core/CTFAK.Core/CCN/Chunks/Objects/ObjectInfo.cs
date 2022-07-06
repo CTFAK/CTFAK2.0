@@ -36,7 +36,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 switch (newChunk.Id)
                 {
                     case 17477:
-                        name = chunkReader.ReadWideString();
+                        name = chunkReader.ReadUniversal();
                         break;
                     case 17476:
                         handle = chunkReader.ReadInt16();

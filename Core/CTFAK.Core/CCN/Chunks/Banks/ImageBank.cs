@@ -18,7 +18,7 @@ namespace CTFAK.CCN.Chunks.Banks
 {
     public class ImageBank : ChunkLoader
     {
-        
+        public static event Core.SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
         public ImageBank(ByteReader reader) : base(reader) { }
         public override void Read()
@@ -41,6 +41,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 {
                     var newImg = new Image(reader);
                     newImg.Read();
+                    OnImageLoaded?.Invoke(i,count);
                     Items.Add(newImg.Handle, newImg);
                 }
                 
@@ -342,10 +343,36 @@ namespace CTFAK.CCN.Chunks.Banks
                 graphicMode = 4;
                 
             }
+            else if (Settings.Old)
+            {
+                Handle = reader.ReadInt32();
+                var imageReader = new ByteReader(Decompressor.DecompressOld(reader));
+                checksum = imageReader.ReadInt16();
+                references = imageReader.ReadInt32();
+                var size = imageReader.ReadInt32();
+                width = imageReader.ReadInt16();
+                height = imageReader.ReadInt16();
+                graphicMode = imageReader.ReadByte();
+                Flags.flag = imageReader.ReadByte();
+                HotspotX = imageReader.ReadInt16();
+                HotspotY = imageReader.ReadInt16();
+                ActionX = imageReader.ReadInt16();
+                ActionY = imageReader.ReadInt16();
+                if (Flags["LZX"])
+                {
+                    uint decompressedSize = imageReader.ReadUInt32();
+
+                    imageData = Decompressor.DecompressBlock(imageReader,
+                        (int)(imageReader.Size() - imageReader.Tell()),
+                        (int)decompressedSize);
+                }
+                else imageData = imageReader.ReadBytes((int)(size));
+                
+                
+            }
             
 
             
-
         }
 
         public static List<Task> imageWritingTasks = new List<Task>();
