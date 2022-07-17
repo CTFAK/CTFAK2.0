@@ -72,6 +72,7 @@ namespace CTFAK.CCN
             //if (magic == Constants.UnicodeGameHeader) Settings.Unicode = true;//PAMU
             //else if (magic == Constants.GameHeader) Settings.Unicode = false;//PAME
             //else Logger.Log("Couldn't found any known headers", true, ConsoleColor.Red);//Header not found
+            if(Settings.Old)reader.Skip(1);
             runtimeVersion = (short)reader.ReadUInt16();
             runtimeSubversion = (short)reader.ReadUInt16();
             productVersion = reader.ReadInt32();
@@ -149,6 +150,8 @@ namespace CTFAK.CCN
                                 var newObjInfo = new ObjectInfo(chunkReader);
                                 newObjInfo.Read();
                                 frameitems.Add(newObjInfo.handle, newObjInfo);
+
+                                
                             }
 
                             break;

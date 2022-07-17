@@ -85,7 +85,6 @@ namespace CTFAK.EXE
         {
             UInt16 len = exeReader.ReadUInt16();
             PackFilename = exeReader.ReadWideString(len);
-            Console.WriteLine(PackFilename);
             _bingo = exeReader.ReadInt32();
             Data = exeReader.ReadBytes(exeReader.ReadInt32());
             //File.WriteAllBytes($"my ass-{PackFilename}",ZlibStream.UncompressBuffer(Data));

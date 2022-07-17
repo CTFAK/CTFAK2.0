@@ -271,15 +271,20 @@ namespace CTFAK.CCN.Chunks.Objects
                 Animations = new Animations(reader);
                 Animations.Read();
             }
-            else
-            {
-                //Console.WriteLine("NOT FOUND");
-            }
+
 
 
             if (_movementsOffset > 0)
             {
-                if (!Settings.Old)
+                if (Settings.Old)
+                {
+                    reader.Seek(currentPosition + _movementsOffset);
+                    Movements = new Movements(null);
+                    var newMovement = new Movement(reader);
+                    newMovement.Read();
+                    Movements.Items.Add(newMovement);
+                }
+                else
                 {
                     reader.Seek(currentPosition + _movementsOffset);
 

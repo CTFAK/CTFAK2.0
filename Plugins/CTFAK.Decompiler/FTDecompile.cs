@@ -231,7 +231,7 @@ namespace CTFAK.Tools
                 newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                 newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
                 //LayerInfo
-                if (Settings.Old && frame.layers != null)
+                if (!Settings.Old && frame.layers != null)
                 {
                     var count = frame.layers.Items.Count;
                     for (int i = 0; i < count; i++)
@@ -317,8 +317,8 @@ namespace CTFAK.Tools
                     newFrame.Events.Objects = new List<EventObject>();
                     newFrame.Events._ifMFA = true;
                     newFrame.Events.Version = 1028;
-                    if(false)
-                    //if (frame.events != null)
+                    //if(false)
+                    if (frame.events != null)
                     {
                         foreach (var item in newFrame.Items)
                         {
@@ -547,7 +547,7 @@ namespace CTFAK.Tools
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e);
+                            
                             //FTDecompile.lastAllocatedHandleImg++;
                             var imageCntr = new CCN.Chunks.Banks.Image(null);
                             imageCntr.Handle = lastAllocatedHandleImg;

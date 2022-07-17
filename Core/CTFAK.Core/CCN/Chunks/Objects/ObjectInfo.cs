@@ -59,6 +59,12 @@ namespace CTFAK.CCN.Chunks.Objects
                             chunkReader.Skip(2);
                             InkEffectValue = chunkReader.ReadByte();
                         }
+
+                        if (Settings.Old)
+                        {
+                            rgbCoeff = Color.White;
+                            blend = 255;
+                        }
                         
                         
                         break;

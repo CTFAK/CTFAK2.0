@@ -47,9 +47,10 @@ namespace CTFAK.FileReaders
                 while (true)
                 {
                     if (reader.Tell() >= reader.Size()) break;
-                    var newChunk = new Chunk(reader);
-                    var chunkData = newChunk.Read();
-                    if (newChunk.Id == 32639) break;
+                    var ID = reader.ReadInt16();
+                    //var newChunk = new Chunk(reader);
+                    //var chunkData = newChunk.Read();
+                    if (ID == 32639) break;
                 }
                 
             }
@@ -73,8 +74,9 @@ namespace CTFAK.FileReaders
 
 
             var firstShort = reader.PeekUInt16();
+
             if (firstShort == 0x7777) Settings.gameType = Settings.GameType.NORMAL;
-            else if (firstShort == 0x222c) Settings.gameType = Settings.GameType.MMF15;
+            else/* if (firstShort == 0x222c)*/ Settings.gameType = Settings.GameType.MMF15;
             return (int)reader.Tell();
         }
         public int CalculateEntryPoint(ByteReader exeReader)
