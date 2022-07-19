@@ -58,6 +58,11 @@ namespace CTFAK.CCN.Chunks
                     ChunkData = dataReader.ReadBytes(Size);
                     break;
             }
+
+            if (ChunkData == null)
+            {
+                Logger.Log($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
+            }
             return ChunkData;
 
         }

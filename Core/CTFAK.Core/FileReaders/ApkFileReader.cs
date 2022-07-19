@@ -13,6 +13,7 @@ namespace CTFAK.FileReaders
     {
         public static string ExtractCCN(string apkPath)
         {
+            Settings.gameType = Settings.GameType.ANDROID;
             File.Delete(Path.GetTempPath() + "application.ccn");
             using (ZipArchive archive = ZipFile.OpenRead(apkPath))
             {

@@ -132,8 +132,8 @@ namespace CTFAK.MFA
 
             MaxObjects = reader.ReadInt32();
             Password = reader.AutoReadUnicode();
-            UnkString = reader.AutoReadUnicode();
-
+            //UnkString = reader.AutoReadUnicode();
+            reader.Skip(16);
             LastViewedX = reader.ReadInt32();
             LastViewedY = reader.ReadInt32();
 

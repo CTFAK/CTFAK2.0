@@ -22,7 +22,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public override void Read()
         {
 
-          
+            if (Settings.Old) return;//TODO FIX FIX FIX
             var count = reader.ReadInt32();
             int offset = 0;
             if (Settings.Build > 284 && !Debug) offset = -1;

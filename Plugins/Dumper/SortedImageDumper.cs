@@ -18,7 +18,7 @@ namespace Dumper
         public void Execute(IFileReader reader)
         {
             var outPath = reader.getGameData().name ?? "Unknown Game";
-            var images = reader.getGameData().images.Items;
+            var images = reader.getGameData().Images.Items;
             var frames = reader.getGameData().frames;
             var objects = reader.getGameData().frameitems;
             

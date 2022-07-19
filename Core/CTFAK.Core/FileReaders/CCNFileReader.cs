@@ -23,7 +23,7 @@ namespace CTFAK.EXE
 
         public void LoadGame(string gamePath)
         {
-            Settings.gameType = Settings.GameType.ANDROID;
+            
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             game = new GameData();
             game.Read(reader);

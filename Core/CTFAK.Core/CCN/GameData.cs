@@ -46,7 +46,7 @@ namespace CTFAK.CCN
         public FontBank Fonts;
         public SoundBank Sounds;
         public MusicBank Music;
-        public ImageBank images;
+        public ImageBank Images=new ImageBank(null);
 
         //public GlobalValues GValues;
         //public GlobalStrings GStrings;
@@ -67,12 +67,12 @@ namespace CTFAK.CCN
         
         public void Read(ByteReader reader)
         {
+            Console.WriteLine(reader.Tell());
             string magic = reader.ReadAscii(4); //Reading header
             //Checking for header
-            //if (magic == Constants.UnicodeGameHeader) Settings.Unicode = true;//PAMU
-            //else if (magic == Constants.GameHeader) Settings.Unicode = false;//PAME
-            //else Logger.Log("Couldn't found any known headers", true, ConsoleColor.Red);//Header not found
-            if(Settings.Old)reader.Skip(1);
+            if (magic == "PAMU") Settings.Unicode = true;//PAMU
+            else if (magic == "PAME") Settings.Unicode = false;//PAME
+            else Logger.Log("Couldn't found any known headers: "+magic, true, ConsoleColor.Red);//Header not found
             runtimeVersion = (short)reader.ReadUInt16();
             runtimeSubversion = (short)reader.ReadUInt16();
             productVersion = reader.ReadInt32();
@@ -229,8 +229,8 @@ namespace CTFAK.CCN
                             break;
 
                         case 26214:
-                            images = new ImageBank(chunkReader);
-                            images.Read();
+                            Images = new ImageBank(chunkReader);
+                            Images.Read();
                             break;
                         case 26215:
                             Fonts = new FontBank(chunkReader);

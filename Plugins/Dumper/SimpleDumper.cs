@@ -30,7 +30,7 @@ namespace Dumper
 
         public void Execute(IFileReader reader)
         {
-            var images = reader.getGameData().images.Items;
+            var images = reader.getGameData().Images.Items;
             var outPath = reader.getGameData().name ?? "Unknown Game";
             Directory.CreateDirectory($"Dumps\\{outPath}\\Images");
             Task[] tasks = new Task[images.Count];

@@ -91,7 +91,6 @@ namespace CTFAK.MFA
         public string HelpFile;
         public string unknown_string; //Found in original mfa build 283 after help file
         public string unknown_string_2; //Found in original mfa build 283 after build path
-        public byte[] VitalizePreview;
         public int InitialScore;
         public int InitialLifes;
         public int FrameRate;
@@ -258,6 +257,7 @@ namespace CTFAK.MFA
             MfaBuild = reader.ReadInt32();
             Product = reader.ReadInt32();
             BuildVersion = reader.ReadInt32();
+            //reader.ReadInt32();//unknown
             // Settings.Build = BuildVersion;
             LangId = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
@@ -304,8 +304,7 @@ namespace CTFAK.MFA
             GraphicFlags.flag = reader.ReadUInt32();
             HelpFile = reader.AutoReadUnicode();
             unknown_string = reader.AutoReadUnicode();
-            //Int32 vit_size = reader.ReadInt32();
-            //VitalizePreview = reader.ReadBytes(vit_size);
+
 
             InitialScore = reader.ReadInt32();
             InitialLifes = reader.ReadInt32();
@@ -385,6 +384,7 @@ namespace CTFAK.MFA
                 Extensions.Add(tuple);
             }
 
+            reader.ReadInt16();
             List<int> frameOffsets = new List<int>();
             var offCount = reader.ReadInt32();
             for (int i = 0; i < offCount; i++)

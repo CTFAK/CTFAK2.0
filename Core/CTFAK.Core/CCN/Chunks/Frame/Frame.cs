@@ -115,6 +115,7 @@ namespace CTFAK.CCN.Chunks.Frame
                         var frameName = new StringChunk(chunkReader);
                         frameName.Read();
                         name = frameName.value;
+
                         break;
                     case 13108:
                         if (Settings.Old)
@@ -123,6 +124,7 @@ namespace CTFAK.CCN.Chunks.Frame
                             height = chunkReader.ReadInt16();
                             background = chunkReader.ReadColor();
                             flags.flag = chunkReader.ReadUInt16();
+                            
                         }
                         else
                         {
@@ -141,6 +143,7 @@ namespace CTFAK.CCN.Chunks.Frame
                             objInst.Read();
                             objects.Add(objInst);
                         }
+                        
                         break;
                     case 13117:
                         events = new Events(chunkReader);
@@ -167,6 +170,7 @@ namespace CTFAK.CCN.Chunks.Frame
                     case 13122:
                         virtualRect = new VirtualRect(chunkReader);
                         virtualRect.Read();
+                        
                         break;
 
                         

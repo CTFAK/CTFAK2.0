@@ -32,7 +32,17 @@ namespace CTFAK.Tools
         {
             var game = reader.getGameData();
             var mfa = new MFAData();
+            bool myAss=false;
+            if (Settings.Old)
+            {
+                myAss = true;
+                Settings.gameType = Settings.GameType.NORMAL;
+            }
             mfa.Read(new ByteReader("template.mfa", FileMode.Open));
+            if (myAss)
+            {
+                Settings.gameType = Settings.GameType.MMF15;
+            }
 
             mfa.Name = game.name;
             mfa.LangId = 0;//8192;
@@ -60,7 +70,7 @@ namespace CTFAK.Tools
             }
 
             mfa.Music = game.Music;
-            mfa.Images.Items = game.images.Items;
+            mfa.Images.Items = game.Images?.Items;
             foreach (var key in mfa.Images.Items.Keys)
             {
                 mfa.Images.Items[key].IsMFA = true;
@@ -223,7 +233,7 @@ namespace CTFAK.Tools
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
                 if (frame.palette == null) continue;
-                newFrame.Palette = frame.palette ?? new List<Color>();
+                newFrame.Palette =frame.palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
                 newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Left = frame.virtualRect?.left ?? 0;
@@ -231,7 +241,18 @@ namespace CTFAK.Tools
                 newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                 newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
                 //LayerInfo
-                if (!Settings.Old && frame.layers != null)
+                if (Settings.Old)
+                {
+
+                    var tempLayer = new MFALayer(null);
+
+                    tempLayer.Name = "Layer 1";
+                    tempLayer.XCoefficient = 1;
+                    tempLayer.YCoefficient = 1;
+                    tempLayer.Flags["Visible"] = true;
+                    newFrame.Layers.Add(tempLayer);
+                }
+                else
                 {
                     var count = frame.layers.Items.Count;
                     for (int i = 0; i < count; i++)
@@ -249,17 +270,8 @@ namespace CTFAK.Tools
                         newFrame.Layers.Add(newLayer);
                     }
                 }
-                else
-                {
-                    var tempLayer = new MFALayer(null);
 
-                    tempLayer.Name = "Layer 1";
-                    tempLayer.XCoefficient = 1;
-                    tempLayer.YCoefficient = 1;
-                    tempLayer.Flags["Visible"] = true;
-                    newFrame.Layers.Add(tempLayer);
-                }
-
+                
 
                 var newFrameItems = new List<MFAObjectInfo>();
                 var newInstances = new List<MFAObjectInstance>();
@@ -406,6 +418,7 @@ namespace CTFAK.Tools
                 Logger.Log($"Translating frame {frame.name} - {a}");
                 mfa.Frames.Add(newFrame);
             }
+            Settings.gameType = Settings.GameType.NORMAL;
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
         }
 
@@ -454,7 +467,7 @@ namespace CTFAK.Tools
                         FTDecompile.lastAllocatedHandleImg++;
                         var imgHandleqBack = ((Quickbackdrop)item.properties).Shape.Image;
 
-                        var imgqBack = game.images.Items[imgHandleqBack].bitmap.resizeImage(new Size(32,32));
+                        var imgqBack = game.Images.Items[imgHandleqBack].bitmap.resizeImage(new Size(32,32));
                         
                         var imageqBack = new CCN.Chunks.Banks.Image(null);
                         imageqBack.Handle = lastAllocatedHandleImg;
@@ -465,7 +478,7 @@ namespace CTFAK.Tools
                     case 1: //Backdrop
                         FTDecompile.lastAllocatedHandleImg++;
                         var imgHandleBack = ((Backdrop)item.properties).Image;
-                        var imgBack = game.images.Items[imgHandleBack].bitmap.resizeImage(new Size(32,32));
+                        var imgBack = game.Images.Items[imgHandleBack].bitmap.resizeImage(new Size(32,32));
                         
                         var imageBack = new CCN.Chunks.Banks.Image(null);
                         imageBack.Handle = lastAllocatedHandleImg;
@@ -479,7 +492,7 @@ namespace CTFAK.Tools
                         {
                             FTDecompile.lastAllocatedHandleImg++;
                             var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
-                            var imgAct = game.images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
+                            var imgAct = game.Images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
                             
                             var imageAct = new CCN.Chunks.Banks.Image(null);
                             imageAct.Handle = lastAllocatedHandleImg;
@@ -537,7 +550,7 @@ namespace CTFAK.Tools
                         {
                             FTDecompile.lastAllocatedHandleImg++;
                             var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
-                            var imgCntr = game.images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
+                            var imgCntr = game.Images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
                             
                             var imageCntr = new CCN.Chunks.Banks.Image(null);
                             imageCntr.Handle = lastAllocatedHandleImg;

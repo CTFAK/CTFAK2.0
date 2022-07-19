@@ -44,14 +44,21 @@ namespace CTFAK.FileReaders
             if (Settings.Old)
             {
                 Settings.Unicode = false;
-                while (true)
+                if (reader.PeekInt32() != 1162690896)//PAME magic
                 {
-                    if (reader.Tell() >= reader.Size()) break;
-                    var ID = reader.ReadInt16();
-                    //var newChunk = new Chunk(reader);
-                    //var chunkData = newChunk.Read();
-                    if (ID == 32639) break;
+                    while (true)
+                    {
+                        if (reader.Tell() >= reader.Size()) break;
+                        var ID = reader.ReadInt16();
+                        var flag = reader.ReadInt16();
+                        var size = reader.ReadInt32();
+                        reader.ReadBytes(size);
+                        //var newChunk = new Chunk(reader);
+                        //var chunkData = newChunk.Read();
+                        if (ID == 32639) break;
+                    } 
                 }
+                
                 
             }
             else
@@ -77,6 +84,7 @@ namespace CTFAK.FileReaders
 
             if (firstShort == 0x7777) Settings.gameType = Settings.GameType.NORMAL;
             else/* if (firstShort == 0x222c)*/ Settings.gameType = Settings.GameType.MMF15;
+            if(Settings.Old)Logger.Log($"1.5 game detected. First short: {firstShort.ToString("X")}");
             return (int)reader.Tell();
         }
         public int CalculateEntryPoint(ByteReader exeReader)
