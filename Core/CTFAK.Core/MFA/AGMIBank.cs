@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
@@ -17,7 +18,7 @@ namespace CTFAK.MMFParser.MFA.Loaders
         private int PaletteVersion;
         private int PaletteEntries;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
-        public List<Color> Palette;
+        public List<Color> Palette=new Color[256].ToList();
 
         public override void Read()
         {

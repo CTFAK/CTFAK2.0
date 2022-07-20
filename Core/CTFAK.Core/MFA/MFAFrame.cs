@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
 using CTFAK.Utils;
@@ -37,7 +38,7 @@ namespace CTFAK.MFA
 
         public string Password = "";
         public string UnkString = "";
-        public List<Color> Palette;
+        public List<Color> Palette=new Color[256].ToList();
         public int StampHandle;
         public int ActiveLayer;
         public List<MFALayer> Layers = new List<MFALayer>();

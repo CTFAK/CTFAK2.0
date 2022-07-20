@@ -101,11 +101,11 @@ namespace CTFAK.MFA
         public uint MenuSize;
         public AppMenu Menu;
         private int windowMenuIndex;
-        private Dictionary<Int32, Int32> menuImages;
-        private byte[] GlobalEvents;
-        private int GraphicMode;
-        private int IcoCount;
-        private int QualCount;
+        public Dictionary<Int32, Int32> menuImages;
+        public byte[] GlobalEvents;
+        public int GraphicMode;
+        public int IcoCount;
+        public int QualCount;
         public MFAControls Controls;
         public List<int> IconImages;
         public List<Tuple<int, string, string, int, string>> Extensions;
@@ -232,10 +232,11 @@ namespace CTFAK.MFA
                 Writer.WriteUnicode(extension.Item5, false);
 
             }
-
+            //Writer.Skip(-2);
             Writer.WriteInt32(Frames.Count); //frame
+            
             var startPos = Writer.Tell() + 4 * Frames.Count + 4;
-
+            //Console.WriteLine(startPos);
             ByteWriter newWriter = new ByteWriter(new MemoryStream());
             foreach (MFAFrame frame in Frames)
             {
@@ -243,8 +244,10 @@ namespace CTFAK.MFA
                 frame.Write(newWriter);
             }
             Writer.WriteUInt32((uint)(startPos + newWriter.Tell()));
+            
             Writer.WriteWriter(newWriter);
             Chunks.Write(Writer);
+            Writer.Flush();
             Console.WriteLine("Writing done");
 
 
@@ -383,8 +386,12 @@ namespace CTFAK.MFA
                 var tuple = new Tuple<int, string, string, int, string>(handle, filename, name, magic, subType);
                 Extensions.Add(tuple);
             }
-
             reader.ReadInt16();
+            if (reader.PeekInt32() > 900)
+            {
+                
+            }
+            //
             List<int> frameOffsets = new List<int>();
             var offCount = reader.ReadInt32();
             for (int i = 0; i < offCount; i++)

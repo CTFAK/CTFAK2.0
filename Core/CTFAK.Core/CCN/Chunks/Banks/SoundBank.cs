@@ -16,7 +16,7 @@ namespace CTFAK.CCN.Chunks.Banks
         
         public int NumOfItems = 0;
         public int References = 0;
-        public List<SoundItem> Items;
+        public List<SoundItem> Items=new List<SoundItem>();
         public bool IsCompressed = true;
 
 

@@ -12,7 +12,7 @@ namespace CTFAK.Memory
 {
     public static class Decompressor
     {
-        public static ZLibCompLevel compressionLevel = ZLibCompLevel.Level5;
+        public static ZLibCompLevel compressionLevel = ZLibCompLevel.Default;
         public static byte[] Decompress(ByteReader exeReader, out int decompressed)
         {
             Int32 decompSize = exeReader.ReadInt32();

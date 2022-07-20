@@ -14,7 +14,9 @@ namespace JFusion.ObjectTypes
         
         public static JMFAActive FromMFA(MFAObjectInfo oi)
         {
+            
             var active = new JMFAActive();
+            active.objectType = 2;
             var activeProps = (MFAActive)oi.Loader;
             foreach (var mfaAnim in activeProps.Items)
             {

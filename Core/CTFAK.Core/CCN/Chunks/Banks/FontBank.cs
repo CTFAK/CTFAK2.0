@@ -14,7 +14,7 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public bool Compressed;
         public bool Debug;
-        public List<FontItem> Items;
+        public List<FontItem> Items=new List<FontItem>();
 
 
 

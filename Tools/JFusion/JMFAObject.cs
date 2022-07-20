@@ -7,7 +7,7 @@ namespace JFusion
     public class JMFAObject
     {
         public string name;
-        
+        public int objectType;
         public int xPos;
         public int yPos;
         public uint layer;
@@ -22,6 +22,7 @@ namespace JFusion
         public static JMFAObject FromMFA(MFAObjectInstance mfaInst, MFAObjectInfo mfaObj)
         {
             JMFAObject newObject = new JMFAObject();
+            newObject.objectType = mfaObj.ObjectType;
             switch (mfaObj.ObjectType)
             {
                 case 0://Quick Backdrop
@@ -53,6 +54,7 @@ namespace JFusion
             newObject.xPos = mfaInst.X;
             newObject.yPos = mfaInst.Y;
             newObject.layer = mfaInst.Layer;
+            
             return newObject;
         }
     }

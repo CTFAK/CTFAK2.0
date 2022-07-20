@@ -13,7 +13,7 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public int NumOfItems = 0;
         public int References = 0;
-        public List<MusicFile> Items;
+        public List<MusicFile> Items=new List<MusicFile>();
 
         public override void Write(ByteWriter Writer)
         {

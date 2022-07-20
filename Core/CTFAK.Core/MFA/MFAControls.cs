@@ -10,7 +10,7 @@ namespace CTFAK.MFA
 {
     public class MFAControls : ChunkLoader
     {
-        public List<MFAPlayerControl> Items;
+        public List<MFAPlayerControl> Items=new List<MFAPlayerControl>();
 
         public MFAControls(ByteReader reader) : base(reader) { }
 

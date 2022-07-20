@@ -460,26 +460,17 @@ namespace CTFAK.Tools
 
 
           
+                bool noicon = false;
+            try
+            {
                 switch (item.ObjectType)
                 {
                     case 0: //Quick Backdrop, defaults to Backdrop
-                        
-                        FTDecompile.lastAllocatedHandleImg++;
-                        var imgHandleqBack = ((Quickbackdrop)item.properties).Shape.Image;
 
-                        var imgqBack = game.Images.Items[imgHandleqBack].bitmap.resizeImage(new Size(32,32));
-                        
-                        var imageqBack = new CCN.Chunks.Banks.Image(null);
-                        imageqBack.Handle = lastAllocatedHandleImg;
-                        //imageBack.transparent = game.images.Items[imgHandleBack].transparent;
-                        imageqBack.FromBitmap(imgqBack);
-                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageqBack);
-                        break;
                     case 1: //Backdrop
-                        FTDecompile.lastAllocatedHandleImg++;
                         var imgHandleBack = ((Backdrop)item.properties).Image;
                         var imgBack = game.Images.Items[imgHandleBack].bitmap.resizeImage(new Size(32,32));
-                        
+                        FTDecompile.lastAllocatedHandleImg++;
                         var imageBack = new CCN.Chunks.Banks.Image(null);
                         imageBack.Handle = lastAllocatedHandleImg;
                         //imageBack.transparent = game.images.Items[imgHandleBack].transparent;
@@ -488,29 +479,14 @@ namespace CTFAK.Tools
                         break;
 
                     case 2: //Active
-                        try
-                        {
-                            FTDecompile.lastAllocatedHandleImg++;
-                            var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
-                            var imgAct = game.Images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
-                            
-                            var imageAct = new CCN.Chunks.Banks.Image(null);
-                            imageAct.Handle = lastAllocatedHandleImg;
-                            //imageAct.transparent = game.images.Items[imgHandleAct].transparent;
-                            imageAct.FromBitmap(imgAct);
-                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
-                        }
-                        catch (Exception e)
-                        {
-                            //FTDecompile.lastAllocatedHandleImg++;
-                            var imageAct = new CCN.Chunks.Banks.Image(null);
-                            imageAct.Handle = lastAllocatedHandleImg;
-                            imageAct.FromBitmap((Bitmap)Properties.Resources.Active);
-                            if(!mfa.Icons.Items.ContainsKey(lastAllocatedHandleImg))
-                            
-                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
-                        }
-                        
+                        var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
+                        var imgAct = game.Images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
+                        FTDecompile.lastAllocatedHandleImg++;
+                        var imageAct = new CCN.Chunks.Banks.Image(null);
+                        imageAct.Handle = lastAllocatedHandleImg;
+                        //imageAct.transparent = game.images.Items[imgHandleAct].transparent;
+                        imageAct.FromBitmap(imgAct);
+                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
                         break;
 
                     case 3: //String
@@ -546,29 +522,14 @@ namespace CTFAK.Tools
                         break;
 
                     case 7: //Counter
-                        try
-                        {
-                            FTDecompile.lastAllocatedHandleImg++;
-                            var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
-                            var imgCntr = game.Images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
-                            
-                            var imageCntr = new CCN.Chunks.Banks.Image(null);
-                            imageCntr.Handle = lastAllocatedHandleImg;
-                            //imageCntr.transparent = game.images.Items[imgHandleCntr].transparent;
-                            imageCntr.FromBitmap(imgCntr);
-                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
-                        }
-                        catch (Exception e)
-                        {
-                            
-                            //FTDecompile.lastAllocatedHandleImg++;
-                            var imageCntr = new CCN.Chunks.Banks.Image(null);
-                            imageCntr.Handle = lastAllocatedHandleImg;
-                            imageCntr.FromBitmap((Bitmap)Properties.Resources.Counter);
-                            
-                        }
-                        
-                        
+                        var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
+                        var imgCntr = game.Images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
+                        FTDecompile.lastAllocatedHandleImg++;
+                        var imageCntr = new CCN.Chunks.Banks.Image(null);
+                        imageCntr.Handle = lastAllocatedHandleImg;
+                        //imageCntr.transparent = game.images.Items[imgHandleCntr].transparent;
+                        imageCntr.FromBitmap(imgCntr);
+                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
                         break;
 
                     case 8: //Formatted Text
@@ -587,34 +548,54 @@ namespace CTFAK.Tools
                         mfa.Icons.Items.Add(lastAllocatedHandleImg, imageSub);
                         break;
 
-                    default: //Extensions
-
-
-                        /*Extensions exts = game.extensions;
-                        Extension ext = null;
-                        foreach (var testExt in exts.Items)
-                        {
-                            if (testExt.Handle == (int)item.ObjectType - 32) ext = testExt;
-                        }
-
-                        foreach (var dataItem in game.packData.Items)
-                        {
-                            if (dataItem.PackFilename == (ext.Name+".mfx"))
-                            {
-                                var extData =  ZlibStream.UncompressBuffer(dataItem.Data);
-                                File.WriteAllBytes($"EXT_DUMP\\{dataItem.PackFilename}.bin",extData);
-                            }
-                        }*/
-                        
-                        FTDecompile.lastAllocatedHandleImg++;
-                        var imageExt = new CCN.Chunks.Banks.Image(null);
-                        imageExt.Handle = lastAllocatedHandleImg;
-                        imageExt.FromBitmap(Properties.Resources.EmptyIcon);
-                        mfa.Icons.Items.Add(lastAllocatedHandleImg, imageExt);
+                    default:
+                        noicon = true;
                         break;
                 }
-        
-            newItem.IconHandle = lastAllocatedHandleImg;
+            }
+            catch
+            {
+                try
+                {
+                    switch (item.ObjectType)
+                    {
+                        case 0: //Quick Backdrop, defaults to Backdrop
+
+                        case 1: //Backdrop
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageBack = new CCN.Chunks.Banks.Image(null);
+                            imageBack.Handle = lastAllocatedHandleImg;
+                            imageBack.FromBitmap((Bitmap)Properties.Resources.Backdrop);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageBack);
+                            break;
+
+                        case 2: //Active
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageAct = new CCN.Chunks.Banks.Image(null);
+                            imageAct.Handle = lastAllocatedHandleImg;
+                            imageAct.FromBitmap((Bitmap)Properties.Resources.Active);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
+                            break;
+
+                        case 7: //Counter
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageCntr = new CCN.Chunks.Banks.Image(null);
+                            imageCntr.Handle = lastAllocatedHandleImg;
+                            imageCntr.FromBitmap((Bitmap)Properties.Resources.Counter);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
+                            break;
+
+                        default:
+                            noicon = true;
+                            break;
+                    }
+                }
+                catch
+                {
+                    noicon = true;
+                }
+            }
+            newItem.IconHandle = noicon ? 14:lastAllocatedHandleImg;
             if (item.InkEffect!=1&&!Core.parameters.Contains("notrans"))
             {
                 newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
