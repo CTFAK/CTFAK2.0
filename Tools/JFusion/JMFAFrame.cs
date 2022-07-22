@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using CTFAK.CCN.Chunks.Objects;
+using CTFAK.Memory;
 using CTFAK.MFA;
 using CTFAK.MFA.MFAObjectLoaders;
 using JFusion.ObjectTypes;
@@ -18,7 +20,7 @@ namespace JFusion
         public Color backgroundColor;
         public int maxObjects;
 
-        [System.Text.Json.Serialization.JsonIgnore] public List<JMFAObject> objects = new List<JMFAObject>();
+        [System.Text.Json.Serialization.JsonIgnore] public List<JMFAActive> objects = new List<JMFAActive>();
         [JsonIgnore] public int handle;
 
         public int lastViewedX;
@@ -51,62 +53,52 @@ namespace JFusion
             mfaFrame.ActiveLayer = activeLayer;
             mfaFrame.Events = new MFAEvents(null);
             mfaFrame.Chunks = new MFAChunkList(null);
-
-            for (int i = 0; i < objects.Count; i++)
+            mfaFrame.Palette = palette;
+            mfaFrame.Layers.Add(new MFALayer(null)
             {
-                var jmfaobj = objects[i];
-
-                var newOi = new MFAObjectInfo(null);
+                Name = "Layer 1",
+                XCoefficient = 1,
+                YCoefficient = 1,
+                Flags = new BitDict(new string[]
+                {
+                    "Visible",
+                    "Locked",
+                    "Obsolete",
+                    "HideAtStart",
+                    "NoBackground",
+                    "WrapHorizontally",
+                    "WrapVertically",
+                    "PreviousEffect"
+                }){flag = 0}
+            });
+                /*var newOi = new MFAObjectInfo(null);
                 var newInst = new MFAObjectInstance(null);
                 var newFolder = new MFAItemFolder(null);
-               
 
 
-                    /*if (jmfaobj.objectType == 2)
-                    {
-                        Console.WriteLine("Translating object: " + jmfaobj.GetType());
-                        JMFAActive active = (JMFAActive)jmfaobj;
 
-                        newOi.Name = jmfaobj.name;
-                        newOi.ObjectType = 2;
-                        newOi.Handle = i;
-                        newInst.ItemHandle = (uint)i;
-                        newInst.X = jmfaobj.xPos;
-                        newInst.Y = jmfaobj.yPos;
+                        newOi.Name = "sus";
+                        newOi.ObjectType = 1;
+                        newOi.Handle = mfaFrame.Handle;
+                        
+                        newOi.Chunks = new MFAChunkList(null);
+                        newInst.ItemHandle = (uint)mfaFrame.Handle;
+                        newInst.X = 123;
+                        newInst.Y = 234;
+                        
 
-                        var activeLoader = new MFAActive(null);
-                        activeLoader.Items.Add(0, new MFAAnimation(null)
-                        {
-                            Directions = new List<MFAAnimationDirection>()
-                            {
-                                new MFAAnimationDirection(null)
-                                {
-                                    Name = null,
-                                    BackTo = active.animations[0]
-                                        .directions[0]
-                                        .backTo,
-                                    Frames = active.animations[0]
-                                        .directions[0]
-                                        .frames,
-                                    Index = 0,
-                                    MinSpeed = active.animations[0].directions[0].minSpeed,
-                                    MaxSpeed = active.animations[0].directions[0].maxSpeed,
-                                    Repeat = active.animations[0].directions[0].repeat,
+                        var backdropLoader = new MFABackdrop(null);
+                        backdropLoader.Handle = 573;
 
-
-                                }
-                            }
-                        });
-                        newOi.Loader = activeLoader;
+                        
+                        newOi.Loader = backdropLoader;
                         newFolder.isRetard = true;
                         newFolder.Items.Add((uint)newOi.Handle);
                         mfaFrame.Instances.Add(newInst);
                         mfaFrame.Items.Add(newOi);
-                    }*/
-              
-
-            }
-
+                        mfaFrame.Folders.Add(newFolder);*/
+                    
+                
 
             return mfaFrame;
         }
@@ -126,6 +118,7 @@ namespace JFusion
             newFrame.flags = mfaFrame.Flags.flag;
             newFrame.password = mfaFrame.Password;
             newFrame.activeLayer = mfaFrame.ActiveLayer;
+            newFrame.palette = mfaFrame.Palette;
             foreach (var mfaLayer in mfaFrame.Layers)
             {
                 var newLayer = new JMFALayer();
@@ -144,8 +137,8 @@ namespace JFusion
             {
                 try
                 {
-                    var newObj = JMFAObject.FromMFA(mfaInst, objectInfos[(int)mfaInst.ItemHandle]);
-                    newFrame.objects.Add(newObj); 
+                    //var newObj = JMFAObject.FromMFA(mfaInst, objectInfos[(int)mfaInst.ItemHandle]);
+                    //newFrame.objects.Add(newObj); 
                     
                 }
                 catch{Console.WriteLine("Failed to create object");}
@@ -182,7 +175,7 @@ namespace JFusion
                     case 1://Backdrop
                         break;
                     case 2://Active
-                        JMFAActive active = new JMFAActive();//JsonConvert.DeserializeObject<JMFAActive>(File.ReadAllText(objPath));
+                        JMFAActive active = JsonConvert.DeserializeObject<JMFAActive>(File.ReadAllText(objPath));
                         jframe.objects.Add((JMFAActive)active);
                         continue;
                         break;
@@ -203,7 +196,7 @@ namespace JFusion
                     default://Extension probably
                         break;
                 }
-                jframe.objects.Add(newObj);
+                //jframe.objects.Add(newObj);
             }
             
 

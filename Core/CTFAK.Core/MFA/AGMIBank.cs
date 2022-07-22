@@ -30,7 +30,7 @@ namespace CTFAK.MMFParser.MFA.Loaders
             {
                 Palette.Add(reader.ReadColor());
             }
-
+           
             var count = reader.ReadInt32();
 
             for (int i = 0; i < count; i++)
@@ -50,9 +50,11 @@ namespace CTFAK.MMFParser.MFA.Loaders
             writer.WriteInt16((short)PaletteVersion);
             writer.WriteInt16((short)PaletteEntries);
             for (int i = 0; i < 256; i++) writer.WriteColor(Palette[i]);
+            
             writer.WriteInt32(Items.Count);
             foreach (var key in Items.Keys)
             {
+                
                 var newWriter = new ByteWriter(new MemoryStream());
                 var writeTask = new Task(() =>
                 {

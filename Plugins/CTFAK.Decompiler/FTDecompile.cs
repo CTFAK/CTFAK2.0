@@ -229,7 +229,7 @@ namespace CTFAK.Tools
                 mfaFlags["TimerBasedMovements"] = originalFlags["TimedMovements"];
                 newFrame.Flags = mfaFlags;
                 newFrame.MaxObjects = frame.events?.MaxObjects ?? 10000;
-                newFrame.Password = "";
+                newFrame.Password ="";
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
                 if (frame.palette == null) continue;

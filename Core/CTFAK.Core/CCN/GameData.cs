@@ -150,10 +150,9 @@ namespace CTFAK.CCN
                                 var newObjInfo = new ObjectInfo(chunkReader);
                                 newObjInfo.Read();
                                 frameitems.Add(newObjInfo.handle, newObjInfo);
-
                                 
                             }
-
+                            
                             break;
                         case 8746:
                             //TODO: CHUNK_GLOBALEVENT

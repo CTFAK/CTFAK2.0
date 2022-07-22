@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Xml.Schema;
 using CTFAK.CCN.Chunks.Banks;
 using CTFAK.Memory;
 using CTFAK.MFA;
@@ -113,7 +114,7 @@ namespace JFusion
             //var mfaReader = new ByteReader("test.mfa", FileMode.Open);
             var mfa = new MFAData();
             
-            //Bmfa.Read(mfaReader);
+            //mfa.Read(mfaReader);
             mfa.Name = name;
             mfa.Description = description;
             mfa.Author = author;
@@ -124,8 +125,9 @@ namespace JFusion
             mfa.Aboutbox = aboutBox;
             mfa.WindowX = windowWidth;
             mfa.WindowY = windowHeight;
+
             mfa.DisplayFlags.flag = displayFlags;
-            mfa.GraphicFlags.flag = graphicFlags;
+            mfa.GraphicFlags.flag = 2181249;//don't ask
             mfa.FrameRate = frameRate;
             mfa.BuildType = buildType;
 
@@ -133,6 +135,11 @@ namespace JFusion
             mfa.Product = 2;
             mfa.BuildVersion = 292;
             mfa.LangId = 1033;
+            mfa.InitialLifes = 3;
+            mfa.GraphicMode = 4;
+            //mfa.Menu = null;
+            //mfa.Path = @"D:\ClickteamStuff\CTFAK2.0\CTFAK\Tools\JFusion\bin\Debug\net6.0-windows\test.mfa";
+            
             //mfa.Stamp = new byte[0];
 
             //EVERYTHING ABOVE THIS COMMENT IS UNFINISHED
@@ -167,12 +174,16 @@ namespace JFusion
                 image.Flags.flag = jMfAImage.Flags;
                 mfa.Images.Items.Add(image.Handle,image);
             }
+
+            mfa.Icons.Palette = frames[0].palette;
+            mfa.Images.Palette = frames[0].palette;
+            
             mfa.Controls = new MFAControls(null);
             mfa.menuImages = new Dictionary<int, int>();
             mfa.GlobalValues = new MFAValueList(null);
             mfa.GlobalStrings = new MFAValueList(null);
             mfa.GlobalEvents = new byte[0];
-
+            
             mfa.IconImages = new List<int>();
             mfa.CustomQuals = new List<Tuple<string, int>>();
             mfa.Extensions = new List<Tuple<int, string, string, int, string>>();

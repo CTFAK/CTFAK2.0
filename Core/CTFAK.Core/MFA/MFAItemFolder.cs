@@ -10,7 +10,7 @@ namespace CTFAK.MFA
 {
     public class MFAItemFolder : ChunkLoader
     {
-        public List<uint> Items;
+        public List<uint> Items=new List<uint>();
         public string Name;
         public uint UnkHeader;
         public bool isRetard;

@@ -379,6 +379,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public int WriteNew(ByteWriter writer)
         {
+            
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var start = writer.Tell();

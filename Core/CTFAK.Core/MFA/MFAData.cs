@@ -95,7 +95,7 @@ namespace CTFAK.MFA
         public int InitialLifes;
         public int FrameRate;
         public int BuildType;
-        public string BuildPath = " ";
+        public string BuildPath = "";
         public string CommandLine;
         public string Aboutbox;
         public uint MenuSize;
@@ -123,7 +123,9 @@ namespace CTFAK.MFA
         {
 
             Writer.WriteAscii("MFU2");
+            
             Writer.WriteInt32(MfaBuild);
+            
             Writer.WriteInt32(Product);
             Writer.WriteInt32(BuildVersion);
             Writer.WriteInt32(LangId);
@@ -131,6 +133,7 @@ namespace CTFAK.MFA
             Writer.AutoWriteUnicode(Description);
             Writer.AutoWriteUnicode(Path);
             Writer.WriteUInt32((uint)Stamp.Length);
+            
             Writer.WriteBytes(Stamp);
             Writer.WriteAscii(FontBankId);
             Fonts.Write(Writer);
@@ -141,11 +144,13 @@ namespace CTFAK.MFA
             Writer.WriteInt32(0); //someone is using musics lol?
             //TODO: Do music
             Writer.WriteAscii(ImageBankId);
+            
             Icons.Write(Writer);
+            
             Writer.WriteAscii(ImageBankId);
             Images.Write(Writer);
 
-
+            
             Writer.AutoWriteUnicode(Name);
             Writer.AutoWriteUnicode(Author);
             Writer.AutoWriteUnicode(Description);
@@ -168,14 +173,14 @@ namespace CTFAK.MFA
             Writer.AutoWriteUnicode(CommandLine);
             Writer.AutoWriteUnicode(Aboutbox);
             Writer.WriteInt32(0);
-
+            
             Writer.WriteInt32(BinaryFiles.Count);
             foreach (byte[] binaryFile in BinaryFiles)
             {
                 Writer.WriteInt32(binaryFile.Length);
                 Writer.WriteBytes(binaryFile);
             }
-
+            
             Controls.Write(Writer);
 
             if (Menu != null)
@@ -193,7 +198,7 @@ namespace CTFAK.MFA
                 Writer.WriteInt32(0);
             }
 
-
+            
             Writer.WriteInt32(windowMenuIndex);
             Writer.WriteInt32(menuImages.Count);
             foreach (KeyValuePair<int, int> valuePair in menuImages)
@@ -248,6 +253,7 @@ namespace CTFAK.MFA
             Writer.WriteWriter(newWriter);
             Chunks.Write(Writer);
             Writer.Flush();
+            Writer.Close();
             Console.WriteLine("Writing done");
 
 
@@ -386,10 +392,10 @@ namespace CTFAK.MFA
                 var tuple = new Tuple<int, string, string, int, string>(handle, filename, name, magic, subType);
                 Extensions.Add(tuple);
             }
-            reader.ReadInt16();
+
             if (reader.PeekInt32() > 900)
             {
-                
+                reader.ReadInt16(); 
             }
             //
             List<int> frameOffsets = new List<int>();

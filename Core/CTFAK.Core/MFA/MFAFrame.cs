@@ -36,7 +36,7 @@ namespace CTFAK.MFA
             "NoGlobalEvents"
         });
 
-        public string Password = "";
+        public string Password;
         public string UnkString = "";
         public List<Color> Palette=new Color[256].ToList();
         public int StampHandle;
@@ -47,7 +47,8 @@ namespace CTFAK.MFA
         public MFATransition FadeIn;
         public MFATransition FadeOut;
         public int PaletteSize;
-
+        
+        
         public MFAFrame(ByteReader reader) : base(reader)
         {
         }
@@ -57,13 +58,20 @@ namespace CTFAK.MFA
         {
             Writer.WriteInt32(Handle);
             Writer.AutoWriteUnicode(Name);
+            Console.WriteLine("pos: "+Writer.Tell());
             Writer.WriteInt32(SizeX);
             Writer.WriteInt32(SizeY);
             Writer.WriteColor(Background);
+            
             Writer.WriteUInt32(Flags.flag);
             Writer.WriteInt32(MaxObjects);
-            Writer.AutoWriteUnicode(Password);
-            Writer.AutoWriteUnicode(UnkString);
+            
+            Writer.WriteInt32(0);
+            Writer.WriteInt32(12);
+            Writer.Skip(12);
+            
+            Console.WriteLine("pos: "+Writer.Tell());
+            
             Writer.WriteInt32(LastViewedX);
             Writer.WriteInt32(LastViewedY);
             Writer.WriteInt32(Palette.Count);//WTF HELP 
@@ -132,9 +140,11 @@ namespace CTFAK.MFA
             Flags.flag = reader.ReadUInt32();
 
             MaxObjects = reader.ReadInt32();
-            Password = reader.AutoReadUnicode();
-            //UnkString = reader.AutoReadUnicode();
-            reader.Skip(16);
+            
+            reader.ReadInt32();//garbage
+            var password = reader.ReadBytes(reader.ReadInt32());
+            
+
             LastViewedX = reader.ReadInt32();
             LastViewedY = reader.ReadInt32();
 
