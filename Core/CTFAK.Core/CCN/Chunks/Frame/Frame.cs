@@ -148,7 +148,6 @@ namespace CTFAK.CCN.Chunks.Frame
                     case 13117:
                         events = new Events(chunkReader);
                         events.Read();
-                        //File.WriteAllBytes($"FNAFWorldTest\\{name}",chunkReader.ReadBytes());
                         break;
                     case 13121:
                         layers = new Layers(chunkReader);

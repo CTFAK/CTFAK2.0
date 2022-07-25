@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
     <PackageReference Include="Joveler.Compression.ZLib" Version="4.1.0" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.5.22301.12" />
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />

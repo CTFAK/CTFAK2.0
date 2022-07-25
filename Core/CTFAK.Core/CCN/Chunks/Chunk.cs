@@ -2,6 +2,7 @@
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,12 +30,15 @@ namespace CTFAK.CCN.Chunks
         public byte[] Read()
         {
             Id = reader.ReadInt16();
+            
+
 
             Flag = (ChunkFlags)reader.ReadInt16();
             Size = reader.ReadInt32();
             var rawData = reader.ReadBytes(Size);
             var dataReader = new ByteReader(rawData);
             byte[] ChunkData = null;
+
             switch (Flag)
             {
                 case ChunkFlags.Encrypted:

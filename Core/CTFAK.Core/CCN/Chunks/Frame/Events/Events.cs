@@ -266,7 +266,7 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             var num = cond.Num;
             //Alterable Values:
-            if (num == -42) num = -27;
+            if (num == -42||num==-43) num = -27;
             //Global Values
                 if(cond.ObjectType==-1)
                 if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33)
@@ -497,7 +497,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 item = new ParamObject(reader);
             }
 
-            if (code == 2)
+            if (code == 2||code==42)
             {
                 item = new Time(reader);
             }
@@ -568,7 +568,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
             if (code == 55)
             {
-                item = new Extension(reader);
+                item = new MMFParser.EXE.Loaders.Events.Parameters.Extension(reader);
             }
 
             if (code == 38)
@@ -597,6 +597,7 @@ namespace CTFAK.CCN.Chunks.Frame
             }
             if (code == 68) item = new MultipleVariables(reader);
             if (code == 69) item = new ChildEvent(reader);
+            if (code == 70) item = new Int(reader);
 
 
 

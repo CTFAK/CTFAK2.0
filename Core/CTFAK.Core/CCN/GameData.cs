@@ -9,9 +9,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using CTFAK.EXE;
+using CTFAK.MMFParser.EXE.Loaders;
+using Ionic.Zlib;
 
 namespace CTFAK.CCN
 {
@@ -60,11 +63,13 @@ namespace CTFAK.CCN
         public Extensions extensions;
 
         public PackData packData;
+        public Shaders shaders;
+        public GlobalStrings globalStrings;
+        public GlobalValues globalValues;
+        public ExtData extData;
+        public BinaryFiles binaryFiles;
 
 
-
-
-        
         public void Read(ByteReader reader)
         {
             Console.WriteLine(reader.Tell());
@@ -162,6 +167,8 @@ namespace CTFAK.CCN
                             frameHandles.Read();
                             break;
                         case 8748:
+                            extData = new ExtData(chunkReader);
+                            extData.Read();
                             //TODO: CHUNK_EXTDATA
                             break;
                         case 8749:
@@ -185,18 +192,38 @@ namespace CTFAK.CCN
                             //TODO: CHUNK_OTHEREXTS
                             break;
                         case 8754:
-                            //TODO: CHUNK_GLOBALVALUES;
+                            globalValues = new GlobalValues(chunkReader);
+                            globalValues.Read();
+                            break;
+                        case 8755:
+                            
+                            //File.WriteAllBytes("anus2000.bin",chunkReader.ReadBytes());
+                            //globalStrings = new GlobalStrings(chunkReader);
+                            //globalStrings.Read();
                             break;
                         case 8756:
                             extensions = new Extensions(chunkReader);
                             extensions.Read();
                             break;
 
+                        case 8759:
 
+                            break;
+                        case 8760:
+                            binaryFiles = new BinaryFiles(chunkReader);
+                            binaryFiles.Read();
+                            break;
                         case 8763:
                             var copyrightChunk = new Copyright(chunkReader);
                             copyrightChunk.Read();
                             copyright = copyrightChunk.value;
+                            break;
+                        case 8770:
+
+                            break;
+                        case 8771:
+                            shaders = new Shaders(chunkReader);
+                            shaders.Read();
                             break;
                         
                         case 8787: //2.5+ object headers:
@@ -207,17 +234,76 @@ namespace CTFAK.CCN
                                 newObject.handle = chunkReader.ReadInt16();
                                 newObject.ObjectType = chunkReader.ReadInt16();
                                 newObject.Flags = chunkReader.ReadInt16();
-                                chunkReader.Skip(10); //TODO: Fix object header reading for 2.5+
+                                chunkReader.Skip(2);
+                                newObject.InkEffect = chunkReader.ReadByte();
+                                if(newObject.InkEffect!=1)
+                                {
+                                    chunkReader.Skip(3);
+                                    var r = chunkReader.ReadByte();
+                                    var g = chunkReader.ReadByte();
+                                    var b = chunkReader.ReadByte();
+                                    newObject.rgbCoeff = Color.FromArgb(0, r, g, b);
+                                    newObject.blend = chunkReader.ReadByte();
+                                }
+                                else
+                                {
+                                    var flag = chunkReader.ReadByte();
+                                    chunkReader.Skip(2);
+                                    newObject.InkEffectValue = chunkReader.ReadByte();
+                                    chunkReader.Skip(3);
+                                }
                                 
                                 frameitems.Add(newObject.handle,newObject);
                             }
                             break;
                         case 8788: //2.5+ object names:
-                            for (int i = 0; i < frameitems.Count-2; i++)
+                            var nstart = chunkReader.Tell();
+                            
+                            var nend = nstart + chunkReader.Size();
+                            //chunkReader.ReadInt32();
+                            int ncurrent = 0;
+                            while (chunkReader.Tell() < nend)
                             {
-                                var newName = "ass";//reader.ReadWideString();
-                                frameitems[i].name = newName;
+                                
+                                var newName = "sex";
+                                
+                                frameitems[ncurrent].name = chunkReader.ReadWideString();
+                                ncurrent++;
                             }
+
+                            break;
+                        case 8790: //2.5+ object properties
+                            var start = chunkReader.Tell();
+                            
+                            var end = start + chunkReader.Size();
+                            chunkReader.ReadInt32();
+                            int current = 0;
+                            while (chunkReader.Tell() < end)
+                            {
+                                var currentPosition = chunkReader.Tell();
+                                Console.WriteLine("reading object props: "+current);
+                                var chunkSize = chunkReader.ReadInt32();
+                                var data = chunkReader.ReadBytes(chunkSize);
+                                var decompressed = ZlibStream.UncompressBuffer(data);
+                                var decompressedReader = new ByteReader(decompressed);
+
+                                var objectData = frameitems[current];
+
+                                if (objectData.ObjectType == 0)
+                                    objectData.properties = new Quickbackdrop(decompressedReader);
+                                else if (objectData.ObjectType == 1)
+                                    objectData.properties = new Backdrop(decompressedReader);
+                                else objectData.properties = new ObjectCommon(decompressedReader);
+                                objectData.properties.Read();
+                                chunkReader.Seek(currentPosition+chunkSize+8);
+                                //else properties = new ObjectCommon(chunkReader, null);
+
+                                //properties?.Read();
+                                current++;
+                            }
+                            break;
+                        case 8793:
+
 
                             break;
                         case 13107:
@@ -225,9 +311,36 @@ namespace CTFAK.CCN
                             frame.Read();
                             OnFrameLoaded?.Invoke(frames.Count,header.NumberOfFrames);
                             frames.Add(frame);
+                            /*if (frame.name == "Battle")
+                            {
+                                
+                                int index = 0;
+                                int max = frame.events.Items.Count;
+                                for (int i = max; i > max-0; i--)
+                                {
+                                    frame.events.Items.Remove(frame.events.Items[i]);
+                                }
+                                foreach (var evGrp in frame.events.Items)
+                                {
+                                    Console.WriteLine($"{index}");
+                                    foreach (var cond in evGrp.Conditions)
+                                    {
+                                        Console.WriteLine(cond);
+                                    }
+                                    foreach (var cond in evGrp.Actions)
+                                    {
+                                        Console.WriteLine(cond);
+                                    }
+                                    Console.WriteLine("--------------------------");
+                                    index++;
+                                }
+                                Console.ReadKey();
+                            }*/
+                            
                             break;
 
                         case 26214:
+                            
                             Images = new ImageBank(chunkReader);
                             Images.Read();
                             break;

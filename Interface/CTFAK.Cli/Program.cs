@@ -89,7 +89,7 @@ public class Program
                             availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
                     }
                 }
-                Console.Clear();
+                //Console.Clear();
                 ASCIIArt.DrawArt();
                 ASCIIArt.SetStatus("Selecting tool");
                 Console.WriteLine($"{availableReaders.Count} readers(s) available\n\nSelect reader: ");
@@ -113,7 +113,7 @@ public class Program
 
             var readStopwatch = new Stopwatch();
             readStopwatch.Start();
-            Console.Clear();
+            //Console.Clear();
             ASCIIArt.DrawArt();
             ASCIIArt.SetStatus("Reading game");
             Console.WriteLine($"Reading game with \"{gameParser.Name}\"");
@@ -124,7 +124,7 @@ public class Program
             readStopwatch.Stop();
 
             
-            Console.Clear();
+            //Console.Clear();
             ASCIIArt.DrawArt();
             Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
             

@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ionic.Zlib;
 using Joveler.Compression.ZLib;
+using K4os.Compression.LZ4;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -88,8 +89,46 @@ namespace CTFAK.CCN.Chunks.Banks
                         case 7:
                             NativeLib.ReadSixteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
                             break;
+                        case 16:
+                            int stride = width * 4;
+                            int pad = GetPadding(width, 4);
+                            int position = 0;
+                            for (int y = 0; y < height; y++)
+                            {
+                                for (int x = 0; x < width; x++)
+                                {
+                                    var bytes = BitConverter.GetBytes(transparent);
+                                    colorArray[(y * stride) + (x * 4) + 0] = imageData[position+0];
+                                    colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
+                                    colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
+                                    
+                                    if (Flags["Alpha"])
+                                    {
+                                        colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
+                                    }
+                                    
+                                    else
+                                    {
+                                        //colorArray[(y * stride) + (x * 4) + 3] = 255;
+                                        if (imageData[position] == bytes[0] && imageData[position + 1] == bytes[1] &&
+                                            imageData[position + 2] == bytes[2])
+                                            colorArray[(y * stride) + (x * 4) + 3] = bytes[3];
+                                    }
+
+                                    
+                                    position += 4;
+                                }
+
+                                position += pad * 4;
+                            }
+                            break;
                     }
-                    Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
+
+                    if (graphicMode != 16)
+                    {
+                        Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
+
+                    }
                     Marshal.FreeHGlobal(resultAllocated);
                     Marshal.FreeHGlobal(imageAllocated);
                     //colorArray = ReadPoint(imageData, width, height, 4).Item1;
@@ -105,7 +144,7 @@ namespace CTFAK.CCN.Chunks.Banks
                         Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
 
                     realBitmap.UnlockBits(bmpData);
-                        //bmp.Save($"Images\\{Handle}.png");
+                    //realBitmap.Save($"Images\\{Handle}.png");
                         //Logger.Log("Trying again");
                     
                     
@@ -190,7 +229,13 @@ namespace CTFAK.CCN.Chunks.Banks
         
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
-            return (bytes - ((width * pointSize) % bytes)) % bytes;
+            int pad = bytes - ((width * pointSize) % bytes);
+            if (pad == bytes)
+            {
+                return 0;
+            }
+
+            return (int) Math.Ceiling((double) ((float) pad / (float) pointSize));
         }
         public bool IsMFA;
         public BitDict Flags = new BitDict(new string[]
@@ -228,16 +273,18 @@ namespace CTFAK.CCN.Chunks.Banks
             if (Settings.twofiveplus&&!IsMFA)
             {
                 Handle = reader.ReadInt32();
-
-                var unk2 = reader.ReadInt32();
-                var unk = reader.ReadInt32();
+                Handle -= 1;
+                var checksum = reader.ReadInt32();
+                var references = reader.ReadInt32();
                 //Flags.flag = reader.ReadUInt32();
                 var unk3 = reader.ReadInt32();
                 var dataSize = reader.ReadInt32();
                 width = reader.ReadInt16(); //width
                 height = reader.ReadInt16(); //height
+                reader.ReadByte();//color mode
+                Flags.flag = reader.ReadByte();
+
                 var unk6 = reader.ReadInt16();
-                var unk7 = reader.ReadInt16();
                 HotspotX = reader.ReadInt16();
                 HotspotY = reader.ReadInt16();
                 ActionX = reader.ReadInt16();
@@ -245,9 +292,18 @@ namespace CTFAK.CCN.Chunks.Banks
                 transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
+                //Flags["Alpha"] = true;
                 byte[] target = new byte[decompressedSize];
-                //LZ4Codec.Decode(rawImg, target);
+                LZ4Codec.Decode(rawImg, target);
+                imageData = target;
                 graphicMode = 16;
+                var bmp = bitmap;
+                var newImg = new Image(null);
+                newImg.FromBitmap(bmp);
+                imageData = newImg.imageData;
+                graphicMode = 4;
+                Flags = newImg.Flags;
+
             }
             else if(Settings.gameType==Settings.GameType.NORMAL)
             {

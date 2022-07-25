@@ -163,6 +163,43 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
+            else if (Settings.twofiveplus)
+            {
+                Console.WriteLine("Reading stuff for 2.5+");
+                var size = reader.ReadInt32();
+                _animationsOffset = reader.ReadInt16();
+                _movementsOffset = reader.ReadInt16();
+                var version = reader.ReadUInt16();
+                reader.Skip(2);
+                _extensionOffset = reader.ReadInt16();
+                _counterOffset = reader.ReadInt16();
+                Flags.flag = reader.ReadUInt16();
+                var penisFlags = reader.ReadInt16();
+                //reader.Skip(2);
+                if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
+                var end = reader.Tell() + 8 * 2;
+                for (int i = 0; i < 8; i++)
+                {
+                    _qualifiers[i] = reader.ReadInt16();
+                }
+
+                reader.Seek(end);
+                if (reader.Tell() > reader.Size() - 20)
+                {
+                    Console.WriteLine("E216: Ran out of bytes reading ObjectCommon (" + reader.Tell() + "/" + reader.Size() + ")");
+                    return; //really hacky shit, but it works
+                }
+                _systemObjectOffset = reader.ReadInt16();
+
+                _valuesOffset = reader.ReadInt16();
+                _stringsOffset = reader.ReadInt16();
+                NewFlags.flag = reader.ReadUInt16();
+                Preferences.flag = reader.ReadUInt16();
+                Identifier = reader.ReadAscii(4);
+                BackColor = reader.ReadColor();
+                _fadeinOffset = reader.ReadUInt32();
+                _fadeoutOffset = reader.ReadUInt32();
+            }
             else if (Settings.android)
             {
                 if (Settings.Build >= 290)
@@ -200,6 +237,34 @@ namespace CTFAK.CCN.Chunks.Objects
                     _fadeoutOffset = reader.ReadUInt32();
 
                 }
+                else if (Settings.Old)
+                {
+                    var size = reader.ReadUInt16();
+                    var checksum = reader.ReadUInt16();
+                    _movementsOffset = reader.ReadInt16();
+                    _animationsOffset = reader.ReadInt16();
+                    var version = reader.ReadUInt16();
+                    _counterOffset = reader.ReadInt16();
+                    _systemObjectOffset = reader.ReadInt16();
+                    var ocVariable = reader.ReadUInt32();
+                    Flags.flag = reader.ReadUInt16();
+                    
+                    var end = reader.Tell() + 8 * 2;
+                    for (int i = 0; i < 8; i++)
+                    {
+                        _qualifiers[i] = reader.ReadInt16();
+                    }
+                    reader.Seek(end);
+
+                    _extensionOffset = reader.ReadInt16();
+                    _valuesOffset = reader.ReadInt16();
+                    NewFlags.flag = reader.ReadUInt16();
+                    Preferences.flag = reader.ReadUInt16();
+                    Identifier = reader.ReadAscii(4);
+                    BackColor = reader.ReadColor();
+                    _fadeinOffset = reader.ReadUInt32();
+                    _fadeoutOffset = reader.ReadUInt32();
+                }
                 else
                 {
                     var size = reader.ReadInt32();
@@ -234,34 +299,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 
                 
             }
-            else if (Settings.Old)
-            {
-                var size = reader.ReadUInt16();
-                var checksum = reader.ReadUInt16();
-                _movementsOffset = reader.ReadInt16();
-                _animationsOffset = reader.ReadInt16();
-                var version = reader.ReadUInt16();
-                _counterOffset = reader.ReadInt16();
-                _systemObjectOffset = reader.ReadInt16();
-                var ocVariable = reader.ReadUInt32();
-                Flags.flag = reader.ReadUInt16();
-                    
-                var end = reader.Tell() + 8 * 2;
-                for (int i = 0; i < 8; i++)
-                {
-                    _qualifiers[i] = reader.ReadInt16();
-                }
-                reader.Seek(end);
-
-                _extensionOffset = reader.ReadInt16();
-                _valuesOffset = reader.ReadInt16();
-                NewFlags.flag = reader.ReadUInt16();
-                Preferences.flag = reader.ReadUInt16();
-                Identifier = reader.ReadAscii(4);
-                BackColor = reader.ReadColor();
-                _fadeinOffset = reader.ReadUInt32();
-                _fadeoutOffset = reader.ReadUInt32();
-            }
+            
 
             
             if (_animationsOffset > 0)
@@ -299,17 +337,17 @@ namespace CTFAK.CCN.Chunks.Objects
             if (_systemObjectOffset > 0)
             {
                 reader.Seek(currentPosition + _systemObjectOffset);
-                switch (((ObjectType)Parent.ObjectType))
+                switch (Identifier)
                 {
                     //Text
-                    case Constants.ObjectType.Text:
+                    case "TEXT":
                         Text = new Text(reader);
                         Text.Read();
                         break;
                     //Counter
-                    case Constants.ObjectType.Counter:
-                    case Constants.ObjectType.Score:
-                    case Constants.ObjectType.Lives:
+                    case "CNTR":
+                    case "SCORE":
+                    case "LIVES":
                         Counters = new Counters(reader);
                         Counters.Read();
                         break;

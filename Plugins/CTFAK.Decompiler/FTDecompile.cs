@@ -33,6 +33,7 @@ namespace CTFAK.Tools
             var game = reader.getGameData();
             var mfa = new MFAData();
             bool myAss=false;
+            Settings.gameType = Settings.GameType.NORMAL;
             if (Settings.Old)
             {
                 myAss = true;
@@ -152,6 +153,31 @@ namespace CTFAK.Tools
             displaySettings["MDI"] = newFlags["MDI"];
 
 
+
+            /*for (int i = 0; i < game.globalValues.Items.Count; i++)
+            {
+                var globalValue = game.globalValues.Items[i];
+                
+
+                mfa.GlobalValues.Items.Add(new ValueItem(null)
+                {
+                    Value = (globalValue is float) ? (float)globalValue:(int)globalValue,
+                    Name = $"Global Value "+i
+                    
+                });
+            }
+            for (int i = 0; i < game.globalStrings.Items.Count; i++)
+            {
+                var globalString = game.globalStrings.Items[i];
+                
+
+                mfa.GlobalStrings.Items.Add(new ValueItem(null)
+                {
+                    Value = globalString,
+                    Name = $"Global Value "+i
+                    
+                });
+            }*/
             //mfa.GraphicFlags = graphicSettings;
             //mfa.DisplayFlags = displaySettings;
             mfa.WindowX = game.header.WindowWidth;
