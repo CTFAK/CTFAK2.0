@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
 using CTFAK.Memory;
 using CTFAK.MMFParser.EXE.Loaders.Events.Expressions;
 using CTFAK.Utils;
@@ -66,6 +67,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 
         public override string ToString()
         {
+
             return  $"{(Items.Count > 0 ? "=="+Items[0].ToString() : " ")}";;
         }
     }

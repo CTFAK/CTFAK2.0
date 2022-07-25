@@ -4,7 +4,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class AlterableValue : Short
+    public class AlterableValue : Short
     {
 
         public AlterableValue(ByteReader reader) : base(reader) { }

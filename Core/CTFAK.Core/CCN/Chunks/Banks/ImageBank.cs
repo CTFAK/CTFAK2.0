@@ -24,6 +24,8 @@ namespace CTFAK.CCN.Chunks.Banks
         public ImageBank(ByteReader reader) : base(reader) { }
         public override void Read()
         {
+            if (Core.parameters.Contains("-noimg")) return;
+
             if (Settings.android)
             {
                 var maxHandle = reader.ReadInt16();
@@ -40,6 +42,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 var count = reader.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
+                    
                     var newImg = new Image(reader);
                     newImg.Read();
                     OnImageLoaded?.Invoke(i,count);

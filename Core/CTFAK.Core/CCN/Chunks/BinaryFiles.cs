@@ -33,7 +33,6 @@ namespace CTFAK.CCN.Chunks
 
         public override void Read()
         {
-            throw new System.NotImplementedException();
         }
 
         public override void Write(ByteWriter writer)
