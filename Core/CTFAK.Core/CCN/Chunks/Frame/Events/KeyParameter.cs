@@ -6,7 +6,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
     public class KeyParameter:ParameterCommon
     {
-        public short Key;
+        public ushort Key;
 
         public KeyParameter(ByteReader reader) : base(reader)
         {
@@ -14,12 +14,12 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 
         public override void Read()
         {
-            Key = reader.ReadInt16();
+            Key = reader.ReadUInt16();
         }
 
         public override void Write(ByteWriter Writer)
         {
-            Writer.WriteInt16(Key);
+            Writer.WriteUInt16(Key);
         }
 
         public override string ToString()

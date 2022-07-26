@@ -20,7 +20,7 @@ namespace EventPreprocessor.Handlers
         {
             var param0 = parameters[0].Loader as AlterableValue;
             var param1 = parameters[1].Loader as ExpressionParameter;
-            FTEventViewer.WriteLine($"({obj.name})->AlterableValue{param0.Value} {param1.GetOperator()} {ExpressionConverter.ConvertExpression(param1)}");
+            FTEventViewer.WriteLine($"({obj.name})->AlterableValue{Convert.ToChar(param0.Value+65).ToString().ToUpper()} {param1.GetOperator()} {ExpressionConverter.ConvertExpression(param1)}");
         }
         
 

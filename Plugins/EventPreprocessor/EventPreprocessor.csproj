@@ -9,4 +9,8 @@
       <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj" />
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="copy &quot;D:\ClickteamStuff\CTFAK2.0\CTFAK\Plugins\EventPreprocessor\bin\Debug\net6.0-windows\EventPreprocessor.dll&quot; &quot;D:\ClickteamStuff\CTFAK2.0\CTFAK\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins\EventPreprocessor.dll&quot;&#xA;copy &quot;D:\ClickteamStuff\CTFAK2.0\CTFAK\Plugins\EventPreprocessor\bin\Debug\net6.0-windows\EventPreprocessor.pdb&quot; &quot;D:\ClickteamStuff\CTFAK2.0\CTFAK\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins\EventPreprocessor.pdb&quot;" />
+    </Target>
+
 </Project>

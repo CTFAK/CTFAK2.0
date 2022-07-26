@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CTFAK.CCN;
 using CTFAK.CCN.Chunks.Frame;
 using CTFAK.CCN.Chunks.Objects;
 using CTFAK.FileReaders;
@@ -34,8 +35,13 @@ namespace EventPreprocessor
             Console.WriteLine();
             
             var game = reader.getGameData();
+            
+            
+            
             conditionHandlers.Add(-3,AppHandler.appConditionHandlers);
             conditionHandlers.Add(2,ActiveHandler.activeConditionHandlers);
+            conditionHandlers.Add(-1,SystemHandler.systemConditionHandlers);
+            conditionHandlers.Add(-6,KeyboardHandler.keyboardConditionHandlers);
 
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var type in types)
@@ -147,7 +153,7 @@ namespace EventPreprocessor
             var gotHandlers = conditionHandlers.TryGetValue(condition.ObjectType,out currentHandlers);
             if (!gotHandlers)
             {
-                WriteLine("Object not implemented: "+condition.ObjectType);
+                WriteLine($"Object not implemented: {(Constants.ObjectType)condition.ObjectType}({condition.ObjectType})");
                 return;
             }
 
@@ -162,13 +168,22 @@ namespace EventPreprocessor
                 }
                 else
                 {
-                    WriteLine($"UNIMPLEMENTED CONDITION. Num:{condition.Num}, ObjectType:{condition.ObjectType}");
+                    try
+                    {
+                        WriteLine(
+                            $"UNIMPLEMENTED CONDITION. {(Constants.ObjectType)condition.ObjectType}.{ConditionNames.ConditionSystemDict[condition.ObjectType][condition.Num]}({condition.ObjectType}::{condition.Num})");
+
+                    }
+                    catch
+                    {
+                        WriteLine($"UNKNOWN CONDITION {(Constants.ObjectType)condition.ObjectType}.{condition.Num}");
+                    }
                     WriteLine("Params: ");
                     foreach (var param in condition.Items)
                     {
                         WriteLine($"Loader: {param.Loader}, Value: {param.Value}");
                     }
-                    Console.ReadKey();
+                    //Console.ReadKey();
                 }
             }
             else WriteLine("CRITICAL IMPLEMENTATION ERROR");
@@ -176,6 +191,7 @@ namespace EventPreprocessor
 
         public void ProcessAction(Action action)
         {
+            return;
             Dictionary<int, ActionHandler> currentHandlers = new Dictionary<int, ActionHandler>();
             var conditionObject = objects[action.ObjectInfo];
             var gotHandlers = actionHandlers.TryGetValue(action.ObjectType,out currentHandlers);
