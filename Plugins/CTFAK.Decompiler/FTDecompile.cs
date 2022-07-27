@@ -203,7 +203,7 @@ namespace CTFAK.Tools
                 //Object Section
                 if (newItem.Loader == null)
                 {
-                    throw new NotImplementedException("Fucked Object: "+newItem.ObjectType);
+                    throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
                 }
                 FrameItems.Add(newItem.Handle, newItem);
             } 
