@@ -124,7 +124,7 @@ namespace CTFAK.Tools
             imageNull.FromBitmap((Bitmap)CTFAK.Properties.Resources.EmptyIcon);
             mfa.Icons.Items.Add(14, imageNull);
             // game.Images.Images.Clea r();
-
+             
             mfa.Author = game.author;
             mfa.Copyright = game.copyright;
             mfa.Company = "";
@@ -200,16 +200,19 @@ namespace CTFAK.Tools
                 var key = game.frameitems.Keys.ToArray()[i];
                 var item = game.frameitems[key];
                 var newItem = TranslateObject(mfa,game,item);
+                //Object Section
                 if (newItem.Loader == null)
                 {
-                    throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
+                    throw new NotImplementedException("Fucked Object: "+newItem.ObjectType);
                 }
                 FrameItems.Add(newItem.Handle, newItem);
-            }
+            } 
+            
 
 
-            // var reference = mfa.Frames.FirstOrDefault();
-            mfa.Frames.Clear();
+
+                // var reference = mfa.Frames.FirstOrDefault();
+                mfa.Frames.Clear();
 
             Dictionary<int, int> indexHandles = new Dictionary<int, int>();
             if(game.frameHandles!=null)
