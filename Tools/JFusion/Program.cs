@@ -118,7 +118,7 @@ public class Program
                     testMfa.Read(new ByteReader("test.mfa",FileMode.Open));
                     testMfa.Write(new ByteWriter("test_out.mfa",FileMode.Create));
                     break;
-                    default:
+                default:
                     goto SELECT_MODE;
             }
         }
