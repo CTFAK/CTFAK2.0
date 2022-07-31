@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using CTFAK;
 using CTFAK.Memory;
@@ -53,8 +53,6 @@ public class Program
             switch (key)
             {
                 case ConsoleKey.D1:
-                    while (true)
-                    {
                         try
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -78,18 +76,12 @@ public class Program
                         }
                         catch when (!File.Exists(mfapath))
                         {
-
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("ERROR: File not found");
-                            // goto MFAPATH;
                         }
-                    }
                     break;
 
-
                 case ConsoleKey.D2:
-                    while (true)
-                    {
                         try
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -116,7 +108,6 @@ public class Program
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("ERROR: Project not found");
                         }
-                    }
                     break;
 
 
