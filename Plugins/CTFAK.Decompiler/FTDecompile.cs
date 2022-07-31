@@ -203,7 +203,9 @@ namespace CTFAK.Tools
                 //Object Section
                 if (newItem.Loader == null)
                 {
-                    throw new NotImplementedException("Unsupported Object: "+newItem.ObjectType);
+                    Logger.Log("Unsupported Object: " + newItem.ObjectType);
+                    Console.WriteLine("Unsupported Object: " + newItem.ObjectType);
+                    continue;
                 }
                 FrameItems.Add(newItem.Handle, newItem);
             } 
