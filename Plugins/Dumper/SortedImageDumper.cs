@@ -57,8 +57,8 @@ namespace Dumper
 
                             try
                             {
-                                images[bg.Image].bitmap.Save($"{objectFolder}{imageNumber}.png");
-                                images[bg.Image].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{imageNumber}.png");
+                                images[bg.Image].bitmap.Save($"{objectFolder}{oi.name}.png");
+                                images[bg.Image].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}.png");
                                 retry = 5;
                             }
                             catch
@@ -79,8 +79,8 @@ namespace Dumper
 
                             try
                             {
-                                images[qbg.Image].bitmap.Save($"{objectFolder}{imageNumber}.png");
-                                images[qbg.Image].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{imageNumber}.png");
+                                images[qbg.Image].bitmap.Save($"{objectFolder}{oi.name}.png");
+                                images[qbg.Image].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}.png");
                                 retry = 5;
                             }
                             catch
@@ -95,7 +95,7 @@ namespace Dumper
                     }
                     else if (oi.properties is ObjectCommon common)
                     {
-                        if (Settings.twofiveplus && common.Identifier == "SPRI" || common.Parent.ObjectType == 2)
+                        if (Settings.twofiveplus && common.Identifier == "SPRI" || !Settings.twofiveplus && common.Parent.ObjectType == 2)
                         {
                             int cntrAnims = 0;
                             foreach (var anim in common.Animations?.AnimationDict)
@@ -137,7 +137,7 @@ namespace Dumper
                                             try
                                             {
                                                 images[frm].bitmap.Save($"{directionFolder}{frm}.png");
-                                                images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{imageNumber}.png");
+                                                images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{frm}.png");
                                                 retry = 5;
                                             }
                                             catch
@@ -153,7 +153,7 @@ namespace Dumper
                                 }
                             }
                         }
-                        else if (Settings.twofiveplus && common.Identifier == "CNTR" || common.Parent.ObjectType == 7)
+                        else if (Settings.twofiveplus && common.Identifier == "CNTR" || !Settings.twofiveplus && common.Parent.ObjectType == 7)
                         {
                             var counter = common.Counters;
                             if (counter == null) break;
@@ -163,7 +163,6 @@ namespace Dumper
                                 Bitmap bmp = images[cntrFrm].bitmap;
                                 var resultImage = new Bitmap(bmp.Width, bmp.Height);
                                 Color TransparencyRGB = bmp.GetPixel(0, 0);
-
                                 for (int w = 0; w < bmp.Width; w++)
                                     for (int h = 0; h < bmp.Height; h++)
                                     {
@@ -172,14 +171,14 @@ namespace Dumper
                                             bm2Color = System.Drawing.Color.FromArgb(255, bm2Color.R, bm2Color.G, bm2Color.B);
                                         resultImage.SetPixel(w, h, bm2Color);
                                     }
-
+                                
                                 Directory.CreateDirectory(objectFolder);
                                 while (retry < 5)
                                 {
                                     try
                                     {
                                         resultImage.Save($"{objectFolder}{cntrFrm}.png");
-                                        resultImage.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{imageNumber}.png");
+                                        resultImage.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{cntrFrm}.png");
                                         retry = 5;
                                     }
                                     catch
