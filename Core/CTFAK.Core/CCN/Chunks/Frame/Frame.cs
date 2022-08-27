@@ -110,12 +110,14 @@ namespace CTFAK.CCN.Chunks.Frame
                 if (reader.Tell() >= reader.Size()) break;
                 switch (newChunk.Id)
                 {
-                    
+
                     case 13109:
                         var frameName = new StringChunk(chunkReader);
                         frameName.Read();
-                        name = frameName.value;
-
+                        if (frameName.value == "" || frameName.value == null)
+                            name = "CORRUPTED FRAME";
+                        else
+                            name = frameName.value;
                         break;
                     case 13108:
                         if (Settings.Old)
@@ -178,7 +180,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 }
             }
 
-            Logger.Log($"Frame Found: {name}, {width}x{height}", true, ConsoleColor.Green);
+            Logger.Log($"Frame Found: {name}, {width}x{height}, {objects.Count} objects.", true, ConsoleColor.Green);
         }
         
 

@@ -1,19 +1,14 @@
 ﻿using CTFAK.Memory;
 using CTFAK.Utils;
+using Ionic.Zlib;
+using K4os.Compression.LZ4;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Ionic.Zlib;
-using Joveler.Compression.ZLib;
-using K4os.Compression.LZ4;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -206,27 +201,28 @@ namespace CTFAK.CCN.Chunks.Banks
                     ImageLockMode.ReadOnly,
                     PixelFormat.Format32bppArgb);
                 int copyPadAlpha = GetPadding(width, 1);
-                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride+copyPadAlpha*4;
+                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
 
                 byte[] bytesAlpha = new byte[lengthAlpha];
                 int strideAlpha = bitmapDataAlpha.Stride;
                 // Copy bitmap to byte[]
                 Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
                 bmp.UnlockBits(bitmapDataAlpha);
-            
+
                 int aPad = GetPadding(width, 1, 4);
                 int alphaPos = position;
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x*4)+3];
-                        alphaPos += 1;
+                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
+                        alphaPos += width - x;
                     }
 
                     alphaPos += aPad;
                 }
-            }catch(Exception ex){Console.WriteLine(ex);}
+            }
+            catch {}/*(Exception ex){Console.WriteLine(ex);}*/
             
         }
         
