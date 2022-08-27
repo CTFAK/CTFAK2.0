@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,7 +56,8 @@ namespace CTFAK.MFA
             ObjectType = reader.ReadInt32();
             Handle = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
-            Transparent = reader.ReadInt32();
+            reader.Skip(8);
+            //Transparent = reader.ReadInt32();
 
             InkEffect = reader.ReadInt32();
             InkEffectParameter = reader.ReadUInt32();
@@ -67,8 +69,13 @@ namespace CTFAK.MFA
             if (IconType == 1)
             {
                 IconHandle = reader.ReadInt32();
+                Logger.Log(IconHandle);
             }
-            else throw new InvalidDataException("invalid icon");
+            else
+            {
+                Console.WriteLine("Invalid icon");
+            }
+            
             Chunks = new MFAChunkList(reader);
             Chunks.Log = true;
             Chunks.Read();
@@ -76,30 +83,55 @@ namespace CTFAK.MFA
             if (ObjectType >= 32)//extension base
             {
                 Loader = new MFAExtensionObject(reader);
-
+                Loader.Read();
             }
             else if (ObjectType == 0)
             {
                 Loader = new MFAQuickBackdrop(reader);
+                Loader.Read();
+                Console.WriteLine("Loader.Read: "+ObjectType);
+                Logger.Log("Loader.Read: "+ObjectType);
             }
             else if (ObjectType == 1)
             {
                 Loader = new MFABackdrop(reader);
+                Loader.Read();
+                Console.WriteLine("Loader.Read: "+ObjectType);
+                Logger.Log("Loader.Read: "+ObjectType);
             }
             else if (ObjectType == 7)
             {
                 Loader = new MFACounter(reader);
+                Loader.Read();
+                Console.WriteLine("Loader.Read: "+ObjectType);
+                Logger.Log("Loader.Read: "+ObjectType);
             }
             else if (ObjectType == 2)
             {
+
                 Loader = new MFAActive(reader);
+                Loader.Read();
+                Console.WriteLine("Loader.Read: "+ObjectType);
+                Logger.Log("Loader.Read: "+ObjectType);
             }
-            else if(ObjectType==3)
+            else if (ObjectType == 3)
             {
                 Loader = new MFAText(reader);
+                Loader.Read();
+                Console.WriteLine("Loader.Read: "+ObjectType);
+                Logger.Log("Loader.Read: "+ObjectType);
             }
-            else throw new NotImplementedException("Unsupported object: " + ObjectType);
-            Loader.Read();
+            else
+            {
+
+                Loader = new MFAExtensionObject(reader);
+                Loader.Read();
+                Console.WriteLine("Unimplemented object " + ObjectType);
+                Console.WriteLine("Loader.Read: "+ObjectType);
+                Logger.Log("Loader.Read: "+ObjectType);
+            };
+
+            
 
 
 
