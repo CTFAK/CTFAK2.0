@@ -216,7 +216,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     for (int x = 0; x < width; x++)
                     {
                         imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
-                        alphaPos += width - x;
+                        alphaPos += 1;
                     }
 
                     alphaPos += aPad;
