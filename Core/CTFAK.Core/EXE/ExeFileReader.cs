@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using CTFAK.CCN.Chunks;
 
 namespace CTFAK.FileReaders
@@ -24,19 +25,23 @@ namespace CTFAK.FileReaders
         {
             Core.currentReader = this;
             Settings.gameType = Settings.GameType.NORMAL;
-            var icoExt = new IconExtractor(gamePath);
-            var icos = icoExt.GetAllIcons();
-            foreach (var icon in icos)
+
+            // .EXE extension check
+            if (Path.GetExtension(gamePath).ToLower() == ".exe")
             {
-                
-                icons.Add(icon.Width, icon.ToBitmap());
+                var icoExt = new IconExtractor(gamePath);
+                var icos = icoExt.GetAllIcons();
+                foreach (var icon in icos)
+                {
+
+                    icons.Add(icon.Width, icon.ToBitmap());
+                }
+
+                if (!icons.ContainsKey(16)) icons.Add(16, icons[32].resizeImage(new Size(16, 16)));
+                if (!icons.ContainsKey(48)) icons.Add(48, icons[32].resizeImage(new Size(48, 48)));
+                if (!icons.ContainsKey(128)) icons.Add(128, icons[32].resizeImage(new Size(128, 128)));
+                if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
             }
-
-            if (!icons.ContainsKey(16)) icons.Add(16, icons[32].resizeImage(new Size(16, 16)));
-            if (!icons.ContainsKey(48)) icons.Add(48, icons[32].resizeImage(new Size(48, 48)));
-            if (!icons.ContainsKey(128)) icons.Add(128, icons[32].resizeImage(new Size(128, 128)));
-            if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
-
 
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             ReadHeader(reader);

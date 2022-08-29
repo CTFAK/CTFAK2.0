@@ -69,6 +69,10 @@ public class Program
                 path = ApkFileReader.ExtractCCN(path);
                 gameParser = new CTFAK.EXE.CCNFileReader();
             }
+            else if (Path.GetExtension(path) == ".ccn") // CCN file
+            {
+                gameParser = new CTFAK.EXE.CCNFileReader();
+            }
             else
             {
                 SELECT_READER:
