@@ -208,7 +208,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     var size = reader.ReadInt32();
                     //Console.WriteLine("MY ASS");
                     reader.Skip(-4);
-                    File.WriteAllBytes($"FNAFCTFPORTTEST\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size+4));
+                    reader.ReadBytes(size+4);
                     reader.Skip(-size+4);
                     currentPosition =0;
                     

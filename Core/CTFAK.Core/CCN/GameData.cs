@@ -85,7 +85,8 @@ namespace CTFAK.CCN
             Settings.Build = productBuild;
             Logger.Log("Fusion Build: "+productBuild);
             string gameExeName = Path.GetFileName(Core.path);
-            Directory.CreateDirectory($"CHUNK_TRACE\\{gameExeName}");
+            if (Core.parameters.Contains("-trace_chunks"))
+                Directory.CreateDirectory($"CHUNK_TRACE\\{gameExeName}");
             int chunkIndex = 0;
             List<Task> readingTasks = new List<Task>();
             while(true)

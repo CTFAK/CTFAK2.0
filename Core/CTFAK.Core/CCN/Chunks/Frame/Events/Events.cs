@@ -344,11 +344,15 @@ namespace CTFAK.CCN.Chunks.Frame
             NumberOfParameters = reader.ReadByte();
             DefType = reader.ReadByte();
             Identifier = reader.ReadInt16();
-            for (int i = 0; i < NumberOfParameters; i++)
+            if (Core.parameters.Contains("-noevnt")) return;
+            else
             {
-                var item = new Parameter(reader);
-                item.Read();
-                Items.Add(item);
+                for (int i = 0; i < NumberOfParameters; i++)
+                {
+                    var item = new Parameter(reader);
+                    item.Read();
+                    Items.Add(item);
+                }
             }
             
             //Logger.Log(this);
@@ -464,7 +468,11 @@ namespace CTFAK.CCN.Chunks.Frame
             this.Loader = actualLoader;
             //// Loader?.Read();
             if (Loader != null) Loader.Read();
-            else throw new Exception("Loader is null: " + Code);
+            else
+            {
+                Logger.LogWarning("Loader is null: " + Code);
+                return;
+            }
 
             reader.Seek(currentPosition + size);
 

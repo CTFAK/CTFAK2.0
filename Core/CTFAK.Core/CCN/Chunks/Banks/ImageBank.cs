@@ -304,7 +304,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 Flags = newImg.Flags;
 
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL)
+            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.android)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
