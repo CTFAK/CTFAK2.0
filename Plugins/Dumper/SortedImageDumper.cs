@@ -26,6 +26,8 @@ namespace Dumper
             float maxdone = 0;
             int objectsdone = 0;
 
+            Logger.Log($"2.5+?: {Settings.twofiveplus}");
+
             foreach (var frame in frames)
                 foreach (var instance in frame.objects)
                     maxdone++;
@@ -161,24 +163,28 @@ namespace Dumper
                             foreach (var cntrFrm in counter.Frames)
                             {
                                 Bitmap bmp = images[cntrFrm].bitmap;
-                                var resultImage = new Bitmap(bmp.Width, bmp.Height);
-                                Color TransparencyRGB = bmp.GetPixel(0, 0);
-                                for (int w = 0; w < bmp.Width; w++)
-                                    for (int h = 0; h < bmp.Height; h++)
-                                    {
-                                        var bm2Color = bmp.GetPixel(w, h);
-                                        if (bm2Color != TransparencyRGB)
-                                            bm2Color = System.Drawing.Color.FromArgb(255, bm2Color.R, bm2Color.G, bm2Color.B);
-                                        resultImage.SetPixel(w, h, bm2Color);
-                                    }
-                                
+                                if (Settings.twofiveplus)
+                                {
+                                    var resultImage = new Bitmap(bmp.Width, bmp.Height);
+                                    Color TransparencyRGB = bmp.GetPixel(0, 0);
+                                    for (int w = 0; w < bmp.Width; w++)
+                                        for (int h = 0; h < bmp.Height; h++)
+                                        {
+                                            var bm2Color = bmp.GetPixel(w, h);
+                                            if (bm2Color != TransparencyRGB)
+                                                bm2Color = System.Drawing.Color.FromArgb(255, bm2Color.R, bm2Color.G, bm2Color.B);
+                                            resultImage.SetPixel(w, h, bm2Color);
+                                        }
+                                    bmp = resultImage;
+                                }
+
                                 Directory.CreateDirectory(objectFolder);
                                 while (retry < 5)
                                 {
                                     try
                                     {
-                                        resultImage.Save($"{objectFolder}{cntrFrm}.png");
-                                        resultImage.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{cntrFrm}.png");
+                                        bmp.Save($"{objectFolder}{cntrFrm}.png");
+                                        bmp.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{cntrFrm}.png");
                                         retry = 5;
                                     }
                                     catch
@@ -188,7 +194,6 @@ namespace Dumper
                                         retry++;
                                     }
                                 }
-                                resultImage.Dispose();
 
                                 retry = 0;
                                 imageNumber++;
