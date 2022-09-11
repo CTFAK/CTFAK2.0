@@ -12,6 +12,7 @@ namespace Dumper
     class SortedImageDumper : IFusionTool
     {
         //Patched by Yunivers :3
+        //Broken multiple times by Yunivers ;3
         public string Name => "Sorted Image Dumper";
         int imageNumber = 1;
 
@@ -43,11 +44,11 @@ namespace Dumper
                     var oi = objects[instance.objectInfo];
                     Console.WriteLine("\n");
                     if (oi.properties is ObjectCommon loggercommon)
-                        Logger.Log($"{loggercommon.Identifier} {oi.name}");
+                        Logger.Log($"{frame.name} | {loggercommon.Identifier} {oi.name}");
                     else if (oi.properties is Backdrop)
-                        Logger.Log($"BD {oi.name}");
+                        Logger.Log($"{frame.name} | BD {oi.name}");
                     else if (oi.properties is Quickbackdrop)
-                        Logger.Log($"QBD {oi.name}");
+                        Logger.Log($"{frame.name} | QBD {oi.name}");
 
                     Console.WriteLine($"{(int)(objectsdone / maxdone * 100.0)}%");
                     var objectFolder = frameFolder + Utils.ClearName(oi.name) + "\\";
@@ -139,7 +140,7 @@ namespace Dumper
                                             try
                                             {
                                                 images[frm].bitmap.Save($"{directionFolder}{frm}.png");
-                                                images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{frm}.png");
+                                                images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{anim.Key}-{dir.Key}_{i}.png");
                                                 retry = 5;
                                             }
                                             catch
@@ -158,7 +159,7 @@ namespace Dumper
                         else if (Settings.twofiveplus && common.Identifier == "CNTR" || !Settings.twofiveplus && common.Parent.ObjectType == 7)
                         {
                             var counter = common.Counters;
-                            if (counter == null) break;
+                            if (counter == null) continue;
                             if (!(counter.DisplayType == 1 || counter.DisplayType == 4 || counter.DisplayType == 50)) continue;
                             foreach (var cntrFrm in counter.Frames)
                             {
