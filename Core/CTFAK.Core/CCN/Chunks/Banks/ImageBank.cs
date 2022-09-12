@@ -291,7 +291,9 @@ namespace CTFAK.CCN.Chunks.Banks
                 transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
-                //Flags["Alpha"] = true;
+                Flags["Alpha"] = true;
+                if (Core.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 byte[] target = new byte[decompressedSize];
                 LZ4Codec.Decode(rawImg, target);
                 imageData = target;

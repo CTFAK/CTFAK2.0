@@ -139,7 +139,7 @@ namespace Dumper
 
                                             try
                                             {
-                                                images[frm].bitmap.Save($"{directionFolder}{frm}.png");
+                                                images[frm].bitmap.Save($"{directionFolder}_{i}.png");
                                                 images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{anim.Key}-{dir.Key}_{i}.png");
                                                 retry = 5;
                                             }
@@ -164,20 +164,6 @@ namespace Dumper
                             foreach (var cntrFrm in counter.Frames)
                             {
                                 Bitmap bmp = images[cntrFrm].bitmap;
-                                if (Settings.twofiveplus)
-                                {
-                                    var resultImage = new Bitmap(bmp.Width, bmp.Height);
-                                    Color TransparencyRGB = bmp.GetPixel(0, 0);
-                                    for (int w = 0; w < bmp.Width; w++)
-                                        for (int h = 0; h < bmp.Height; h++)
-                                        {
-                                            var bm2Color = bmp.GetPixel(w, h);
-                                            if (bm2Color != TransparencyRGB)
-                                                bm2Color = System.Drawing.Color.FromArgb(255, bm2Color.R, bm2Color.G, bm2Color.B);
-                                            resultImage.SetPixel(w, h, bm2Color);
-                                        }
-                                    bmp = resultImage;
-                                }
 
                                 Directory.CreateDirectory(objectFolder);
                                 while (retry < 5)
