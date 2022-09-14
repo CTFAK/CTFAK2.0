@@ -12,6 +12,7 @@ namespace Dumper
     class SortedImageDumper : IFusionTool
     {
         //Patched by Yunivers :3
+        //Broken multiple times by Yunivers ;3
         public string Name => "Sorted Image Dumper";
         int imageNumber = 1;
 
@@ -43,11 +44,11 @@ namespace Dumper
                     var oi = objects[instance.objectInfo];
                     Console.WriteLine("\n");
                     if (oi.properties is ObjectCommon loggercommon)
-                        Logger.Log($"{loggercommon.Identifier} {oi.name}");
+                        Logger.Log($"{frame.name} | {loggercommon.Identifier} {oi.name}");
                     else if (oi.properties is Backdrop)
-                        Logger.Log($"BD {oi.name}");
+                        Logger.Log($"{frame.name} | BD {oi.name}");
                     else if (oi.properties is Quickbackdrop)
-                        Logger.Log($"QBD {oi.name}");
+                        Logger.Log($"{frame.name} | QBD {oi.name}");
 
                     Console.WriteLine($"{(int)(objectsdone / maxdone * 100.0)}%");
                     var objectFolder = frameFolder + Utils.ClearName(oi.name) + "\\";
@@ -138,8 +139,8 @@ namespace Dumper
 
                                             try
                                             {
-                                                images[frm].bitmap.Save($"{directionFolder}{frm}.png");
-                                                images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{frm}.png");
+                                                images[frm].bitmap.Save($"{directionFolder}_{i}.png");
+                                                images[frm].bitmap.Save($"{frameFolder}[UNSORTED]\\{oi.name}_{anim.Key}-{dir.Key}_{i}.png");
                                                 retry = 5;
                                             }
                                             catch
@@ -158,25 +159,11 @@ namespace Dumper
                         else if (Settings.twofiveplus && common.Identifier == "CNTR" || !Settings.twofiveplus && common.Parent.ObjectType == 7)
                         {
                             var counter = common.Counters;
-                            if (counter == null) break;
+                            if (counter == null) continue;
                             if (!(counter.DisplayType == 1 || counter.DisplayType == 4 || counter.DisplayType == 50)) continue;
                             foreach (var cntrFrm in counter.Frames)
                             {
                                 Bitmap bmp = images[cntrFrm].bitmap;
-                                if (Settings.twofiveplus)
-                                {
-                                    var resultImage = new Bitmap(bmp.Width, bmp.Height);
-                                    Color TransparencyRGB = bmp.GetPixel(0, 0);
-                                    for (int w = 0; w < bmp.Width; w++)
-                                        for (int h = 0; h < bmp.Height; h++)
-                                        {
-                                            var bm2Color = bmp.GetPixel(w, h);
-                                            if (bm2Color != TransparencyRGB)
-                                                bm2Color = System.Drawing.Color.FromArgb(255, bm2Color.R, bm2Color.G, bm2Color.B);
-                                            resultImage.SetPixel(w, h, bm2Color);
-                                        }
-                                    bmp = resultImage;
-                                }
 
                                 Directory.CreateDirectory(objectFolder);
                                 while (retry < 5)
