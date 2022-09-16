@@ -156,8 +156,13 @@ namespace CTFAK.CCN.Chunks.Frame
                         
                         break;
                     case 13117:
-                        events = new Events(chunkReader);
-                        events.Read();
+                        if (Core.parameters.Contains("-noevnt"))
+                            events = new Events(null);
+                        else
+                        {
+                            events = new Events(chunkReader);
+                            events.Read();
+                        }
                         break;
                     case 13121:
                         layers = new Layers(chunkReader);

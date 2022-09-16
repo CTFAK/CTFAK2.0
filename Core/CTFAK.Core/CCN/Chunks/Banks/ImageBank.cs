@@ -216,7 +216,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     for (int x = 0; x < width; x++)
                     {
                         imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
-                        alphaPos += width - x;
+                        alphaPos += 1;
                     }
 
                     alphaPos += aPad;
@@ -291,7 +291,9 @@ namespace CTFAK.CCN.Chunks.Banks
                 transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
-                //Flags["Alpha"] = true;
+                Flags["Alpha"] = true;
+                if (Core.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 byte[] target = new byte[decompressedSize];
                 LZ4Codec.Decode(rawImg, target);
                 imageData = target;
@@ -304,7 +306,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 Flags = newImg.Flags;
 
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL)
+            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.android)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;

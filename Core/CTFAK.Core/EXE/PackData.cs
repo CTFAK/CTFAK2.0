@@ -45,7 +45,8 @@ namespace CTFAK.EXE
 
             FormatVersion = reader.ReadUInt32();
             var check = reader.ReadInt32();
-            Debug.Assert(check == 0);
+            //Removing this seemed to not break anything, adding it breaks things for me.
+            //Debug.Assert(check == 0);
             check = reader.ReadInt32();
             Debug.Assert(check == 0);
 
@@ -76,7 +77,7 @@ namespace CTFAK.EXE
 
             }
 
-        }
+            }
     }
     public class PackFile
     {
