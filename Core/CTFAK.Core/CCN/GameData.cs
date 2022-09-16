@@ -267,7 +267,7 @@ namespace CTFAK.CCN
                                 
                                 var newName = "sex";
                                 
-                                frameitems[ncurrent].name = chunkReader.ReadWideString();
+                                frameitems[ncurrent].name = chunkReader.ReadUniversal();
                                 ncurrent++;
                             }
 

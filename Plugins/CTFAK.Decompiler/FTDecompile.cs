@@ -787,7 +787,7 @@ namespace CTFAK.Tools
                     }
                     // if (Settings.GameType != GameType.OnePointFive)
                     {
-                        Extensions exts = game.extensions;
+                        Extensions exts = game.extensions; 
                         Extension ext = null;
                         foreach (var testExt in exts.Items)
                         {

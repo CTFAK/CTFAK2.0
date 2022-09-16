@@ -6,6 +6,7 @@ using CTFAK.CCN;
 using CTFAK.CCN.Chunks.Frame;
 using CTFAK.CCN.Chunks.Objects;
 using CTFAK.FileReaders;
+using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Tools;
 using EventPreprocessor.Handlers;
 using EventPreprocessor.Handlers.ExtensionsHandlers;
@@ -42,6 +43,11 @@ namespace EventPreprocessor
             conditionHandlers.Add(2,ActiveHandler.activeConditionHandlers);
             conditionHandlers.Add(-1,SystemHandler.systemConditionHandlers);
             conditionHandlers.Add(-6,KeyboardHandler.keyboardConditionHandlers);
+            
+            actionHandlers.Add(-3,AppHandler.appActionHandlers);
+            actionHandlers.Add(2,ActiveHandler.activeActionHandlers);
+            actionHandlers.Add(-1,SystemHandler.systemActionHandlers);
+            actionHandlers.Add(-6,KeyboardHandler.keyboardActionHandlers);
 
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var type in types)
@@ -189,15 +195,14 @@ namespace EventPreprocessor
             else WriteLine("CRITICAL IMPLEMENTATION ERROR");
         }
 
-        public void ProcessAction(Action action)
+        public void ProcessAction(Action condition)
         {
-            return;
             Dictionary<int, ActionHandler> currentHandlers = new Dictionary<int, ActionHandler>();
-            var conditionObject = objects[action.ObjectInfo];
-            var gotHandlers = actionHandlers.TryGetValue(action.ObjectType,out currentHandlers);
+            var conditionObject = objects[condition.ObjectInfo];
+            var gotHandlers = actionHandlers.TryGetValue(condition.ObjectType,out currentHandlers);
             if (!gotHandlers)
             {
-                WriteLine("Object not implemented: "+action.ObjectType);
+                WriteLine($"Object not implemented: {(Constants.ObjectType)condition.ObjectType}({condition.ObjectType})");
                 return;
             }
 
@@ -205,20 +210,34 @@ namespace EventPreprocessor
             if (currentHandlers != null)
             {
                 ActionHandler handler;
-                var success = currentHandlers.TryGetValue(action.Num, out handler);
+                var success = currentHandlers.TryGetValue(condition.Num, out handler);
                 if (success)
                 {
-                    handler.Invoke(action,conditionObject,action.Items);
+                    handler.Invoke(condition,conditionObject,condition.Items);
                 }
                 else
                 {
-                    WriteLine($"UNIMPLEMENTED ACTION. Num:{action.Num}, ObjectType:{action.ObjectType}");
-                    WriteLine("Params: ");
-                    foreach (var param in action.Items)
+                    try
                     {
-                        WriteLine($"Loader: {param.Loader}, Value: {param.Value}");
+                        WriteLine(
+                            $"UNIMPLEMENTED CONDITION. {(Constants.ObjectType)condition.ObjectType}.{ActionNames.systemDict[condition.ObjectType][condition.Num]}({condition.ObjectType}::{condition.Num})");
+
                     }
-                    Console.ReadKey();
+                    catch
+                    {
+                        WriteLine($"UNKNOWN CONDITION {(Constants.ObjectType)condition.ObjectType}.{condition.Num}");
+                    }
+                    WriteLine("Params: ");
+                    foreach (var param in condition.Items)
+                    {
+                        if (param.Loader is ExpressionParameter)
+                        {
+                            WriteLine($"Loader: {ExpressionConverter.ConvertExpression(param.Loader as ExpressionParameter)}");
+                        }
+                        else
+                            WriteLine($"Loader: {param.Loader}, Value: {param.Value}");
+                    }
+                    //Console.ReadKey();
                 }
             }
             else WriteLine("CRITICAL IMPLEMENTATION ERROR");

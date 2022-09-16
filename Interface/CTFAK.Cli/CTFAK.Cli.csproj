@@ -5,6 +5,13 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <ApplicationIcon>CTFAK2.ico</ApplicationIcon>
+        <!--<PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <PublishReadyToRun>true</PublishReadyToRun>!-->
+
+
+
     </PropertyGroup>
 
     <ItemGroup>

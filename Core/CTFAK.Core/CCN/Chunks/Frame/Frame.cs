@@ -24,24 +24,32 @@ namespace CTFAK.CCN.Chunks.Frame
         public ObjectInstance(ByteReader reader) : base(reader) { }
         public override void Read()
         {
-            handle = (ushort)reader.ReadInt16();
-            objectInfo = (ushort)reader.ReadInt16();
+            try
+            {
+                handle = (ushort)reader.ReadInt16();
+                objectInfo = (ushort)reader.ReadInt16();
 
-            if (Settings.Old)
-            {
-                y = reader.ReadInt16();
-                x = reader.ReadInt16();
+                if (Settings.Old)
+                {
+                    y = reader.ReadInt16();
+                    x = reader.ReadInt16();
+                }
+                else
+                {
+                    x = reader.ReadInt32();
+                    y = reader.ReadInt32();
+                }
+
+                parentType = reader.ReadInt16();
+                parentHandle = reader.ReadInt16();
+                if (Settings.Old) return;
+                layer = reader.ReadInt16();
+                flags = reader.ReadInt16();
             }
-            else
+            catch (Exception ex)
             {
-                x = reader.ReadInt32();
-                y = reader.ReadInt32();
+                Console.WriteLine(ex);
             }
-            parentType = reader.ReadInt16();
-            parentHandle = reader.ReadInt16();
-            if (Settings.Old) return;
-            layer = reader.ReadInt16();
-            flags = reader.ReadInt16();
 
         }
 
@@ -264,7 +272,7 @@ namespace CTFAK.CCN.Chunks.Frame
             YCoeff = reader.ReadSingle();
             NumberOfBackgrounds = reader.ReadInt32();
             BackgroudIndex = reader.ReadInt32();
-            Name = reader.ReadWideString();
+            Name = reader.ReadUniversal();
             if (Settings.android)
             {
                 XCoeff = 1;

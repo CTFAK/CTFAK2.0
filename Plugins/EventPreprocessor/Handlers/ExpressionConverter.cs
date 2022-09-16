@@ -155,6 +155,16 @@ namespace EventPreprocessor.Handlers
                                 break;
                         }
                         break;
+                    case -6:
+                        switch (item.Num)
+                        {
+
+                            default:
+                                FTEventViewer.WriteLine($"UNIMPLEMENTED EXPRESSION NUM. Obj:{item.ObjectType},Num:{item.Num}");
+                                Console.ReadKey(); 
+                                break;
+                        }
+                        break;
                     default:
                         FTEventViewer.WriteLine("UNIMPLEMENTED EXPRESSION OBJECT TYPE: "+item.ObjectType);
                         Console.ReadKey();

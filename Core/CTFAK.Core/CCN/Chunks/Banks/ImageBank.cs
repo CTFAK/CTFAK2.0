@@ -102,7 +102,7 @@ namespace CTFAK.CCN.Chunks.Banks
                                     
                                     if (Flags["Alpha"])
                                     {
-                                        colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
+                                        colorArray[(y * stride) + (x * 4) + 3] =255; //imageData[position + 3];
                                     }
                                     
                                     else
@@ -110,7 +110,7 @@ namespace CTFAK.CCN.Chunks.Banks
                                         //colorArray[(y * stride) + (x * 4) + 3] = 255;
                                         if (imageData[position] == bytes[0] && imageData[position + 1] == bytes[1] &&
                                             imageData[position + 2] == bytes[2])
-                                            colorArray[(y * stride) + (x * 4) + 3] = bytes[3];
+                                            colorArray[(y * stride) + (x * 4) + 3] = 255;//bytes[3];
                                     }
 
                                     

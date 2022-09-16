@@ -62,6 +62,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 {
                     if (Settings.android) reader.ReadInt32();//TODO: figure out what it is
                     var size = reader.ReadInt32();
+                    
                 }
                 else if (identifier == EventgroupData)
                 {
@@ -595,6 +596,7 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 item = new TwoShorts(reader);
             }
+            if (code == 67) item = new Int(reader);
             if (code == 68) item = new MultipleVariables(reader);
             if (code == 69) item = new ChildEvent(reader);
             if (code == 70) item = new Int(reader);
