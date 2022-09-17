@@ -156,7 +156,7 @@ namespace CTFAK.CCN.Chunks.Banks
         {
             width = bmp.Width;
             height = bmp.Height;
-            Flags["Alpha"] = true;
+            Flags["Alpha"] = false;
             graphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,

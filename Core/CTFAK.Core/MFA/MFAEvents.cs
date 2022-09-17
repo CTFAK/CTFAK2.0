@@ -67,6 +67,10 @@ namespace CTFAK.MFA
                 if (name == EventData)
                 {
                     EventDataLen = reader.ReadUInt32();
+                    //    File.Create("G:\\events.txt");
+                    Logger.Log("cringe it executed");
+                    File.WriteAllText("G:\\CTFAK2.0-2.5-\\Interface\\CTFAK.Cli\\bin\\Release\\net6.0-windows\\events.txt", Convert.ToString(EventDataLen));
+                    
                     uint end = (uint)(reader.Tell() + EventDataLen);
                     while (true)
                     {
@@ -174,11 +178,12 @@ namespace CTFAK.MFA
                 }
                 else if (name == UnknownEventData)
                 {
-                    reader.Skip(12);
+                    Logger.Log(reader.Tell);
+                   // reader.Skip(12);
                 }
                 else if (name == EventEnd)
                 {
-                    // _cache = reader.ReadBytes(122);
+                 //    _cache = reader.ReadBytes(122);
 
                     break;
                 }
@@ -195,14 +200,24 @@ namespace CTFAK.MFA
             if (Items.Count > 0)
             {
                 Writer.WriteAscii(EventData);
+                Logger.Log("cringe it executed 2222222");
+                Logger.Log("Version: "+Version+"FrameType: "+FrameType);
+                File.WriteAllText("G:\\CTFAK2.0-2.5-\\Interface\\CTFAK.Cli\\bin\\Release\\net6.0-windows\\events.txt", Convert.ToString(EventData));
 
                 ByteWriter newWriter = new ByteWriter(new MemoryStream());
                 //Writer.WriteUInt32(EventDataLen);
-
+                int something = 0;
                 foreach (EventGroup eventGroup in Items)
                 {
+                    something++;
                     eventGroup.isMFA = true;
                     eventGroup.Write(newWriter);
+                  //  Logger.Log("EVENT GROUP "+something+" START:");
+                   // Logger.Log("type: "+eventGroup.GetType + " flags: "+eventGroup.Flags+" size: "+eventGroup.Size);
+                   // Logger.Log(eventGroup.Conditions);
+                   // Logger.Log(eventGroup.Actions);
+                   // Logger.Log("EVENT GROUP "+ something + " END");
+
                 }
 
 
@@ -285,8 +300,8 @@ namespace CTFAK.MFA
 
 
             Writer.WriteAscii(EventEnd);
-
-            // Writer.WriteBytes(_cache);
+         //   Writer.WriteBytes(_cache);
+          
 
 
 

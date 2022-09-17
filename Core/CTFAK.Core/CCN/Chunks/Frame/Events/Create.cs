@@ -1,4 +1,6 @@
-﻿using CTFAK.Memory;
+﻿using CTFAK.CCN;
+using CTFAK.Memory;
+using CTFAK.MFA;
 using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters

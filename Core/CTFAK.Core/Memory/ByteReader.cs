@@ -8,6 +8,8 @@ namespace CTFAK.Memory
 {
     public class ByteReader : BinaryReader
     {
+        public string reader;
+
         public ByteReader(Stream input) : base(input)
         {
         }

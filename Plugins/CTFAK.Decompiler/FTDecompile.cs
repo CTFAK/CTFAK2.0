@@ -12,11 +12,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CTFAK.Properties;
-using Ionic.Zlib;
-using Microsoft.VisualBasic;
 using Action = CTFAK.CCN.Chunks.Frame.Action;
 using Constants = CTFAK.CCN.Constants;
 
@@ -25,14 +20,14 @@ namespace CTFAK.Tools
     class FTDecompile : IFusionTool
     {
         public string Name => "Decompiler";
-        public static int lastAllocatedHandleImg=15;
+        public static int lastAllocatedHandleImg = 15;
 
         public static Dictionary<int, MFAObjectInfo> FrameItems;
         public void Execute(IFileReader reader)
         {
             var game = reader.getGameData();
             var mfa = new MFAData();
-            bool myAss=false;
+            bool myAss = false;
             Settings.gameType = Settings.GameType.NORMAL;
             if (Settings.Old)
             {
@@ -105,8 +100,8 @@ namespace CTFAK.Tools
                         case 10:
                             item.Value.FromBitmap(reader.getIcons()[256]);
                             break;
-                        
-                            
+
+
 
                         default:
                             break;
@@ -116,15 +111,15 @@ namespace CTFAK.Tools
                 {
                     Logger.LogWarning($"Requested icon is not found: {item.Key} - {item.Value.width}");
                 }
-                
+
             }
             var imageNull = new CCN.Chunks.Banks.Image(null);
             imageNull.Handle = 14;
             imageNull.transparent = 0x3aebca;
             imageNull.FromBitmap((Bitmap)CTFAK.Properties.Resources.EmptyIcon);
             mfa.Icons.Items.Add(14, imageNull);
-            // game.Images.Images.Clea r();
-             
+            // game.Images.Images.Clear();
+
             mfa.Author = game.author;
             mfa.Copyright = game.copyright;
             mfa.Company = "";
@@ -178,8 +173,11 @@ namespace CTFAK.Tools
                     
                 });
             }*/
-            //mfa.GraphicFlags = graphicSettings;
-            //mfa.DisplayFlags = displaySettings;
+
+            // UNCOMMENTED TO TEST
+            mfa.GraphicFlags = graphicSettings;
+            mfa.DisplayFlags = displaySettings;
+
             mfa.WindowX = game.header.WindowWidth;
             mfa.WindowY = game.header.WindowHeight;
             mfa.BorderColor = game.header.BorderColor;
@@ -198,8 +196,9 @@ namespace CTFAK.Tools
             for (int i = 0; i < game.frameitems.Keys.Count; i++)
             {
                 var key = game.frameitems.Keys.ToArray()[i];
+                Logger.Log(game.frameitems.ToArray()[i]);
                 var item = game.frameitems[key];
-                var newItem = TranslateObject(mfa,game,item);
+                var newItem = TranslateObject(mfa, game, item);
                 //Object Section
                 if (newItem.Loader == null)
                 {
@@ -208,16 +207,14 @@ namespace CTFAK.Tools
                     continue;
                 }
                 FrameItems.Add(newItem.Handle, newItem);
-            } 
-            
+            }
 
 
-
-                // var reference = mfa.Frames.FirstOrDefault();
-                mfa.Frames.Clear();
+            // var reference = mfa.Frames.FirstOrDefault();
+            mfa.Frames.Clear();
 
             Dictionary<int, int> indexHandles = new Dictionary<int, int>();
-            if(game.frameHandles!=null)
+            if (game.frameHandles != null)
             {
                 foreach (var pair in game.frameHandles.Items)
                 {
@@ -229,11 +226,11 @@ namespace CTFAK.Tools
             }
 
 
-            Logger.Log($"Prepating to translate {game.frames.Count} frames");
+            Logger.Log($"Preparing to translate {game.frames.Count} frames");
             for (int a = 0; a < game.frames.Count; a++)
             {
                 var frame = game.frames[a];
-                
+
                 if (frame.name == "") continue;
                 //if(frame.Palette==null|| frame.Events==null|| frame.Objects==null) continue;
                 var newFrame = new MFAFrame(null);
@@ -260,11 +257,12 @@ namespace CTFAK.Tools
                 mfaFlags["TimerBasedMovements"] = originalFlags["TimedMovements"];
                 newFrame.Flags = mfaFlags;
                 newFrame.MaxObjects = frame.events?.MaxObjects ?? 10000;
-                newFrame.Password ="";
+                newFrame.Password = "";
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
-                if (frame.palette == null) continue;
-                newFrame.Palette =frame.palette ?? new List<Color>();
+                //  if (frame.palette == null) continue;
+                Console.WriteLine("pallet not found");
+                newFrame.Palette = frame.palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
                 newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Left = frame.virtualRect?.left ?? 0;
@@ -302,10 +300,15 @@ namespace CTFAK.Tools
                     }
                 }
 
-                
+
 
                 var newFrameItems = new List<MFAObjectInfo>();
                 var newInstances = new List<MFAObjectInstance>();
+                if (Core.parameters.Contains("-deubg_log"))
+                {
+                    newFrameItems.ForEach(Console.WriteLine);
+                    newInstances.ForEach(Console.WriteLine);
+                }
                 if (frame.objects != null)
                 //if (false)
                 {
@@ -313,6 +316,7 @@ namespace CTFAK.Tools
                     for (int i = 0; i < frame.objects.Count; i++)
                     {
                         var instance = frame.objects[i];
+                        Console.WriteLine(frame.objects[i]);
                         MFAObjectInfo frameItem;
 
                         if (FrameItems.ContainsKey(instance.objectInfo))
@@ -363,6 +367,7 @@ namespace CTFAK.Tools
                     //if(false)
                     if (frame.events != null)
                     {
+                        Logger.Log(frame.events);
                         foreach (var item in newFrame.Items)
                         {
                             var newObject = new EventObject((ByteReader)null);
@@ -403,7 +408,7 @@ namespace CTFAK.Tools
                             newFrame.Events.Objects.Add(qualItem);
 
                         }
-                        for (int eg = 0;eg<newFrame.Events.Items.Count;eg++)//foreach (EventGroup eventGroup in newFrame.Events.Items)
+                        for (int eg = 0; eg < newFrame.Events.Items.Count; eg++)//foreach (EventGroup eventGroup in newFrame.Events.Items)
                         {
                             var eventGroup = newFrame.Events.Items[eg];
                             foreach (Action action in eventGroup.Actions)
@@ -419,8 +424,8 @@ namespace CTFAK.Tools
                                         if ((int)objInfoFld?.GetValue(param?.Loader) ==
                                             quailifer.Value?.ObjectInfo)
                                             newFrame.Events.Items.Remove(eventGroup);
-                                            param.Loader?.GetType().GetField("ObjectInfo")
-                                                .SetValue(param.Loader, quailifer.Key);
+                                        param.Loader?.GetType().GetField("ObjectInfo")
+                                            .SetValue(param.Loader, quailifer.Key);
                                     }
                                 }
 
@@ -446,8 +451,16 @@ namespace CTFAK.Tools
 
                     }
                 }
-                Logger.Log($"Translating frame {frame.name} - {a}");
-                mfa.Frames.Add(newFrame);
+
+                if (Core.parameters.Contains(a.ToString(), StringComparison.InvariantCulture) == false)
+                {
+                    Logger.Log($"Translating frame {frame.name} - {a}");
+                    mfa.Frames.Add(newFrame);
+                }
+                else
+                {
+
+                }
             }
             Settings.gameType = Settings.GameType.NORMAL;
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
@@ -490,8 +503,8 @@ namespace CTFAK.Tools
 
 
 
-          
-                bool noicon = false;
+
+            bool noicon = false;
             try
             {
                 switch (item.ObjectType)
@@ -500,7 +513,7 @@ namespace CTFAK.Tools
 
                     case 1: //Backdrop
                         var imgHandleBack = ((Backdrop)item.properties).Image;
-                        var imgBack = game.Images.Items[imgHandleBack].bitmap.resizeImage(new Size(32,32));
+                        var imgBack = game.Images.Items[imgHandleBack].bitmap.resizeImage(new Size(32, 32));
                         FTDecompile.lastAllocatedHandleImg++;
                         var imageBack = new CCN.Chunks.Banks.Image(null);
                         imageBack.Handle = lastAllocatedHandleImg;
@@ -510,13 +523,10 @@ namespace CTFAK.Tools
                         break;
 
                     case 2: //Active
-                        var imgHandleAct = ((ObjectCommon)item.properties).Animations?.AnimationDict[0]?.DirectionDict[0]?.Frames[0] ?? 0;
-                        var imgAct = game.Images.Items[imgHandleAct].bitmap.resizeImage(new Size(32, 32));
                         FTDecompile.lastAllocatedHandleImg++;
                         var imageAct = new CCN.Chunks.Banks.Image(null);
                         imageAct.Handle = lastAllocatedHandleImg;
-                        //imageAct.transparent = game.images.Items[imgHandleAct].transparent;
-                        imageAct.FromBitmap(imgAct);
+                        imageAct.FromBitmap((Bitmap)Properties.Resources.Active);
                         mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
                         break;
 
@@ -553,13 +563,10 @@ namespace CTFAK.Tools
                         break;
 
                     case 7: //Counter
-                        var imgHandleCntr = ((ObjectCommon)item.properties)?.Counters?.Frames[0] ?? 0;
-                        var imgCntr = game.Images.Items[imgHandleCntr].bitmap.resizeImage(new Size(32, 32));
                         FTDecompile.lastAllocatedHandleImg++;
                         var imageCntr = new CCN.Chunks.Banks.Image(null);
                         imageCntr.Handle = lastAllocatedHandleImg;
-                        //imageCntr.transparent = game.images.Items[imgHandleCntr].transparent;
-                        imageCntr.FromBitmap(imgCntr);
+                        imageCntr.FromBitmap((Bitmap)Properties.Resources.Counter);
                         mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
                         break;
 
@@ -607,13 +614,57 @@ namespace CTFAK.Tools
                             imageAct.FromBitmap((Bitmap)Properties.Resources.Active);
                             mfa.Icons.Items.Add(lastAllocatedHandleImg, imageAct);
                             break;
+                        case 3: //String
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageStr = new CCN.Chunks.Banks.Image(null);
+                            imageStr.Handle = lastAllocatedHandleImg;
+                            imageStr.FromBitmap((Bitmap)Properties.Resources.String);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageStr);
+                            break;
 
+                        case 4: //Question and Answer
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageQa = new CCN.Chunks.Banks.Image(null);
+                            imageQa.Handle = lastAllocatedHandleImg;
+                            imageQa.FromBitmap((Bitmap)Properties.Resources.QandA);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageQa);
+                            break;
+
+                        case 5: //Score
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageSc = new CCN.Chunks.Banks.Image(null);
+                            imageSc.Handle = lastAllocatedHandleImg;
+                            imageSc.FromBitmap((Bitmap)Properties.Resources.Score);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageSc);
+                            break;
+
+                        case 6: //Lives
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageLive = new CCN.Chunks.Banks.Image(null);
+                            imageLive.Handle = lastAllocatedHandleImg;
+                            imageLive.FromBitmap((Bitmap)Properties.Resources.Score);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageLive);
+                            break;
                         case 7: //Counter
                             FTDecompile.lastAllocatedHandleImg++;
                             var imageCntr = new CCN.Chunks.Banks.Image(null);
                             imageCntr.Handle = lastAllocatedHandleImg;
                             imageCntr.FromBitmap((Bitmap)Properties.Resources.Counter);
                             mfa.Icons.Items.Add(lastAllocatedHandleImg, imageCntr);
+                            break;
+                        case 8: //Formatted Text
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageRTF = new CCN.Chunks.Banks.Image(null);
+                            imageRTF.Handle = lastAllocatedHandleImg;
+                            imageRTF.FromBitmap((Bitmap)Properties.Resources.Score);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageRTF);
+                            break;
+                        case 9: //Sub-Application
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageSub = new CCN.Chunks.Banks.Image(null);
+                            imageSub.Handle = lastAllocatedHandleImg;
+                            imageSub.FromBitmap((Bitmap)Properties.Resources.SubApp);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageSub);
                             break;
 
                         default:
@@ -626,13 +677,13 @@ namespace CTFAK.Tools
                     noicon = true;
                 }
             }
-            newItem.IconHandle = noicon ? 14:lastAllocatedHandleImg;
-            if (item.InkEffect!=1&&!Core.parameters.Contains("notrans"))
+            newItem.IconHandle = noicon ? 14 : lastAllocatedHandleImg;
+            if (item.InkEffect != 1 && !Core.parameters.Contains("notrans"))
             {
                 newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
                 newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
             }
-            
+
 
 
             if (item.ObjectType == (int)Constants.ObjectType.QuickBackdrop)
@@ -665,7 +716,7 @@ namespace CTFAK.Tools
             else
             {
                 var itemLoader = item?.properties as ObjectCommon;
-                if (itemLoader == null) throw new NotImplementedException("Null loader");
+                if (itemLoader == null) Console.WriteLine("Null loader");
                 //CommonSection
                 var newObject = new ObjectLoader(null);
                 newObject.ObjectFlags = (int)(itemLoader.Flags.flag);
@@ -802,6 +853,7 @@ namespace CTFAK.Tools
                         newExt.ExtensionType = -1;
                         newExt.ExtensionName = "";
                         newExt.Filename = $"{ext.Name}.mfx";
+                        Logger.Log("Extension found: " + newExt.Filename + ", " + newExt.ExtensionType);
                         newExt.Magic = (uint)ext.MagicNumber;
                         newExt.SubType = ext.SubType;
                         newExt.ExtensionVersion = itemLoader.ExtensionVersion;
@@ -960,10 +1012,20 @@ namespace CTFAK.Tools
 
                     newItem.Loader = newCount;
                 }
+                else if (item.ObjectType == 9)
+                {
+                    if (Core.parameters.Contains("-nosubapp"))
+                    {
 
+                    }
+                    else
+                    {
+                        newItem.Loader = new MFASubApplication(null);
+                    }
+                }
+
+                return newItem;
             }
-
-            return newItem;
         }
     }
 }

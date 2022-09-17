@@ -52,7 +52,11 @@ namespace CTFAK.MFA
 
         public override void Read()
         {
-
+            if (Core.parameters.Contains("-debug_log"))
+            {
+                Console.WriteLine("READING OBJECTS...");
+                Logger.Log("READING OBJECTS...");
+            }
             ObjectType = reader.ReadInt32();
             Handle = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
@@ -69,7 +73,7 @@ namespace CTFAK.MFA
             if (IconType == 1)
             {
                 IconHandle = reader.ReadInt32();
-                Logger.Log(IconHandle);
+                
             }
             else
             {
@@ -89,37 +93,62 @@ namespace CTFAK.MFA
             {
                 Loader = new MFAQuickBackdrop(reader);
                 Loader.Read();
-                Console.WriteLine("Loader.Read: "+ObjectType);
-                Logger.Log("Loader.Read: "+ObjectType);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                }
             }
             else if (ObjectType == 1)
             {
                 Loader = new MFABackdrop(reader);
                 Loader.Read();
-                Console.WriteLine("Loader.Read: "+ObjectType);
-                Logger.Log("Loader.Read: "+ObjectType);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                }
             }
             else if (ObjectType == 7)
             {
                 Loader = new MFACounter(reader);
                 Loader.Read();
-                Console.WriteLine("Loader.Read: "+ObjectType);
-                Logger.Log("Loader.Read: "+ObjectType);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                }
             }
             else if (ObjectType == 2)
             {
 
                 Loader = new MFAActive(reader);
                 Loader.Read();
-                Console.WriteLine("Loader.Read: "+ObjectType);
-                Logger.Log("Loader.Read: "+ObjectType);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                };
             }
             else if (ObjectType == 3)
             {
                 Loader = new MFAText(reader);
                 Loader.Read();
-                Console.WriteLine("Loader.Read: "+ObjectType);
-                Logger.Log("Loader.Read: "+ObjectType);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                }
+            }
+            else if (ObjectType == 9)
+            {
+                Loader = new MFASubApplication(reader);
+                Loader.Read();
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                }
             }
             else
             {
@@ -127,8 +156,11 @@ namespace CTFAK.MFA
                 Loader = new MFAExtensionObject(reader);
                 Loader.Read();
                 Console.WriteLine("Unimplemented object " + ObjectType);
-                Console.WriteLine("Loader.Read: "+ObjectType);
-                Logger.Log("Loader.Read: "+ObjectType);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Console.WriteLine("Loader.Read: " + ObjectType);
+                    Logger.Log("Loader.Read: " + ObjectType);
+                }
             };
 
             

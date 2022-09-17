@@ -8,6 +8,10 @@ env:
   BUILD_CONFIGURATION: Release
 
 jobs:
+  autocommit:
+  steps:
+  - name: Git Auto Commit
+    uses: stefanzweifel/git-auto-commit-action@v4.14.1
   build:
     runs-on: windows-latest
 

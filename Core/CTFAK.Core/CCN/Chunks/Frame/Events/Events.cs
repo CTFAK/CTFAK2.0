@@ -187,8 +187,8 @@ namespace CTFAK.CCN.Chunks.Frame
             }
             
             
-
-            // Logger.Log($"Cond: {NumberOfConditions},Act: {NumberOfActions}");
+            //uncommented
+          //   Logger.Log($"Cond: {NumberOfConditions},Act: {NumberOfActions}");
             for (int i = 0; i < NumberOfConditions; i++)
             {
                
@@ -207,7 +207,8 @@ namespace CTFAK.CCN.Chunks.Frame
                 Actions.Add(item);
             }
             reader.Seek(currentPosition + Size);
-            // Logger.Log($"COND:{NumberOfConditions}, ACT: {NumberOfActions}");
+            //uncommented
+            // Logger.Log($"COND2:{NumberOfConditions}, ACT2: {NumberOfActions}");
 
         }
 

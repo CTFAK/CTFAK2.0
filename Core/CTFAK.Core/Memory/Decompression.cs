@@ -31,6 +31,7 @@ namespace CTFAK.Memory
             // Trimming array to decompSize,
             // because ZlibStream always pads to 0x100
             Array.Resize<byte>(ref newData, decompSize);
+            Logger.Log(newData);
             return newData;
         }
         public static byte[] DecompressBlock(ByteReader reader, int size)
