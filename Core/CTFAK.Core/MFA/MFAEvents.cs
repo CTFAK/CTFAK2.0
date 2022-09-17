@@ -68,8 +68,6 @@ namespace CTFAK.MFA
                 {
                     EventDataLen = reader.ReadUInt32();
                     //    File.Create("G:\\events.txt");
-                    Logger.Log("cringe it executed");
-                    File.WriteAllText("G:\\CTFAK2.0-2.5-\\Interface\\CTFAK.Cli\\bin\\Release\\net6.0-windows\\events.txt", Convert.ToString(EventDataLen));
                     
                     uint end = (uint)(reader.Tell() + EventDataLen);
                     while (true)
@@ -200,9 +198,6 @@ namespace CTFAK.MFA
             if (Items.Count > 0)
             {
                 Writer.WriteAscii(EventData);
-                Logger.Log("cringe it executed 2222222");
-                Logger.Log("Version: "+Version+"FrameType: "+FrameType);
-                File.WriteAllText("G:\\CTFAK2.0-2.5-\\Interface\\CTFAK.Cli\\bin\\Release\\net6.0-windows\\events.txt", Convert.ToString(EventData));
 
                 ByteWriter newWriter = new ByteWriter(new MemoryStream());
                 //Writer.WriteUInt32(EventDataLen);
