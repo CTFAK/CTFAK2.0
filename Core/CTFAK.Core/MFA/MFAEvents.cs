@@ -185,7 +185,7 @@ namespace CTFAK.MFA
 
                     break;
                 }
-                else Logger.Log("UnknownGroup: " + name);//throw new NotImplementedException("Fuck Something is Broken: "+name);
+                //else Logger.Log("UnknownGroup: " + name);//throw new NotImplementedException("Fuck Something is Broken: "+name);
 
             }
         }

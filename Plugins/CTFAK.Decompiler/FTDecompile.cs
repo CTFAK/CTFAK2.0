@@ -135,8 +135,8 @@ namespace CTFAK.Tools
             displaySettings["ResizeDisplay"] = flags["MDI"];
             displaySettings["FullscreenAtStart"] = flags["FullscreenAtStart"];
             displaySettings["AllowFullscreen"] = flags["FullscreenSwitch"];
-            // displaySettings["Heading"] = !flags["NoHeading"];
-            // displaySettings["HeadingWhenMaximized"] = true;
+            //displaySettings["Heading"] = flags["NoHeading"];
+            //displaySettings["HeadingWhenMaximized"] = true;
             displaySettings["MenuBar"] = flags["MenuBar"];
             displaySettings["MenuOnBoot"] = !flags["MenuHidden"];
             displaySettings["NoMinimize"] = newFlags["NoMinimizeBox"];
@@ -174,10 +174,8 @@ namespace CTFAK.Tools
                 });
             }*/
 
-            // UNCOMMENTED TO TEST
-            mfa.GraphicFlags = graphicSettings;
-            mfa.DisplayFlags = displaySettings;
-
+           // mfa.GraphicFlags = graphicSettings;
+           // mfa.DisplayFlags = displaySettings;
             mfa.WindowX = game.header.WindowWidth;
             mfa.WindowY = game.header.WindowHeight;
             mfa.BorderColor = game.header.BorderColor;
@@ -207,6 +205,10 @@ namespace CTFAK.Tools
                     continue;
                 }
                 FrameItems.Add(newItem.Handle, newItem);
+                if (Core.parameters.Contains("-debug_log"))
+                {
+                    Logger.Log($"Object Name: {newItem.Name} Object Type: {newItem.ObjectType} Object Instance: {newItem.Handle}");
+                }
             }
 
 
@@ -367,7 +369,7 @@ namespace CTFAK.Tools
                     //if(false)
                     if (frame.events != null)
                     {
-                        Logger.Log(frame.events);
+                        //Logger.Log(frame.events);
                         foreach (var item in newFrame.Items)
                         {
                             var newObject = new EventObject((ByteReader)null);
@@ -1023,9 +1025,9 @@ namespace CTFAK.Tools
                         newItem.Loader = new MFASubApplication(null);
                     }
                 }
-
-                return newItem;
             }
+                return newItem;
+            
         }
     }
 }
