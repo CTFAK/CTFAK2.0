@@ -65,6 +65,8 @@
     <EmbeddedResource Include="Resources\TreeControl.png" />
     <EmbeddedResource Include="Resources\WindowControl.png" />
     <EmbeddedResource Include="Resources\XLua.png" />
+    <EmbeddedResource Include="Resources\Perspective.png" />
+    <EmbeddedResource Include="Resources\DateAndTime.png" />
   </ItemGroup>
 
 

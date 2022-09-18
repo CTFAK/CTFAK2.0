@@ -143,6 +143,16 @@ namespace CTFAK.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap DateAndTime {
+            get {
+                object obj = ResourceManager.GetObject("DateAndTime", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap EasyScrollbar {
             get {
                 object obj = ResourceManager.GetObject("EasyScrollbar", resourceCulture);
@@ -316,6 +326,16 @@ namespace CTFAK.Properties {
         public static System.Drawing.Bitmap ObjResize {
             get {
                 object obj = ResourceManager.GetObject("ObjResize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Perspective {
+            get {
+                object obj = ResourceManager.GetObject("Perspective", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
