@@ -100,9 +100,9 @@ namespace CTFAK.CCN.Chunks.Banks
                                     colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
                                     colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
                                     
-                                    if (Flags["Alpha"])
+                                    if (Flags["Alpha"] && !Core.parameters.Contains("-noalpha"))
                                     {
-                                        colorArray[(y * stride) + (x * 4) + 3] =255; //imageData[position + 3];
+                                        colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
                                     }
                                     
                                     else
@@ -157,6 +157,8 @@ namespace CTFAK.CCN.Chunks.Banks
             width = bmp.Width;
             height = bmp.Height;
             Flags["Alpha"] = true;
+            if (Core.parameters.Contains("-noalpha"))
+                Flags["Alpha"] = false;
             graphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
@@ -397,6 +399,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
                 imageData = newImage.imageData;
                 Flags["Alpha"] = true;
+                if (Core.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 graphicMode = 4;
                 
             }

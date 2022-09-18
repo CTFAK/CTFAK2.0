@@ -297,9 +297,7 @@ namespace CTFAK.CCN
                                 else objectData.properties = new ObjectCommon(decompressedReader);
                                 objectData.properties.Read();
                                 chunkReader.Seek(currentPosition+chunkSize+8);
-                                //else properties = new ObjectCommon(chunkReader, null);
-
-                                //properties?.Read();
+                               
                                 current++;
                             }
                             break;

@@ -83,7 +83,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public Color BackColor;
         public ObjectInfo Parent;
         public Counters Counters;
-        public SubApplication SubApplication;
         public byte[] ExtensionData;
         public int ExtensionPrivate;
         public int ExtensionId;
