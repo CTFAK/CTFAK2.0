@@ -21,7 +21,7 @@ namespace CTFAK.CCN
     public class GameData
     {
         public static event Core.SaveHandler OnChunkLoaded;
-        public static event Core.SaveHandler OnFrameLoaded;
+        public static event CTFAK.Core.SaveHandler OnFrameLoaded;
         
         
         private short runtimeVersion;

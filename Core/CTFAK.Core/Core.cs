@@ -19,9 +19,9 @@ namespace CTFAK
         public static void Init()
         {
 
-            AppDomain.CurrentDomain.FirstChanceException += (o, e) =>
+            AppDomain.CurrentDomain.UnhandledException += (o, e) =>
             {
-                
+                Console.WriteLine(e.ExceptionObject.GetType());
                 //NativeLib.MessageBox((IntPtr)0, $"{e.Exception.ToString()}", "ERROR", 0);
 
 

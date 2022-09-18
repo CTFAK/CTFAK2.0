@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CTFAKCore.Properties;
+using CTFAK.Properties;
 using Ionic.Zlib;
 using Microsoft.VisualBasic;
 using Action = CTFAK.CCN.Chunks.Frame.Action;
@@ -475,7 +475,7 @@ namespace CTFAK.Tools
                 }
             }
             Settings.gameType = Settings.GameType.NORMAL;
-            mfa.Write(new ByteWriter(new FileStream($"Dumps\\Decompiled.mfa", FileMode.Create)));
+            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
 
             static MFATransition ConvertTransition(Transition gameTrans)
             {
@@ -514,21 +514,31 @@ namespace CTFAK.Tools
                 int type = 2;
                 bool noicon = true;
 
-                if (exyt == true)
+                if (newItem.ObjectType>32)
                 {
                     Extension ext = null;
+                    Bitmap iconBmp=null;
                     foreach (var testExt in game.extensions.Items)
                     {
                         if (testExt.Handle == (int)item.ObjectType - 32) ext = testExt;
                     }
-                    string extname = ext.Name;
-                    switch (extname)
+                    switch (ext.Name)
                     {
                         case "KcBoxA":
-                            type = 1;
+                            noicon = false;
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageActiveSystemBox = new CCN.Chunks.Banks.Image(null);
+                            imageActiveSystemBox.Handle = lastAllocatedHandleImg;
+                            imageActiveSystemBox.FromBitmap(Resources.ActiveSystemBox);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageActiveSystemBox);
                             break;
                         case "kcpop":
-                            type = 4;
+                            noicon = false;
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imagePopup = new CCN.Chunks.Banks.Image(null);
+                            imagePopup.Handle = lastAllocatedHandleImg;
+                            imagePopup.FromBitmap(Resources.PopupMessageobject2);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imagePopup);
                             break;
                         case "EasyScrollbar":
                             type = 9;
@@ -546,16 +556,31 @@ namespace CTFAK.Tools
                             type = 10;
                             break;
                         case "TreeControl":
-                            type = 5;
+                            noicon = false;
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageTree = new CCN.Chunks.Banks.Image(null);
+                            imageTree.Handle = lastAllocatedHandleImg;
+                            imageTree.FromBitmap(Resources.TreeControl);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageTree);
                             break;
                         case "kcinput":
-                            type = 6;
+                            noicon = false;
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageInputObject = new CCN.Chunks.Banks.Image(null);
+                            imageInputObject.Handle = lastAllocatedHandleImg;
+                            imageInputObject.FromBitmap(Resources.InputObject);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageInputObject);
                             break;
                         case "kcedit":
                             type = 2;
                             break;
                         case "kcriched":
-                            type = 2;
+                            noicon = false;
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageEditbox = new CCN.Chunks.Banks.Image(null);
+                            imageEditbox.Handle = lastAllocatedHandleImg;
+                            imageEditbox.FromBitmap(Resources.EEEditbox);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageEditbox);
                             break;
                         case "fontembed":
                             type = 18;
@@ -597,7 +622,12 @@ namespace CTFAK.Tools
                             type = 26;
                             break;
                         case "xlua":
-                            type = 3;
+                            noicon = false;
+                            FTDecompile.lastAllocatedHandleImg++;
+                            var imageXLua = new CCN.Chunks.Banks.Image(null);
+                            imageXLua.Handle = lastAllocatedHandleImg;
+                            imageXLua.FromBitmap(Resources.XLua);
+                            mfa.Icons.Items.Add(lastAllocatedHandleImg, imageXLua);
                             break;
                         case "kcini":
                             type = 16;
@@ -612,64 +642,20 @@ namespace CTFAK.Tools
                             type = 8;
                             break;
                         default:
-                            type = 0;
-                            Logger.Log(extname);
+                            noicon = true;
+                            Logger.Log($"No icon found for {ext.Name}");
                             //System.Threading.Thread.Sleep(500);
                             break;
 
                     }
                         switch (type)
                         {
-                            case 0:
-                                noicon = true;
-                                break;
-                            case 1: //Active System Box
-                            noicon = false;
-                            FTDecompile.lastAllocatedHandleImg++;
-                                var imageActiveSystemBox = new CCN.Chunks.Banks.Image(null);
-                                imageActiveSystemBox.Handle = lastAllocatedHandleImg;
-                                imageActiveSystemBox.FromBitmap(Resources.ActiveSystemBox);
-                                mfa.Icons.Items.Add(lastAllocatedHandleImg, imageActiveSystemBox);
-                                break;
-                            case 2: //Editbox
-                            noicon = false;
-                            FTDecompile.lastAllocatedHandleImg++;
-                                var imageEditbox = new CCN.Chunks.Banks.Image(null);
-                                imageEditbox.Handle = lastAllocatedHandleImg;
-                                imageEditbox.FromBitmap(Resources.EEEditbox);
-                                mfa.Icons.Items.Add(lastAllocatedHandleImg, imageEditbox);
-                                break;
-                            case 3: //XLua
-                            noicon = false;
-                            FTDecompile.lastAllocatedHandleImg++;
-                                var imageXLua = new CCN.Chunks.Banks.Image(null);
-                                imageXLua.Handle = lastAllocatedHandleImg;
-                                imageXLua.FromBitmap(Resources.XLua);
-                                mfa.Icons.Items.Add(lastAllocatedHandleImg, imageXLua);
-                                break;
-                            case 4: //Popup Message object 2
-                            noicon = false;
-                            FTDecompile.lastAllocatedHandleImg++;
-                                var imagePopup = new CCN.Chunks.Banks.Image(null);
-                                imagePopup.Handle = lastAllocatedHandleImg;
-                                imagePopup.FromBitmap(Resources.PopupMessageobject2);
-                                mfa.Icons.Items.Add(lastAllocatedHandleImg, imagePopup);
-                                break;
-                            case 5: //Tree Control
-                            noicon = false;
-                            FTDecompile.lastAllocatedHandleImg++;
-                                var imageTree = new CCN.Chunks.Banks.Image(null);
-                                imageTree.Handle = lastAllocatedHandleImg;
-                                imageTree.FromBitmap(Resources.TreeControl);
-                                mfa.Icons.Items.Add(lastAllocatedHandleImg, imageTree);
-                                break;
+
+                            
+
+
                             case 6: //Input object
-                            noicon = false;
-                            FTDecompile.lastAllocatedHandleImg++;
-                                var imageInputObject = new CCN.Chunks.Banks.Image(null);
-                                imageInputObject.Handle = lastAllocatedHandleImg;
-                                imageInputObject.FromBitmap(Resources.InputObject);
-                                mfa.Icons.Items.Add(lastAllocatedHandleImg, imageInputObject);
+                            
                                 break;
                             case 7: //Popup Menu
                             noicon = false;
@@ -836,7 +822,7 @@ namespace CTFAK.Tools
                             break;
                         }
                 }
-                else if (exyt == false)
+                else
                 {
                         switch (item.ObjectType)
                         {
