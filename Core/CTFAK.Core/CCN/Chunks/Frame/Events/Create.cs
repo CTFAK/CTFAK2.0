@@ -9,11 +9,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int ObjectInfo;
         public Position Position;
 
-        public Create(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
-            Position = new Position(reader);
-            Position.Read();
+            Position = new Position();
+            Position.Read(reader);
             ObjectInstances = reader.ReadUInt16();
             ObjectInfo = reader.ReadUInt16();
             // Reader.Skip(4);

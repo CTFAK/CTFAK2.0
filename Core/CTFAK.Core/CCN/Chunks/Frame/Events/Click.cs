@@ -8,11 +8,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public byte IsDouble;
         public byte Button;
 
-        public Click(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Button = reader.ReadByte();
             IsDouble = reader.ReadByte();

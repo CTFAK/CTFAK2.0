@@ -14,12 +14,10 @@ namespace CTFAK.CCN.Chunks
         internal ushort PreloadExtensions;
         public List<Extension> Items;
 
-        public Extensions(ByteReader reader) : base(reader)
-        {
-        }
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
  
             var count = reader.ReadUInt16();
@@ -27,8 +25,8 @@ namespace CTFAK.CCN.Chunks
             Items = new List<Extension>();
             for (int i = 0; i < count; i++)
             {
-                var ext = new Extension(reader);
-                ext.Read();
+                var ext = new Extension();
+                ext.Read(reader);
                 Items.Add(ext);
 
             }
@@ -58,13 +56,8 @@ namespace CTFAK.CCN.Chunks
         public string Ext;
         public string SubType;
 
-        public Extension(ByteReader reader) : base(reader)
-        {
-        }
 
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             var size = reader.ReadInt16();

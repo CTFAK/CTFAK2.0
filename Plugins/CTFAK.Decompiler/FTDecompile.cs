@@ -118,7 +118,7 @@ namespace CTFAK.Tools
                 }
 
             }
-            var imageNull = new CCN.Chunks.Banks.Image(null);
+            var imageNull = new CCN.Chunks.Banks.Image();
             imageNull.Handle = 14;
             imageNull.transparent = 0x3aebca;
             imageNull.FromBitmap((Bitmap)Resources.EmptyIcon);
@@ -199,7 +199,7 @@ namespace CTFAK.Tools
             {
                 var key = game.frameitems.Keys.ToArray()[i];
                 var item = game.frameitems[key];
-                var newItem = new MFAObjectInfo(null);
+                var newItem = new MFAObjectInfo();
                 if (item.ObjectType >= 32)
                 {
                     newItem = TranslateObject(mfa, game, item, true);
@@ -253,8 +253,8 @@ namespace CTFAK.Tools
 
                     if (frame.name == "") continue;
                     //if(frame.Palette==null|| frame.Events==null|| frame.Objects==null) continue;
-                    var newFrame = new MFAFrame(null);
-                    newFrame.Chunks = new MFAChunkList(null);//MFA.MFA.emptyFrameChunks;
+                    var newFrame = new MFAFrame();
+                    newFrame.Chunks = new MFAChunkList();//MFA.MFA.emptyFrameChunks;
                     newFrame.Handle = a;
                     if (!indexHandles.TryGetValue(a, out newFrame.Handle)) Logger.Log("Error while getting frame handle");
 
@@ -292,7 +292,7 @@ namespace CTFAK.Tools
                     if (Settings.Old)
                     {
 
-                        var tempLayer = new MFALayer(null);
+                        var tempLayer = new MFALayer();
 
                         tempLayer.Name = "Layer 1";
                         tempLayer.XCoefficient = 1;
@@ -306,7 +306,7 @@ namespace CTFAK.Tools
                         for (int i = 0; i < count; i++)
                         {
                             var layer = frame.layers.Items[i];
-                            var newLayer = new MFALayer(null);
+                            var newLayer = new MFALayer();
                             newLayer.Name = layer.Name;
                             newLayer.Flags["HideAtStart"] = layer.Flags["ToHide"];
                             newLayer.Flags["Visible"] = true;
@@ -336,7 +336,7 @@ namespace CTFAK.Tools
                             {
                                 frameItem = FrameItems[instance.objectInfo];
                                 if (!newFrameItems.Contains(frameItem)) newFrameItems.Add(frameItem);
-                                var newInstance = new MFAObjectInstance((ByteReader)null);
+                                var newInstance = new MFAObjectInstance();
                                 newInstance.X = instance.x;
                                 newInstance.Y = instance.y;
                                 newInstance.Handle = i;//instance.handle;
@@ -365,14 +365,14 @@ namespace CTFAK.Tools
                     newFrame.Folders = new List<MFAItemFolder>();
                     foreach (MFAObjectInfo newFrameItem in newFrame.Items)
                     {
-                        var newFolder = new MFAItemFolder((ByteReader)null);
+                        var newFolder = new MFAItemFolder();
                         newFolder.isRetard = true;
                         newFolder.Items = new List<uint>() { (uint)newFrameItem.Handle };
                         newFrame.Folders.Add(newFolder);
                     }
                     //if(false)
                     {
-                        newFrame.Events = new MFAEvents((ByteReader)null);
+                        newFrame.Events = new MFAEvents();
                         newFrame.Events.Items = new List<EventGroup>();
                         newFrame.Events.Objects = new List<EventObject>();
                         newFrame.Events._ifMFA = true;
@@ -382,7 +382,7 @@ namespace CTFAK.Tools
                         {
                             foreach (var item in newFrame.Items)
                             {
-                                var newObject = new EventObject((ByteReader)null);
+                                var newObject = new EventObject();
 
                                 newObject.Handle = (uint)item.Handle;
                                 newObject.Name = item.Name ?? "";
@@ -410,7 +410,7 @@ namespace CTFAK.Tools
 
                                 }
                                 qualifiers.Add(newHandle, quailifer);
-                                var qualItem = new EventObject(null as ByteReader);
+                                var qualItem = new EventObject();
                                 qualItem.Handle = (uint)newHandle;
                                 qualItem.SystemQualifier = (ushort)quailifer.Qualifier;
                                 qualItem.Name = "";
@@ -482,7 +482,7 @@ namespace CTFAK.Tools
                 var newName = "";
                 newName = gameTrans.Name;
                 newName = newName.ToLower();
-                var mfaTrans = new MFATransition((ByteReader)null)
+                var mfaTrans = new MFATransition()
                 {
                     Module = "cctrans.dll",//gameTrans.ModuleFile,
                     Name = newName,
@@ -501,8 +501,8 @@ namespace CTFAK.Tools
 
             static MFAObjectInfo TranslateObject(MFAData mfa, GameData game, ObjectInfo item, bool exyt)
             {
-                var newItem = new MFAObjectInfo(null);
-                newItem.Chunks = new MFAChunkList(null);
+                var newItem = new MFAObjectInfo();
+                newItem.Chunks = new MFAChunkList();
                 newItem.Name = item.name;
                 newItem.ObjectType = (int)item.ObjectType;
                 newItem.Handle = item.handle;
@@ -686,7 +686,7 @@ namespace CTFAK.Tools
                 if (!noicon)
                 {
                     FTDecompile.lastAllocatedHandleImg++;
-                    var newIconImage = new CCN.Chunks.Banks.Image(null);
+                    var newIconImage = new CCN.Chunks.Banks.Image();
                     newIconImage.Handle = lastAllocatedHandleImg;
                     newIconImage.FromBitmap(iconBmp);
                     mfa.Icons.Items.Add(lastAllocatedHandleImg, newIconImage);
@@ -704,7 +704,7 @@ namespace CTFAK.Tools
                 if (item.ObjectType == (int)Constants.ObjectType.QuickBackdrop)
                 {
                     var backdropLoader = item.properties as Quickbackdrop;
-                    var backdrop = new MFAQuickBackdrop((ByteReader)null);
+                    var backdrop = new MFAQuickBackdrop();
                     backdrop.ObstacleType = (uint)backdropLoader.ObstacleType;
                     backdrop.CollisionType = (uint)backdropLoader.CollisionType;
                     backdrop.Width = backdropLoader.Width;
@@ -722,7 +722,7 @@ namespace CTFAK.Tools
                 else if (item.ObjectType == (int)Constants.ObjectType.Backdrop)
                 {
                     var backdropLoader = item.properties as Backdrop;
-                    var backdrop = new MFABackdrop((ByteReader)null);
+                    var backdrop = new MFABackdrop();
                     backdrop.ObstacleType = (uint)backdropLoader.ObstacleType;
                     backdrop.CollisionType = (uint)backdropLoader.CollisionType;
                     backdrop.Handle = backdropLoader.Image;
@@ -733,18 +733,18 @@ namespace CTFAK.Tools
                     var itemLoader = item?.properties as ObjectCommon;
                     if (itemLoader == null) throw new NotImplementedException("Null loader");
                     //CommonSection
-                    var newObject = new ObjectLoader(null);
+                    var newObject = new ObjectLoader();
                     newObject.ObjectFlags = (int)(itemLoader.Flags.flag);
                     newObject.NewObjectFlags = (int)(itemLoader.NewFlags.flag);
                     newObject.BackgroundColor = itemLoader.BackColor;
                     newObject.Qualifiers = itemLoader._qualifiers;
 
-                    newObject.Strings = new MFAValueList(null);//ConvertStrings(itemLoader.);
-                    newObject.Values = new MFAValueList(null);//ConvertValue(itemLoader.Values);
-                    newObject.Movements = new MFAMovements(null);
+                    newObject.Strings = new MFAValueList();//ConvertStrings(itemLoader.);
+                    newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values);
+                    newObject.Movements = new MFAMovements();
                     if (itemLoader.Movements == null)
                     {
-                        var newMov = new MFAMovement(null);
+                        var newMov = new MFAMovement();
                         newMov.Name = $"Movement #{0}";
                         newMov.Extension = "";
                         newMov.Type = 0;
@@ -761,7 +761,7 @@ namespace CTFAK.Tools
                         for (int j = 0; j < itemLoader.Movements.Items.Count; j++)
                         {
                             var mov = itemLoader.Movements.Items[j];
-                            var newMov = new MFAMovement(null);
+                            var newMov = new MFAMovement();
                             newMov.Name = $"Movement #{j}";
                             newMov.Extension = "";
                             newMov.Type = mov.Type;
@@ -775,11 +775,11 @@ namespace CTFAK.Tools
                     }
 
 
-                    newObject.Behaviours = new Behaviours(null);
+                    newObject.Behaviours = new Behaviours();
 
                     if (item.ObjectType == (int)Constants.ObjectType.Active)
                     {
-                        var active = new MFAActive(null);
+                        var active = new MFAActive();
                         //Shit Section
                         {
                             active.ObjectFlags = newObject.ObjectFlags;
@@ -800,7 +800,7 @@ namespace CTFAK.Tools
                             for (int j = 0; j < animHeader.AnimationDict.Count; j++)
                             {
                                 var origAnim = animHeader.AnimationDict.ToArray()[j];
-                                var newAnimation = new MFAAnimation(null);
+                                var newAnimation = new MFAAnimation();
                                 newAnimation.Name = $"User Defined {j}";
                                 var newDirections = new List<MFAAnimationDirection>();
                                 Animation animation = null;
@@ -817,7 +817,7 @@ namespace CTFAK.Tools
                                         for (int n = 0; n < animation.DirectionDict.Count; n++)
                                         {
                                             var direction = animation.DirectionDict.ToArray()[n].Value;
-                                            var newDirection = new MFAAnimationDirection(null);
+                                            var newDirection = new MFAAnimationDirection();
                                             newDirection.MinSpeed = direction.MinSpeed;
                                             newDirection.MaxSpeed = direction.MaxSpeed;
                                             newDirection.Index = n;
@@ -844,7 +844,7 @@ namespace CTFAK.Tools
 
                     if ((int)item.ObjectType >= 32)
                     {
-                        var newExt = new MFAExtensionObject(null);
+                        var newExt = new MFAExtensionObject();
                         {
                             newExt.ObjectFlags = newObject.ObjectFlags;
                             newExt.NewObjectFlags = newObject.NewObjectFlags;
@@ -884,7 +884,7 @@ namespace CTFAK.Tools
                     else if (item.ObjectType == (int)Constants.ObjectType.Text)
                     {
                         var text = itemLoader.Text;
-                        var newText = new MFAText(null);
+                        var newText = new MFAText();
                         //Shit Section
                         {
                             newText.ObjectFlags = newObject.ObjectFlags;
@@ -904,7 +904,7 @@ namespace CTFAK.Tools
                             newText.Font = 0;
                             newText.Color = Color.Black;
                             newText.Flags = 0;
-                            newText.Items = new List<MFAParagraph>(){new MFAParagraph(null)
+                            newText.Items = new List<MFAParagraph>(){new MFAParagraph()
                         {
                             Value="ERROR"
                         }};
@@ -920,7 +920,7 @@ namespace CTFAK.Tools
                             newText.Items = new List<MFAParagraph>();
                             foreach (Paragraph exePar in text.Items)
                             {
-                                var newPar = new MFAParagraph((ByteReader)null);
+                                var newPar = new MFAParagraph();
                                 newPar.Value = exePar.Value;
                                 newPar.Flags = exePar.Flags.flag;
                                 newText.Items.Add(newPar);
@@ -934,7 +934,7 @@ namespace CTFAK.Tools
                     else if (item.ObjectType == (int)Constants.ObjectType.Lives || item.ObjectType == (int)Constants.ObjectType.Score)
                     {
                         var counter = itemLoader.Counters;
-                        var lives = new MFALives(null);
+                        var lives = new MFALives();
                         {
                             lives.ObjectFlags = newObject.ObjectFlags;
                             lives.NewObjectFlags = newObject.NewObjectFlags;
@@ -959,7 +959,7 @@ namespace CTFAK.Tools
                     else if (item.ObjectType == (int)Constants.ObjectType.Counter)
                     {
                         var counter = itemLoader.Counters;
-                        var newCount = new MFACounter(null);
+                        var newCount = new MFACounter();
                         {
                             newCount.ObjectFlags = newObject.ObjectFlags;
                             newCount.NewObjectFlags = newObject.NewObjectFlags;

@@ -17,13 +17,11 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public int Width;
         public int Height;
 
-        public MFALives(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
-            base.Read();
+            base.Read(reader);
             Player = reader.ReadUInt32();
             Images = new List<int>();
             var imgCount = reader.ReadInt32();

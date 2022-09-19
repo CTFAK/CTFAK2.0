@@ -12,17 +12,16 @@ namespace CTFAK.MFA
     {
         public List<MFAPlayerControl> Items=new List<MFAPlayerControl>();
 
-        public MFAControls(ByteReader reader) : base(reader) { }
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Items = new List<MFAPlayerControl>();
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var item = new MFAPlayerControl(reader);
+                var item = new MFAPlayerControl();
                 Items.Add(item);
-                item.Read();
+                item.Read(reader);
             }
         }
 
@@ -59,15 +58,12 @@ namespace CTFAK.MFA
         public int Unk8;
 
 
-        public MFAPlayerControl(ByteReader reader) : base(reader)
-        {
 
-        }
 
 
        
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             ControlType = reader.ReadInt32();
             var count = reader.ReadInt32();

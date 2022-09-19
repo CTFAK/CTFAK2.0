@@ -144,15 +144,15 @@ namespace JFusion
 
             //EVERYTHING ABOVE THIS COMMENT IS UNFINISHED
             
-            mfa.Fonts = new FontBank(null);
-            mfa.Images = new AGMIBank(null);
-            mfa.Icons = new AGMIBank(null);
-            mfa.Sounds = new SoundBank(null);
-            mfa.Music = new MusicBank(null);
+            mfa.Fonts = new FontBank();
+            mfa.Images = new AGMIBank();
+            mfa.Icons = new AGMIBank();
+            mfa.Sounds = new SoundBank();
+            mfa.Music = new MusicBank();
             mfa.Stamp = new byte[0];
             foreach (var jmfaIcon in icons)
             {
-                var newIcon = new Image(null);
+                var newIcon = new Image();
                 newIcon.FromBitmap(jmfaIcon.bmp);
                 newIcon.Handle = jmfaIcon.Handle;
                 newIcon.ActionX=jmfaIcon.ActionX;
@@ -164,7 +164,7 @@ namespace JFusion
             }
             foreach (var jMfAImage in images)
             {
-                var image = new Image(null);
+                var image = new Image();
                 image.FromBitmap(jMfAImage.bmp);
                 image.Handle = jMfAImage.Handle;
                 image.ActionX=jMfAImage.ActionX;
@@ -178,10 +178,10 @@ namespace JFusion
             mfa.Icons.Palette = frames[0].palette;
             mfa.Images.Palette = frames[0].palette;
             
-            mfa.Controls = new MFAControls(null);
+            mfa.Controls = new MFAControls();
             mfa.menuImages = new Dictionary<int, int>();
-            mfa.GlobalValues = new MFAValueList(null);
-            mfa.GlobalStrings = new MFAValueList(null);
+            mfa.GlobalValues = new MFAValueList();
+            mfa.GlobalStrings = new MFAValueList();
             mfa.GlobalEvents = new byte[0];
             
             mfa.IconImages = new List<int>();
@@ -201,7 +201,7 @@ namespace JFusion
             {
                 mfa.Frames.Add(tempFrame.ToMFA());
             }
-            mfa.Chunks = new MFAChunkList(null);
+            mfa.Chunks = new MFAChunkList();
             
             return mfa;
         }

@@ -11,14 +11,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Initial;
         public int Minimum;
         public int Maximum;
-
-        public Counter(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Size = reader.ReadInt16();
             Initial = reader.ReadInt32();
@@ -61,13 +54,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public ushort Player;
         public Shape Shape;
 
-        public Counters(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
                 size = reader.ReadUInt32();
@@ -100,8 +90,8 @@ namespace CTFAK.CCN.Chunks.Objects
             else if (DisplayType == 2 || DisplayType == 3 || DisplayType == 5)
             {
                 Frames = new List<int>() { 0 };
-                Shape = new Shape(reader);
-                Shape.Read();
+                Shape = new Shape();
+                Shape.Read(reader);
             }
 
         }

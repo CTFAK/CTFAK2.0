@@ -13,17 +13,17 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public Dictionary<int, MFAAnimation> Items = new Dictionary<int, MFAAnimation>();
         public bool _isExt;
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
-            base.Read();
+            base.Read(reader);
 
             if (reader.ReadByte() != 0)
             {
                 var animationCount = reader.ReadUInt32();
                 for (int i = 0; i < animationCount; i++)
                 {
-                    var item = new MFAAnimation(reader);
-                    item.Read();
+                    var item = new MFAAnimation();
+                    item.Read(reader);
                     Items.Add(i, item);
                 }
             }
@@ -55,7 +55,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
         }
 
 
-        public MFAAnimationObject(ByteReader reader) : base(reader) { }
     }
 
     public class MFAAnimation : ChunkLoader
@@ -75,22 +74,21 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
             var directionCount = reader.ReadInt32();
             Directions = new List<MFAAnimationDirection>();
             for (int i = 0; i < directionCount; i++)
             {
-                var direction = new MFAAnimationDirection(reader);
-                direction.Read();
+                var direction = new MFAAnimationDirection();
+                direction.Read(reader);
                 Directions.Add(direction);
             }
 
 
 
         }
-        public MFAAnimation(ByteReader reader) : base(reader) { }
     }
 
     public class MFAAnimationDirection : ChunkLoader
@@ -119,7 +117,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
         }
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Index = reader.ReadInt32();
             MinSpeed = reader.ReadInt32();
@@ -133,6 +131,5 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
 
         }
-        public MFAAnimationDirection(ByteReader reader) : base(reader) { }
     }
 }

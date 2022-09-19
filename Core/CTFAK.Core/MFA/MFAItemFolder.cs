@@ -15,8 +15,7 @@ namespace CTFAK.MFA
         public uint UnkHeader;
         public bool isRetard;
 
-        public MFAItemFolder(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             UnkHeader = reader.ReadUInt32();
             if (UnkHeader == 0x70000004)

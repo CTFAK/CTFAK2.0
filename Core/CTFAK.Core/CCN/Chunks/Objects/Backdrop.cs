@@ -26,12 +26,9 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Width;
         public int Height;
         public int Image;
-        public BackdropLoader(ByteReader reader):base(reader)
-        {
 
-        }
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             throw new System.NotImplementedException();
         }
@@ -43,16 +40,7 @@ namespace CTFAK.CCN.Chunks.Objects
     }
     public class Backdrop : BackdropLoader
     {
-
-        
-
-        public Backdrop(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
                 Size = reader.ReadInt32();
@@ -79,13 +67,9 @@ namespace CTFAK.CCN.Chunks.Objects
 
         public Shape Shape;
 
-        public Quickbackdrop(ByteReader reader) : base(reader)
-        {
-        }
 
 
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
             Size = reader.ReadInt32();
@@ -93,8 +77,8 @@ namespace CTFAK.CCN.Chunks.Objects
             CollisionType = (Collision)reader.ReadInt16();
             Width = reader.ReadInt32();
             Height = reader.ReadInt32();
-            Shape = new Shape(reader);
-            Shape.Read();
+            Shape = new Shape();
+            Shape.Read(reader);
         }
 
 
@@ -116,14 +100,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public Color Color2;
         public short GradFlags;
         public short Image = 15;
-
-        public Shape(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             BorderSize = reader.ReadInt16();
             BorderColor = reader.ReadColor();

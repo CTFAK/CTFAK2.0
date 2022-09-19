@@ -214,7 +214,7 @@ namespace CTFAK.Utils
                 Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
 
                 bmp.UnlockBits(bmpData);
-                var newImage = new Image(null);
+                var newImage = new Image();
                     newImage.FromBitmap(bmp);
                     return newImage;
 

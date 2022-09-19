@@ -24,20 +24,19 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadUInt32();
             for (int i = 0; i < count; i++)
             {
-                var item = new MFAMovement(reader);
-                item.Read();
+                var item = new MFAMovement();
+                item.Read(reader);
                 Items.Add(item);
 
             }
 
 
         }
-        public MFAMovements(ByteReader reader) : base(reader) { }
     }
 
     public class MFAMovement : ChunkLoader
@@ -80,7 +79,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
             Extension = reader.AutoReadUnicode();
@@ -101,20 +100,19 @@ namespace CTFAK.MFA.MFAObjectLoaders
                 switch (Type)
                 {
                     case 1:
-                        Loader = new Mouse(new ByteReader(extData));
+                        Loader = new Mouse();
                         break;
                     case 5:
-                        Loader = new MovementPath(new ByteReader(extData));
+                        Loader = new MovementPath();
                         break;
                     case 4:
-                        Loader = new Ball(new ByteReader(extData));
+                        Loader = new Ball();
                         break;
                 }
 
-                Loader?.Read();
+                Loader?.Read(new ByteReader(extData));
             }
 
         }
-        public MFAMovement(ByteReader reader) : base(reader) { }
     }
 }

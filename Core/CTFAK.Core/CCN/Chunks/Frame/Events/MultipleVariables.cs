@@ -13,12 +13,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         private int index;
         private int op;
 
-        public Multivar(ByteReader reader):base(reader)
-        {
 
-        }
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             index = reader.ReadInt32();
             op = reader.ReadInt32();
@@ -57,8 +54,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         int flagValues;
         Multivar[] values;
 
-        public MultipleVariables(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             flags = reader.ReadInt32();
             flagMasks = reader.ReadInt32();
@@ -77,7 +73,8 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             int i;
             for (i = 0; i < nValues; i++)
             {
-                Multivar value = new Multivar(reader);
+                Multivar value = new Multivar();
+                value.Read(reader);
                 value.isDouble = (flags & maskDouble) != 0;
                 maskGlobal <<= 4;
                 maskDouble <<= 4;

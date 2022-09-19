@@ -62,8 +62,7 @@ namespace CTFAK.CCN.Chunks
         public short Otherflags;
         public Controls Controls;
         public int WindowsMenuIndex;
-        public AppHeader(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
             if(!Settings.Old) Size = reader.ReadInt32();
@@ -76,9 +75,9 @@ namespace CTFAK.CCN.Chunks
             WindowHeight = reader.ReadInt16();
             InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);
             InitialLives = (int)(reader.ReadUInt32() ^ 0xffffffff);
-            Controls = new Controls(reader);
+            Controls = new Controls();
             if(Settings.Old) reader.Skip(56);
-            else Controls.Read();
+            else Controls.Read(reader);
             BorderColor = reader.ReadColor();
             NumberOfFrames = reader.ReadInt32();
             if (Settings.Old) return;
@@ -95,12 +94,8 @@ namespace CTFAK.CCN.Chunks
     {
         public List<PlayerControl> Items;
 
-        public Controls(ByteReader reader) : base(reader) { }
 
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Items = new List<PlayerControl>();
             for (int i = 0; i < 4; i++)

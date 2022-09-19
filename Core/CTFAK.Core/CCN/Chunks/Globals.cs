@@ -8,11 +8,8 @@ namespace CTFAK.CCN.Chunks
     public class GlobalValues:ChunkLoader
     {
         public List<object> Items = new List<object>();
-        public GlobalValues(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt16();
             List<ByteReader> tempReaders = new List<ByteReader>();
@@ -43,11 +40,9 @@ namespace CTFAK.CCN.Chunks
     public class GlobalStrings:ChunkLoader
     {
         public List<string> Items = new List<string>();
-        public GlobalStrings(ByteReader reader) : base(reader)
-        {
-        }
+ 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)

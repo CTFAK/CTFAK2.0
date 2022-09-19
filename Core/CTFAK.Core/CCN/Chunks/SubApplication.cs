@@ -10,13 +10,11 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public int FrameNumber;
 
-        public SubApplication(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             if (Settings.Old)
             {

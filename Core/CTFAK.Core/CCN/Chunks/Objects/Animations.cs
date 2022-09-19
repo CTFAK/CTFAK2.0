@@ -8,13 +8,7 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public Dictionary<int, Animation> AnimationDict;
 
-        public Animations(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             var size = reader.ReadInt16();
@@ -32,15 +26,15 @@ namespace CTFAK.CCN.Chunks.Objects
                 if (offset != 0)
                 {
                     reader.Seek(currentPosition + offset);
-                    var anim = new Animation(reader);
+                    var anim = new Animation();
 
-                    anim.Read();
+                    anim.Read(reader);
                     AnimationDict.Add(i, anim);
 
                 }
                 else
                 {
-                    AnimationDict.Add(i, new Animation((ByteReader)null));
+                    AnimationDict.Add(i, new Animation());
                 }
 
             }
@@ -59,13 +53,8 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public Dictionary<int, AnimationDirection> DirectionDict;
 
-        public Animation(ByteReader reader) : base(reader)
-        {
-        }
 
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             var offsets = new List<int>();
@@ -81,13 +70,13 @@ namespace CTFAK.CCN.Chunks.Objects
                 if (offset != 0)
                 {
                     reader.Seek(currentPosition + offset);
-                    var dir = new AnimationDirection(reader);
-                    dir.Read();
+                    var dir = new AnimationDirection();
+                    dir.Read(reader);
                     DirectionDict.Add(i, dir);
                 }
                 else
                 {
-                    DirectionDict.Add(i, new AnimationDirection((ByteReader)null));
+                    DirectionDict.Add(i, new AnimationDirection());
                 }
 
             }
@@ -110,13 +99,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Repeat;
         public int BackTo;
         public List<int> Frames = new List<int>();
-        public AnimationDirection(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             MinSpeed = reader.ReadSByte();
             MaxSpeed = reader.ReadSByte();

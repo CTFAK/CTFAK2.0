@@ -8,11 +8,9 @@ namespace CTFAK.CCN.Chunks
     {
         public string name;
         public byte[] data;
-        public BinaryFile(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             name = reader.ReadAscii(reader.ReadInt16());
             data = reader.ReadBytes(reader.ReadInt32());
@@ -27,11 +25,8 @@ namespace CTFAK.CCN.Chunks
 
     public class BinaryFiles:ChunkLoader
     {
-        public BinaryFiles(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
         }
 

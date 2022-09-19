@@ -18,16 +18,12 @@ namespace CTFAK.CCN.Chunks
     }
     public class Chunk
     {
-        public Chunk(ByteReader reader)
-        {
-            this.reader = reader;
-        }
-        ByteReader reader;
+
         public short Id;
         public ChunkFlags Flag;
         public int Size;
 
-        public byte[] Read()
+        public byte[] Read(ByteReader reader)
         {
             Id = reader.ReadInt16();
             
@@ -73,12 +69,8 @@ namespace CTFAK.CCN.Chunks
     }
     public abstract class ChunkLoader
     {
-        public ByteReader reader;
-        public ChunkLoader(ByteReader reader)
-        {
-            this.reader = reader;
-        }
-        public abstract void Read();
+
+        public abstract void Read(ByteReader reader);
 
         public abstract void Write(ByteWriter writer);
 

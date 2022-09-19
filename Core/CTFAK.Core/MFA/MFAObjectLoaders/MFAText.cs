@@ -18,14 +18,9 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public uint Font;
         public Color Color;
         public uint Flags;
-
-        public MFAText(ByteReader reader) : base(reader)
+        public override void Read(ByteReader reader)
         {
-        }
-
-        public override void Read()
-        {
-            base.Read();
+            base.Read(reader);
             Width = reader.ReadUInt32();
             Height = reader.ReadUInt32();
             Font = reader.ReadUInt32();
@@ -36,8 +31,8 @@ namespace CTFAK.MFA.MFAObjectLoaders
             var parCount = reader.ReadUInt32();
             for (int i = 0; i < parCount; i++)
             {
-                var par = new MFAParagraph(reader);
-                par.Read();
+                var par = new MFAParagraph();
+                par.Read(reader);
                 Items.Add(par);
             }
         }
@@ -66,13 +61,11 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public string Value;
         public uint Flags;
 
-        public MFAParagraph(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Value = reader.AutoReadUnicode();
             Flags = reader.ReadUInt32();

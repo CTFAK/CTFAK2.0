@@ -16,8 +16,7 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public static event Core.SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
-        public ImageBank(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             if (Core.parameters.Contains("-noimg")) return;
 
@@ -27,8 +26,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 var count = reader.ReadInt16();
                 for (int i = 0; i < count; i++)
                 {
-                    var newImg = new Image(reader);
-                    newImg.Read();
+                    var newImg = new Image();
+                    newImg.Read(reader);
                     Items.Add(newImg.Handle, newImg);
                 }
             }
@@ -38,8 +37,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 for (int i = 0; i < count; i++)
                 {
                     
-                    var newImg = new Image(reader);
-                    newImg.Read();
+                    var newImg = new Image();
+                    newImg.Read(reader);
                     OnImageLoaded?.Invoke(i,count);
                     Items.Add(newImg.Handle, newImg);
                 }
@@ -263,13 +262,10 @@ namespace CTFAK.CCN.Chunks.Banks
         public int transparent;
         
 
-        public Image(ByteReader reader):base(reader)
-        {
 
-        }
 
         public static List<Task> imageReadingTasks = new List<Task>();
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             if (Settings.twofiveplus&&!IsMFA)
             {
@@ -301,7 +297,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 imageData = target;
                 graphicMode = 16;
                 var bmp = bitmap;
-                var newImg = new Image(null);
+                var newImg = new Image();
                 newImg.FromBitmap(bmp);
                 imageData = newImg.imageData;
                 graphicMode = 4;

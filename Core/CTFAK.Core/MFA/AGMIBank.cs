@@ -20,7 +20,7 @@ namespace CTFAK.MMFParser.MFA.Loaders
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
         public List<Color> Palette=new Color[256].ToList();
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             GraphicMode = reader.ReadInt32();
             PaletteVersion = reader.ReadInt16();
@@ -35,9 +35,9 @@ namespace CTFAK.MMFParser.MFA.Loaders
 
             for (int i = 0; i < count; i++)
             {
-                var item = new Image(reader);
+                var item = new Image();
                 item.IsMFA = true;
-                item.Read();
+                item.Read(reader);
                 Items.Add(item.Handle, item);
             }
         }
@@ -78,7 +78,6 @@ namespace CTFAK.MMFParser.MFA.Loaders
 
         
         }
-        public AGMIBank(ByteReader reader) : base(reader) { }
 
     }
 }

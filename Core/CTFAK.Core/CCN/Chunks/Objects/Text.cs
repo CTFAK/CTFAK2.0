@@ -12,13 +12,11 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Height;
         public List<Paragraph> Items = new List<Paragraph>();
 
-        public Text(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             if (Settings.Old)
             {
@@ -36,8 +34,8 @@ namespace CTFAK.CCN.Chunks.Objects
                 foreach (int itemOffset in itemOffsets)
                 {
                     reader.Seek(currentPos+itemOffset);
-                    var par = new Paragraph(reader);
-                    par.Read();
+                    var par = new Paragraph();
+                    par.Read(reader);
                     Items.Add(par);
                 } 
             }
@@ -56,8 +54,8 @@ namespace CTFAK.CCN.Chunks.Objects
                 foreach (int itemOffset in itemOffsets)
                 {
                     reader.Seek(currentPos+itemOffset);
-                    var par = new Paragraph(reader);
-                    par.Read();
+                    var par = new Paragraph();
+                    par.Read(reader);
                     Items.Add(par);
                 } 
             }
@@ -88,13 +86,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public string Value;
         public Color Color;
 
-        public Paragraph(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
             if (Settings.Old)

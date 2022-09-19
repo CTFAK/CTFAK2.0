@@ -9,11 +9,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public string Filename;
         public string Command;
 
-        public Program(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Flags = reader.ReadInt16();
             Filename = reader.ReadAscii(260);

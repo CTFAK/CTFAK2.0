@@ -15,11 +15,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public byte[] Unk1;
         public byte[] Unk2;
 
-        public Group(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Offset = reader.Tell() - 24;
             Flags = reader.ReadUInt16();

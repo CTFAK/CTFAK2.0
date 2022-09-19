@@ -19,8 +19,7 @@ namespace CTFAK.MFA
         public uint ParentHandle;
         public uint ItemHandle;
 
-        public MFAObjectInstance(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             X = reader.ReadInt32();
             Y = reader.ReadInt32();

@@ -10,14 +10,12 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public ushort ObjectInfo;
         public short ShootSpeed;
 
-        public Shoot(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
-            ShootPos = new Position(reader);
-            ShootPos.Read();
+            ShootPos = new Position();
+            ShootPos.Read(reader);
             ObjectInstance = reader.ReadUInt16();
             ObjectInfo = reader.ReadUInt16();
             reader.Skip(4);

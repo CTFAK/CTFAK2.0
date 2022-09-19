@@ -10,22 +10,19 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public List<Movement> Items = new List<Movement>();
 
-        public Movements(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var rootPosition = reader.Tell();
             var count = reader.ReadUInt32();
             var currentPos = reader.Tell();
             for (int i = 0; i < count; i++)
             {
-                var mov = new Movement(reader);
+                var mov = new Movement();
                 mov.rootPos = (int)rootPosition;
-                mov.Read();
+                mov.Read(reader);
                 Items.Add(mov);
                 reader.Seek(currentPos + 16);
                 currentPos = reader.Tell();
@@ -53,13 +50,9 @@ namespace CTFAK.CCN.Chunks.Objects
         public int DirectionAtStart;
         public MovementLoader Loader;
 
-        public Movement(ByteReader reader) : base(reader)
-        {
-        }
 
 
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
             if (Settings.Old)
@@ -79,32 +72,32 @@ namespace CTFAK.CCN.Chunks.Objects
                 switch (Type)
                 {
                     case 1:
-                        Loader = new Mouse(reader);
+                        Loader = new Mouse();
                         break;
                     case 2:
-                        Loader = new RaceMovement(reader);
+                        Loader = new RaceMovement();
                         break;
                     case 3:
-                        Loader = new EightDirections(reader);
+                        Loader = new EightDirections();
                         break;
                     case 4:
-                        Loader = new Ball(reader);
+                        Loader = new Ball();
                         break;
                     case 5:
-                        Loader = new MovementPath(reader);
+                        Loader = new MovementPath();
                         break;
                     case 9:
-                        Loader = new PlatformMovement(reader);
+                        Loader = new PlatformMovement();
                         break;
                     case 14:
-                        Loader = new ExtensionsMovement(reader);
+                        Loader = new ExtensionsMovement();
                         break;
 
 
                 }
 
                 if (Loader == null && Type != 0) throw new Exception("Unsupported movement: " + Type);
-                Loader?.Read();
+                Loader?.Read(reader);
 
             }
             else
@@ -123,32 +116,32 @@ namespace CTFAK.CCN.Chunks.Objects
                 switch (Type)
                 {
                     case 1:
-                        Loader = new Mouse(reader);
+                        Loader = new Mouse();
                         break;
                     case 2:
-                        Loader = new RaceMovement(reader);
+                        Loader = new RaceMovement();
                         break;
                     case 3:
-                        Loader = new EightDirections(reader);
+                        Loader = new EightDirections();
                         break;
                     case 4:
-                        Loader = new Ball(reader);
+                        Loader = new Ball();
                         break;
                     case 5:
-                        Loader = new MovementPath(reader);
+                        Loader = new MovementPath();
                         break;
                     case 9:
-                        Loader = new PlatformMovement(reader);
+                        Loader = new PlatformMovement();
                         break;
                     case 14:
-                        Loader = new ExtensionsMovement(reader);
+                        Loader = new ExtensionsMovement();
                         break;
 
 
                 }
 
                 if (Loader == null && Type != 0) return; //throw new Exception("Unsupported movement: "+Type);
-                Loader?.Read();
+                Loader?.Read(reader);
             }
         }
 
@@ -163,13 +156,11 @@ namespace CTFAK.CCN.Chunks.Objects
     }
     public class MovementLoader : ChunkLoader
     {
-        public MovementLoader(ByteReader reader) : base(reader)
-        {
-        }
+ 
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             throw new System.NotImplementedException();
         }
@@ -189,13 +180,11 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Y2;
         private short _unusedFlags;
 
-        public Mouse(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             X1 = reader.ReadInt16();
             X2 = reader.ReadInt16();
@@ -223,13 +212,11 @@ namespace CTFAK.CCN.Chunks.Objects
         public byte ReverseAtEnd;
         public List<MovementStep> Steps;
 
-        public MovementPath(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt16();
             MinimumSpeed = reader.ReadInt16();
@@ -245,8 +232,8 @@ namespace CTFAK.CCN.Chunks.Objects
 
                 reader.Skip(1);
                 var size = reader.ReadByte();
-                var step = new MovementStep(reader);
-                step.Read();
+                var step = new MovementStep();
+                step.Read(reader);
                 Steps.Add(step);
                 reader.Seek(currentPosition + size);
             }
@@ -284,13 +271,11 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Pause;
         public string Name;
 
-        public MovementStep(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
 
                 Speed = reader.ReadByte();
@@ -327,13 +312,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Security;
         public short Deceleration;
 
-        public Ball(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Speed = reader.ReadInt16();
             Randomizer = reader.ReadInt16();
@@ -362,13 +344,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Directions;
         public short BounceFactor;
 
-        public EightDirections(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Speed = reader.ReadInt16();
             Acceleration = reader.ReadInt16();
@@ -396,13 +375,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Angles;
         public short ReverseEnabled;
 
-        public RaceMovement(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Speed = reader.ReadInt16();
             Acceleration = reader.ReadInt16();
@@ -433,13 +409,11 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Gravity;
         public short JumpStrength;
 
-        public PlatformMovement(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Speed = reader.ReadInt16();
             Acceleration = reader.ReadInt16();
@@ -464,13 +438,8 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public byte[] Data;
 
-        public ExtensionsMovement(ByteReader reader) : base(reader)
-        {
-        }
 
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Data = reader.ReadBytes(Movement.DataSize);
         }

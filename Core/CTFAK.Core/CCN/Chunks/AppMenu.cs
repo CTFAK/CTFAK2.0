@@ -16,13 +16,11 @@ namespace CTFAK.CCN.Chunks
         public List<short> AccelKey;
         public List<short> AccelId;
 
-        public AppMenu(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             long currentPosition = reader.Tell();
             uint headerSize = reader.ReadUInt32();
@@ -87,8 +85,8 @@ namespace CTFAK.CCN.Chunks
         {
             while (true)
             {
-                AppMenuItem newItem = new AppMenuItem(reader);
-                newItem.Read();
+                AppMenuItem newItem = new AppMenuItem();
+                newItem.Read(reader);
                 Items.Add(newItem);
 
                 // if (newItem.Name.Contains("About")) break;
@@ -112,13 +110,9 @@ namespace CTFAK.CCN.Chunks
         public Int16 Id = 0;
         public string Mnemonic = null;
 
-        public AppMenuItem(ByteReader reader) : base(reader)
-        {
-        }
 
 
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Flags = reader.ReadInt16();
             if (!ByteFlag.GetFlag((uint)Flags, 4))

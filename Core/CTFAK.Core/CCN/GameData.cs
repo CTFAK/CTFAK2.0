@@ -49,7 +49,7 @@ namespace CTFAK.CCN
         public FontBank Fonts;
         public SoundBank Sounds;
         public MusicBank Music;
-        public ImageBank Images=new ImageBank(null);
+        public ImageBank Images=new ImageBank();
 
         //public GlobalValues GValues;
         //public GlobalStrings GStrings;
@@ -78,6 +78,7 @@ namespace CTFAK.CCN
             if (magic == "PAMU") Settings.Unicode = true;//PAMU
             else if (magic == "PAME") Settings.Unicode = false;//PAME
             else Logger.Log("Couldn't found any known headers: "+magic, true, ConsoleColor.Red);//Header not found
+            Logger.Log("Game Header: "+magic);
             runtimeVersion = (short)reader.ReadUInt16();
             runtimeSubversion = (short)reader.ReadUInt16();
             productVersion = reader.ReadInt32();
@@ -93,8 +94,8 @@ namespace CTFAK.CCN
             {
                 OnChunkLoaded?.Invoke(chunkIndex,0);
                 if (reader.Tell() >= reader.Size()) break;
-                var newChunk = new Chunk(reader);
-                var chunkData = newChunk.Read();
+                var newChunk = new Chunk();
+                var chunkData = newChunk.Read(reader);
                 if (newChunk.Id == 32639) break;
                 if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS; 
             
@@ -125,26 +126,26 @@ namespace CTFAK.CCN
                             //TODO: CHUNK_PREVIEW
                             break;
                         case 8739:
-                            header = new AppHeader(chunkReader);
-                            header.Read();
+                            header = new AppHeader();
+                            header.Read(chunkReader);
                             break;
                         case 8740:
-                            var appname = new AppName(chunkReader);
-                            appname.Read();
+                            var appname = new AppName();
+                            appname.Read(chunkReader);
                             name = appname.value;
                             break;
                         case 8741:
-                            var appauthor = new AppAuthor(chunkReader);
-                            appauthor.Read();
+                            var appauthor = new AppAuthor();
+                            appauthor.Read(chunkReader);
                             author = appauthor.value;
                             break;
                         case 8742:
-                            menu = new AppMenu(chunkReader);
-                            menu.Read();
+                            menu = new AppMenu();
+                            menu.Read(chunkReader);
                             break;
                         case 8743:
-                            var extPath = new ExtPath(chunkReader);
-                            extPath.Read();
+                            var extPath = new ExtPath();
+                            extPath.Read(chunkReader);
                             break;
                         case 8744:
                             //TODO: CHUNK_EXTENSIONS
@@ -153,8 +154,8 @@ namespace CTFAK.CCN
                             var count = chunkReader.ReadInt32();
                             for (int i = 0; i < count; i++)
                             {
-                                var newObjInfo = new ObjectInfo(chunkReader);
-                                newObjInfo.Read();
+                                var newObjInfo = new ObjectInfo();
+                                newObjInfo.Read(chunkReader);
                                 frameitems.Add(newObjInfo.handle, newObjInfo);
                                 
                             }
@@ -164,26 +165,26 @@ namespace CTFAK.CCN
                             //TODO: CHUNK_GLOBALEVENT
                             break;
                         case 8747:
-                            frameHandles = new FrameHandles(chunkReader);
-                            frameHandles.Read();
+                            frameHandles = new FrameHandles();
+                            frameHandles.Read(chunkReader);
                             break;
                         case 8748:
-                            extData = new ExtData(chunkReader);
-                            extData.Read();
+                            extData = new ExtData();
+                            extData.Read(chunkReader);
                             //TODO: CHUNK_EXTDATA
                             break;
                         case 8749:
                         //TODO: CHUNK_ADDITIONAL_EXTENSION
                         case 8750:
-                            var editorFile = new EditorFilename(chunkReader);
-                            editorFile.Read();
+                            var editorFile = new EditorFilename();
+                            editorFile.Read(chunkReader);
                             editorFilename = editorFile.value;
                             if (Settings.Build > 284) Decryption.MakeKey(name, copyright, editorFilename);
                             else Decryption.MakeKey(editorFilename, name, copyright);
                             break;
                         case 8751:
-                            var trgtFile = new TargetFilename(chunkReader);
-                            trgtFile.Read();
+                            var trgtFile = new TargetFilename();
+                            trgtFile.Read(chunkReader);
                             targetFilename = trgtFile.value;
                             break;
                         case 8752:
@@ -193,8 +194,8 @@ namespace CTFAK.CCN
                             //TODO: CHUNK_OTHEREXTS
                             break;
                         case 8754:
-                            globalValues = new GlobalValues(chunkReader);
-                            globalValues.Read();
+                            globalValues = new GlobalValues();
+                            globalValues.Read(chunkReader);
                             break;
                         case 8755:
                             
@@ -203,35 +204,35 @@ namespace CTFAK.CCN
                             //globalStrings.Read();
                             break;
                         case 8756:
-                            extensions = new Extensions(chunkReader);
-                            extensions.Read();
+                            extensions = new Extensions();
+                            extensions.Read(chunkReader);
                             break;
 
                         case 8759:
 
                             break;
                         case 8760:
-                            binaryFiles = new BinaryFiles(chunkReader);
-                            binaryFiles.Read();
+                            binaryFiles = new BinaryFiles();
+                            binaryFiles.Read(chunkReader);
                             break;
                         case 8763:
-                            var copyrightChunk = new Copyright(chunkReader);
-                            copyrightChunk.Read();
+                            var copyrightChunk = new Copyright();
+                            copyrightChunk.Read(chunkReader);
                             copyright = copyrightChunk.value;
                             break;
                         case 8770:
 
                             break;
                         case 8771:
-                            shaders = new Shaders(chunkReader);
-                            shaders.Read();
+                            shaders = new Shaders();
+                            shaders.Read(chunkReader);
                             break;
                         
                         case 8787: //2.5+ object headers:
                             while (true)
                             {
                                 if (chunkReader.Tell() >= chunkReader.Size()) break;
-                                var newObject = new ObjectInfo(null);
+                                var newObject = new ObjectInfo();
                                 newObject.handle = chunkReader.ReadInt16();
                                 newObject.ObjectType = chunkReader.ReadInt16();
                                 newObject.Flags = chunkReader.ReadInt16();
@@ -291,11 +292,11 @@ namespace CTFAK.CCN
                                 var objectData = frameitems[current];
 
                                 if (objectData.ObjectType == 0)
-                                    objectData.properties = new Quickbackdrop(decompressedReader);
+                                    objectData.properties = new Quickbackdrop();
                                 else if (objectData.ObjectType == 1)
-                                    objectData.properties = new Backdrop(decompressedReader);
-                                else objectData.properties = new ObjectCommon(decompressedReader);
-                                objectData.properties.Read();
+                                    objectData.properties = new Backdrop();
+                                else objectData.properties = new ObjectCommon(null);
+                                objectData.properties.Read(decompressedReader);
                                 chunkReader.Seek(currentPosition+chunkSize+8);
                                
                                 current++;
@@ -306,8 +307,8 @@ namespace CTFAK.CCN
 
                             break;
                         case 13107:
-                            var frame = new Frame(chunkReader);
-                            frame.Read();
+                            var frame = new Frame();
+                            frame.Read(chunkReader);
                             OnFrameLoaded?.Invoke(frames.Count,header.NumberOfFrames);
                             frames.Add(frame);
                             /*if (frame.name == "Battle")
@@ -340,22 +341,21 @@ namespace CTFAK.CCN
 
                         case 26214:
                             
-                            Images = new ImageBank(chunkReader);
-                            Images.Read();
+                            Images = new ImageBank();
+                            Images.Read(chunkReader);
                             break;
                         case 26215:
-                            Fonts = new FontBank(chunkReader);
+                            Fonts = new FontBank();
                             Fonts.Compressed = true;
-                            Fonts.Read();
+                            Fonts.Read(chunkReader);
                             break;
                         case 26216:
-                            Sounds = new SoundBank(chunkReader);
-                            Sounds.Read();
+                            Sounds = new SoundBank();
+                            Sounds.Read(chunkReader);
                             break;
                         case 21217:
-
-                            Music = new MusicBank(chunkReader);
-                            Music.Read();
+                            Music = new MusicBank();
+                            Music.Read(chunkReader);
                             break;
 
                     }

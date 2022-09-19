@@ -49,7 +49,7 @@ namespace CTFAK.MFA
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
             ObjectType = reader.ReadInt32();
@@ -69,42 +69,41 @@ namespace CTFAK.MFA
                 IconHandle = reader.ReadInt32();
             }
             else throw new InvalidDataException("invalid icon");
-            Chunks = new MFAChunkList(reader);
+            Chunks = new MFAChunkList();
             Chunks.Log = true;
-            Chunks.Read();
+            Chunks.Read(reader);
 
             if (ObjectType >= 32)//extension base
             {
-                Loader = new MFAExtensionObject(reader);
+                Loader = new MFAExtensionObject();
 
             }
             else if (ObjectType == 0)
             {
-                Loader = new MFAQuickBackdrop(reader);
+                Loader = new MFAQuickBackdrop();
             }
             else if (ObjectType == 1)
             {
-                Loader = new MFABackdrop(reader);
+                Loader = new MFABackdrop();
             }
             else if (ObjectType == 7)
             {
-                Loader = new MFACounter(reader);
+                Loader = new MFACounter();
             }
             else if (ObjectType == 2)
             {
-                Loader = new MFAActive(reader);
+                Loader = new MFAActive();
             }
             else if(ObjectType==3)
             {
-                Loader = new MFAText(reader);
+                Loader = new MFAText();
             }
             else throw new NotImplementedException("Unsupported object: " + ObjectType);
-            Loader.Read();
+            Loader.Read(reader);
 
 
 
         }
-        public MFAObjectInfo(ByteReader reader) : base(reader)
-        { }
+
     }
 }

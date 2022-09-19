@@ -12,18 +12,16 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public List<Expression> Items;
         public short Comparsion;
 
-        public ExpressionParameter(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Comparsion = reader.ReadInt16();
             Items = new List<Expression>();
             while (true)
             {
-                var expression = new Expression(reader);
-                expression.Read();
+                var expression = new Expression();
+                expression.Read(reader);
                 // Logger.Log($"Found expression {expression.ObjectType}-{expression.Num}=={((ExpressionLoader)expression.Loader)?.Value}");
                 if (expression.ObjectType == 0&& expression.Num==0)
                 {

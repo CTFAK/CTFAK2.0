@@ -16,8 +16,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int ObjectInfoList;
         public int Layer;            
 
-        public Position(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             ObjectInfoParent = reader.ReadInt16();
             Flags = reader.ReadInt16();

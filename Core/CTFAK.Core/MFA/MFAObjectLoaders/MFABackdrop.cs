@@ -13,15 +13,12 @@ namespace CTFAK.MFA.MFAObjectLoaders
     {
         public int Handle;
 
-        public MFABackdrop(ByteReader reader) : base(reader)
+
+
+
+        public override void Read(ByteReader reader)
         {
-        }
-
-
-
-        public override void Read()
-        {
-            base.Read();
+            base.Read(reader);
             Handle = reader.ReadInt32();
         }
 
@@ -44,15 +41,13 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public int Flags;
         public int Image;
 
-        public MFAQuickBackdrop(ByteReader reader) : base(reader)
+
+
+
+
+        public override void Read(ByteReader reader)
         {
-        }
-
-
-
-        public override void Read()
-        {
-            base.Read();
+            base.Read(reader);
             Width = reader.ReadInt32();
             Height = reader.ReadInt32();
             Shape = reader.ReadInt32();
@@ -87,14 +82,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
     {
         public uint ObstacleType;
         public uint CollisionType;
-
-        public MFABackgroundLoader(ByteReader reader) : base(reader)
-        {
-        }
-
-   
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             ObstacleType = reader.ReadUInt32();
             CollisionType = reader.ReadUInt32();

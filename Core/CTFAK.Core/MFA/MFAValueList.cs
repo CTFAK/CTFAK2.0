@@ -11,20 +11,17 @@ namespace CTFAK.MFA
     public class MFAValueList : ChunkLoader
     {
         public List<ValueItem> Items = new List<ValueItem>();
-        public MFAValueList(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var item = new ValueItem(reader);
-                item.Read();
+                var item = new ValueItem();
+                item.Read(reader);
                 Items.Add(item);
             }
         }
@@ -40,14 +37,9 @@ namespace CTFAK.MFA
         public object Value;
         public string Name;
 
-        public ValueItem(ByteReader reader) : base(reader)
-        {
-        }
 
 
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
             var type = reader.ReadInt32();

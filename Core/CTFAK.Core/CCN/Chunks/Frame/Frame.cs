@@ -21,8 +21,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public short layer;
         public short flags;
         public short parentHandle;
-        public ObjectInstance(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             handle = (ushort)reader.ReadInt16();
             objectInfo = (ushort)reader.ReadInt16();
@@ -56,8 +55,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public int top;
         public int right;
         public int bottom;
-        public VirtualRect(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             left = reader.ReadInt32();
             top = reader.ReadInt32();
@@ -98,13 +96,12 @@ namespace CTFAK.CCN.Chunks.Frame
         public Transition fadeOut;
         public VirtualRect virtualRect;
 
-        public Frame(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             while(true)
             {
-                var newChunk = new Chunk(reader);
-                var chunkData = newChunk.Read();
+                var newChunk = new Chunk();
+                var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
                 if (newChunk.Id == 32639) break;
                 if (reader.Tell() >= reader.Size()) break;
@@ -112,8 +109,8 @@ namespace CTFAK.CCN.Chunks.Frame
                 {
 
                     case 13109:
-                        var frameName = new StringChunk(chunkReader);
-                        frameName.Read();
+                        var frameName = new StringChunk();
+                        frameName.Read(chunkReader);
                         if (frameName.value == "" || frameName.value == null)
                             name = "CORRUPTED FRAME";
                         else
@@ -141,41 +138,41 @@ namespace CTFAK.CCN.Chunks.Frame
                         var count = chunkReader.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
-                            var objInst = new ObjectInstance(chunkReader);
-                            objInst.Read();
+                            var objInst = new ObjectInstance();
+                            objInst.Read(chunkReader);
                             objects.Add(objInst);
                         }
                         
                         break;
                     case 13117:
                         if (Core.parameters.Contains("-noevnt"))
-                            events = new Events(null);
+                            events = new Events();
                         else
                         {
-                            events = new Events(chunkReader);
-                            events.Read();
+                            events = new Events();
+                            events.Read(chunkReader);
                         }
                         break;
                     case 13121:
-                        layers = new Layers(chunkReader);
-                        layers.Read();
+                        layers = new Layers();
+                        layers.Read(chunkReader);
                         break;
                     case 13111:
-                        var pal = new FramePalette(chunkReader);
-                        pal.Read();
+                        var pal = new FramePalette();
+                        pal.Read(chunkReader);
                         palette = pal.Items;
                         break;
                     case 13115:
-                        fadeIn = new Transition(chunkReader);
-                        fadeIn.Read();
+                        fadeIn = new Transition();
+                        fadeIn.Read(chunkReader);
                         break;
                     case 13116:
-                        fadeOut = new Transition(chunkReader);
-                        fadeOut.Read();
+                        fadeOut = new Transition();
+                        fadeOut.Read(chunkReader);
                         break;
                     case 13122:
-                        virtualRect = new VirtualRect(chunkReader);
-                        virtualRect.Read();
+                        virtualRect = new VirtualRect();
+                        virtualRect.Read(chunkReader);
                         
                         break;
 
@@ -198,20 +195,15 @@ namespace CTFAK.CCN.Chunks.Frame
     {
         public List<Layer> Items;
 
-        public Layers(ByteReader reader) : base(reader)
-        {
-        }
 
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Items = new List<Layer>();
             var count = reader.ReadUInt32();
             for (int i = 0; i < count; i++)
             {
-                Layer item = new Layer(reader);
-                item.Read();
+                Layer item = new Layer();
+                item.Read(reader);
                 Items.Add(item);
             }
 
@@ -254,15 +246,8 @@ namespace CTFAK.CCN.Chunks.Frame
         public float YCoeff;
         public int NumberOfBackgrounds;
         public int BackgroudIndex;
-
-
-        public Layer(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        
+        public override void Read(ByteReader reader)
         {
             Flags.flag = reader.ReadUInt32();
             XCoeff = reader.ReadSingle();
@@ -295,13 +280,7 @@ namespace CTFAK.CCN.Chunks.Frame
     {
         public List<Color> Items;
 
-        public FramePalette(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Items = new List<Color>();
             for (int i = 0; i < 257; i++)

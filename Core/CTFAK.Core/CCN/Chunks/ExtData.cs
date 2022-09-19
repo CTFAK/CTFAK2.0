@@ -7,11 +7,8 @@ namespace CTFAK.CCN.Chunks
     {
         public byte[] data;
         public string name;
-        public ExtData(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var filename = reader.ReadAscii();
             var data = reader.ReadBytes();

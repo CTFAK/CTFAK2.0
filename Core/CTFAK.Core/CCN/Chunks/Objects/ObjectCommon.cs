@@ -94,9 +94,9 @@ namespace CTFAK.CCN.Chunks.Objects
         public Text Text;
         public Counter Counter;
         public short[] _qualifiers = new short[8];
-        public ObjectCommon(ByteReader reader) : base(reader) { }
-        public ObjectCommon(ByteReader reader,ObjectInfo parent) : base(reader) { this.Parent = parent; }
-        public override void Read()
+
+        public ObjectCommon(ObjectInfo parent) { this.Parent = parent; }
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             if (Settings.Build >= 284&&Settings.gameType==Settings.GameType.NORMAL)
@@ -307,8 +307,8 @@ namespace CTFAK.CCN.Chunks.Objects
             {
                 //Console.WriteLine("ANIMS FOUND: "+Parent.name);
                 reader.Seek(currentPosition + _animationsOffset);
-                Animations = new Animations(reader);
-                Animations.Read();
+                Animations = new Animations();
+                Animations.Read(reader);
             }
 
 
@@ -318,17 +318,17 @@ namespace CTFAK.CCN.Chunks.Objects
                 if (Settings.Old)
                 {
                     reader.Seek(currentPosition + _movementsOffset);
-                    Movements = new Movements(null);
-                    var newMovement = new Movement(reader);
-                    newMovement.Read();
+                    Movements = new Movements();
+                    var newMovement = new Movement();
+                    newMovement.Read(reader);
                     Movements.Items.Add(newMovement);
                 }
                 else
                 {
                     reader.Seek(currentPosition + _movementsOffset);
 
-                    Movements = new Movements(reader);
-                    Movements.Read();
+                    Movements = new Movements();
+                    Movements.Read(reader);
                 }
                 
                 
@@ -342,15 +342,15 @@ namespace CTFAK.CCN.Chunks.Objects
                 {
                     //Text
                     case "TEXT":
-                        Text = new Text(reader);
-                        Text.Read();
+                        Text = new Text();
+                        Text.Read(reader);
                         break;
                     //Counter
                     case "CNTR":
                     case "SCORE":
                     case "LIVES":
-                        Counters = new Counters(reader);
-                        Counters.Read();
+                        Counters = new Counters();
+                        Counters.Read(reader);
                         break;
 
                 }
@@ -377,8 +377,8 @@ namespace CTFAK.CCN.Chunks.Objects
             if (_counterOffset > 0)
             {
                 reader.Seek(currentPosition + _counterOffset);
-                Counter = new Counter(reader);
-                Counter.Read();
+                Counter = new Counter();
+                Counter.Read(reader);
             }
         }
 

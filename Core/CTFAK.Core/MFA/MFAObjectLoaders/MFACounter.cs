@@ -24,13 +24,11 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public List<int> Images;
         public uint Font;
 
-        public MFACounter(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
-            base.Read();
+            base.Read(reader);
             Value = reader.ReadInt32();
             Minimum = reader.ReadInt32();
             Maximum = reader.ReadInt32();

@@ -11,13 +11,10 @@ namespace CTFAK.MMFParser.EXE.Loaders
     {
         public List<Shader> ShaderList;
 
-        public Shaders(ByteReader reader) : base(reader)
-        {
-        }
 
         
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
             var count = reader.ReadInt32();
@@ -31,8 +28,8 @@ namespace CTFAK.MMFParser.EXE.Loaders
             foreach (int offset in offsets)
             {
                 reader.Seek(start+offset);
-                var shader = new Shader(reader);
-                shader.Read();
+                var shader = new Shader();
+                shader.Read(reader);
                 ShaderList.Add(shader);
                 
             }
@@ -52,14 +49,7 @@ namespace CTFAK.MMFParser.EXE.Loaders
         public string Name;
         public string Data;
         public int BackgroundTexture;
-
-        public Shader(ByteReader reader) : base(reader)
-        {
-        }
-
-   
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
             var nameOffset = reader.ReadInt32();
@@ -78,7 +68,7 @@ namespace CTFAK.MMFParser.EXE.Loaders
                 
                 for (int i = 0; i < paramCount; i++)
                 {
-                    var newParameter = new ShaderParameter(null);
+                    var newParameter = new ShaderParameter();
                     Parameters.Add(newParameter);
                 }
 
@@ -110,13 +100,7 @@ namespace CTFAK.MMFParser.EXE.Loaders
         public string Name;
         public int Type;
         public int Value;
-        public ShaderParameter(ByteReader reader) : base(reader)
-        {
-        }
-
-   
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             throw new System.NotImplementedException();
         }
