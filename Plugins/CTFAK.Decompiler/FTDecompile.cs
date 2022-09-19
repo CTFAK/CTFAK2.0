@@ -24,6 +24,8 @@ namespace CTFAK.Tools
 {
     class FTDecompile : IFusionTool
     {
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Decompiler";
         public static int lastAllocatedHandleImg = 15;
 
@@ -637,8 +639,15 @@ namespace CTFAK.Tools
                                 iconBmp = game.Images.Items[((Backdrop)item.properties).Image].bitmap;
                                 break;
                             case 2: //Active
+                            try
+                            {
                                 iconBmp = game.Images.Items[((ObjectCommon)item.properties).Animations.AnimationDict.First().Value.DirectionDict.First().Value.Frames.First()].bitmap;
-                                break;
+                            }
+                            catch
+                            {
+                                iconBmp = Resources.Active;
+                            }
+                            break;
 
                             case 3: //String
                                 iconBmp = Resources.String;

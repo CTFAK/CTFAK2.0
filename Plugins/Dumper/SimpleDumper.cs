@@ -13,6 +13,8 @@ namespace Dumper
 {
     public class AutoDumper : IFusionTool
     {
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Dump Everything";
         public void Execute(IFileReader reader)
         {
@@ -26,6 +28,8 @@ namespace Dumper
     }
     public class ImageDumper : IFusionTool
     {
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Image Dumper";
 
         public void Execute(IFileReader reader)
@@ -45,6 +49,7 @@ namespace Dumper
                 tasks[i] = newTask;
                 newTask.Start();
                 i++;
+                Progress = new int[2] { i, images.Count };
             }
             foreach (var item in tasks)
             {
@@ -54,6 +59,8 @@ namespace Dumper
     }
     public class SoundDumper : IFusionTool
     {
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Sound Dumper";
         public static string getExtension(byte[] data)
         {
@@ -67,9 +74,12 @@ namespace Dumper
             var sounds = reader.getGameData().Sounds.Items;
             var outPath = reader.getGameData().name ?? "Unknown Game";
             Directory.CreateDirectory($"Dumps\\{outPath}\\Sounds");
+            int soundint = 0;
             foreach (var snd in sounds)
             {
                 File.WriteAllBytes($"Dumps\\{outPath}\\Sounds\\{Utils.ClearName(snd.Name)}{getExtension(snd.Data)}", snd.Data);
+                soundint++;
+                Progress = new int[2] { soundint, sounds.Count };
             }
         }
     }

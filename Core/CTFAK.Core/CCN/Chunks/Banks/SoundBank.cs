@@ -89,6 +89,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public uint Handle;
         public string Name;
         public byte[] Data;
+        public int Size;
 
 
         public override void Read(ByteReader reader)
@@ -105,11 +106,11 @@ namespace CTFAK.CCN.Chunks.Banks
             Flags = reader.ReadUInt32();
             var res = reader.ReadInt32();
             var nameLenght = reader.ReadInt32();
+            Size = reader.ReadInt32();
             ByteReader soundData;
             if (IsCompressed)
             {
-                var size = reader.ReadInt32();
-                soundData = new ByteReader(Decompressor.DecompressBlock(reader, size, decompressedSize));
+                soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
             }
             else
             {
