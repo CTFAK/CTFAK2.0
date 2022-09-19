@@ -14,8 +14,10 @@ using Action = CTFAK.CCN.Chunks.Frame.Action;
 
 namespace EventPreprocessor
 {
-    public class FTEventViewer:IFusionTool
+    public class FTEventViewer: IFusionTool
     {
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Event Viewer";
 
         public static Dictionary<int,ObjectInfo> objects;
