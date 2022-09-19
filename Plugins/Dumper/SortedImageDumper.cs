@@ -13,6 +13,8 @@ namespace Dumper
     {
         //Patched by Yunivers :3
         //Broken multiple times by Yunivers ;3
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Sorted Image Dumper";
         int imageNumber = 1;
 

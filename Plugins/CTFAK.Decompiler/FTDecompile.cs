@@ -24,6 +24,8 @@ namespace CTFAK.Tools
 {
     class FTDecompile : IFusionTool
     {
+        public int[] Progress = new int[] { };
+        int[] IFusionTool.Progress => Progress;
         public string Name => "Decompiler";
         public static int lastAllocatedHandleImg = 15;
 
