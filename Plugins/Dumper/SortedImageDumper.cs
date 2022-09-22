@@ -189,6 +189,7 @@ namespace Dumper
                             }
                         }
                     }
+                    Progress = new int[2] { objectsdone, (int)maxdone };
                 }
                 curframe++;
             }
