@@ -77,14 +77,17 @@ namespace CTFAK.Memory
         {
             ByteReader reader = new ByteReader(chunkData);
             uint decompressedSize = reader.ReadUInt32();
-
+                      
             byte[] rawData = reader.ReadBytes((int)reader.Size());
+            
             if ((chunkId & 1) == 1 && Settings.Build > 284)
             {
                 rawData[0] ^= (byte)((byte)(chunkId & 0xFF) ^ (byte)(chunkId >> 0x8));
             }
-
+            
             rawData = DecryptChunk(rawData, chunkSize);
+            
+            
             using (ByteReader data = new ByteReader(rawData))
             {
                 uint compressedSize = data.ReadUInt32();
@@ -117,7 +120,7 @@ namespace CTFAK.Memory
             Marshal.Copy(_decryptionKey, 0, keyPtr, _decryptionKey.Length);
 
             var outputChunkPtr = NativeLib.decode_chunk(inputChunkPtr, chunkSize, MagicChar, keyPtr);
-
+            
             byte[] decodedChunk = new byte[chunkSize];
             Marshal.Copy(outputChunkPtr, decodedChunk, 0, chunkSize);
 

@@ -166,7 +166,6 @@ namespace CTFAK.CCN.Chunks.Objects
             }
             else if (Settings.twofiveplus)
             {
-                Console.WriteLine("Reading stuff for 2.5+");
                 var size = reader.ReadInt32();
                 _animationsOffset = reader.ReadInt16();
                 _movementsOffset = reader.ReadInt16();

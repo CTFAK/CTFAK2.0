@@ -9,12 +9,14 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
+    [ChunkLoader(26214,"ImageBank")]
     public class ImageBank : ChunkLoader
     {
-        public static event Core.SaveHandler OnImageLoaded;
+        public static event SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
         public override void Read(ByteReader reader)
         {

@@ -6,9 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks
 {
+    [ChunkLoader(0x2226,"AppMenu")]
+    
     public class AppMenu : ChunkLoader
     {
         public List<AppMenuItem> Items = new List<AppMenuItem>();

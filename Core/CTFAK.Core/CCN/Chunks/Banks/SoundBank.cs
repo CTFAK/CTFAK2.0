@@ -7,12 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
+    [ChunkLoader(26216,"SoundBank")]
     public class SoundBank : ChunkLoader
     {
-        public static event Core.SaveHandler OnSoundLoaded;
+        public static event SaveHandler OnSoundLoaded;
         
         public int NumOfItems = 0;
         public int References = 0;

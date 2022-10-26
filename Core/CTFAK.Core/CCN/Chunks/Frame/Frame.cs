@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks.Frame
 {
@@ -68,6 +69,7 @@ namespace CTFAK.CCN.Chunks.Frame
             throw new NotImplementedException();
         }
     }
+    [ChunkLoader(0x3333,"Frame")]
     public class Frame : ChunkLoader
     {
         public string name;

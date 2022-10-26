@@ -1,14 +1,18 @@
 ﻿using System;
 using System.IO;
+using CTFAK.CCN.Chunks;
 using CTFAK.FileReaders;
 using CTFAK.Utils;
 using Joveler.Compression.ZLib;
 
 namespace CTFAK
 {
+    public delegate void SaveHandler(int index, int all);
+    public delegate void SimpleMessage<T>(T data);
+    public delegate T2 SimpleMessage<T,T2>(T data);
     public class Core
     {
-        public delegate void SaveHandler(int index, int all);
+        
         
         
      
@@ -18,7 +22,7 @@ namespace CTFAK
         public static string path;
         public static void Init()
         {
-
+            ChunkList.Init();
             AppDomain.CurrentDomain.UnhandledException += (o, e) =>
             {
                 Console.WriteLine(e.ExceptionObject.GetType());

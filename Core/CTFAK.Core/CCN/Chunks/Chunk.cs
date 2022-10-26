@@ -27,8 +27,6 @@ namespace CTFAK.CCN.Chunks
         {
             Id = reader.ReadInt16();
             
-
-
             Flag = (ChunkFlags)reader.ReadInt16();
             Size = reader.ReadInt32();
             var rawData = reader.ReadBytes(Size);
@@ -56,6 +54,9 @@ namespace CTFAK.CCN.Chunks
                     break;
                 case ChunkFlags.NotCompressed:
                     ChunkData = dataReader.ReadBytes(Size);
+                    break;
+                default:
+                    throw new InvalidDataException("Unsupported chunk flag");
                     break;
             }
 

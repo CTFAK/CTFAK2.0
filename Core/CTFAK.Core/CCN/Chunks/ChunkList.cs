@@ -1,9 +1,135 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using CTFAK.Attributes;
+using CTFAK.Memory;
+using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
 {
-    public static class ChunkList
+    public class ChunkList
     {
+        public class ChunkLoaderData
+        {
+            public Type loaderType;
+            public int chunkID;
+            public string chunkName;
+            public Dictionary<Settings.GameType, MethodBase> readingHandlers;
+        }
+
+        public static Dictionary<int,ChunkLoaderData> knownLoaders=new Dictionary<int, ChunkLoaderData>();
+        public static void Init()
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var asm in assemblies)
+            {
+                foreach (var type in asm.GetTypes())
+                {
+                    if (type.GetCustomAttributes().Any((a) => a.GetType()==typeof(ChunkLoaderAttribute)))
+                    {
+                        var attribute = type.GetCustomAttributes().First((a) => a.GetType() == typeof(ChunkLoaderAttribute)) as ChunkLoaderAttribute;
+                        var newChunkLoaderData = new ChunkLoaderData();
+                        newChunkLoaderData.loaderType = type;
+                        newChunkLoaderData.chunkID = attribute.chunkId;
+                        newChunkLoaderData.chunkName = attribute.chunkName;
+                        Logger.Log($"Found chunk loader handler for chunk id {newChunkLoaderData.chunkID} with name \"{newChunkLoaderData.chunkName}\"");
+                        if (!knownLoaders.ContainsKey(newChunkLoaderData.chunkID))
+                        {
+                            knownLoaders.Add(newChunkLoaderData.chunkID,newChunkLoaderData);
+                        }
+                        else
+                        {
+                            Logger.Log("Multiple loaders are getting registered for chunk: "+newChunkLoaderData.chunkID);
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        
+        public List<Chunk> chunks;
+        public delegate void OnChunkLoadedEvent(int chunkId, ChunkLoader loader);
+
+        public event OnChunkLoadedEvent OnChunkLoaded;
+        
+        int chunkIndex = 0;
+        public void Read(ByteReader reader)
+        {
+            while (true)
+            {
+
+                Chunk newChunk=null;
+                byte[] chunkData=null;
+                if (reader.Tell() >= reader.Size()) break;
+                try
+                {
+                    newChunk = new Chunk();
+                    chunkData = newChunk.Read(reader);
+                    if (newChunk.Id == 32639) break;
+
+                }
+                catch
+                {
+                    continue;
+                }
+                finally
+                {
+                    
+                    if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
+
+                    if (knownLoaders.TryGetValue(newChunk.Id, out var loaderData))
+                    {
+                        var newInstance = Activator.CreateInstance(loaderData.loaderType) as ChunkLoader;
+                        Logger.Log($"Reading chunk {newChunk.Id} using {loaderData.chunkName} loader");
+                        try
+                        {
+                            newInstance.Read(new ByteReader(new MemoryStream(chunkData)));
+                        }
+                        catch(Exception ex)
+                        {
+                            Logger.LogWarning($"Error while reading chunk {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
+                            Console.ReadKey();
+                        }
+                        try
+                        {
+                            OnChunkLoaded?.Invoke(newChunk.Id,newInstance);
+                        }
+                        catch(Exception ex)
+                        {
+                            Logger.LogWarning($"Error while handling chunk loading {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
+                            Console.ReadKey();
+                        }
+                    
+                    }
+                    else Logger.Log($"Loader not found for chunk {newChunk.Id}");
+                }
+                
+                
+                
+                chunkIndex++;
+                
+                
+                
+                /*if (Core.parameters.Contains("-trace_chunks"))
+                {
+                    string chunkName = "";
+                    if (!ChunkList.ChunkNames.TryGetValue(newChunk.Id, out chunkName))
+                    {
+                        chunkName = $"UNKOWN-{newChunk.Id}";
+                    }
+
+                    Logger.Log(
+                        $"Encountered chunk: {chunkName}, chunk flag: {newChunk.Flag}, exe size: {newChunk.Size}, decompressed size: {chunkData.Length}");
+                    File.WriteAllBytes($"CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin",chunkData);
+                    Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin");
+                } */
+            }
+        }
+        
+        
         public static Dictionary<int, string> ChunkNames = new Dictionary<int, string>()
         {
             { 4386, "PREVIEW" },

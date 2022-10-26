@@ -7,9 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
+    [ChunkLoader(26215,"FontBank")]
     public class FontBank : ChunkLoader
     {
         public bool Compressed;
@@ -21,7 +23,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Read(ByteReader reader)
         {
-
+            if(!Settings.isMFA)return;
             if (Settings.Old) return;//TODO FIX FIX FIX
             var count = reader.ReadInt32();
             int offset = 0;

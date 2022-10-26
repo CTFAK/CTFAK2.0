@@ -5,10 +5,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
 {
+    [ChunkLoader(0x2223,"AppHeader")]
     public class AppHeader : ChunkLoader
     {
         public int Size;

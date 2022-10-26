@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks
 {
+    [ChunkLoader(8756,"Extensions")]
     public class Extensions : ChunkLoader
     {
         internal ushort PreloadExtensions;
@@ -46,6 +48,7 @@ namespace CTFAK.CCN.Chunks
 
 
     }
+    [ChunkLoader(2234,"Extensions")]
     public class Extension : ChunkLoader
     {
         public short Handle;

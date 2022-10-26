@@ -1,9 +1,11 @@
 ﻿using System.IO;
+using CTFAK.Attributes;
 using CTFAK.Memory;
 using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
 {
+    
     public class BinaryFile:ChunkLoader
     {
         public string name;
@@ -22,7 +24,7 @@ namespace CTFAK.CCN.Chunks
             throw new System.NotImplementedException();
         }
     }
-
+    [ChunkLoader(8760,"BinaryFiles")]
     public class BinaryFiles:ChunkLoader
     {
 

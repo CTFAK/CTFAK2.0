@@ -262,6 +262,7 @@ namespace CTFAK.MFA
 
         public void Read(ByteReader reader)
         {
+            Settings.isMFA = true;
             reader.ReadAscii(4);
             MfaBuild = reader.ReadInt32();
             Product = reader.ReadInt32();
