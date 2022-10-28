@@ -61,6 +61,7 @@ namespace CTFAK.Tools
                 {
                     mfa.Sounds.Items.Add(item);
                 }
+
             }
             mfa.Fonts.Items.Clear();
             if (game.Fonts?.Items != null)
@@ -78,6 +79,8 @@ namespace CTFAK.Tools
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
+            mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
+
             foreach (var item in mfa.Icons.Items)
             {
                 try
@@ -633,7 +636,15 @@ namespace CTFAK.Tools
                         switch (item.ObjectType)
                         {
                             case 0: //Quick backdrop
+                            try
+                            {
                                 iconBmp = game.Images.Items[((Quickbackdrop)item.properties).Image].bitmap;
+
+                            }
+                            catch
+                            {
+                                iconBmp = Resources.Backdrop;
+                            }
                                 break;
                             case 1: //Backdrop
                                 iconBmp = game.Images.Items[((Backdrop)item.properties).Image].bitmap;

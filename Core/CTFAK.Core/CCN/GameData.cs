@@ -77,6 +77,7 @@ namespace CTFAK.CCN
             //Checking for header
             if (magic == "PAMU") Settings.Unicode = true;//PAMU
             else if (magic == "PAME") Settings.Unicode = false;//PAME
+            else if (magic == "CRUF") Settings.Unicode = true;
             else Logger.Log("Couldn't found any known headers: "+magic, true, ConsoleColor.Red);//Header not found
             Logger.Log("Game Header: "+magic);
             runtimeVersion = (short)reader.ReadUInt16();
@@ -203,6 +204,7 @@ namespace CTFAK.CCN
                 }
             };
             chunkList.Read(reader);
+            chunkList.Read(reader);//ONLY FOR F3 ONLY FOR F3 ONLY FOR F3
 
 
 
