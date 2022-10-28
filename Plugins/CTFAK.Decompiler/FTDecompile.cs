@@ -641,30 +641,50 @@ namespace CTFAK.Tools
                 {
                         switch (item.ObjectType)
                         {
-                            case 0: //Quick backdrop
-                            try
-                            {
-                                iconBmp = game.Images.Items[((Quickbackdrop)item.properties).Image].bitmap;
+                            case 0: //Quick Backdrop
+                                try
+                                {
+                                    Bitmap bmp = game.Images.Items[((Quickbackdrop)item.properties).Image].bitmap;
+                                    if (bmp.Width > bmp.Height)
+                                        iconBmp = bmp.resizeImage(new Size(32, (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
+                                    else
+                                        iconBmp = bmp.resizeImage(new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
+                                }
+                                catch
+                                {
+                                    iconBmp = Resources.Backdrop;
+                                }
+                                break;
 
-                            }
-                            catch
-                            {
-                                iconBmp = Resources.Backdrop;
-                            }
-                                break;
                             case 1: //Backdrop
-                                iconBmp = game.Images.Items[((Backdrop)item.properties).Image].bitmap;
+                                try
+                                {
+                                    Bitmap bmp = game.Images.Items[((Backdrop)item.properties).Image].bitmap;
+                                    if (bmp.Width > bmp.Height)
+                                        iconBmp = bmp.resizeImage(new Size(32, (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
+                                    else
+                                        iconBmp = bmp.resizeImage(new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
+                                }
+                                catch
+                                {
+                                    iconBmp = Resources.Backdrop;
+                                }
                                 break;
+
                             case 2: //Active
-                            try
-                            {
-                                iconBmp = game.Images.Items[((ObjectCommon)item.properties).Animations.AnimationDict.First().Value.DirectionDict.First().Value.Frames.First()].bitmap;
-                            }
-                            catch
-                            {
-                                iconBmp = Resources.Active;
-                            }
-                            break;
+                                try
+                                {
+                                    Bitmap bmp = game.Images.Items[((ObjectCommon)item.properties).Animations.AnimationDict.First().Value.DirectionDict.First().Value.Frames.First()].bitmap;
+                                    if (bmp.Width > bmp.Height)
+                                        iconBmp = bmp.resizeImage(new Size(32, (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
+                                    else
+                                        iconBmp = bmp.resizeImage(new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
+                                }
+                                catch
+                                {
+                                    iconBmp = Resources.Active;
+                                }
+                                break;
 
                             case 3: //String
                                 iconBmp = Resources.String;
@@ -675,29 +695,29 @@ namespace CTFAK.Tools
                                 break;
                             case 5: //Score
                                 iconBmp = Resources.Score;
-
                                 break;
 
                             case 6: //Lives
                                 iconBmp = Resources.Lives;
-
                                 break;
 
                             case 7: //Counter
                                 try
                                 {
-                                    iconBmp = game.Images.Items[((ObjectCommon)item.properties).Counters.Frames.First()].bitmap;
+                                    Bitmap bmp = game.Images.Items[((ObjectCommon)item.properties).Counters.Frames.First()].bitmap;
+                                    if (bmp.Width > bmp.Height)
+                                        iconBmp = bmp.resizeImage(new Size(32, (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
+                                    else
+                                        iconBmp = bmp.resizeImage(new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
                                 }
                                 catch
                                 {
                                     iconBmp = Resources.Counter;
-
                                 }
                                 break;
 
                             case 8: //Formatted Text
                                 iconBmp = Resources.Formatted_Text;
-
                                 break;
 
                             case 9: //Sub-Application
