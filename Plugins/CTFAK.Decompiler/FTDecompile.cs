@@ -19,6 +19,7 @@ using Ionic.Zlib;
 using Microsoft.VisualBasic;
 using Action = CTFAK.CCN.Chunks.Frame.Action;
 using Constants = CTFAK.CCN.Constants;
+using System.Text.RegularExpressions;
 
 namespace CTFAK.Tools
 {
@@ -480,7 +481,12 @@ namespace CTFAK.Tools
                 }
             }
             Settings.gameType = Settings.GameType.NORMAL;
-            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
+
+            var outPath = reader.getGameData().name ?? "Unknown Game";
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            outPath = rgx.Replace(outPath, "");
+            Directory.CreateDirectory($"Dumps\\{outPath}");
+            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
 
             static MFATransition ConvertTransition(Transition gameTrans)
             {
