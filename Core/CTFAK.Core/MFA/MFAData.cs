@@ -267,7 +267,7 @@ namespace CTFAK.MFA
             Product = reader.ReadInt32();
             BuildVersion = reader.ReadInt32();
             //reader.ReadInt32();//unknown
-            // Settings.Build = BuildVersion;
+            //Settings.Build = BuildVersion;
             LangId = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
             Description = reader.AutoReadUnicode();
