@@ -20,10 +20,8 @@ namespace CTFAK.CCN.Chunks.Banks
             throw new NotImplementedException();
         }
 
-
         public override void Read(ByteReader reader)
         {
-
             Items = new List<MusicFile>();
             // if (!Settings.DoMFA)return;
             NumOfItems = reader.ReadInt32();
@@ -35,15 +33,10 @@ namespace CTFAK.CCN.Chunks.Banks
                 Items.Add(item);
             }
         }
-
-
-
-
     }
 
     public class MusicFile : ChunkLoader
     {
-
         public int Checksum;
         public int References;
         public string Name;
@@ -55,9 +48,6 @@ namespace CTFAK.CCN.Chunks.Banks
         {
             throw new NotImplementedException();
         }
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -76,16 +66,11 @@ namespace CTFAK.CCN.Chunks.Banks
             var nameLen = reader.ReadInt32();
             Name = reader.ReadWideString(nameLen);
             Data = reader.ReadBytes((int)(size - nameLen));
-
         }
 
         public void Save(string filename)
         {
             File.WriteAllBytes(filename, Data);
         }
-
-
-
-
     }
 }

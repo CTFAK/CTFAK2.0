@@ -24,8 +24,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public List<int> Images;
         public uint Font;
 
-
-
         public override void Read(ByteReader reader)
         {
             base.Read(reader);
@@ -48,7 +46,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
 
             Font = reader.ReadUInt32();
-
         }
 
         public override void Write(ByteWriter Writer)

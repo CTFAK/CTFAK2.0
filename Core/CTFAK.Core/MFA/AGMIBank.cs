@@ -54,7 +54,6 @@ namespace CTFAK.MMFParser.MFA.Loaders
             writer.WriteInt32(Items.Count);
             foreach (var key in Items.Keys)
             {
-                
                 var newWriter = new ByteWriter(new MemoryStream());
                 var writeTask = new Task(() =>
                 {
@@ -74,10 +73,6 @@ namespace CTFAK.MMFParser.MFA.Loaders
             {
                 writer.WriteWriter(newWriter);
             }
-
-
-        
         }
-
     }
 }

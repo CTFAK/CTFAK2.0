@@ -20,8 +20,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
         }
 
-
-
         public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
@@ -43,8 +41,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Writer.WriteUInt32((uint)Data.Length);
             Writer.WriteBytes(Data);
         }
-
-
 
         public override void Read(ByteReader reader)
         {

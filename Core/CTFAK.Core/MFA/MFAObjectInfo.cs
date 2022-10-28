@@ -42,16 +42,12 @@ namespace CTFAK.MFA
 
             Chunks.Write(Writer);
             Loader.Write(Writer);
-
-
-
         }
 
 
 
         public override void Read(ByteReader reader)
         {
-
             ObjectType = reader.ReadInt32();
             Handle = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
@@ -100,10 +96,6 @@ namespace CTFAK.MFA
             }
             else throw new NotImplementedException("Unsupported object: " + ObjectType);
             Loader.Read(reader);
-
-
-
         }
-
     }
 }

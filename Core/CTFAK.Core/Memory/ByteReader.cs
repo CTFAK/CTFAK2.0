@@ -18,8 +18,6 @@ namespace CTFAK.Memory
         public Int64 Size()=>BaseStream.Length;
         public bool HasMemory(int size)=>Size() - Tell() >= size;
 
-
-
         public UInt16 PeekUInt16()
         {
             UInt16 value = ReadUInt16();
@@ -39,14 +37,12 @@ namespace CTFAK.Memory
             return value;
         }
 
-
         public Int32 PeekInt32()
         {
             Int32 value = ReadInt32();
             Seek(-4, SeekOrigin.Current);
             return value;
         }
-
 
         public string ReadAscii(int length = -1)
         {
@@ -70,8 +66,6 @@ namespace CTFAK.Memory
 
             return str;
         }
-
-
 
         public string ReadWideString(int length = -1)
         {
@@ -107,14 +101,12 @@ namespace CTFAK.Memory
         }
         public Color ReadColor()
         {
-
             var r = ReadByte();
             var g = ReadByte();
             var b = ReadByte();
             var a = ReadByte();
 
             return Color.FromArgb(a, r, g, b);
-
         }
 
         public override byte[] ReadBytes(int count = -1)

@@ -8,8 +8,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int evgOffsetList;
         public short[] ois;
 
-
-
         public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
@@ -30,7 +28,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
                 Writer.WriteInt16(ois[i]);
             }
             Writer.WriteInt32(0);
-            
         }
 
         public override string ToString()

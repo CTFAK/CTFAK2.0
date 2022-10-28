@@ -6,8 +6,6 @@ using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 
 namespace EventPreprocessor.Handlers
 {
-    
-    
     public static class ActiveHandler
     {
         public static Dictionary<int, ActionHandler> activeActionHandlers = new Dictionary<int, ActionHandler>();
@@ -22,7 +20,5 @@ namespace EventPreprocessor.Handlers
             var param1 = parameters[1].Loader as ExpressionParameter;
             FTEventViewer.WriteLine($"({obj.name})->AlterableValue{Convert.ToChar(param0.Value+65).ToString().ToUpper()} {param1.GetOperator()} {ExpressionConverter.ConvertExpression(param1)}");
         }
-        
-
     }
 }

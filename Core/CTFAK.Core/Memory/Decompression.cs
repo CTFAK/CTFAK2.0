@@ -24,7 +24,6 @@ namespace CTFAK.Memory
         public static ByteReader DecompressAsReader(ByteReader exeReader, out int decompressed) =>
             new ByteReader(Decompress(exeReader, out decompressed));
 
-
         public static byte[] DecompressBlock(ByteReader reader, int size, int decompSize)
         {
             var newData = ZlibStream.UncompressBuffer(reader.ReadBytes(size));
@@ -35,7 +34,6 @@ namespace CTFAK.Memory
         }
         public static byte[] DecompressBlock(ByteReader reader, int size)
         {
-           
             // We have no original size, so we are gonna just leave everything as is
             return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
         }
@@ -51,9 +49,6 @@ namespace CTFAK.Memory
             return data;
         }
 
-
-
-
         public static byte[] DecompressOldBlock(byte[] buff, int size, int decompSize, out Int32 actual_size)
         {
             var originalBuff = Marshal.AllocHGlobal(size);
@@ -67,11 +62,8 @@ namespace CTFAK.Memory
             return data;
         }
 
-
         public static byte[] compress_block(byte[] data)
         {
-
-
             ZLibCompressOptions compOpts = new ZLibCompressOptions();
             //compOpts.Level = ZLibCompLevel.Default;
             compOpts.Level = compressionLevel;

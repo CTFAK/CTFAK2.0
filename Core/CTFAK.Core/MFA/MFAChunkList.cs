@@ -61,9 +61,6 @@ namespace CTFAK.MFA
             Writer.WriteInt8(0);
         }
 
-
-
-
         public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
@@ -73,23 +70,17 @@ namespace CTFAK.MFA
                 newChunk.Read();
                 if (newChunk.Id == 0) break;
                 else Items.Add(newChunk);
-
-
-
             }
 
             var size = reader.Tell() - start;
             reader.Seek(start);
             Saved = reader.ReadBytes((int)size);
-
-
         }
     }
 
 
     public class MFAChunk
     {
-
         public ByteReader Reader;
         public MFAChunkLoader Loader;
         public byte Id;
@@ -110,9 +101,7 @@ namespace CTFAK.MFA
             {
                 case 33:
                     Loader = new FrameVirtualRect();
-
                     break;
-
                 case 45:
                     Loader = new Opacity();
                     break;
@@ -120,12 +109,8 @@ namespace CTFAK.MFA
                     Loader = null;
                     // Logger.Log($"{Id} - {Data.GetHex()}");
                     break;
-
             }
             Loader?.Read(dataReader);
-
-
-
         }
 
         public void Write(ByteWriter writer)
@@ -144,9 +129,6 @@ namespace CTFAK.MFA
                 writer.WriteInt32((int)newWriter.Size());
                 writer.WriteWriter(newWriter);
             }
-
-
-
         }
     }
 
@@ -154,9 +136,6 @@ namespace CTFAK.MFA
     {
         public Color RGBCoeff;
         public byte Blend;
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -166,7 +145,6 @@ namespace CTFAK.MFA
             Blend = reader.ReadByte();
             RGBCoeff = Color.FromArgb(Blend, r, g, b);
             var unk = reader.ReadInt32();
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -192,7 +170,6 @@ namespace CTFAK.MFA
             Top = reader.ReadInt32();
             Right = reader.ReadInt32();
             Bottom = reader.ReadInt32();
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -205,10 +182,6 @@ namespace CTFAK.MFA
     }
     public abstract class MFAChunkLoader
     {
-
-
-
-
         public abstract void Read(ByteReader reader);
         public abstract void Write(ByteWriter Writer);
     }

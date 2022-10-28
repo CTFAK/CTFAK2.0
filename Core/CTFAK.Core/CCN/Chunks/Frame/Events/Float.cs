@@ -10,7 +10,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public override void Read(ByteReader reader)
         {
             Value = reader.ReadSingle();
-           
         }
         public override string ToString()
         {

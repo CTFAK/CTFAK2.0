@@ -42,7 +42,5 @@ namespace CTFAK.MFA
             Writer.WriteUInt32(ItemHandle);
             Writer.WriteInt32((int)ParentHandle);
         }
-
-
     }
 }

@@ -63,22 +63,15 @@ namespace CTFAK.CCN.Chunks.Objects
                             rgbCoeff = Color.White;
                             blend = 255;
                         }
-                        
-                        
                         break;
                     case 17478:        
                         if (ObjectType == 0) properties = new Quickbackdrop();
                         else if (ObjectType == 1) properties = new Backdrop();
                         else properties = new ObjectCommon(this);
-
                         properties?.Read(chunkReader);
                         break;
-
-
                 }
-                
             }
-            
         }
 
         public override void Write(ByteWriter writer)

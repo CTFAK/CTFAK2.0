@@ -13,9 +13,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
     {
         public int Handle;
 
-
-
-
         public override void Read(ByteReader reader)
         {
             base.Read(reader);
@@ -40,10 +37,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public Color Color2;
         public int Flags;
         public int Image;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -93,7 +86,5 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Writer.WriteUInt32(ObstacleType);
             Writer.WriteUInt32(CollisionType);
         }
-
-
     }
 }

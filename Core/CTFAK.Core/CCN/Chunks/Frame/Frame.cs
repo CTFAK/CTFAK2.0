@@ -42,7 +42,6 @@ namespace CTFAK.CCN.Chunks.Frame
             if (Settings.Old) return;
             layer = reader.ReadInt16();
             flags = reader.ReadInt16();
-
         }
 
         public override void Write(ByteWriter writer)
@@ -109,7 +108,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 if (reader.Tell() >= reader.Size()) break;
                 switch (newChunk.Id)
                 {
-
                     case 13109:
                         var frameName = new StringChunk();
                         frameName.Read(chunkReader);
@@ -125,7 +123,6 @@ namespace CTFAK.CCN.Chunks.Frame
                             height = chunkReader.ReadInt16();
                             background = chunkReader.ReadColor();
                             flags.flag = chunkReader.ReadUInt16();
-                            
                         }
                         else
                         {
@@ -134,7 +131,6 @@ namespace CTFAK.CCN.Chunks.Frame
                             background = chunkReader.ReadColor();
                             flags.flag = chunkReader.ReadUInt32();
                         }
-                        
                         break;
                     case 13112:
                         var count = chunkReader.ReadInt32();
@@ -144,7 +140,6 @@ namespace CTFAK.CCN.Chunks.Frame
                             objInst.Read(chunkReader);
                             objects.Add(objInst);
                         }
-                        
                         break;
                     case 13117:
                         if (Core.parameters.Contains("-noevnt"))
@@ -175,19 +170,12 @@ namespace CTFAK.CCN.Chunks.Frame
                     case 13122:
                         virtualRect = new VirtualRect();
                         virtualRect.Read(chunkReader);
-                        
                         break;
-
-                        
-
-
                 }
             }
-
             Logger.Log($"Frame Found: {name}, {width}x{height}, {objects.Count} objects.", true, ConsoleColor.Green);
         }
         
-
         public override void Write(ByteWriter writer)
         {
             throw new NotImplementedException();
@@ -196,7 +184,6 @@ namespace CTFAK.CCN.Chunks.Frame
     public class Layers : ChunkLoader
     {
         public List<Layer> Items;
-
 
         public override void Read(ByteReader reader)
         {
@@ -208,7 +195,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read(reader);
                 Items.Add(item);
             }
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -219,9 +205,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 layer.Write(Writer);
             }
         }
-
-
-
     }
 
     public class Layer : ChunkLoader
@@ -241,9 +224,8 @@ namespace CTFAK.CCN.Chunks.Frame
             "Redraw",
             "ToHide",
             "ToShow"
-        }
+        });
 
-        );
         public float XCoeff;
         public float YCoeff;
         public int NumberOfBackgrounds;
@@ -273,9 +255,6 @@ namespace CTFAK.CCN.Chunks.Frame
             Writer.WriteInt32(BackgroudIndex);
             Writer.WriteUnicode(Name);
         }
-
-
-
     }
 
     public class FramePalette : ChunkLoader
@@ -298,7 +277,5 @@ namespace CTFAK.CCN.Chunks.Frame
                 Writer.WriteColor(item);
             }
         }
-
     }
-
 }

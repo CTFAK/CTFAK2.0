@@ -21,9 +21,7 @@ namespace CTFAK.CCN.Chunks.Objects
     public class TwoFilePlusProps:ChunkLoader
     {
         public override void Read(ByteReader reader)
-        {
-            
-                    
+        {    
             var start = reader.Tell();
             var end = start + reader.Size();
             reader.ReadInt32();
@@ -36,20 +34,19 @@ namespace CTFAK.CCN.Chunks.Objects
                 var data = reader.ReadBytes(chunkSize);
                 var decompressed = ZlibStream.UncompressBuffer(data);
                 var decompressedReader = new ByteReader(decompressed);
-
                 var objectData = TwoFilePlusContainer.instance.objectsContainer[current];
 
                 if (objectData.ObjectType == 0)
                     objectData.properties = new Quickbackdrop();
                 else if (objectData.ObjectType == 1)
                     objectData.properties = new Backdrop();
-                else objectData.properties = new ObjectCommon(null);
+                else
+                    objectData.properties = new ObjectCommon(null);
+
                 objectData.properties.Read(decompressedReader);
                 reader.Seek(currentPosition+chunkSize+8);
-                       
                 current++;
             }
-            
         }
 
         public override void Write(ByteWriter writer)
@@ -70,7 +67,6 @@ namespace CTFAK.CCN.Chunks.Objects
             int ncurrent = 0;
             while (reader.Tell() < nend)
             {
-                        
                 var newName = "sex";
                         
                 TwoFilePlusContainer.instance.objectsContainer[ncurrent].name = reader.ReadUniversal();
@@ -116,8 +112,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 }
                 TwoFilePlusContainer.instance.objectsContainer.Add(newObject.handle,newObject);
             }
- 
-
         }
         public override void Write(ByteWriter Writer)
         {

@@ -41,7 +41,6 @@ namespace EventPreprocessor
 
         public static string GetKeyText(int keyNumber)
         {
-
             string keyText = "Virtual Key " + keyNumber;
             if (keyNumber > 96 && keyNumber < 106)
                 keyText = "Numpad " + Convert.ToChar(keyNumber - 96).ToString().ToUpper();
@@ -64,7 +63,6 @@ namespace EventPreprocessor
                             return keyText;
                         }
                     }
-                    
                 }
                 catch
                 {
@@ -74,6 +72,5 @@ namespace EventPreprocessor
 
             return keyText;
         }
-
     }
 }

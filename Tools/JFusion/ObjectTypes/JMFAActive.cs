@@ -5,16 +5,12 @@ using JFusion.ObjectProperties;
 
 namespace JFusion.ObjectTypes
 {
-    
-    
-   
     public class JMFAActive:JMFAObject
     {
         public Dictionary<int, JMFAAnimation> animations = new Dictionary<int, JMFAAnimation>();
         
         public static JMFAActive FromMFA(MFAObjectInfo oi)
         {
-            
             var active = new JMFAActive();
             active.objectType = 2;
             var activeProps = (MFAActive)oi.Loader;
@@ -40,6 +36,5 @@ namespace JFusion.ObjectTypes
             
             return active;
         }
-        
     }
 }

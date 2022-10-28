@@ -15,8 +15,6 @@ namespace CTFAK.Memory
         {
         }
 
-
-
         public ByteWriter(byte[] data) : base(new MemoryStream(data))
         {
         }
@@ -34,7 +32,6 @@ namespace CTFAK.Memory
         {
             BaseStream.Seek(count, SeekOrigin.Current);
         }
-
 
         public Int64 Tell()
         {
@@ -67,7 +64,6 @@ namespace CTFAK.Memory
         public void WriteUInt32(UInt32 value) => Write(value);
         public void WriteUInt64(ulong value) => Write(value);
         public void WriteSingle(float value) => Write(value);
-
         public void WriteBytes(byte[] value) => Write(value);
         public void WriteDouble(double value) => Write(value);
         public void WriteString(string value) => Write(value);
@@ -77,7 +73,6 @@ namespace CTFAK.Memory
             if (Settings.Unicode) WriteUnicode(value, addZero);
             else WriteAscii(value);
         }*/
-
 
         public void WriteAscii(string value)
         {

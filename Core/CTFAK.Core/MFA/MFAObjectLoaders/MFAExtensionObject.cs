@@ -20,8 +20,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public byte[] ExtensionData;
         private byte[] _unk;
 
-
-
         public override void Read(ByteReader reader)
         {
             base.Read(reader);
@@ -41,7 +39,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             ExtensionId = newReader.ReadInt32();
             ExtensionPrivate = newReader.ReadInt32();
             ExtensionData = newReader.ReadBytes(dataSize);
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -64,8 +61,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Writer.WriteInt32(ExtensionId);
             Writer.WriteInt32(ExtensionPrivate);
             Writer.WriteBytes(ExtensionData);
-
-
         }
     }
 }

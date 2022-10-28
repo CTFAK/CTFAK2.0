@@ -36,7 +36,6 @@ namespace CTFAK.MFA
         public AGMIBank Icons;
         public AGMIBank Images;
 
-
         public string Author;
         public string Copyright;
         public string Company;
@@ -113,19 +112,10 @@ namespace CTFAK.MFA
         public List<MFAFrame> Frames;
         public MFAChunkList Chunks;
 
-
-
-
-
-
-
         public void Write(ByteWriter Writer)
         {
-
             Writer.WriteAscii("MFU2");
-            
             Writer.WriteInt32(MfaBuild);
-            
             Writer.WriteInt32(Product);
             Writer.WriteInt32(BuildVersion);
             Writer.WriteInt32(LangId);
@@ -133,24 +123,26 @@ namespace CTFAK.MFA
             Writer.AutoWriteUnicode(Description);
             Writer.AutoWriteUnicode(Path);
             Writer.WriteUInt32((uint)Stamp.Length);
-            
             Writer.WriteBytes(Stamp);
+
             Writer.WriteAscii(FontBankId);
             Fonts.Write(Writer);
+
             Writer.WriteAscii(SoundBankId);
             Sounds.Write(Writer);
+
             Writer.WriteAscii(MusicBankId);
             // music.Write();
+
             Writer.WriteInt32(0); //someone is using musics lol?
             //TODO: Do music
+
             Writer.WriteAscii(ImageBankId);
-            
             Icons.Write(Writer);
             
             Writer.WriteAscii(ImageBankId);
             Images.Write(Writer);
 
-            
             Writer.AutoWriteUnicode(Name);
             Writer.AutoWriteUnicode(Author);
             Writer.AutoWriteUnicode(Description);
@@ -197,7 +189,6 @@ namespace CTFAK.MFA
             {
                 Writer.WriteInt32(0);
             }
-
             
             Writer.WriteInt32(windowMenuIndex);
             Writer.WriteInt32(menuImages.Count);
@@ -235,7 +226,6 @@ namespace CTFAK.MFA
                 //Writer.WriteInt8(0x01);
                 Writer.Skip(2);
                 Writer.WriteUnicode(extension.Item5, false);
-
             }
             //Writer.Skip(-2);
             Writer.WriteInt32(Frames.Count); //frame
@@ -255,9 +245,6 @@ namespace CTFAK.MFA
             Writer.Flush();
             Writer.Close();
             Console.WriteLine("Writing done");
-
-
-
         }
 
         public void Read(ByteReader reader)
@@ -268,7 +255,7 @@ namespace CTFAK.MFA
             Product = reader.ReadInt32();
             BuildVersion = reader.ReadInt32();
             //reader.ReadInt32();//unknown
-            // Settings.Build = BuildVersion;
+            //Settings.Build = BuildVersion;
             LangId = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
             Description = reader.AutoReadUnicode();
@@ -315,7 +302,6 @@ namespace CTFAK.MFA
             HelpFile = reader.AutoReadUnicode();
             unknown_string = reader.AutoReadUnicode();
 
-
             InitialScore = reader.ReadInt32();
             InitialLifes = reader.ReadInt32();
             FrameRate = reader.ReadInt32();
@@ -355,15 +341,12 @@ namespace CTFAK.MFA
                 menuImages[id] = reader.ReadInt32();
             }
 
-
             GlobalValues = new MFAValueList();
             GlobalValues.Read(reader);
             GlobalStrings = new MFAValueList();
             GlobalStrings.Read(reader);
             GlobalEvents = reader.ReadBytes(reader.ReadInt32());
             GraphicMode = reader.ReadInt32();
-
-
 
             IcoCount = reader.ReadInt32();
             IconImages = new List<int>();
@@ -406,7 +389,6 @@ namespace CTFAK.MFA
                 frameOffsets.Add(reader.ReadInt32());
             }
 
-
             var nextOffset = reader.ReadInt32();
             Frames = new List<MFAFrame>();
             foreach (var item in frameOffsets)
@@ -423,11 +405,6 @@ namespace CTFAK.MFA
             reader.Dispose();
             return;
         }
-
-
-
-
-       
     }
     public static class MFAUtils
     {

@@ -17,6 +17,7 @@ namespace EventPreprocessor
                         { 4, "PlayerName" }
                     }
                 },
+
                 {
                     -6, new Dictionary<int, string>()
                     {
@@ -24,8 +25,8 @@ namespace EventPreprocessor
                         { 1, "YMouse" },
                         { 2, "MouseWheelValue" }
                     }
-
                 },
+
                 {
                     -5, new Dictionary<int, string>()
                     {
@@ -33,6 +34,7 @@ namespace EventPreprocessor
                     }
 
                 },
+
                 {
                     -4, new Dictionary<int, string>()
                     {
@@ -45,6 +47,7 @@ namespace EventPreprocessor
                         { 5, "TimerEventIndex" }
                     }
                 },
+
                 {
                     -3, new Dictionary<int, string>()
                     {
@@ -159,6 +162,7 @@ namespace EventPreprocessor
                         { 65, "RandomRange" }
                     }
                 },
+
                 {
                     0, new Dictionary<int, string>()
                     {
@@ -174,6 +178,7 @@ namespace EventPreprocessor
                         { 18, "^" },
                     }
                 },
+
                 {
                     2, new Dictionary<int, string>()
                     {
@@ -185,6 +190,7 @@ namespace EventPreprocessor
                         { 83, "GetAngle" },
                     }
                 },
+
                 {
                     3, new Dictionary<int, string>()
                     {
@@ -195,6 +201,7 @@ namespace EventPreprocessor
                         { 84, "ParagraphCount" },
                     }
                 },
+
                 {
                     7, new Dictionary<int, string>()
                     {
@@ -205,6 +212,7 @@ namespace EventPreprocessor
                         { 84, "CounterColor2" },
                     }
                 },
+
                 {
                     8, new Dictionary<int, string>()
                     {
@@ -243,6 +251,7 @@ namespace EventPreprocessor
                         { 112, "RTFGETHYPERLINK" },
                     }
                 },
+
                 {
                     9, new Dictionary<int, string>()
                     {
@@ -251,6 +260,7 @@ namespace EventPreprocessor
                         { 82, "SubApplicationGlobalString" },
                     }
                 },
+
                 {
                     32, new Dictionary<int, string>()
                     {
@@ -258,6 +268,7 @@ namespace EventPreprocessor
                         { 83, "GroupItemValue" }
                     }
                 },
+
                 {
                     35, new Dictionary<int, string>()
                     {

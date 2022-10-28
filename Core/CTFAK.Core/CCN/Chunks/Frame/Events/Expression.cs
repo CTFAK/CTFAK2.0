@@ -40,10 +40,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
             }
             Writer.WriteInt16((short) ((newWriter.Size() + 6)));
             Writer.WriteWriter(newWriter);
-
         }
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -89,8 +86,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
             // Unk1 = reader.ReadInt32();
             // Unk2 = reader.ReadUInt16();
             reader.Seek(currentPosition+size);
-
-
         }
 
         public override string ToString()
@@ -102,8 +97,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     {
         public object Value;
 
-
-
         public override void Read(ByteReader reader)
         {
             throw new NotImplementedException();
@@ -113,18 +106,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
         {
             throw new NotImplementedException();
         }
-
-
     }
 
     public class StringExp:ExpressionLoader
     {
-        
-
-
-
-
-
         public override void Read(ByteReader reader)
         {
             Value = reader.ReadUniversal();
@@ -134,16 +119,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
         {
             Writer.WriteUnicode((string) Value,true);
         }
-
-
     }
     public class LongExp:ExpressionLoader
     {
         public int Val1;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -157,10 +136,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     }
     public class ExtensionExp:ExpressionLoader
     {
-   
-
-
-
         public override void Read(ByteReader reader)
         {
             Value = reader.ReadInt16();
@@ -174,10 +149,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     public class DoubleExp:ExpressionLoader
     {
         public float FloatValue;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -193,10 +164,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     }
     public class GlobalCommon:ExpressionLoader
     {
-
-
-
-
         public override void Read(ByteReader reader)
         {
             reader.ReadInt32();

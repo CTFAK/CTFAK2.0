@@ -12,11 +12,6 @@ namespace CTFAK
     public delegate T2 SimpleMessage<T,T2>(T data);
     public class Core
     {
-        
-        
-        
-     
-        
         public static IFileReader currentReader;
         public static string parameters;
         public static string path;
@@ -27,12 +22,8 @@ namespace CTFAK
             {
                 Console.WriteLine(e.ExceptionObject.GetType());
                 //NativeLib.MessageBox((IntPtr)0, $"{e.Exception.ToString()}", "ERROR", 0);
-
-
-
             };
             ZLibInit.GlobalInit("x64\\zlibwapi.dll");
-
             String libraryFile = Path.Combine(Path.GetDirectoryName(typeof(Core).Assembly.Location), "x64",
                 "CTFAK-Native.dll");
             NativeLib.LoadLibrary(libraryFile);

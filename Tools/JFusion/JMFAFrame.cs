@@ -71,35 +71,30 @@ namespace JFusion
                     "PreviousEffect"
                 }){flag = 0}
             });
-                /*var newOi = new MFAObjectInfo(null);
-                var newInst = new MFAObjectInstance(null);
-                var newFolder = new MFAItemFolder(null);
 
+            /*var newOi = new MFAObjectInfo(null);
+            var newInst = new MFAObjectInstance(null);
+            var newFolder = new MFAItemFolder(null);
 
-
-                        newOi.Name = "sus";
-                        newOi.ObjectType = 1;
-                        newOi.Handle = mfaFrame.Handle;
+            newOi.Name = "sus";
+            newOi.ObjectType = 1;
+            newOi.Handle = mfaFrame.Handle;
                         
-                        newOi.Chunks = new MFAChunkList(null);
-                        newInst.ItemHandle = (uint)mfaFrame.Handle;
-                        newInst.X = 123;
-                        newInst.Y = 234;
-                        
-
-                        var backdropLoader = new MFABackdrop(null);
-                        backdropLoader.Handle = 573;
-
-                        
-                        newOi.Loader = backdropLoader;
-                        newFolder.isRetard = true;
-                        newFolder.Items.Add((uint)newOi.Handle);
-                        mfaFrame.Instances.Add(newInst);
-                        mfaFrame.Items.Add(newOi);
-                        mfaFrame.Folders.Add(newFolder);*/
-                    
-                
-
+            newOi.Chunks = new MFAChunkList(null);
+            newInst.ItemHandle = (uint)mfaFrame.Handle;
+            newInst.X = 123;
+            newInst.Y = 234;
+               
+            var backdropLoader = new MFABackdrop(null);
+            backdropLoader.Handle = 573;
+         
+            newOi.Loader = backdropLoader;
+            newFolder.isRetard = true;
+            newFolder.Items.Add((uint)newOi.Handle);
+            mfaFrame.Instances.Add(newInst);
+            mfaFrame.Items.Add(newOi);
+            mfaFrame.Folders.Add(newFolder);*/
+               
             return mfaFrame;
         }
 
@@ -141,13 +136,11 @@ namespace JFusion
                     //newFrame.objects.Add(newObj); 
                     
                 }
-                catch{Console.WriteLine("Failed to create object");}
-
+                catch
+                {
+                    Console.WriteLine("Failed to create object");
+                }
             }
-            
-            
-            
-            
             return newFrame;
         }
 
@@ -158,7 +151,6 @@ namespace JFusion
             {
                 og = og.Replace(c.ToString(), "");
             }
-
             return og;
         }
 
@@ -198,9 +190,6 @@ namespace JFusion
                 }
                 //jframe.objects.Add(newObj);
             }
-            
-
-
             return jframe;
         }
         public void Write(string filePath)

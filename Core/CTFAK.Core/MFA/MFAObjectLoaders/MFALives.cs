@@ -17,8 +17,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public int Width;
         public int Height;
 
-
-
         public override void Read(ByteReader reader)
         {
             base.Read(reader);
@@ -51,7 +49,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Writer.WriteInt32(Font);
             Writer.WriteInt32(Width);
             Writer.WriteInt32(Height);
-
         }
     }
 }

@@ -17,7 +17,6 @@ namespace CTFAK.CCN.Chunks
         
         public override void Read(ByteReader reader)
         {
-
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
@@ -25,14 +24,11 @@ namespace CTFAK.CCN.Chunks
                 newObject.Read(reader);
                 Items.Add(newObject.handle,newObject);
             }
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             
         }
-
-
     }
 }

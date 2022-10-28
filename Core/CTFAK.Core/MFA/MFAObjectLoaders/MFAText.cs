@@ -51,8 +51,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             {
                 paragraph.Write(Writer);
             }
-
-
         }
     }
 
@@ -60,10 +58,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
     {
         public string Value;
         public uint Flags;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -76,7 +70,5 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Writer.AutoWriteUnicode(Value);
             Writer.WriteUInt32(Flags);
         }
-
-
     }
 }

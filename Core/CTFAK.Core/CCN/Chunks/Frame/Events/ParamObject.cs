@@ -10,7 +10,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int ObjectType;
         public override void Read(ByteReader reader)
         {
-            
             ObjectInfoList = reader.ReadInt16();
             ObjectInfo = reader.ReadUInt16();
             ObjectType = reader.ReadInt16();           
@@ -21,7 +20,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             Writer.WriteInt16((short) ObjectInfoList);
             Writer.WriteInt16((short)ObjectInfo);
             Writer.WriteInt16((short)ObjectType);
-            
         }
 
         public override string ToString()

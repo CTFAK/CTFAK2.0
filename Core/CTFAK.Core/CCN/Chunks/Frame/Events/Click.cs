@@ -8,8 +8,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public byte IsDouble;
         public byte Button;
 
-
-
         public override void Read(ByteReader reader)
         {
             Button = reader.ReadByte();
@@ -20,7 +18,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         {
             Writer.WriteInt8(Button);
             Writer.WriteInt8(IsDouble);
-            
         }
 
         public override string ToString()

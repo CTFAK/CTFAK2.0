@@ -75,14 +75,5 @@ public class Program
             }
         }
         goto SELECT_MODE;
-
-
-
-
-
-
-
-
-
     }
 }

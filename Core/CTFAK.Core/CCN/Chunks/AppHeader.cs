@@ -69,7 +69,6 @@ namespace CTFAK.CCN.Chunks
             var start = reader.Tell();
             if(!Settings.Old) Size = reader.ReadInt32();
             Flags.flag = (uint)reader.ReadInt16();
-
             NewFlags.flag = (uint)reader.ReadInt16();
             GraphicsMode = reader.ReadInt16();
             Otherflags = reader.ReadInt16();
@@ -96,7 +95,6 @@ namespace CTFAK.CCN.Chunks
     {
         public List<PlayerControl> Items;
 
-
         public override void Read(ByteReader reader)
         {
             Items = new List<PlayerControl>();
@@ -115,8 +113,6 @@ namespace CTFAK.CCN.Chunks
                 control.Write(Writer);
             }
         }
-
-
     }
 
     public class PlayerControl
@@ -143,8 +139,6 @@ namespace CTFAK.CCN.Chunks
             _keys.Write(Writer);
 
         }
-
-
     }
 
     public class Keys
@@ -163,7 +157,6 @@ namespace CTFAK.CCN.Chunks
         {
             this._reader = reader;
         }
-
 
         public void Read()
         {
@@ -190,7 +183,5 @@ namespace CTFAK.CCN.Chunks
             Writer.WriteInt16(_button4);
 
         }
-
-
     }
 }

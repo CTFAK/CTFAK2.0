@@ -12,7 +12,6 @@ namespace CTFAK.MFA
     {
         public List<MFAPlayerControl> Items=new List<MFAPlayerControl>();
 
-
         public override void Read(ByteReader reader)
         {
             Items = new List<MFAPlayerControl>();
@@ -32,9 +31,7 @@ namespace CTFAK.MFA
             {
                 item.Write(writer);
             }
-
         }
-
     }
 
     public class MFAPlayerControl : ChunkLoader
@@ -57,12 +54,6 @@ namespace CTFAK.MFA
         public int Unk7;
         public int Unk8;
 
-
-
-
-
-       
-
         public override void Read(ByteReader reader)
         {
             ControlType = reader.ReadInt32();
@@ -83,7 +74,6 @@ namespace CTFAK.MFA
             Unk6 = reader.ReadInt32();
             Unk7 = reader.ReadInt32();
             Unk8 = reader.ReadInt32();
-
         }
 
         public override void Write(ByteWriter writer)
@@ -106,9 +96,6 @@ namespace CTFAK.MFA
             writer.WriteInt32(Unk6);
             writer.WriteInt32(Unk7);
             writer.WriteInt32(Unk8);
-
-
-
         }
     }
 }

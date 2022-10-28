@@ -62,7 +62,6 @@ namespace Dumper
                         Directory.CreateDirectory(objectFolder);
                         while (retry < 5)
                         {
-
                             try
                             {
                                 images[bg.Image].bitmap.Save($"{objectFolder}{oi.name}.png");
@@ -84,7 +83,6 @@ namespace Dumper
                         Directory.CreateDirectory(objectFolder);
                         while (retry < 5)
                         {
-
                             try
                             {
                                 images[qbg.Image].bitmap.Save($"{objectFolder}{oi.name}.png");
@@ -117,10 +115,6 @@ namespace Dumper
                                 else animationFolder = objectFolder;
 
                                 int cntrDirs = 0;
-
-
-
-
                                 if (anim.Value.DirectionDict == null) continue;
                                 foreach (var dir in anim.Value?.DirectionDict)
                                 {
@@ -129,7 +123,6 @@ namespace Dumper
                                 foreach (var dir in anim.Value?.DirectionDict)
                                 {
                                     string directionFolder = "";
-
 
                                     if (cntrDirs > 1) directionFolder = objectFolder + $"Direction {dir.Key}\\";
                                     else if (cntrAnims > 1) directionFolder = animationFolder;
@@ -141,7 +134,6 @@ namespace Dumper
                                         Directory.CreateDirectory(directionFolder);
                                         while (retry < 5)
                                         {
-
                                             try
                                             {
                                                 images[frm].bitmap.Save($"{directionFolder}_{i}.png");

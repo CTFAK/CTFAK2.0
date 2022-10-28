@@ -112,7 +112,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 var penisFlags = reader.ReadInt16();
                 if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
 
-
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
@@ -122,7 +121,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 reader.Seek(end);
 
                 _systemObjectOffset = reader.ReadInt16();
-
                 _valuesOffset = reader.ReadInt16();
                 _stringsOffset = reader.ReadInt16();
                 NewFlags.flag = reader.ReadUInt16();
@@ -154,7 +152,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 reader.Seek(end);
 
                 _extensionOffset = reader.ReadInt16();
-
                 _valuesOffset = reader.ReadInt16();
                 _stringsOffset = reader.ReadInt16();
                 NewFlags.flag = reader.ReadUInt16();
@@ -190,7 +187,6 @@ namespace CTFAK.CCN.Chunks.Objects
                     return; //really hacky shit, but it works
                 }
                 _systemObjectOffset = reader.ReadInt16();
-
                 _valuesOffset = reader.ReadInt16();
                 _stringsOffset = reader.ReadInt16();
                 NewFlags.flag = reader.ReadUInt16();
@@ -204,7 +200,6 @@ namespace CTFAK.CCN.Chunks.Objects
             {
                 if (Settings.Build >= 290)
                 {
-                    
                     var size = reader.ReadInt32();
                     //Console.WriteLine("MY ASS");
                     reader.Skip(-4);
@@ -235,7 +230,6 @@ namespace CTFAK.CCN.Chunks.Objects
                     BackColor = reader.ReadColor();
                     _fadeinOffset = reader.ReadUInt32();
                     _fadeoutOffset = reader.ReadUInt32();
-
                 }
                 else if (Settings.Old)
                 {
@@ -296,11 +290,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     _fadeoutOffset = reader.ReadUInt32();
                 }
                 //currentPosition = reader.Tell();
-                
-                
             }
-            
-
             
             if (_animationsOffset > 0)
             {
@@ -309,8 +299,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 Animations = new Animations();
                 Animations.Read(reader);
             }
-
-
 
             if (_movementsOffset > 0)
             {
@@ -329,9 +317,6 @@ namespace CTFAK.CCN.Chunks.Objects
                     Movements = new Movements();
                     Movements.Read(reader);
                 }
-                
-                
-
             }
 
             if (_systemObjectOffset > 0)
@@ -351,26 +336,23 @@ namespace CTFAK.CCN.Chunks.Objects
                         Counters = new Counters();
                         Counters.Read(reader);
                         break;
-
                 }
             }
 
             if (_extensionOffset > 0)
             {
+                reader.Seek(currentPosition + _extensionOffset);
 
-                    reader.Seek(currentPosition + _extensionOffset);
-
-                    var dataSize = reader.ReadInt32() - 20;
-                    reader.Skip(4); //maxSize;
-                    ExtensionVersion = reader.ReadInt32();
-                    ExtensionId = reader.ReadInt32();
-                    ExtensionPrivate = reader.ReadInt32();
-                    if (dataSize != 0)
-                    {
-                        ExtensionData = reader.ReadBytes(dataSize);
-                    }
-                    else ExtensionData = new byte[0];
-              
+                var dataSize = reader.ReadInt32() - 20;
+                reader.Skip(4); //maxSize;
+                ExtensionVersion = reader.ReadInt32();
+                ExtensionId = reader.ReadInt32();
+                ExtensionPrivate = reader.ReadInt32();
+                if (dataSize != 0)
+                {
+                    ExtensionData = reader.ReadBytes(dataSize);
+                }
+                else ExtensionData = new byte[0];
             }
 
             if (_counterOffset > 0)

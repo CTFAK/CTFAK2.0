@@ -12,15 +12,10 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Height;
         public List<Paragraph> Items = new List<Paragraph>();
 
-
-
-
-
         public override void Read(ByteReader reader)
         {
             if (Settings.Old)
             {
-                
                 var currentPos = reader.Tell();
                 var size = reader.ReadInt32();
                 Width = reader.ReadInt16();
@@ -59,17 +54,12 @@ namespace CTFAK.CCN.Chunks.Objects
                     Items.Add(par);
                 } 
             }
-
-
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             throw new System.NotImplementedException();
         }
-
-
     }
 
     public class Paragraph : ChunkLoader
@@ -86,9 +76,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public string Value;
         public Color Color;
 
-
-
-
         public override void Read(ByteReader reader)
         {
 
@@ -99,7 +86,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 Color = reader.ReadColor();
                 Flags.flag = reader.ReadUInt16();
                 Value = reader.ReadUniversal();
-
             }
             else
             {
@@ -108,15 +94,11 @@ namespace CTFAK.CCN.Chunks.Objects
                 Color = reader.ReadColor();
                 Value = reader.ReadUniversal(); 
             }
-            
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             throw new System.NotImplementedException();
         }
-
-
     }
 }

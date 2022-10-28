@@ -35,20 +35,16 @@ namespace CTFAK.CCN.Chunks
     {
     }
     [ChunkLoader(0x222E,"EditorFilename")]
-
     public class EditorFilename : StringChunk
     {
     }
     [ChunkLoader(0x222F,"TargetFilename")]
-
     public class TargetFilename : StringChunk
     {
     }
-
     class AppDoc : StringChunk
     {
     }
-
     class AboutText : StringChunk
     {
     }
@@ -56,7 +52,6 @@ namespace CTFAK.CCN.Chunks
     public class Copyright : StringChunk
     {
     }
-
     class DemoFilePath : StringChunk
     {
     }

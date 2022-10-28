@@ -20,10 +20,6 @@ namespace CTFAK.MFA
         public Color Color;
         public byte[] ParameterData;
 
-
-
-  
-
         public override void Read(ByteReader reader)
         {
             Module = reader.AutoReadUnicode();
@@ -34,7 +30,6 @@ namespace CTFAK.MFA
             Flags = reader.ReadInt32();
             Color = reader.ReadColor();
             ParameterData = reader.ReadBytes(reader.ReadInt32());
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -49,7 +44,5 @@ namespace CTFAK.MFA
             Writer.WriteInt32(ParameterData.Length);
             Writer.WriteBytes(ParameterData);
         }
-
-
     }
 }

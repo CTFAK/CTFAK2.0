@@ -16,12 +16,8 @@ namespace CTFAK.CCN.Chunks
         internal ushort PreloadExtensions;
         public List<Extension> Items;
 
-
-
-
         public override void Read(ByteReader reader)
         {
- 
             var count = reader.ReadUInt16();
             PreloadExtensions = reader.ReadUInt16();
             Items = new List<Extension>();
@@ -30,7 +26,6 @@ namespace CTFAK.CCN.Chunks
                 var ext = new Extension();
                 ext.Read(reader);
                 Items.Add(ext);
-
             }
         }
 
@@ -40,13 +35,9 @@ namespace CTFAK.CCN.Chunks
             Writer.WriteInt16((short)PreloadExtensions);
             foreach (Extension item in Items)
             {
-
                 item.Write(Writer);
             }
-
         }
-
-
     }
     [ChunkLoader(2234,"Extensions")]
     public class Extension : ChunkLoader
@@ -58,7 +49,6 @@ namespace CTFAK.CCN.Chunks
         public string Name;
         public string Ext;
         public string SubType;
-
 
         public override void Read(ByteReader reader)
         {
@@ -72,7 +62,6 @@ namespace CTFAK.CCN.Chunks
             var extName = reader.ReadUniversal();
             if(extName.Length==0)
             {
-
                 reader.Seek(currentPosition + size);
                 return;
             }
@@ -103,7 +92,5 @@ namespace CTFAK.CCN.Chunks
             Writer.WriteInt16((short)(newWriter.Size() + 2));
             Writer.WriteWriter(newWriter);
         }
-
-
     }
 }

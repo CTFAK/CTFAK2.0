@@ -25,8 +25,6 @@ namespace CTFAK.Utils
             }
 
             return (int)Math.Ceiling((double)((float)pad / (float)pointSize));
-
-            
         }
         public static Image DumpImage(int Handle, byte[] imageData,int width, int height,uint unk)
         {
@@ -41,20 +39,12 @@ namespace CTFAK.Utils
                 {
                     for (int x = 0; x < width; x++)
                     {
-
-
-
                         colorArray[(y * stride) + (x * 4) + 2] = imageData[position];
                         colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
                         colorArray[(y * stride) + (x * 4) + 0] = imageData[position + 2];
                         colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
-
-
-
-
                         position += 4;
                     }
-
                     position += pad * 3;
                 }
             }
@@ -79,7 +69,6 @@ namespace CTFAK.Utils
                         //r done
                         //g partially done
 
-
                         colorArray[(y * stride) + (x * 4) + 2] = r;
                         colorArray[(y * stride) + (x * 4) + 1] = g;
                         colorArray[(y * stride) + (x * 4) + 0] = b;
@@ -87,7 +76,6 @@ namespace CTFAK.Utils
 
                         position += 2;
                     }
-
                     position += pad*2;
                 }
             }
@@ -112,7 +100,6 @@ namespace CTFAK.Utils
                         //r done
                         //g partially done
 
-
                         colorArray[(y * stride) + (x * 4) + 2] = r;
                         colorArray[(y * stride) + (x * 4) + 1] = g;
                         colorArray[(y * stride) + (x * 4) + 0] = b;
@@ -132,14 +119,10 @@ namespace CTFAK.Utils
                 {
                     for (int x = 0; x < width; x++)
                     {
-
-
-
                         colorArray[(y * stride) + (x * 4) + 2] = imageData[position];
                         colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
                         colorArray[(y * stride) + (x * 4) + 0] = imageData[position + 2];
                         colorArray[(y * stride) + (x * 4) + 3] = 255;
-
                         position += 3;
                     }
                     position += pad;
@@ -156,11 +139,7 @@ namespace CTFAK.Utils
                     {
                         position++;
                     }*/
-
-
                 }
-                
-
             }
             else if (unk == 4)
             {
@@ -181,7 +160,6 @@ namespace CTFAK.Utils
                         //r done
                         //g partially done
 
-
                         colorArray[(y * stride) + (x * 4) + 2] = r;
                         colorArray[(y * stride) + (x * 4) + 1] = g;
                         colorArray[(y * stride) + (x * 4) + 0] = b;
@@ -189,35 +167,30 @@ namespace CTFAK.Utils
 
                         position += 2;
                     }
-
                     position += pad * 2;
                 }
             }
             else if (unk == 5)
             {
-                
                 //File.WriteAllBytes($"{AppName}\\{Handle}-{unk}.jpg", imageData);
-
             }
             else Console.WriteLine("BROKEN COLOR MODE "+unk);
-
 
             using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
             {
                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0,
-                        bmp.Width,
-                        bmp.Height),
-                    ImageLockMode.WriteOnly,
-                    bmp.PixelFormat);
+                                                  bmp.Width,
+                                                  bmp.Height),
+                                                  ImageLockMode.WriteOnly,
+                                                  bmp.PixelFormat);
 
                 IntPtr pNative = bmpData.Scan0;
                 Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
 
                 bmp.UnlockBits(bmpData);
                 var newImage = new Image();
-                    newImage.FromBitmap(bmp);
-                    return newImage;
-
+                newImage.FromBitmap(bmp);
+                return newImage;
             }
         }
     }

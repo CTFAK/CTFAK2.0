@@ -23,16 +23,10 @@ namespace CTFAK.CCN.Chunks.Frame
         public List<int> NumberOfConditions = new List<int>();
         public List<EventGroup> Items = new List<EventGroup>();
 
-
-
-
         public override void Write(ByteWriter Writer)
         {
             throw new NotImplementedException();
         }
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -85,7 +79,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 else if (identifier == End) break;
             }
         }
-
     }
 
     public class Quailifer : ChunkLoader
@@ -94,11 +87,6 @@ namespace CTFAK.CCN.Chunks.Frame
         public int Type;
         public int Qualifier;
         List<int> _objects = new List<int>();
-
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -112,10 +100,7 @@ namespace CTFAK.CCN.Chunks.Frame
             Writer.WriteUInt16((ushort)ObjectInfo);
             Writer.WriteInt16((short)Type);
         }
-
-
     }
-
 
     public class EventGroup : ChunkLoader
     {
@@ -130,12 +115,6 @@ namespace CTFAK.CCN.Chunks.Frame
         public byte NumberOfConditions;
         public byte NumberOfActions;
         public bool isMFA = false;
-
-
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -178,8 +157,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 }
             }
             
-            
-
             // Logger.Log($"Cond: {NumberOfConditions},Act: {NumberOfActions}");
             for (int i = 0; i < NumberOfConditions; i++)
             {
@@ -188,7 +165,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read(reader);
                 Fixer.FixConditions(ref item);
                 Conditions.Add(item);
-                
             }
 
             for (int i = 0; i < NumberOfActions; i++)
@@ -200,7 +176,6 @@ namespace CTFAK.CCN.Chunks.Frame
             }
             reader.Seek(currentPosition + Size);
             // Logger.Log($"COND:{NumberOfConditions}, ACT: {NumberOfActions}");
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -247,8 +222,6 @@ namespace CTFAK.CCN.Chunks.Frame
             Writer.WriteInt16((short)((newWriter.Size() + 2) * -1));
 
             Writer.WriteWriter(newWriter);
-
-
         }
     }
 
@@ -280,8 +253,6 @@ namespace CTFAK.CCN.Chunks.Frame
             }
             act.Num = num;
         }
-
-
     }
     public class Condition : ChunkLoader
     {
@@ -295,7 +266,6 @@ namespace CTFAK.CCN.Chunks.Frame
         public int Identifier;
         public int ObjectInfoList;
         public List<Parameter> Items = new List<Parameter>();
-
 
         public override void Write(ByteWriter Writer)
         {
@@ -316,11 +286,7 @@ namespace CTFAK.CCN.Chunks.Frame
             }
             Writer.WriteInt16((short)(newWriter.BaseStream.Position + 2));
             Writer.WriteWriter(newWriter);
-
-
         }
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -349,8 +315,6 @@ namespace CTFAK.CCN.Chunks.Frame
             
             //Logger.Log(this);
             //Console.ReadKey();
-
-
         }
         public override string ToString()
         {
@@ -387,12 +351,10 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 parameter.Write(newWriter);
             }
+
             Writer.WriteUInt16((ushort)(newWriter.BaseStream.Position + 2));
             Writer.WriteWriter(newWriter);
-
         }
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -418,13 +380,10 @@ namespace CTFAK.CCN.Chunks.Frame
                 Items.Add(item);
             }
             //Logger.Log(this);
-
         }
         public override string ToString()
         {
-
             return $"Action {ObjectType}-{Num}{(Items.Count > 0 ? "-" + Items[0].ToString() : " ")}";
-
         }
     }
 
@@ -433,8 +392,6 @@ namespace CTFAK.CCN.Chunks.Frame
         public int Code;
         public ChunkLoader Loader;
 
-
-
         public override void Write(ByteWriter Writer)
         {
             var newWriter = new ByteWriter(new MemoryStream());
@@ -442,11 +399,7 @@ namespace CTFAK.CCN.Chunks.Frame
             Loader.Write(newWriter);
             Writer.WriteUInt16((ushort)(newWriter.BaseStream.Position + 2));
             Writer.WriteWriter(newWriter);
-
-
         }
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -466,7 +419,6 @@ namespace CTFAK.CCN.Chunks.Frame
             }
 
             reader.Seek(currentPosition + size);
-
         }
         public object Value
         {
@@ -474,8 +426,6 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 if (Loader != null)
                 {
-
-
                     if (Loader.GetType().GetField("value") != null)
                     {
                         return Loader.GetType().GetField("value").GetValue(Loader);
@@ -492,126 +442,88 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             ChunkLoader item = null;
             if (code == 1)
-            {
                 item = new ParamObject();
-            }
 
             if (code == 2||code==42)
-            {
                 item = new Time();
-            }
+
             if (code == 3 || code == 4 || code == 10 || code == 11 || code == 12 || code == 17 || code == 26 || code == 31 ||
                 code == 43 || code == 57 || code == 58 || code == 60 || code == 61)
-            {
                 item = new Short();
-            }
+
             if (code == 5 || code == 25 || code == 29 || code == 34 || code == 48 || code == 56)
-            {
                 item = new Int();
-            }
+
             if (code == 6 || code == 7 || code == 35 || code == 36)
-            {
                 item = new Sample();
-            }
+
             if (code == 9 || code == 21)
-            {
                 item = new Create();
-            }
+
             if (code == 13)
-            {
                 item = new Every();
-            }
+
             if (code == 14 || code == 44)
-            {
                 item = new KeyParameter();
-            }
+
             if (code == 15 || code == 22 || code == 23 || code == 27 || code == 28 || code == 45 || code == 46 || code == 52 || code == 53 || code == 54 || code == 59 || code == 62)
-            {
                 item = new ExpressionParameter();
-            }
+
             if (code == 16)
-            {
                 item = new Position();
-            }
+
             if (code == 18)
-            {
                 item = new Shoot();
-            }
+
             if (code == 19)
-            {
                 item = new Zone();
-            }
+
             if (code == 24)
-            {
                 item = new Colour();
-            }
 
             if (code == 40)
-            {
                 item = new Filename();
-            }
+
             if (code == 50)
-            {
                 item = new AlterableValue();
-            }
 
             if (code == 32)
-            {
                 item = new Click();
-            }
 
             if (code == 33)
-            {
                 item = new MMFParser.EXE.Loaders.Events.Parameters.Program();
-            }
 
             if (code == 55)
-            {
                 item = new MMFParser.EXE.Loaders.Events.Parameters.Extension();
-            }
 
             if (code == 38)
-            {
                 item = new CTFAK.MMFParser.EXE.Loaders.Events.Parameters.Group();
-            }
 
             if (code == 39)
-            {
                 item = new GroupPointer();
-            }
 
             if (code == 49)
-            {
                 item = new GlobalValue();
-            }
 
             if (code == 41 || code == 64)
-            {
                 item = new StringParam();
-            }
 
             if (code == 47 || code == 51)
-            {
                 item = new TwoShorts();
-            }
-            if (code == 67) item = new Int();
-            if (code == 68) item = new MultipleVariables();
-            if (code == 69) item = new ChildEvent();
-            if (code == 70) item = new Int();
 
+            if (code == 67)
+                item = new Int();
 
+            if (code == 68)
+                item = new MultipleVariables();
 
+            if (code == 69)
+                item = new ChildEvent();
 
-
-
-
-
+            if (code == 70)
+                item = new Int();
 
             return item;
         }
-
     }
-
-
-
 }

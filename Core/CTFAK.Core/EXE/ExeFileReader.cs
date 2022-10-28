@@ -19,7 +19,6 @@ namespace CTFAK.FileReaders
         public GameData game;
         public Dictionary<int, Bitmap> icons = new Dictionary<int, Bitmap>();
         
-
         public void LoadGame(string gamePath)
         {
             Core.currentReader = this;
@@ -28,7 +27,6 @@ namespace CTFAK.FileReaders
             var icos = icoExt.GetAllIcons();
             foreach (var icon in icos)
             {
-                
                 icons.Add(icon.Width, icon.ToBitmap());
             }
 
@@ -36,7 +34,6 @@ namespace CTFAK.FileReaders
             if (!icons.ContainsKey(48)) icons.Add(48, icons[32].resizeImage(new Size(48, 48)));
             if (!icons.ContainsKey(128)) icons.Add(128, icons[32].resizeImage(new Size(128, 128)));
             if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
-
 
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             ReadHeader(reader);
@@ -58,14 +55,11 @@ namespace CTFAK.FileReaders
                         if (ID == 32639) break;
                     } 
                 }
-                
-                
             }
             else
             {
                 packData = new PackData();
                 packData.Read(reader);
-                
             }
             
             game = new GameData();
@@ -78,7 +72,6 @@ namespace CTFAK.FileReaders
             var entryPoint = CalculateEntryPoint(reader);
             reader.Seek(0);
             byte[] exeHeader = reader.ReadBytes(entryPoint);
-
 
             var firstShort = reader.PeekUInt16();
 
@@ -96,7 +89,6 @@ namespace CTFAK.FileReaders
 
             var hdrOffset = exeReader.ReadUInt16();
 
-
             exeReader.Seek(hdrOffset);
             var peHdr = exeReader.ReadAscii(2);
             exeReader.Skip(4);
@@ -112,7 +104,6 @@ namespace CTFAK.FileReaders
             for (var i = 0; i < numOfSections; i++)
             {
                 var entry = exeReader.Tell();
-
                 var sectionName = exeReader.ReadAscii();
 
                 if (sectionName == ".extra")
@@ -131,12 +122,9 @@ namespace CTFAK.FileReaders
                     possition = (int)(address + size);
                     break;
                 }
-
                 exeReader.Seek(entry + 40);
             }
-
             exeReader.Seek(possition);
-
             return (int)exeReader.Tell();
         }
 
@@ -152,6 +140,7 @@ namespace CTFAK.FileReaders
 
         public void PatchMethods()
         {
+
         }
     }
 }

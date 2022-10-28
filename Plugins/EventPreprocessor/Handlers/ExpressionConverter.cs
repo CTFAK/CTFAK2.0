@@ -29,23 +29,19 @@ namespace EventPreprocessor.Handlers
         }
         static string GetObjMember(Expression exp)
         {
-            return
-                $"{FTEventViewer.objects[exp.ObjectInfo]}->{ExpressionNames.ExpressionSystemDict[exp.ObjectType][exp.Num]}";
+            return $"{FTEventViewer.objects[exp.ObjectInfo]}->{ExpressionNames.ExpressionSystemDict[exp.ObjectType][exp.Num]}";
         }
         static string Timer(Expression exp)
         {
             return "I_DONT_KNOW_WHAT_THIS_DOES_SORRY";
         }
-
         private static string GetObjAlt(Expression exp)
         {
-            return
-                $"{FTEventViewer.objects[exp.ObjectInfo]}->{ExpressionNames.ExpressionSystemDict[exp.ObjectType][exp.Num]}_NO_IDEA_WHAT_THIS_DOES";
+            return $"{FTEventViewer.objects[exp.ObjectInfo]}->{ExpressionNames.ExpressionSystemDict[exp.ObjectType][exp.Num]}_NO_IDEA_WHAT_THIS_DOES";
         }
         static string GetObjFlag(Expression exp)
         {
-            return
-                $"{FTEventViewer.objects[exp.ObjectInfo]}->{ExpressionNames.ExpressionSystemDict[exp.ObjectType][exp.Num]}[PUT_FLAG_NUMBER_HERE] == 1";
+            return $"{FTEventViewer.objects[exp.ObjectInfo]}->{ExpressionNames.ExpressionSystemDict[exp.ObjectType][exp.Num]}[PUT_FLAG_NUMBER_HERE] == 1";
         }
         
         public static string ConvertExpression(ExpressionParameter expressionParameter)
@@ -158,7 +154,6 @@ namespace EventPreprocessor.Handlers
                     case -6:
                         switch (item.Num)
                         {
-
                             default:
                                 FTEventViewer.WriteLine($"UNIMPLEMENTED EXPRESSION NUM. Obj:{item.ObjectType},Num:{item.Num}");
                                 Console.ReadKey(); 
@@ -169,15 +164,10 @@ namespace EventPreprocessor.Handlers
                         FTEventViewer.WriteLine("UNIMPLEMENTED EXPRESSION OBJECT TYPE: "+item.ObjectType);
                         Console.ReadKey();
                         break;
-
                 }
             }
 
-
-
             return acc.ToString();
-
         }
-        
     }
 }

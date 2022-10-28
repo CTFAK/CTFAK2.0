@@ -15,8 +15,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public byte[] Unk1;
         public byte[] Unk2;
 
-
-
         public override void Read(ByteReader reader)
         {
             Offset = reader.Tell() - 24;
@@ -28,7 +26,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             Unk1 = reader.ReadBytes(190-Name.Length*2);
             //Password = reader.ReadInt32();
             //reader.ReadInt16();
-
         }
 
         public override void Write(ByteWriter Writer)

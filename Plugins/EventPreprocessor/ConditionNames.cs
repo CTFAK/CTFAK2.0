@@ -36,6 +36,7 @@ namespace EventPreprocessor
                               {-1, "KeyPressed"}
                          }
                     },
+
                     {
                          -5, new Dictionary<int, string>()
                          {
@@ -62,6 +63,7 @@ namespace EventPreprocessor
                               {-1, "NoAllObjectsInZone"}
                          }
                     },
+
                     {
                          -4, new Dictionary<int, string>()
                          {
@@ -75,6 +77,7 @@ namespace EventPreprocessor
                               {-1, "TimerGreater"}
                          }
                     },
+
                     {
                          -3, new Dictionary<int, string>()
                          {
@@ -90,6 +93,7 @@ namespace EventPreprocessor
                               {-1, "StartOfFrame"}
                          }
                     },
+
                     {
                          -2, new Dictionary<int, string>()
                          {
@@ -104,6 +108,7 @@ namespace EventPreprocessor
                               {-1, "SampleNotPlaying"}
                          }
                     },
+
                     {
                          -1, new Dictionary<int, string>()
                          {
@@ -149,6 +154,7 @@ namespace EventPreprocessor
                               {-1, "Always"}
                          }
                     },
+
                     {
                          2, new Dictionary<int, string>()
                          {
@@ -163,6 +169,7 @@ namespace EventPreprocessor
                               {-2, "AnimationOver"}
                          }
                     },
+
                     {
                          4, new Dictionary<int, string>()
                          {
@@ -171,12 +178,14 @@ namespace EventPreprocessor
                               {-81, "AnswerTrue"}
                          }
                     },
+
                     {
                          7, new Dictionary<int, string>()
                          {
                               {-81, "CompareCounter"}
                          }
                     },
+
                     {
                          9, new Dictionary<int, string>()
                          {
@@ -186,6 +195,7 @@ namespace EventPreprocessor
                               {-81, "SubApplicationFrameChanged"}
                          }
                     },
+
                     {
                          35, new Dictionary<int, string>()
                          {

@@ -46,9 +46,7 @@ namespace CTFAK.CCN.Chunks
                     }
                 }
             }
-            
         }
-        
         
         public List<Chunk> chunks;
         public delegate void OnChunkLoadedEvent(int chunkId, ChunkLoader loader);
@@ -60,7 +58,6 @@ namespace CTFAK.CCN.Chunks
         {
             while (true)
             {
-
                 Chunk newChunk=null;
                 byte[] chunkData=null;
                 if (reader.Tell() >= reader.Size()) break;
@@ -69,7 +66,6 @@ namespace CTFAK.CCN.Chunks
                     newChunk = new Chunk();
                     chunkData = newChunk.Read(reader);
                     if (newChunk.Id == 32639) break;
-
                 }
                 catch
                 {
@@ -77,7 +73,6 @@ namespace CTFAK.CCN.Chunks
                 }
                 finally
                 {
-                    
                     if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
 
                     if (knownLoaders.TryGetValue(newChunk.Id, out var loaderData))
@@ -102,16 +97,10 @@ namespace CTFAK.CCN.Chunks
                             Logger.LogWarning($"Error while handling chunk loading {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
                             Console.ReadKey();
                         }
-                    
                     }
                     else Logger.Log($"Loader not found for chunk {newChunk.Id}");
                 }
-                
-                
-                
                 chunkIndex++;
-                
-                
                 
                 /*if (Core.parameters.Contains("-trace_chunks"))
                 {
@@ -205,7 +194,6 @@ namespace CTFAK.CCN.Chunks
             { 26216, "SOUNDS" },
             { 26217, "MUSICS" },
             { 32639, "LAST" },
-
         };
     }
 }

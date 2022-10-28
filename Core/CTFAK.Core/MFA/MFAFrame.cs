@@ -48,10 +48,6 @@ namespace CTFAK.MFA
         public MFATransition FadeOut;
         public int PaletteSize;
         
-        
-
-
-
         public override void Write(ByteWriter Writer)
         {
             Writer.WriteInt32(Handle);
@@ -120,9 +116,7 @@ namespace CTFAK.MFA
                 item.Write(Writer);
             }
 
-
             Events.Write(Writer);
-
             Chunks.Write(Writer);
         }
 
@@ -142,7 +136,6 @@ namespace CTFAK.MFA
             reader.ReadInt32();//garbage
             var password = reader.ReadBytes(reader.ReadInt32());
             
-
             LastViewedX = reader.ReadInt32();
             LastViewedY = reader.ReadInt32();
 
@@ -205,7 +198,6 @@ namespace CTFAK.MFA
 
             Events = new MFAEvents();
             Events.Read(reader);
-
 
             Chunks = new MFAChunkList();
             // Chunks.Log = true;

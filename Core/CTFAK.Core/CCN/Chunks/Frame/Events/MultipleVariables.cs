@@ -13,8 +13,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         private int index;
         private int op;
 
-
-
         public override void Read(ByteReader reader)
         {
             index = reader.ReadInt32();
@@ -28,8 +26,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
                 value = reader.ReadInt32();
                 reader.Skip(4);
             }
-                    
-
         }
 
         public override void Write(ByteWriter writer)
@@ -80,7 +76,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
                 maskDouble <<= 4;
                 values[i] = value;
             }
-
         }
 
         public override void Write(ByteWriter Writer)

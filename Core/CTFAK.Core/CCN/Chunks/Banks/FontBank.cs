@@ -18,9 +18,6 @@ namespace CTFAK.CCN.Chunks.Banks
         public bool Debug;
         public List<FontItem> Items=new List<FontItem>();
 
-
-
-
         public override void Read(ByteReader reader)
         {
             if(!Settings.isMFA)return;
@@ -39,8 +36,6 @@ namespace CTFAK.CCN.Chunks.Banks
                 item.Handle += (uint)offset;
                 Items.Add(item);
             }
-
-
         }
         public override void Write(ByteWriter writer)
         {
@@ -49,10 +44,7 @@ namespace CTFAK.CCN.Chunks.Banks
             {
                 item.Write(writer);
             }
-
         }
-
-
     }
     public class FontItem : ChunkLoader
     {
@@ -61,10 +53,6 @@ namespace CTFAK.CCN.Chunks.Banks
         public int Checksum;
         public int References;
         public LogFont Value;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -82,8 +70,6 @@ namespace CTFAK.CCN.Chunks.Banks
             var size = dataReader.ReadInt32();
             Value = new LogFont();
             Value.Read(dataReader);
-
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -97,9 +83,6 @@ namespace CTFAK.CCN.Chunks.Banks
             if (Compressed) Writer.WriteBytes(Decompressor.compress_block(compressedWriter.GetBuffer()));
             else Writer.WriteWriter(compressedWriter);
         }
-
-
-
     }
 
     public class LogFont : ChunkLoader
@@ -118,10 +101,6 @@ namespace CTFAK.CCN.Chunks.Banks
         private byte _quality;
         private byte _pitchAndFamily;
         private string _faceName;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -158,7 +137,5 @@ namespace CTFAK.CCN.Chunks.Banks
             Writer.WriteInt8(_pitchAndFamily);
             Writer.WriteUnicode(_faceName);
         }
-
-
     }
 }

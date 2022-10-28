@@ -8,8 +8,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
     {
         public ushort Key;
 
-
-
         public override void Read(ByteReader reader)
         {
             Key = reader.ReadUInt16();

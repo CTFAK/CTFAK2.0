@@ -47,7 +47,6 @@ namespace CTFAK.Memory
             }
         }
 
-
         public static string ToDebugString<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
         {
             return string.Join(";\n", dictionary.Select(kv => kv.Key + "=" + kv.Value).ToArray());
@@ -63,6 +62,5 @@ namespace CTFAK.Memory
             }
             return ToDebugString(actualKeys);
         }
-
     }
 }

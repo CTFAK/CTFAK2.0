@@ -17,8 +17,6 @@ namespace JFusion
         public Color backgroundColor;
         public short[] qualifiers = new short[8];
         
-        
-        
         public static JMFAObject FromMFA(MFAObjectInstance mfaInst, MFAObjectInfo mfaObj)
         {
             JMFAObject newObject = new JMFAObject();

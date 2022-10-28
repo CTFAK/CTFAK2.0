@@ -15,7 +15,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             Timer = reader.ReadInt32();
             Loops = reader.ReadInt32();
             Comparsion = reader.ReadInt16();
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -27,7 +26,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 
         public override string ToString()
         {
-
             return $"Time time: {Timer} loops: {Loops}";
         }
     }

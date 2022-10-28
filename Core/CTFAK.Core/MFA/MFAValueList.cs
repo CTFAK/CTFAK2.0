@@ -12,9 +12,6 @@ namespace CTFAK.MFA
     {
         public List<ValueItem> Items = new List<ValueItem>();
 
-
-
-
         public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
@@ -36,8 +33,6 @@ namespace CTFAK.MFA
     {
         public object Value;
         public string Name;
-
-
 
         public override void Read(ByteReader reader)
         {

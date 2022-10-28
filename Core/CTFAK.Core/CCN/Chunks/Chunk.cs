@@ -18,7 +18,6 @@ namespace CTFAK.CCN.Chunks
     }
     public class Chunk
     {
-
         public short Id;
         public ChunkFlags Flag;
         public int Size;
@@ -37,7 +36,6 @@ namespace CTFAK.CCN.Chunks
             {
                 case ChunkFlags.Encrypted:
                     ChunkData = Decryption.DecryptChunk(dataReader.ReadBytes(Size), Size);
-
                     break;
                 case ChunkFlags.CompressedAndEncrypted:
                     ChunkData = Decryption.DecodeMode3(dataReader.ReadBytes(Size), Size, Id, out var DecompressedSize);
@@ -50,7 +48,6 @@ namespace CTFAK.CCN.Chunks
                         dataReader.Seek(start + Size);
                     }
                     else ChunkData = Decompressor.Decompress(dataReader, out DecompressedSize);
-                    
                     break;
                 case ChunkFlags.NotCompressed:
                     ChunkData = dataReader.ReadBytes(Size);
@@ -65,15 +62,11 @@ namespace CTFAK.CCN.Chunks
                 Logger.Log($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
             }
             return ChunkData;
-
         }
     }
     public abstract class ChunkLoader
     {
-
         public abstract void Read(ByteReader reader);
-
         public abstract void Write(ByteWriter writer);
-
     }
 }

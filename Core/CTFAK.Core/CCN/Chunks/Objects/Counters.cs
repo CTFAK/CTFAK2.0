@@ -23,8 +23,6 @@ namespace CTFAK.CCN.Chunks.Objects
         {
             throw new NotImplementedException();
         }
-
-
     }
 
     public class Counters : ChunkLoader
@@ -54,32 +52,27 @@ namespace CTFAK.CCN.Chunks.Objects
         public ushort Player;
         public Shape Shape;
 
-
-
-
         public override void Read(ByteReader reader)
         {
+            size = reader.ReadUInt32();
+            Width = reader.ReadUInt32();
+            Height = reader.ReadUInt32();
+            Player = reader.ReadUInt16();
+            DisplayType = reader.ReadUInt16();
+            Flags = reader.ReadUInt16();
 
-                size = reader.ReadUInt32();
-                Width = reader.ReadUInt32();
-                Height = reader.ReadUInt32();
-                Player = reader.ReadUInt16();
-                DisplayType = reader.ReadUInt16();
-                Flags = reader.ReadUInt16();
+            IntegerDigits = Flags & _intDigitsMask;
+            FormatFloat = (Flags & _formatFloat) != 0;
+            FloatDigits = (Flags & _floatDigitsMask) >> _floatDigitsShift + 1;
+            UseDecimals = (Flags & _useDecimals) != 0;
+            Decimals = (Flags & _floatDecimalsMask) >> _floatDecimalsShift;
+            AddNulls = (Flags & _floatPad) != 0;
 
-                IntegerDigits = Flags & _intDigitsMask;
-                FormatFloat = (Flags & _formatFloat) != 0;
-                FloatDigits = (Flags & _floatDigitsMask) >> _floatDigitsShift + 1;
-                UseDecimals = (Flags & _useDecimals) != 0;
-                Decimals = (Flags & _floatDecimalsMask) >> _floatDecimalsShift;
-                AddNulls = (Flags & _floatPad) != 0;
-
-                Inverse = ByteFlag.GetFlag(Flags, 8);
-                Font = reader.ReadUInt16();
+            Inverse = ByteFlag.GetFlag(Flags, 8);
+            Font = reader.ReadUInt16();
             if (DisplayType == 0) return;
             else if (DisplayType == 1 || DisplayType == 4 || DisplayType == 50)
             {
-
                 Frames = new List<int>();
                 var count = reader.ReadInt16();
                 for (int i = 0; i < count; i++)
@@ -93,7 +86,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 Shape = new Shape();
                 Shape.Read(reader);
             }
-
         }
 
         public override void Write(ByteWriter writer)
@@ -108,10 +100,8 @@ namespace CTFAK.CCN.Chunks.Objects
             if (DisplayType == 0) return;
             else if (DisplayType == 1 || DisplayType == 4 || DisplayType == 50)
             {
-
                 Frames = new List<int>();
                 writer.WriteInt16(0);
-
             }
             else if (DisplayType == 2 || DisplayType == 3 || DisplayType == 5)
             {
@@ -125,7 +115,5 @@ namespace CTFAK.CCN.Chunks.Objects
                 writer.WriteInt16(0);
             }
         }
-
     }
-
 }

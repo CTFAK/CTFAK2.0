@@ -14,10 +14,7 @@ namespace CTFAK.CCN
             STD = 2,
             DEV = 3,
             CNC1 = 0
-
         }
-
-
         public enum ValueType
         {
             Long = 0,
@@ -46,7 +43,6 @@ namespace CTFAK.CCN
             Rtf = 8,
             SubApplication = 9,
             Extension = 32,
-
         }
     }
 }

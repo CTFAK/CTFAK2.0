@@ -34,9 +34,6 @@ namespace JFusion
         public int frameRate;
         public int buildType;
         
-        
-        
-        
         public int mfaBuild;
         public int product;
         public int buildVersion;
@@ -206,41 +203,33 @@ namespace JFusion
             return mfa;
         }
 
-
-
         public static JMFAFile Open(string filePath)
         {
-           var jmfa = JsonConvert.DeserializeObject<JMFAFile>(File.ReadAllText(filePath));
-           string projectDir = Path.GetDirectoryName(filePath);
-           foreach (var frmDir in Directory.GetDirectories($"{projectDir}\\Frames"))
-           {
-               var newFrame = JMFAFrame.Open(frmDir);
-               jmfa.frames.Add(newFrame);
-           }
+            var jmfa = JsonConvert.DeserializeObject<JMFAFile>(File.ReadAllText(filePath));
+            string projectDir = Path.GetDirectoryName(filePath);
+            foreach (var frmDir in Directory.GetDirectories($"{projectDir}\\Frames"))
+            {
+                var newFrame = JMFAFrame.Open(frmDir);
+                jmfa.frames.Add(newFrame);
+            }
 
-           foreach (var iconFile in Directory.GetFiles($"{projectDir}\\Icons","*.png"))
-           {
-               var newBmp = (Bitmap)Bitmap.FromFile(iconFile);
-               JMfAImage newImg =
-                   JsonConvert.DeserializeObject<JMfAImage>(File.ReadAllText($"{iconFile.Replace(".png", ".json")}"));
+            foreach (var iconFile in Directory.GetFiles($"{projectDir}\\Icons","*.png"))
+            {
+                var newBmp = (Bitmap)Bitmap.FromFile(iconFile);
+                JMfAImage newImg = JsonConvert.DeserializeObject<JMfAImage>(File.ReadAllText($"{iconFile.Replace(".png", ".json")}"));
                newImg.bmp = newBmp;
                jmfa.icons.Add(newImg);
-               
-           }
-           foreach (var imgFile in Directory.GetFiles($"{projectDir}\\Images","*.png"))
-           {
-               var newBmp = (Bitmap)Bitmap.FromFile(imgFile);
-               JMfAImage newImg =
-                   JsonConvert.DeserializeObject<JMfAImage>(File.ReadAllText($"{imgFile.Replace(".png", ".json")}"));
-               newImg.bmp = newBmp;
-               jmfa.images.Add(newImg);
-               
-           }
+            }
+            foreach (var imgFile in Directory.GetFiles($"{projectDir}\\Images","*.png"))
+            {
+                var newBmp = (Bitmap)Bitmap.FromFile(imgFile);
+                JMfAImage newImg = JsonConvert.DeserializeObject<JMfAImage>(File.ReadAllText($"{imgFile.Replace(".png", ".json")}"));
+                newImg.bmp = newBmp;
+                jmfa.images.Add(newImg);
+            }
+            jmfa.frameData = JsonConvert.DeserializeObject<Dictionary<string, JMFAFrameData>>(File.ReadAllText($"{projectDir}\\Frames\\frameData.json"));
 
-           jmfa.frameData = JsonConvert.DeserializeObject<Dictionary<string, JMFAFrameData>>(File.ReadAllText($"{projectDir}\\Frames\\frameData.json"));
-
-
-           return jmfa;
+            return jmfa;
         }
 
         public void Write(string filePath)
@@ -258,14 +247,15 @@ namespace JFusion
                 img.bmp.Save($"{filePath}\\Images\\{img.Handle}.png");
                 File.WriteAllText($"{filePath}\\Images\\{img.Handle}.json",JsonConvert.SerializeObject(img,Formatting.Indented));
             }  
+
             Directory.CreateDirectory($"{filePath}\\Icons");
             foreach (var img in icons)
             {
                 img.bmp.Save($"{filePath}\\Icons\\{img.Handle}.png");
                 File.WriteAllText($"{filePath}\\Icons\\{img.Handle}.json",JsonConvert.SerializeObject(img,Formatting.Indented));
             }  
+
             File.WriteAllText($"{filePath}\\Frames\\frameData.json",JsonConvert.SerializeObject(frameData,Formatting.Indented));
         }
-        
     }
 }

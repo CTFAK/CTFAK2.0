@@ -57,6 +57,5 @@ namespace CTFAK.MFA
                 }
             }
         }
-
     }
 }

@@ -53,8 +53,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
 
         }
-
-
     }
 
     public class MFAAnimation : ChunkLoader
@@ -72,8 +70,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
         }
 
-
-
         public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
@@ -85,9 +81,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
                 direction.Read(reader);
                 Directions.Add(direction);
             }
-
-
-
         }
     }
 
@@ -113,9 +106,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
             {
                 Writer.WriteInt32(frame);
             }
-
         }
-
 
         public override void Read(ByteReader reader)
         {
@@ -129,7 +120,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             {
                 Frames.Add(reader.ReadInt32());
             }
-
         }
     }
 }

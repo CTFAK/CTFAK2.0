@@ -10,9 +10,6 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public List<Movement> Items = new List<Movement>();
 
-
-
-
         public override void Read(ByteReader reader)
         {
             var rootPosition = reader.Tell();
@@ -26,18 +23,13 @@ namespace CTFAK.CCN.Chunks.Objects
                 Items.Add(mov);
                 reader.Seek(currentPos + 16);
                 currentPos = reader.Tell();
-
             }
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             throw new NotImplementedException();
         }
-
-
-
     }
 
     public class Movement : ChunkLoader
@@ -50,11 +42,8 @@ namespace CTFAK.CCN.Chunks.Objects
         public int DirectionAtStart;
         public MovementLoader Loader;
 
-
-
         public override void Read(ByteReader reader)
         {
-
             if (Settings.Old)
             {
                 Player = reader.ReadUInt16();
@@ -92,13 +81,9 @@ namespace CTFAK.CCN.Chunks.Objects
                     case 14:
                         Loader = new ExtensionsMovement();
                         break;
-
-
                 }
-
                 if (Loader == null && Type != 0) throw new Exception("Unsupported movement: " + Type);
                 Loader?.Read(reader);
-
             }
             else
             {
@@ -136,8 +121,6 @@ namespace CTFAK.CCN.Chunks.Objects
                     case 14:
                         Loader = new ExtensionsMovement();
                         break;
-
-
                 }
 
                 if (Loader == null && Type != 0) return; //throw new Exception("Unsupported movement: "+Type);
@@ -145,21 +128,13 @@ namespace CTFAK.CCN.Chunks.Objects
             }
         }
 
-
-
         public override void Write(ByteWriter Writer)
         {
             throw new NotImplementedException();
         }
-
-
     }
     public class MovementLoader : ChunkLoader
     {
- 
-
-
-
         public override void Read(ByteReader reader)
         {
             throw new System.NotImplementedException();
@@ -169,8 +144,6 @@ namespace CTFAK.CCN.Chunks.Objects
         {
             throw new System.NotImplementedException();
         }
-
-
     }
     public class Mouse : MovementLoader
     {
@@ -179,10 +152,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Y1;
         public short Y2;
         private short _unusedFlags;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -200,7 +169,6 @@ namespace CTFAK.CCN.Chunks.Objects
             Writer.WriteInt16(Y1);
             Writer.WriteInt16(Y2);
             Writer.WriteInt16(_unusedFlags);
-
         }
     }
     public class MovementPath : MovementLoader
@@ -211,10 +179,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public byte RepositionAtEnd;
         public byte ReverseAtEnd;
         public List<MovementStep> Steps;
-
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -256,7 +220,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 Writer.WriteInt8((byte)(newWriter.Size() + 2));
                 Writer.WriteWriter(newWriter);
             }
-
         }
     }
     public class MovementStep : MovementLoader
@@ -271,24 +234,17 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Pause;
         public string Name;
 
-
-
-
-
         public override void Read(ByteReader reader)
         {
-
-                Speed = reader.ReadByte();
-                Direction = reader.ReadByte();
-                DestinationX = reader.ReadInt16();
-                DestinationY = reader.ReadInt16();
-                Cosinus = reader.ReadInt16();
-                Sinus = reader.ReadInt16();
-                Length = reader.ReadInt16();
-                Pause = reader.ReadInt16();
-                Name = reader.ReadAscii();
-            
-
+            Speed = reader.ReadByte();
+            Direction = reader.ReadByte();
+            DestinationX = reader.ReadInt16();
+            DestinationY = reader.ReadInt16();
+            Cosinus = reader.ReadInt16();
+            Sinus = reader.ReadInt16();
+            Length = reader.ReadInt16();
+            Pause = reader.ReadInt16();
+            Name = reader.ReadAscii();
         }
 
         public override void Write(ByteWriter Writer)
@@ -312,9 +268,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Security;
         public short Deceleration;
 
-
-
-
         public override void Read(ByteReader reader)
         {
             Speed = reader.ReadInt16();
@@ -322,8 +275,6 @@ namespace CTFAK.CCN.Chunks.Objects
             Angles = reader.ReadInt16();
             Security = reader.ReadInt16();
             Deceleration = reader.ReadInt16();
-
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -333,7 +284,6 @@ namespace CTFAK.CCN.Chunks.Objects
             Writer.WriteInt16(Angles);
             Writer.WriteInt16(Security);
             Writer.WriteInt16(Deceleration);
-
         }
     }
     public class EightDirections : MovementLoader
@@ -343,9 +293,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Deceleration;
         public int Directions;
         public short BounceFactor;
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -374,9 +321,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public short BounceFactor;
         public short Angles;
         public short ReverseEnabled;
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -409,10 +353,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Gravity;
         public short JumpStrength;
 
-
-
-
-
         public override void Read(ByteReader reader)
         {
             Speed = reader.ReadInt16();
@@ -431,13 +371,11 @@ namespace CTFAK.CCN.Chunks.Objects
             Writer.WriteInt16(Control);
             Writer.WriteInt16(Gravity);
             Writer.WriteInt16(JumpStrength);
-
         }
     }
     public class ExtensionsMovement : MovementLoader
     {
         public byte[] Data;
-
 
         public override void Read(ByteReader reader)
         {

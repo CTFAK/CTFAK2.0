@@ -12,8 +12,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public List<Expression> Items;
         public short Comparsion;
 
-
-
         public override void Read(ByteReader reader)
         {
             Comparsion = reader.ReadInt16();
@@ -29,12 +27,8 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
                 }
                 else Items.Add(expression);
                 // if(expression.Num==23||expression.Num==24||expression.Num==50||expression.Num==16||expression.Num==19)Logger.Log("CUMSHOT "+expression.Num);
-
             }
-            
         }
-
-
 
         public string GetOperator()
         {
@@ -46,7 +40,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
                 case 3: return "<";
                 case 4: return ">=";
                 case 5: return ">";
-                    default: return "err";
+                default: return "err";
             }
         }
 
@@ -60,12 +54,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
                 item.Write(Writer);
             }
             Writer.WriteInt32(0);
-            
         }
 
         public override string ToString()
         {
-
             return  $"{(Items.Count > 0 ? "=="+Items[0].ToString() : " ")}";;
         }
     }

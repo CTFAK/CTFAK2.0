@@ -16,7 +16,6 @@ namespace CTFAK.CCN.Chunks
         
         public override void Read(ByteReader reader)
         {
-
             var len = reader.Size() / 2;
             Items = new Dictionary<int, int>();
             for (int i = 0; i < len; i++)
@@ -24,7 +23,6 @@ namespace CTFAK.CCN.Chunks
                 var handle = reader.ReadInt16();
                 Items.Add(i, handle);
             }
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -34,7 +32,5 @@ namespace CTFAK.CCN.Chunks
                 Writer.WriteInt16((short)item.Value);
             }
         }
-
-
     }
 }

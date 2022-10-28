@@ -33,20 +33,12 @@ namespace CTFAK.MFA
             Writer.WriteSingle(YCoefficient);
         }
 
-
-
         public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
             Flags.flag = (uint)reader.ReadInt32();
             XCoefficient = reader.ReadSingle();
             YCoefficient = reader.ReadSingle();
-
-
-
-
-
         }
- 
     }
 }

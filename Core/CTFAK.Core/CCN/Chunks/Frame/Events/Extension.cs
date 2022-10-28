@@ -10,15 +10,12 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public short Code;
         public byte[] Data;
 
-
-
         public override void Read(ByteReader reader)
         {
             Size = reader.ReadInt16();
             Type = reader.ReadInt16();
             Code = reader.ReadInt16();
             Data = reader.ReadBytes((Size-20>0?Size-20:0));
-
         }
 
         public override void Write(ByteWriter Writer)

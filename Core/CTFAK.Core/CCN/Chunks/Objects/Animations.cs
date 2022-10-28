@@ -30,17 +30,12 @@ namespace CTFAK.CCN.Chunks.Objects
 
                     anim.Read(reader);
                     AnimationDict.Add(i, anim);
-
                 }
                 else
                 {
                     AnimationDict.Add(i, new Animation());
                 }
-
             }
-
-
-
         }
 
         public override void Write(ByteWriter writer)
@@ -52,7 +47,6 @@ namespace CTFAK.CCN.Chunks.Objects
     public class Animation : ChunkLoader
     {
         public Dictionary<int, AnimationDirection> DirectionDict;
-
 
         public override void Read(ByteReader reader)
         {
@@ -78,7 +72,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 {
                     DirectionDict.Add(i, new AnimationDirection());
                 }
-
             }
         }
 
@@ -86,9 +79,6 @@ namespace CTFAK.CCN.Chunks.Objects
         {
             throw new System.NotImplementedException();
         }
-
-
-
     }
 
     public class AnimationDirection : ChunkLoader
@@ -99,8 +89,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Repeat;
         public int BackTo;
         public List<int> Frames = new List<int>();
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -113,18 +101,12 @@ namespace CTFAK.CCN.Chunks.Objects
             {
                 var handle = reader.ReadInt16();
                 Frames.Add(handle);
-
-
             }
-
-
         }
 
         public override void Write(ByteWriter writer)
         {
             throw new System.NotImplementedException();
         }
-
-
     }
 }

@@ -11,9 +11,6 @@ namespace CTFAK.MMFParser.EXE.Loaders
     {
         public List<Shader> ShaderList;
 
-
-        
-
         public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
@@ -31,17 +28,13 @@ namespace CTFAK.MMFParser.EXE.Loaders
                 var shader = new Shader();
                 shader.Read(reader);
                 ShaderList.Add(shader);
-                
             }
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             throw new System.NotImplementedException();
         }
-
-
     }
     public class Shader:ChunkLoader
     {
@@ -92,8 +85,6 @@ namespace CTFAK.MMFParser.EXE.Loaders
         {
             throw new System.NotImplementedException();
         }
-
-
     }
     public class ShaderParameter:ChunkLoader
     {
@@ -110,7 +101,6 @@ namespace CTFAK.MMFParser.EXE.Loaders
             throw new System.NotImplementedException();
         }
 
-
         public string GetValueType()
         {
             switch (Type)
@@ -120,8 +110,6 @@ namespace CTFAK.MMFParser.EXE.Loaders
                 case 2: return "int_float4";
                 case 3: return "image";
                 default: return "unk";
-                    
-                
             }
         }
     }

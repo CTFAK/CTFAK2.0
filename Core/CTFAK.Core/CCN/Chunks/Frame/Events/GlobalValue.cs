@@ -6,9 +6,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
     class GlobalValue : Short
     {
-
-
-
         public override string ToString()
         {
             if(Value>26) return $"GlobalValue{Value}";

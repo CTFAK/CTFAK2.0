@@ -21,8 +21,6 @@ namespace CTFAK.CCN.Chunks.Banks
         public List<SoundItem> Items=new List<SoundItem>();
         public bool IsCompressed = true;
 
-
-
         public override void Read(ByteReader reader)
         {
             //if (!Settings.DoMFA) reader.Seek(0);//Reset the reader to avoid bugs when dumping more than once
@@ -32,22 +30,19 @@ namespace CTFAK.CCN.Chunks.Banks
 
             for (int i = 0; i < NumOfItems; i++)
             {
-
                 if (Settings.android) continue;
                 if(Settings.Old) continue;
                 
                 var item = new SoundItem();
                 
-                    item.IsCompressed = IsCompressed;
-                    item.Read(reader);
+                item.IsCompressed = IsCompressed;
+                item.Read(reader);
                 OnSoundLoaded?.Invoke(i,NumOfItems);
 
-
                 Items.Add(item);
-
             }
-
         }
+
         public override void Write(ByteWriter writer)
         {
             writer.WriteInt32(Items.Count);
@@ -56,30 +51,19 @@ namespace CTFAK.CCN.Chunks.Banks
                 item.Write(writer);
             }
         }
-
-
-
-
     }
 
     public class SoundBase : ChunkLoader
     {
-
-
         public override void Write(ByteWriter Writer)
         {
             throw new NotImplementedException();
         }
 
-
         public override void Read(ByteReader reader)
         {
 
         }
-
-
-
-
     }
 
     public class SoundItem : SoundBase
@@ -92,7 +76,6 @@ namespace CTFAK.CCN.Chunks.Banks
         public string Name;
         public byte[] Data;
         public int Size;
-
 
         public override void Read(ByteReader reader)
         {
@@ -121,9 +104,7 @@ namespace CTFAK.CCN.Chunks.Banks
             Name = soundData.ReadWideString(nameLenght);
             Name = Name.Replace(" ", "");
             Data = soundData.ReadBytes((int)soundData.Size());
-
         }
-
 
         public override void Write(ByteWriter writer)
         {
@@ -136,18 +117,8 @@ namespace CTFAK.CCN.Chunks.Banks
             writer.WriteInt32(Name.Length);
             writer.WriteUnicode(Name);
             // writer.BaseStream.Position -= 4;
-
-
             writer.WriteBytes(Data);
-
-
-
-
-
-
         }
-
-
     }
 
     public class OldSound : SoundBase
@@ -168,7 +139,6 @@ namespace CTFAK.CCN.Chunks.Banks
         
         public override void Read(ByteReader reader)
         {
-
             _handle = reader.ReadUInt32();
             var start = reader.Tell();
             var newData = new ByteReader(Decompressor.DecompressOld(reader));
@@ -190,7 +160,6 @@ namespace CTFAK.CCN.Chunks.Banks
             var chunkSize = newData.ReadInt32();
             Debug.Assert(newData.Size() - newData.Tell() == chunkSize);
             _data = newData.ReadBytes(chunkSize);
-
         }
 
         public void CopyDataToSound(ref SoundItem result)
@@ -201,7 +170,6 @@ namespace CTFAK.CCN.Chunks.Banks
             result.Data = GetWav();
             result.Name = _name;
             result.Flags = _flags;
-
         }
 
         public byte[] GetWav()

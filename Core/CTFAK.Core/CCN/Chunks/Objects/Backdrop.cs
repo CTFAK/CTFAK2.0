@@ -12,7 +12,6 @@ namespace CTFAK.CCN.Chunks.Objects
         Ladder = 3,
         Transparent = 4
     }
-
     public enum Collision
     {
         Fine = 0,
@@ -26,7 +25,6 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Width;
         public int Height;
         public int Image;
-
 
         public override void Read(ByteReader reader)
         {
@@ -42,36 +40,29 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public override void Read(ByteReader reader)
         {
-
-                Size = reader.ReadInt32();
-                ObstacleType = (Obstacle)reader.ReadInt16();
-                CollisionType = (Collision)reader.ReadInt16();
-                if (!Settings.Old)
-                {
-                    Width = reader.ReadInt32();
-                    Height = reader.ReadInt32(); 
-                }
-                
-                Image = reader.ReadInt16();
-
+            Size = reader.ReadInt32();
+            ObstacleType = (Obstacle)reader.ReadInt16();
+            CollisionType = (Collision)reader.ReadInt16();
+            if (!Settings.Old)
+            {
+                Width = reader.ReadInt32();
+                Height = reader.ReadInt32(); 
+            }
+               
+            Image = reader.ReadInt16();
         }
 
         public override void Write(ByteWriter Writer)
         {
             throw new System.NotImplementedException();
         }
-
     }
     public class Quickbackdrop : BackdropLoader
     {
-
         public Shape Shape;
-
-
 
         public override void Read(ByteReader reader)
         {
-
             Size = reader.ReadInt32();
             ObstacleType = (Obstacle)reader.ReadInt16();
             CollisionType = (Collision)reader.ReadInt16();
@@ -81,13 +72,10 @@ namespace CTFAK.CCN.Chunks.Objects
             Shape.Read(reader);
         }
 
-
         public override void Write(ByteWriter Writer)
         {
             throw new System.NotImplementedException();
         }
-
-
     }
     public class Shape : ChunkLoader
     {
@@ -130,6 +118,5 @@ namespace CTFAK.CCN.Chunks.Objects
         {
             throw new System.NotImplementedException();
         }
-
     }
 }

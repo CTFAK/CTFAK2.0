@@ -7,8 +7,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
     {
         public string Value;
 
-
-
         public override void Read(ByteReader reader)
         {
             Value = reader.ReadAscii();

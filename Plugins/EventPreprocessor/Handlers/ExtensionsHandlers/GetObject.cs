@@ -21,6 +21,5 @@ namespace EventPreprocessor.Handlers.ExtensionsHandlers
         {
             FTEventViewer.WriteLine($"({obj.name})->OnGetComplete");
         }
-        
     }
 }

@@ -10,10 +10,6 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public int FrameNumber;
 
-
-
-
-
         public override void Read(ByteReader reader)
         {
             if (Settings.Old)
@@ -24,16 +20,11 @@ namespace CTFAK.CCN.Chunks.Objects
             {
                 FrameNumber = reader.ReadInt32();
             }
-
-
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             Writer.WriteInt32(FrameNumber);
         }
-
-
     }
 }

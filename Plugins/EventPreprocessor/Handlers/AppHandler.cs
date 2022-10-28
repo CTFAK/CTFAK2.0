@@ -18,8 +18,5 @@ namespace EventPreprocessor.Handlers
         {
             FTEventViewer.WriteLine($"{ConditionNames.ConditionSystemDict[condition.ObjectType][condition.Num]}");
         }
-
-
-
     }
 }

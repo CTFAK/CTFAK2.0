@@ -13,7 +13,6 @@ namespace CTFAK.Memory
         //public static byte MagicChar = 99;
         public static byte MagicChar = 54;
 
-
         public static void MakeKey(string data1, string data2, string data3)
         {
             // MakeKeyUnicode(data1,data2,data3);
@@ -54,8 +53,6 @@ namespace CTFAK.Memory
             Marshal.FreeHGlobal(data2ptr);
             Marshal.FreeHGlobal(data3ptr);
             //Logger.Log($"First 16-Bytes of key: {_decryptionKey.GetHex(16)}", true, ConsoleColor.Yellow);
-
-
         }
 
         public static byte[] MakeKeyFromComb(string data, byte magicChar = 54)
@@ -72,7 +69,6 @@ namespace CTFAK.Memory
             return key;
         }
 
-
         public static byte[] DecodeMode3(byte[] chunkData, int chunkSize, int chunkId, out int decompressed)
         {
             ByteReader reader = new ByteReader(chunkData);
@@ -86,7 +82,6 @@ namespace CTFAK.Memory
             }
             
             rawData = DecryptChunk(rawData, chunkSize);
-            
             
             using (ByteReader data = new ByteReader(rawData))
             {
@@ -109,7 +104,6 @@ namespace CTFAK.Memory
             anotherWriter.WriteInt32(encryptedData.Length - 12);
             anotherWriter.WriteBytes(encryptedData);
             return anotherWriter.GetBuffer();
-
         }
         public static byte[] DecryptChunk(byte[] chunkData, int chunkSize)
         {
@@ -147,11 +141,6 @@ namespace CTFAK.Memory
             Marshal.FreeHGlobal(keyPtr);
 
             return decodedChunk;
-
         }
-
-
-
-
     }
 }

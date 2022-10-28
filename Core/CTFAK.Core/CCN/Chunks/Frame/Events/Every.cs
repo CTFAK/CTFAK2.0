@@ -12,7 +12,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         {
             Delay = reader.ReadInt32();
             Compteur = reader.ReadInt32();
-            
         }
 
         public override void Write(ByteWriter Writer)

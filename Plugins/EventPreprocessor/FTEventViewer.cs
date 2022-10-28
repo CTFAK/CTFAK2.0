@@ -39,8 +39,6 @@ namespace EventPreprocessor
             
             var game = reader.getGameData();
             
-            
-            
             conditionHandlers.Add(-3,AppHandler.appConditionHandlers);
             conditionHandlers.Add(2,ActiveHandler.activeConditionHandlers);
             conditionHandlers.Add(-1,SystemHandler.systemConditionHandlers);
@@ -56,7 +54,6 @@ namespace EventPreprocessor
             {
                 if (type.IsSubclassOf(typeof(ExtensionHandler)))
                 {
-                    
                     var newInstance = (ExtensionHandler)Activator.CreateInstance(type);
                     Console.WriteLine("Found extension handlers for extension " + newInstance.Name);
                     foreach (var extension in game.extensions.Items)
@@ -67,15 +64,10 @@ namespace EventPreprocessor
                             newInstance.Init();
                             conditionHandlers.Add(extension.Handle+32,newInstance.extensionConditionHandlers);
                             actionHandlers.Add(extension.Handle+32,newInstance.extensionActionHandlers);
-                            
                         }
                     }
                 }
             }
-            
-            
-            
-            
             
             SELECT_FRAME:
             
@@ -97,7 +89,6 @@ namespace EventPreprocessor
                 Console.WriteLine("Selected all frames");
                 foreach (var frameToProcess in game.frames)
                 {
-                    
                     Directory.CreateDirectory($"Dumps\\{game.name}\\Events");
                     streamWriter = new StreamWriter($"Dumps\\{game.name}\\Events\\{frameToProcess.name}.log",false);
                     ProcessFrame(frameToProcess);
@@ -111,7 +102,6 @@ namespace EventPreprocessor
                 streamWriter = new StreamWriter($"Dumps\\{game.name}\\Events\\{selectedFrame.name}.log",false);
                 ProcessFrame(selectedFrame);
             }
-            
         }
         
         public static void WriteLine(string str,int indent=2)
@@ -127,7 +117,6 @@ namespace EventPreprocessor
         }
         public void ProcessFrame(Frame frame)
         {
-            
             foreach (var eventGroup in frame.events.Items)
             {
                 ProcessEventGroup(eventGroup);
@@ -150,12 +139,10 @@ namespace EventPreprocessor
                 ProcessAction(action);
             }
             WriteLine("}",0);
-            
         }
 
         public void ProcessCondition(Condition condition)
         {
-            
             Dictionary<int, ConditionHandler> currentHandlers = new Dictionary<int, ConditionHandler>();
             var conditionObject = objects[condition.ObjectInfo];
             var gotHandlers = conditionHandlers.TryGetValue(condition.ObjectType,out currentHandlers);
@@ -164,7 +151,6 @@ namespace EventPreprocessor
                 WriteLine($"Object not implemented: {(Constants.ObjectType)condition.ObjectType}({condition.ObjectType})");
                 return;
             }
-
 
             if (currentHandlers != null)
             {
@@ -178,9 +164,7 @@ namespace EventPreprocessor
                 {
                     try
                     {
-                        WriteLine(
-                            $"UNIMPLEMENTED CONDITION. {(Constants.ObjectType)condition.ObjectType}.{ConditionNames.ConditionSystemDict[condition.ObjectType][condition.Num]}({condition.ObjectType}::{condition.Num})");
-
+                        WriteLine($"UNIMPLEMENTED CONDITION. {(Constants.ObjectType)condition.ObjectType}.{ConditionNames.ConditionSystemDict[condition.ObjectType][condition.Num]}({condition.ObjectType}::{condition.Num})");
                     }
                     catch
                     {
@@ -208,7 +192,6 @@ namespace EventPreprocessor
                 return;
             }
 
-
             if (currentHandlers != null)
             {
                 ActionHandler handler;
@@ -221,9 +204,7 @@ namespace EventPreprocessor
                 {
                     try
                     {
-                        WriteLine(
-                            $"UNIMPLEMENTED CONDITION. {(Constants.ObjectType)condition.ObjectType}.{ActionNames.systemDict[condition.ObjectType][condition.Num]}({condition.ObjectType}::{condition.Num})");
-
+                        WriteLine($"UNIMPLEMENTED CONDITION. {(Constants.ObjectType)condition.ObjectType}.{ActionNames.systemDict[condition.ObjectType][condition.Num]}({condition.ObjectType}::{condition.Num})");
                     }
                     catch
                     {
@@ -248,7 +229,5 @@ namespace EventPreprocessor
 
     public delegate void ActionHandler(Action action,ObjectInfo obj,List<Parameter> parameters);
     public delegate void ConditionHandler(Condition condition,ObjectInfo obj,List<Parameter> parameters);
-
-
 }
 

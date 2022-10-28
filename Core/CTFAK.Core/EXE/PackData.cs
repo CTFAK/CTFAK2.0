@@ -52,7 +52,6 @@ namespace CTFAK.EXE
 
             uint count = reader.ReadUInt32();
 
-
             long offset = reader.Tell();
             for (int i = 0; i < count; i++)
             {
@@ -74,10 +73,8 @@ namespace CTFAK.EXE
                 item.HasBingo = hasBingo;
                 item.Read(reader);
                 Items.Add(item);
-
             }
-
-            }
+        }
     }
     public class PackFile
     {
@@ -103,7 +100,6 @@ namespace CTFAK.EXE
                 //File.WriteAllBytes($"ExtDump\\{PackFilename}", Data);
 
             }
-
             //Dump();
         }
     }

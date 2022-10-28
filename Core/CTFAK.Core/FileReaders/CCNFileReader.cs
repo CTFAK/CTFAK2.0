@@ -24,7 +24,6 @@ namespace CTFAK.EXE
 
         public void LoadGame(string gamePath)
         {
-
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             game = new GameData();
             game.Read(reader);

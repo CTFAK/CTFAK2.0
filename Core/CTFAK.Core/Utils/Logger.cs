@@ -17,12 +17,10 @@ namespace CTFAK.Utils
         public static void Log(object text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White)
         {
             Log(text.ToString(), logToScreen, color);
-
         }
         public static void LogWarning(object text)
         {
             Log(text.ToString(), true, ConsoleColor.Yellow);
-
         }
         public static void Log(string text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White)
         {
@@ -34,14 +32,10 @@ namespace CTFAK.Utils
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
-
             _writer.WriteLine(actualText);
             _writer.Flush();
 
             //if (logToConsole) MainConsole.Message(text);
-
-
-
         }
     }
 }

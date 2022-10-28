@@ -47,20 +47,14 @@ namespace CTFAK.MFA
         public byte[] _cache;
         public bool _ifMFA;
 
-
-
-
-
         public override void Read(ByteReader reader)
         {
-
             Version = reader.ReadUInt16();
             FrameType = reader.ReadUInt16();
             Items = new List<EventGroup>();
 
             while (true)
             {
-
                 string name = reader.ReadAscii(4);
                 if (name == EventData)
                 {
@@ -177,17 +171,14 @@ namespace CTFAK.MFA
                 else if (name == EventEnd)
                 {
                     // _cache = reader.ReadBytes(122);
-
                     break;
                 }
                 else Logger.Log("UnknownGroup: " + name);//throw new NotImplementedException("Fuck Something is Broken: "+name);
-
             }
         }
 
         public override void Write(ByteWriter Writer)
         {
-
             Writer.WriteUInt16(Version);
             Writer.WriteUInt16(FrameType);
             if (Items.Count > 0)
@@ -203,12 +194,9 @@ namespace CTFAK.MFA
                     eventGroup.Write(newWriter);
                 }
 
-
                 Writer.WriteUInt32((uint)newWriter.BaseStream.Position);
                 Writer.WriteWriter(newWriter);
-
             }
-
 
             if (Objects?.Count > 0)
             {
@@ -246,10 +234,6 @@ namespace CTFAK.MFA
                 }
             }
 
-
-
-
-
             // if (X != 0)
             {
                 Writer.WriteAscii(EditorPositionData);
@@ -281,16 +265,11 @@ namespace CTFAK.MFA
             Writer.WriteInt16((short)ObjectHeight);
             Writer.Skip(12);
 
-
             Writer.WriteAscii(EventEnd);
 
             // Writer.WriteBytes(_cache);
 
-
-
             //TODO: Fix commented part
-            // 
-
             //
             // if (Comments != null)
             // {
@@ -303,8 +282,6 @@ namespace CTFAK.MFA
             // }
 
         }
-
-
     }
 
     public class Comment : ChunkLoader
@@ -323,8 +300,6 @@ namespace CTFAK.MFA
             Writer.WriteUInt32(Handle);
             Writer.AutoWriteUnicode(Value);
         }
-
-
     }
 
     public class EventObject : ChunkLoader
@@ -340,9 +315,6 @@ namespace CTFAK.MFA
         public string Code;
         public string IconBuffer;
         public ushort SystemQualifier;
-
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -370,7 +342,6 @@ namespace CTFAK.MFA
             {
                 SystemQualifier = reader.ReadUInt16();
             }
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -399,10 +370,6 @@ namespace CTFAK.MFA
             {
                 Writer.WriteUInt16(SystemQualifier);
             }
-
-
         }
-
-
     }
 }

@@ -21,9 +21,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
                 movement.Write(Writer);
             }
         }
-
-
-
         public override void Read(ByteReader reader)
         {
             var count = reader.ReadUInt32();
@@ -32,10 +29,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
                 var item = new MFAMovement();
                 item.Read(reader);
                 Items.Add(item);
-
             }
-
-
         }
     }
 
@@ -67,17 +61,12 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
             // newWriter.WriteBytes(extData);
 
-
             Loader?.Write(newWriter);
             newWriter.Skip(12);
             newWriter.WriteInt16(0);
             Writer.WriteInt32((int)newWriter.Size());
             Writer.WriteWriter(newWriter);
-
-
         }
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -109,10 +98,8 @@ namespace CTFAK.MFA.MFAObjectLoaders
                         Loader = new Ball();
                         break;
                 }
-
                 Loader?.Read(new ByteReader(extData));
             }
-
         }
     }
 }

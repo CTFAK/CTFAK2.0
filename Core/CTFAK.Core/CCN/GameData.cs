@@ -23,7 +23,6 @@ namespace CTFAK.CCN
         public static event SaveHandler OnChunkLoaded;
         public static event SaveHandler OnFrameLoaded;
         
-        
         private short runtimeVersion;
         private short runtimeSubversion;
         private int productVersion;
@@ -68,7 +67,6 @@ namespace CTFAK.CCN
         public GlobalValues globalValues;
         public ExtData extData;
         public BinaryFiles binaryFiles;
-
 
         public void Read(ByteReader reader)
         {
@@ -136,7 +134,6 @@ namespace CTFAK.CCN
                             Decryption.MakeKey(editorFilename, name, copyright);
                             Logger.Log($"Generating a decryption key: {editorFilename}, {name}, {copyright}");
                         }
-                        
                         break;
                     case 8751: //AppTargetFilename
                         targetFilename = (loader as TargetFilename)?.value;
@@ -179,12 +176,9 @@ namespace CTFAK.CCN
                         break;
                     case 8767: //FrameItems2
                         break;
-                    
-                    
                     case 13107: //Frame
                         frames.Add(loader as Frame);
                         break;
-                    
                     case 26214: //ImageBank
                         Images=loader as ImageBank;
                         break;
@@ -194,19 +188,13 @@ namespace CTFAK.CCN
                     case 26216: //SoundBank
                         Sounds = loader as SoundBank;
                         break;
-                    
                     case 8789:
                         frameitems = TwoFilePlusContainer.instance.objectsContainer;
                         break;
-                    
-                        
-                    
                 }
             };
             chunkList.Read(reader);
             chunkList.Read(reader);//ONLY FOR F3 ONLY FOR F3 ONLY FOR F3
-
-
 
             /*switch (newChunk.Id)
             {
@@ -245,9 +233,7 @@ namespace CTFAK.CCN
                         var newObjInfo = new ObjectInfo();
                         newObjInfo.Read(chunkReader);
                         frameitems.Add(newObjInfo.handle, newObjInfo);
-                        
                     }
-                    
                     break;
                 case 8746:
                     //TODO: CHUNK_GLOBALEVENT
@@ -286,7 +272,6 @@ namespace CTFAK.CCN
                     globalValues.Read(chunkReader);
                     break;
                 case 8755:
-                    
                     //File.WriteAllBytes("anus2000.bin",chunkReader.ReadBytes());
                     //globalStrings = new GlobalStrings(chunkReader);
                     //globalStrings.Read();
@@ -295,9 +280,7 @@ namespace CTFAK.CCN
                     extensions = new Extensions();
                     extensions.Read(chunkReader);
                     break;
-
                 case 8759:
-
                     break;
                 case 8760:
                     binaryFiles = new BinaryFiles();
@@ -309,31 +292,22 @@ namespace CTFAK.CCN
                     copyright = copyrightChunk.value;
                     break;
                 case 8770:
-
                     break;
                 case 8771:
                     shaders = new Shaders();
                     shaders.Read(chunkReader);
                     break;
-                
                 case 8787: //2.5+ object headers:
                     while (true)
                     {
-                        
-                        
                         frameitems.Add(newObject.handle,newObject);
                     }
                     break;
                 case 8788: //2.5+ object names:
-                    
-
                     break;
                 case 8790: //2.5+ object properties
-                    
                     break;
                 case 8793:
-
-
                     break;
                 case 13107:
                     var frame = new Frame();
@@ -342,7 +316,6 @@ namespace CTFAK.CCN
                     frames.Add(frame);
                     /*if (frame.name == "Battle")
                     {
-                        
                         int index = 0;
                         int max = frame.events.Items.Count;
                         for (int i = max; i > max-0; i--)
@@ -365,11 +338,8 @@ namespace CTFAK.CCN
                         }
                         Console.ReadKey();
                     }
-                    
                     break;
-
                 case 26214:
-                    
                     Images = new ImageBank();
                     Images.Read(chunkReader);
                     break;
@@ -386,13 +356,7 @@ namespace CTFAK.CCN
                     Music = new MusicBank();
                     Music.Read(chunkReader);
                     break;
-
             }*/
-
-
-
-
         }
-        
     }
 }

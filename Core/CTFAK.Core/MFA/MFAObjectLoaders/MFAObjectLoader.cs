@@ -28,7 +28,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             // var col = Color.FromArgb(255,BackgroundColor.R,BackgroundColor.G,BackgroundColor.B);
             Writer.WriteColor(BackgroundColor);
 
-
             for (int i = 0; i < 8; i++)
             {
                 Writer.WriteInt16(Qualifiers[i]);
@@ -41,8 +40,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
             Writer.WriteInt8(0);//FadeIn
             Writer.WriteInt8(0);//FadeOut
-
-
         }
 
 
@@ -73,10 +70,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Behaviours = new Behaviours();
             Behaviours.Read(reader);
             reader.Skip(2);//Transitions
-                           // Print();
-
-
-
         }
     }
 }

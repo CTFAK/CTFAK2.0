@@ -8,8 +8,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public short Value1;
         public short Value2;
 
-
-
         public override void Read(ByteReader reader)
         {
             Value1 = reader.ReadInt16();

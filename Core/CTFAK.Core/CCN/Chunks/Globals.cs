@@ -41,7 +41,6 @@ namespace CTFAK.CCN.Chunks
     {
         public List<string> Items = new List<string>();
  
-
         public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
