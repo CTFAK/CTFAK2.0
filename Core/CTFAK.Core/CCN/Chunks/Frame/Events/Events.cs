@@ -160,11 +160,13 @@ namespace CTFAK.CCN.Chunks.Frame
             // Logger.Log($"Cond: {NumberOfConditions},Act: {NumberOfActions}");
             for (int i = 0; i < NumberOfConditions; i++)
             {
-               
+                //Child Event fix by -liz
                 var item = new Condition();
                 item.Read(reader);
                 Fixer.FixConditions(ref item);
-                Conditions.Add(item);
+                if (item.Num == -27 && item.ObjectType == -1 ||
+                    item.Num == -43 && item.ObjectType == -1) {} else
+                    Conditions.Add(item);
             }
 
             for (int i = 0; i < NumberOfActions; i++)
@@ -172,7 +174,8 @@ namespace CTFAK.CCN.Chunks.Frame
                 var item = new Action();
                 item.Read(reader);
                 Fixer.FixActions(ref item);
-                Actions.Add(item);
+                if (item.Num != 43 && item.ObjectType != -1)
+                    Actions.Add(item);
             }
             reader.Seek(currentPosition + Size);
             // Logger.Log($"COND:{NumberOfConditions}, ACT: {NumberOfActions}");
@@ -231,7 +234,7 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             var num = cond.Num;
             //Alterable Values:
-            if (num == -42||num==-43) num = -27;
+            if (num == -42 && cond.ObjectType != -1) num = -27;
             //Global Values
                 if(cond.ObjectType==-1)
                 if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33)

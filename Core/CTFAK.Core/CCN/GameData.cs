@@ -176,6 +176,12 @@ namespace CTFAK.CCN
                         break;
                     case 8767: //FrameItems2
                         break;
+                    case 8792: //FontBank
+                        Fonts = loader as FontBank;
+                        break;
+                    case 8793: //FontBank
+                        Fonts = loader as FontBank;
+                        break;
                     case 13107: //Frame
                         frames.Add(loader as Frame);
                         break;

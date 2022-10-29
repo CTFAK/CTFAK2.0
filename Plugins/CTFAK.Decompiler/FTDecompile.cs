@@ -20,6 +20,7 @@ using Microsoft.VisualBasic;
 using Action = CTFAK.CCN.Chunks.Frame.Action;
 using Constants = CTFAK.CCN.Constants;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CTFAK.Tools
 {
@@ -52,6 +53,7 @@ namespace CTFAK.Tools
             mfa.LangId = 0;//8192;
             mfa.Description = "";
             mfa.Path = game.editorFilename;
+            mfa.Menu = game.menu;
 
             //if (game.Fonts != null) mfa.Fonts = game.Fonts;
             // mfa.Sounds.Items.Clear();
@@ -387,14 +389,12 @@ namespace CTFAK.Tools
                             Dictionary<int, Quailifer> qualifiers = new Dictionary<int, Quailifer>();
                             foreach (Quailifer quailifer in frame.events.QualifiersList.Values)
                             {
-                                break;
                                 int newHandle = 0;
                                 while (true)
                                 {
                                     if (!newFrame.Items.Any(item => item.Handle == newHandle) &&
                                         !qualifiers.Keys.Any(item => item == newHandle)) break;
                                     newHandle++;
-
                                 }
                                 qualifiers.Add(newHandle, quailifer);
                                 var qualItem = new EventObject();
@@ -405,7 +405,6 @@ namespace CTFAK.Tools
                                 qualItem.ItemType = (ushort)quailifer.Type;
                                 qualItem.ObjectType = 3;
                                 newFrame.Events.Objects.Add(qualItem);
-
                             }
                             for (int eg = 0; eg < newFrame.Events.Items.Count; eg++)//foreach (EventGroup eventGroup in newFrame.Events.Items)
                             {
@@ -416,16 +415,6 @@ namespace CTFAK.Tools
                                     {
                                         if (quailifer.Value.ObjectInfo == action.ObjectInfo)
                                             action.ObjectInfo = quailifer.Key;
-                                        foreach (var param in action.Items)
-                                        {
-                                            var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
-                                            if (objInfoFld == null) continue;
-                                            if ((int)objInfoFld?.GetValue(param?.Loader) ==
-                                                quailifer.Value?.ObjectInfo)
-                                                newFrame.Events.Items.Remove(eventGroup);
-                                            param.Loader?.GetType().GetField("ObjectInfo")
-                                                .SetValue(param.Loader, quailifer.Key);
-                                        }
                                     }
 
                                 }
@@ -435,15 +424,6 @@ namespace CTFAK.Tools
                                     {
                                         if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
                                             cond.ObjectInfo = quailifer.Key;
-                                        foreach (var param in cond.Items)
-                                        {
-                                            var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
-                                            if (objInfoFld == null) continue;
-                                            if ((int)objInfoFld?.GetValue(param?.Loader) ==
-                                                quailifer.Value?.ObjectInfo)
-                                                param.Loader?.GetType().GetField("ObjectInfo")
-                                                    .SetValue(param.Loader, quailifer.Key);
-                                        }
                                     }
                                 }
                             }
@@ -711,6 +691,35 @@ namespace CTFAK.Tools
                     newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
                     newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
                 }
+
+                try
+                {
+                    for (int i = 0; i < game.globalValues.Items.Count; i++)
+                    {
+                        var globalValue = game.globalValues.Items[i];
+
+
+                        mfa.GlobalValues.Items.Add(new ValueItem()
+                        {
+                            Value = globalValue,
+                            Name = $"Global Value " + i
+
+                        });
+                    }
+                    for (int i = 0; i < game.globalStrings.Items.Count; i++)
+                    {
+                        var globalString = game.globalStrings.Items[i];
+
+
+                        mfa.GlobalStrings.Items.Add(new ValueItem()
+                        {
+                            Value = globalString,
+                            Name = $"Global String " + i
+
+                        });
+                    }
+                }
+                catch {}
 
                 if (item.ObjectType == (int)Constants.ObjectType.QuickBackdrop)
                 {
@@ -1025,13 +1034,13 @@ namespace CTFAK.Tools
 
                     else if (item.ObjectType == 9)
                     {
-                        /*if (Core.parameters.Contains("-nosubapp"))
+                        if (Core.parameters.Contains("-nosubapp"))
                         {
 
                         }
                         else
                         {
-                            var newSubApp = new MFASubApplication(null);
+                            var newSubApp = new MFASubApplication();
                             newSubApp.ObjectFlags = newObject.ObjectFlags;
                             newSubApp.NewObjectFlags = newObject.NewObjectFlags;
                             newSubApp.BackgroundColor = newObject.BackgroundColor;
@@ -1042,14 +1051,22 @@ namespace CTFAK.Tools
                             newSubApp.Qualifiers = newObject.Qualifiers;
                             try
                             {
-                                newSubApp.FrameNumber = itemLoader.SubApplication.FrameNumber;
+                                newSubApp.fileName = itemLoader.SubApplication.odName;
+                                newSubApp.width = itemLoader.SubApplication.odCx;
+                                newSubApp.height = itemLoader.SubApplication.odCy;
+                                newSubApp.flaggyflag = itemLoader.SubApplication.odOptions;
+                                newSubApp.frameNum = itemLoader.SubApplication.odNStartFrame;
                             }
                             catch (Exception)
                             {
-                                newSubApp.FrameNumber = 1;
+                                newSubApp.fileName = "";
+                                newSubApp.width = 128;
+                                newSubApp.height = 128;
+                                newSubApp.flaggyflag = 0;
+                                newSubApp.frameNum = 3;
                             }
                             newItem.Loader = newSubApp;
-                        }*/
+                        }
                     }
                 }
                 //Logger.Log("Name: " + newItem.Name + ", Object type: " + newItem.ObjectType);

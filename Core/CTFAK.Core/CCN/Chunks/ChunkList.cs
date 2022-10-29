@@ -156,6 +156,7 @@ namespace CTFAK.CCN.Chunks
             { 8770, "PROTECTION" },
             { 8771, "SHADERS" },
             { 8773, "APPHEADER2" },
+            { 8792, "FONTS_2" },
             { 13107, "FRAME" },
             { 13108, "FRAMEHEADER" },
             { 13109, "FRAMENAME" },
