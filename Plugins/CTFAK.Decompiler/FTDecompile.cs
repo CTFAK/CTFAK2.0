@@ -37,6 +37,9 @@ namespace CTFAK.Tools
             var game = reader.getGameData();
             var mfa = new MFAData();
             bool myAss = false;
+            Dictionary<int, CCN.Chunks.Banks.Image> imgs = game.Images.Items;
+            if (Core.parameters.Contains("-noimg"))
+                game.Images.Items.Clear();
             Settings.gameType = Settings.GameType.NORMAL;
             if (Settings.Old)
             {
@@ -63,6 +66,8 @@ namespace CTFAK.Tools
                 {
                     mfa.Sounds.Items.Add(item);
                 }
+                if (Core.parameters.Contains("-nosound"))
+                    mfa.Sounds.Items.Clear();
             }
             mfa.Fonts.Items.Clear();
             if (game.Fonts?.Items != null)
@@ -75,12 +80,13 @@ namespace CTFAK.Tools
             }
 
             mfa.Music = game.Music;
-            mfa.Images.Items = game.Images?.Items;
+            mfa.Images.Items = imgs;
             foreach (var key in mfa.Images.Items.Keys)
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
-            mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
+            if (!Core.parameters.Contains("-noimg"))
+                mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
 
             foreach (var item in mfa.Icons.Items)
             {
@@ -369,61 +375,64 @@ namespace CTFAK.Tools
                         //if(false)
                         if (frame.events != null)
                         {
-                            foreach (var item in newFrame.Items)
+                            if (!Core.parameters.Contains("-noevnt"))
                             {
-                                var newObject = new EventObject();
-
-                                newObject.Handle = (uint)item.Handle;
-                                newObject.Name = item.Name ?? "";
-                                newObject.TypeName = "";
-                                newObject.ItemType = (ushort)item.ObjectType;
-                                newObject.ObjectType = 1;
-                                newObject.Flags = 0;
-                                newObject.ItemHandle = (uint)item.Handle;
-                                newObject.InstanceHandle = 0xFFFFFFFF;
-                                newFrame.Events.Objects.Add(newObject);
-                            }
-
-                            newFrame.Events.Items = frame.events.Items;
-
-                            Dictionary<int, Quailifer> qualifiers = new Dictionary<int, Quailifer>();
-                            foreach (Quailifer quailifer in frame.events.QualifiersList.Values)
-                            {
-                                int newHandle = 0;
-                                while (true)
+                                foreach (var item in newFrame.Items)
                                 {
-                                    if (!newFrame.Items.Any(item => item.Handle == newHandle) &&
-                                        !qualifiers.Keys.Any(item => item == newHandle)) break;
-                                    newHandle++;
+                                    var newObject = new EventObject();
+
+                                    newObject.Handle = (uint)item.Handle;
+                                    newObject.Name = item.Name ?? "";
+                                    newObject.TypeName = "";
+                                    newObject.ItemType = (ushort)item.ObjectType;
+                                    newObject.ObjectType = 1;
+                                    newObject.Flags = 0;
+                                    newObject.ItemHandle = (uint)item.Handle;
+                                    newObject.InstanceHandle = 0xFFFFFFFF;
+                                    newFrame.Events.Objects.Add(newObject);
                                 }
-                                qualifiers.Add(newHandle, quailifer);
-                                var qualItem = new EventObject();
-                                qualItem.Handle = (uint)newHandle;
-                                qualItem.SystemQualifier = (ushort)quailifer.Qualifier;
-                                qualItem.Name = "";
-                                qualItem.TypeName = "";
-                                qualItem.ItemType = (ushort)quailifer.Type;
-                                qualItem.ObjectType = 3;
-                                newFrame.Events.Objects.Add(qualItem);
-                            }
-                            for (int eg = 0; eg < newFrame.Events.Items.Count; eg++)//foreach (EventGroup eventGroup in newFrame.Events.Items)
-                            {
-                                var eventGroup = newFrame.Events.Items[eg];
-                                foreach (Action action in eventGroup.Actions)
+
+                                newFrame.Events.Items = frame.events.Items;
+
+                                Dictionary<int, Quailifer> qualifiers = new Dictionary<int, Quailifer>();
+                                foreach (Quailifer quailifer in frame.events.QualifiersList.Values)
                                 {
-                                    foreach (var quailifer in qualifiers)
+                                    int newHandle = 0;
+                                    while (true)
                                     {
-                                        if (quailifer.Value.ObjectInfo == action.ObjectInfo)
-                                            action.ObjectInfo = quailifer.Key;
+                                        if (!newFrame.Items.Any(item => item.Handle == newHandle) &&
+                                            !qualifiers.Keys.Any(item => item == newHandle)) break;
+                                        newHandle++;
                                     }
-
+                                    qualifiers.Add(newHandle, quailifer);
+                                    var qualItem = new EventObject();
+                                    qualItem.Handle = (uint)newHandle;
+                                    qualItem.SystemQualifier = (ushort)quailifer.Qualifier;
+                                    qualItem.Name = "";
+                                    qualItem.TypeName = "";
+                                    qualItem.ItemType = (ushort)quailifer.Type;
+                                    qualItem.ObjectType = 3;
+                                    newFrame.Events.Objects.Add(qualItem);
                                 }
-                                foreach (Condition cond in eventGroup.Conditions)
+                                for (int eg = 0; eg < newFrame.Events.Items.Count; eg++)//foreach (EventGroup eventGroup in newFrame.Events.Items)
                                 {
-                                    foreach (var quailifer in qualifiers)
+                                    var eventGroup = newFrame.Events.Items[eg];
+                                    foreach (Action action in eventGroup.Actions)
                                     {
-                                        if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
-                                            cond.ObjectInfo = quailifer.Key;
+                                        foreach (var quailifer in qualifiers)
+                                        {
+                                            if (quailifer.Value.ObjectInfo == action.ObjectInfo)
+                                                action.ObjectInfo = quailifer.Key;
+                                        }
+
+                                    }
+                                    foreach (Condition cond in eventGroup.Conditions)
+                                    {
+                                        foreach (var quailifer in qualifiers)
+                                        {
+                                            if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
+                                                cond.ObjectInfo = quailifer.Key;
+                                        }
                                     }
                                 }
                             }
@@ -676,6 +685,12 @@ namespace CTFAK.Tools
                     }
                 }
                 //Logger.Log($"Generating Icon: {item.name} - {item.ObjectType}");
+                if (Core.parameters.Contains("-noicons"))
+                {
+                    noicon = false;
+                    iconBmp = Resources.Active;
+                }
+
                 if (!noicon)
                 {
                     FTDecompile.lastAllocatedHandleImg++;
@@ -735,7 +750,8 @@ namespace CTFAK.Tools
                     backdrop.Color1 = backdropLoader.Shape.Color1;
                     backdrop.Color2 = backdropLoader.Shape.Color2;
                     backdrop.Flags = backdropLoader.Shape.GradFlags;
-                    backdrop.Image = backdropLoader.Shape.Image;
+                    if (!Core.parameters.Contains("-noimg"))
+                        backdrop.Image = backdropLoader.Shape.Image;
                     newItem.Loader = backdrop;
                 }
                 else if (item.ObjectType == (int)Constants.ObjectType.Backdrop)
@@ -744,7 +760,8 @@ namespace CTFAK.Tools
                     var backdrop = new MFABackdrop();
                     backdrop.ObstacleType = (uint)backdropLoader.ObstacleType;
                     backdrop.CollisionType = (uint)backdropLoader.CollisionType;
-                    backdrop.Handle = backdropLoader.Image;
+                    if (!Core.parameters.Contains("-noimg"))
+                        backdrop.Handle = backdropLoader.Image;
                     newItem.Loader = backdrop;
                 }
                 else
@@ -815,6 +832,8 @@ namespace CTFAK.Tools
                             var animHeader = itemLoader.Animations;
                             for (int j = 0; j < animHeader.AnimationDict.Count; j++)
                             {
+                                if (Core.parameters.Contains("-noimg"))
+                                    break;
                                 var origAnim = animHeader.AnimationDict.ToArray()[j];
                                 var newAnimation = new MFAAnimation();
                                 newAnimation.Name = $"User Defined {j}";
@@ -839,7 +858,10 @@ namespace CTFAK.Tools
                                             newDirection.Index = n;
                                             newDirection.Repeat = direction.Repeat;
                                             newDirection.BackTo = direction.BackTo;
-                                            newDirection.Frames = direction.Frames;
+                                            if (Core.parameters.Contains("-noimg"))
+                                                newDirection.Frames = new List<int>();
+                                            else
+                                                newDirection.Frames = direction.Frames;
                                             newDirections.Add(newDirection);
                                         }
                                     }
@@ -957,7 +979,8 @@ namespace CTFAK.Tools
                             lives.Qualifiers = newObject.Qualifiers;
                         }
                         lives.Player = counter?.Player ?? 0;
-                        lives.Images = counter?.Frames ?? new List<int>() { 0 };
+                        if (!Core.parameters.Contains("-noimg"))
+                            lives.Images = counter?.Frames ?? new List<int>() { 0 };
                         lives.DisplayType = counter?.DisplayType ?? 0;
                         lives.Flags = counter?.Flags ?? 0;
                         lives.Font = counter?.Font ?? 0;
@@ -1011,7 +1034,10 @@ namespace CTFAK.Tools
                             newCount.CountType = counter.Inverse ? 1 : 0;
                             newCount.Width = (int)counter.Width;
                             newCount.Height = (int)counter.Height;
-                            newCount.Images = counter.Frames;
+                            if (Core.parameters.Contains("-noimg"))
+                                newCount.Images = new List<int>();
+                            else
+                                newCount.Images = counter.Frames;
                             newCount.Font = counter.Font;
                         }
 
@@ -1034,44 +1060,38 @@ namespace CTFAK.Tools
 
                     else if (item.ObjectType == 9)
                     {
-                        if (Core.parameters.Contains("-nosubapp"))
+                        var newSubApp = new MFASubApplication();
+                        newSubApp.ObjectFlags = newObject.ObjectFlags;
+                        newSubApp.NewObjectFlags = newObject.NewObjectFlags;
+                        newSubApp.BackgroundColor = newObject.BackgroundColor;
+                        newSubApp.Strings = newObject.Strings;
+                        newSubApp.Values = newObject.Values;
+                        newSubApp.Movements = newObject.Movements;
+                        newSubApp.Behaviours = newObject.Behaviours;
+                        newSubApp.Qualifiers = newObject.Qualifiers;
+                        try
                         {
-
+                            newSubApp.fileName = itemLoader.SubApplication.odName;
+                            newSubApp.width = itemLoader.SubApplication.odCx;
+                            newSubApp.height = itemLoader.SubApplication.odCy;
+                            newSubApp.flaggyflag = itemLoader.SubApplication.odOptions;
+                            newSubApp.frameNum = itemLoader.SubApplication.odNStartFrame;
                         }
-                        else
+                        catch (Exception)
                         {
-                            var newSubApp = new MFASubApplication();
-                            newSubApp.ObjectFlags = newObject.ObjectFlags;
-                            newSubApp.NewObjectFlags = newObject.NewObjectFlags;
-                            newSubApp.BackgroundColor = newObject.BackgroundColor;
-                            newSubApp.Strings = newObject.Strings;
-                            newSubApp.Values = newObject.Values;
-                            newSubApp.Movements = newObject.Movements;
-                            newSubApp.Behaviours = newObject.Behaviours;
-                            newSubApp.Qualifiers = newObject.Qualifiers;
-                            try
-                            {
-                                newSubApp.fileName = itemLoader.SubApplication.odName;
-                                newSubApp.width = itemLoader.SubApplication.odCx;
-                                newSubApp.height = itemLoader.SubApplication.odCy;
-                                newSubApp.flaggyflag = itemLoader.SubApplication.odOptions;
-                                newSubApp.frameNum = itemLoader.SubApplication.odNStartFrame;
-                            }
-                            catch (Exception)
-                            {
-                                newSubApp.fileName = "";
-                                newSubApp.width = 128;
-                                newSubApp.height = 128;
-                                newSubApp.flaggyflag = 0;
-                                newSubApp.frameNum = 3;
-                            }
-                            newItem.Loader = newSubApp;
+                            newSubApp.fileName = "";
+                            newSubApp.width = 128;
+                            newSubApp.height = 128;
+                            newSubApp.flaggyflag = 0;
+                            newSubApp.frameNum = 3;
                         }
+                        newItem.Loader = newSubApp;
                     }
                 }
                 //Logger.Log("Name: " + newItem.Name + ", Object type: " + newItem.ObjectType);
                 return newItem;
             }
+            game.Images.Items = imgs;
         }
     }
 }
