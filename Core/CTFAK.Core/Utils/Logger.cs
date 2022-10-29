@@ -7,6 +7,7 @@ namespace CTFAK.Utils
     public static class Logger
     {
         static StreamWriter _writer;
+        public static event LoggerHandler OnLogged;
         static Logger()
         {
             File.Delete("Latest.log");
@@ -30,6 +31,7 @@ namespace CTFAK.Utils
                 Console.ForegroundColor = color;
                 Console.WriteLine(actualText);
                 Console.ForegroundColor = ConsoleColor.White;
+                OnLogged?.Invoke(actualText);
             }
 
             _writer.WriteLine(actualText);

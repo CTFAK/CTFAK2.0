@@ -8,6 +8,7 @@ using Joveler.Compression.ZLib;
 namespace CTFAK
 {
     public delegate void SaveHandler(int index, int all);
+    public delegate void LoggerHandler(string output);
     public delegate void SimpleMessage<T>(T data);
     public delegate T2 SimpleMessage<T,T2>(T data);
     public class Core
