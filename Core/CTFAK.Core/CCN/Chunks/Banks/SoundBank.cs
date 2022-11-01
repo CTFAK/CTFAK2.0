@@ -20,14 +20,8 @@ namespace CTFAK.CCN.Chunks.Banks
         public bool IsCompressed = true;
 
 
-        public void Read(bool dump)
-        {
 
-            Read();
-
-
-        }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             //if (!Settings.DoMFA) reader.Seek(0);//Reset the reader to avoid bugs when dumping more than once
             Items = new List<SoundItem>();
@@ -40,10 +34,10 @@ namespace CTFAK.CCN.Chunks.Banks
                 if (Settings.android) continue;
                 if(Settings.Old) continue;
                 
-                var item = new SoundItem(reader);
+                var item = new SoundItem();
                 
                     item.IsCompressed = IsCompressed;
-                    item.Read();
+                    item.Read(reader);
                 OnSoundLoaded?.Invoke(i,NumOfItems);
 
 
@@ -61,9 +55,7 @@ namespace CTFAK.CCN.Chunks.Banks
             }
         }
 
-        public SoundBank(ByteReader reader) : base(reader)
-        {
-        }
+
 
 
     }
@@ -78,14 +70,12 @@ namespace CTFAK.CCN.Chunks.Banks
         }
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
         }
 
-        public SoundBase(ByteReader reader) : base(reader)
-        {
-        }
+
 
 
     }
@@ -99,11 +89,12 @@ namespace CTFAK.CCN.Chunks.Banks
         public uint Handle;
         public string Name;
         public byte[] Data;
+        public int Size;
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
-            base.Read();
+            base.Read(reader);
 
             var start = reader.Tell();
 
@@ -115,11 +106,11 @@ namespace CTFAK.CCN.Chunks.Banks
             Flags = reader.ReadUInt32();
             var res = reader.ReadInt32();
             var nameLenght = reader.ReadInt32();
+            Size = reader.ReadInt32();
             ByteReader soundData;
             if (IsCompressed)
             {
-                var size = reader.ReadInt32();
-                soundData = new ByteReader(Decompressor.DecompressBlock(reader, size, decompressedSize));
+                soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
             }
             else
             {
@@ -154,9 +145,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
         }
 
-        public SoundItem(ByteReader reader) : base(reader)
-        {
-        }
+
     }
 
     public class OldSound : SoundBase
@@ -174,12 +163,8 @@ namespace CTFAK.CCN.Chunks.Banks
         private ushort _blockAlign;
         private ushort _bitsPerSample;
         private byte[] _data;
-
-        public OldSound(ByteReader reader) : base(reader)
-        {
-        }
-
-        public override void Read()
+        
+        public override void Read(ByteReader reader)
         {
 
             _handle = reader.ReadUInt32();

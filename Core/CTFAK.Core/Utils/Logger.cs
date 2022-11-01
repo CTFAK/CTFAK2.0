@@ -14,18 +14,17 @@ namespace CTFAK.Utils
             _writer.AutoFlush = true;
         }
 
-        public static void Log(object text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White,
-            bool logToConsole = true)
+        public static void Log(object text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White)
         {
-            Log(text.ToString(), logToScreen, color, logToConsole);
+            Log(text.ToString(), logToScreen, color);
 
         }
         public static void LogWarning(object text)
         {
-            Log(text.ToString(), true, ConsoleColor.Yellow, true);
+            Log(text.ToString(), true, ConsoleColor.Yellow);
 
         }
-        public static void Log(string text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White, bool logToConsole = true)
+        public static void Log(string text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White)
         {
             var actualText = $"[{DateTime.Now.ToString("HH:mm:ss:ff")}] {text}";
             if (logToScreen)

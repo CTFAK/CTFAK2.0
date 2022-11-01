@@ -8,8 +8,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int ObjectInfoList;
         public int ObjectInfo;
         public int ObjectType;
-        public ParamObject(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             
             ObjectInfoList = reader.ReadInt16();

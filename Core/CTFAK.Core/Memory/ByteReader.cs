@@ -8,57 +8,17 @@ namespace CTFAK.Memory
 {
     public class ByteReader : BinaryReader
     {
-        public ByteReader(Stream input) : base(input)
-        {
-        }
+        public ByteReader(Stream input) : base(input){}
+        public ByteReader(Stream input, Encoding encoding) : base(input, encoding){}
+        public ByteReader(byte[] data) : base(new MemoryStream(data)){}
+        public ByteReader(string path, FileMode fileMode) : base(new FileStream(path, fileMode)){}
+        public void Seek(Int64 offset, SeekOrigin seekOrigin = SeekOrigin.Begin)=>BaseStream.Seek(offset, seekOrigin);
+        public void Skip(Int64 count)=>BaseStream.Seek(count, SeekOrigin.Current);
+        public Int64 Tell()=>BaseStream.Position;
+        public Int64 Size()=>BaseStream.Length;
+        public bool HasMemory(int size)=>Size() - Tell() >= size;
 
-        public ByteReader(Stream input, Encoding encoding) : base(input, encoding)
-        {
-        }
 
- 
-
-        public ByteReader(byte[] data) : base(new MemoryStream(data))
-        {
-        }
-
-        public ByteReader(string path, FileMode fileMode) : base(new FileStream(path, fileMode))
-        {
-        }
-
-        public void Seek(Int64 offset, SeekOrigin seekOrigin = SeekOrigin.Begin)
-        {
-            BaseStream.Seek(offset, seekOrigin);
-        }
-
-        public void Skip(Int64 count)
-        {
-            BaseStream.Seek(count, SeekOrigin.Current);
-        }
-        public byte[] ReadFourCc()
-        {
-            return Encoding.UTF8.GetBytes(ReadAscii(4));
-        }
-
-        public Int64 Tell()
-        {
-            return BaseStream.Position;
-        }
-
-        public Int64 Size()
-        {
-            return BaseStream.Length;
-        }
-
-        public bool Check(int size)
-        {
-            return Size() - Tell() >= size;
-        }
-
-        public bool Eof()
-        {
-            return BaseStream.Position < BaseStream.Length;
-        }
 
         public UInt16 PeekUInt16()
         {
@@ -115,7 +75,6 @@ namespace CTFAK.Memory
 
         public string ReadWideString(int length = -1)
         {
-
             String str = "";
             if (length >= 0)
             {

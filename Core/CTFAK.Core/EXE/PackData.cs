@@ -18,6 +18,7 @@ namespace CTFAK.EXE
         public uint FormatVersion;
         public void Read(ByteReader reader)
         {
+            Logger.Log("Reading PackData",false);
             long start = reader.Tell();
             _header = reader.ReadBytes(8);
 
@@ -30,11 +31,13 @@ namespace CTFAK.EXE
             var uheader = reader.ReadAscii(4);
             if (uheader == "PAMU")
             {
+                Logger.Log("Found PAMU header",false);
                 Settings.gameType = Settings.GameType.NORMAL;
                 Settings.Unicode = true;
             }
             else if (uheader == "PAME")
             {
+                Logger.Log("Found PAME header",false);
                 Settings.gameType = Settings.GameType.MMF2;
                 Settings.Unicode = false;
             }
@@ -42,7 +45,8 @@ namespace CTFAK.EXE
 
             FormatVersion = reader.ReadUInt32();
             var check = reader.ReadInt32();
-            Debug.Assert(check == 0);
+            //Removing this seemed to not break anything, adding it breaks things for me.
+            //Debug.Assert(check == 0);
             check = reader.ReadInt32();
             Debug.Assert(check == 0);
 
@@ -52,12 +56,12 @@ namespace CTFAK.EXE
             long offset = reader.Tell();
             for (int i = 0; i < count; i++)
             {
-                if (!reader.Check(2)) break;
+                if (!reader.HasMemory(2)) break;
                 UInt16 value = reader.ReadUInt16();
-                if (!reader.Check(value)) break;
+                if (!reader.HasMemory(value)) break;
                 reader.ReadBytes(value);
                 reader.Skip(value);
-                if (!reader.Check(value)) break;
+                if (!reader.HasMemory(value)) break;
             }
 
             var newHeader = reader.ReadAscii(4);
@@ -73,7 +77,7 @@ namespace CTFAK.EXE
 
             }
 
-        }
+            }
     }
     public class PackFile
     {
@@ -83,11 +87,22 @@ namespace CTFAK.EXE
         public bool HasBingo;
         public void Read(ByteReader exeReader)
         {
+            Logger.Log("Found new packfile",false);
             UInt16 len = exeReader.ReadUInt16();
             PackFilename = exeReader.ReadWideString(len);
             _bingo = exeReader.ReadInt32();
             Data = exeReader.ReadBytes(exeReader.ReadInt32());
-            //File.WriteAllBytes($"my ass-{PackFilename}",ZlibStream.UncompressBuffer(Data));
+            Logger.Log($"New packfile data: Name - {PackFilename}; Data size - {Data.Length}",false);
+            try
+            {
+                //File.WriteAllBytes($"ExtDump\\{PackFilename}", ZlibStream.UncompressBuffer(Data));
+
+            }
+            catch
+            {
+                //File.WriteAllBytes($"ExtDump\\{PackFilename}", Data);
+
+            }
 
             //Dump();
         }

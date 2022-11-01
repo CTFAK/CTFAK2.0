@@ -15,19 +15,19 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public byte[] Unk1;
         public byte[] Unk2;
 
-        public Group(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Offset = reader.Tell() - 24;
             Flags = reader.ReadUInt16();
             Id = reader.ReadUInt16();
             Name = reader.ReadWideString();
+            if (Settings.Build >= 293) Name = "Group " + Id;
+            //Name = "InvalidGroup_" + Id;
             Unk1 = reader.ReadBytes(190-Name.Length*2);
-            Password = reader.ReadInt32();
-            reader.ReadInt16();
+            //Password = reader.ReadInt32();
+            //reader.ReadInt16();
 
         }
 

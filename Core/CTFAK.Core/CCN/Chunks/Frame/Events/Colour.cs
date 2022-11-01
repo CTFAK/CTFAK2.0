@@ -8,8 +8,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
     {
         public Color Value;
 
-        public Colour(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var bytes = reader.ReadBytes(4);
             Value = Color.FromArgb(bytes[0], bytes[1], bytes[2]);

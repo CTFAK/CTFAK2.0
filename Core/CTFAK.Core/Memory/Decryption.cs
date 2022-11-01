@@ -10,8 +10,8 @@ namespace CTFAK.Memory
     static class Decryption
     {
         public static byte[] _decryptionKey;
-        public static byte MagicChar = 99;
-        //public static byte MagicChar = 54;
+        //public static byte MagicChar = 99;
+        public static byte MagicChar = 54;
 
 
         public static void MakeKey(string data1, string data2, string data3)

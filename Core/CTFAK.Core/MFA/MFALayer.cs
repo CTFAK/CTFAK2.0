@@ -35,7 +35,7 @@ namespace CTFAK.MFA
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
             Flags.flag = (uint)reader.ReadInt32();
@@ -47,8 +47,6 @@ namespace CTFAK.MFA
 
 
         }
-        public MFALayer(ByteReader reader) : base(reader)
-        {
-        }
+ 
     }
 }

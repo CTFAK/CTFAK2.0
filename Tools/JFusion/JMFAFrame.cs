@@ -38,7 +38,7 @@ namespace JFusion
 
         public MFAFrame ToMFA()
         {
-            var mfaFrame = new MFAFrame(null);
+            var mfaFrame = new MFAFrame();
 
             mfaFrame.Name = name;
             mfaFrame.Handle = handle;
@@ -51,10 +51,10 @@ namespace JFusion
             mfaFrame.Flags.flag = flags;
             mfaFrame.Password = password;
             mfaFrame.ActiveLayer = activeLayer;
-            mfaFrame.Events = new MFAEvents(null);
-            mfaFrame.Chunks = new MFAChunkList(null);
+            mfaFrame.Events = new MFAEvents();
+            mfaFrame.Chunks = new MFAChunkList();
             mfaFrame.Palette = palette;
-            mfaFrame.Layers.Add(new MFALayer(null)
+            mfaFrame.Layers.Add(new MFALayer()
             {
                 Name = "Layer 1",
                 XCoefficient = 1,

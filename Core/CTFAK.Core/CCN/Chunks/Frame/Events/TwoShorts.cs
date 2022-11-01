@@ -8,11 +8,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public short Value1;
         public short Value2;
 
-        public TwoShorts(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Value1 = reader.ReadInt16();
             Value2 = reader.ReadInt16();

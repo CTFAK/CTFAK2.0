@@ -21,7 +21,7 @@ namespace CTFAK.CCN.Chunks.Banks
         }
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
             Items = new List<MusicFile>();
@@ -30,15 +30,13 @@ namespace CTFAK.CCN.Chunks.Banks
             for (int i = 0; i < NumOfItems; i++)
             {
                 if (Settings.android) continue;
-                var item = new MusicFile(reader);
-                item.Read();
+                var item = new MusicFile();
+                item.Read(reader);
                 Items.Add(item);
             }
         }
 
-        public MusicBank(ByteReader reader) : base(reader)
-        {
-        }
+
 
 
     }
@@ -61,7 +59,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var compressed = true;
             Handle = reader.ReadInt32();
@@ -86,9 +84,7 @@ namespace CTFAK.CCN.Chunks.Banks
             File.WriteAllBytes(filename, Data);
         }
 
-        public MusicFile(ByteReader reader) : base(reader)
-        {
-        }
+
 
 
     }

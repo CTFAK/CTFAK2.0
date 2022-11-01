@@ -8,11 +8,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int evgOffsetList;
         public short[] ois;
 
-        public ChildEvent(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
             evgOffsetList = 0; //wtf cockteam

@@ -8,11 +8,9 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int Pointer;
         public short Id;
 
-        public GroupPointer(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Pointer = reader.ReadInt32();
             Id = reader.ReadInt16();

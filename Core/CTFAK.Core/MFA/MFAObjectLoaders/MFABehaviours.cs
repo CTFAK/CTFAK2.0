@@ -22,17 +22,16 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var item = new Behaviour(reader);
-                item.Read();
+                var item = new Behaviour();
+                item.Read(reader);
                 _items.Add(item);
             }
         }
-        public Behaviours(ByteReader reader) : base(reader) { }
     }
     class Behaviour : ChunkLoader
     {
@@ -47,13 +46,12 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
 
             Data = reader.ReadBytes((int)reader.ReadUInt32());
 
         }
-        public Behaviour(ByteReader reader) : base(reader) { }
     }
 }

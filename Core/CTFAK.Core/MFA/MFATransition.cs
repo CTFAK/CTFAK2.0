@@ -20,13 +20,11 @@ namespace CTFAK.MFA
         public Color Color;
         public byte[] ParameterData;
 
-        public MFATransition(ByteReader reader) : base(reader)
-        {
-        }
+
 
   
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Module = reader.AutoReadUnicode();
             Name = reader.AutoReadUnicode();

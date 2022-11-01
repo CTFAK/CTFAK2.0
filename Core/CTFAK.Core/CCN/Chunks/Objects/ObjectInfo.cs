@@ -21,15 +21,13 @@ namespace CTFAK.CCN.Chunks.Objects
         public int InkEffectValue;
         public Color rgbCoeff;
         public byte blend;
-        
 
-        public ObjectInfo(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             while (true)
             {
-                var newChunk = new Chunk(reader);
-                var chunkData = newChunk.Read();
+                var newChunk = new Chunk();
+                var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
                 if (newChunk.Id == 32639) break;
                 
@@ -69,11 +67,11 @@ namespace CTFAK.CCN.Chunks.Objects
                         
                         break;
                     case 17478:        
-                        if (ObjectType == 0) properties = new Quickbackdrop(chunkReader);
-                        else if (ObjectType == 1) properties = new Backdrop(chunkReader);
-                        else properties = new ObjectCommon(chunkReader, this);
+                        if (ObjectType == 0) properties = new Quickbackdrop();
+                        else if (ObjectType == 1) properties = new Backdrop();
+                        else properties = new ObjectCommon(this);
 
-                        properties?.Read();
+                        properties?.Read(chunkReader);
                         break;
 
 

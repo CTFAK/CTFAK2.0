@@ -7,6 +7,8 @@ namespace CTFAK.Utils
     {
         [DllImport("Kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, SetLastError = false)] 
         public static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
+        [DllImport("User32.dll", CharSet = CharSet.Unicode)]
+        public static extern int MessageBox(IntPtr h, string m, string c, int type);
 //#if WIN64
         private const string _dllPath = "CTFAK-Native.dll";
 //#else

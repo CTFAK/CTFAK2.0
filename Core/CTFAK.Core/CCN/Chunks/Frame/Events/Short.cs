@@ -3,12 +3,11 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Short : ParameterCommon
+    public class Short : ParameterCommon
     {
         public short Value;
 
-        public Short(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Value = reader.ReadInt16();
             

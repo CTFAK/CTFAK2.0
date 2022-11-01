@@ -1,18 +1,14 @@
 ﻿using CTFAK.Memory;
 using CTFAK.Utils;
+using Ionic.Zlib;
+using K4os.Compression.LZ4;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Ionic.Zlib;
-using Joveler.Compression.ZLib;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
@@ -20,17 +16,18 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public static event Core.SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
-        public ImageBank(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
+            if (Core.parameters.Contains("-noimg")) return;
+
             if (Settings.android)
             {
                 var maxHandle = reader.ReadInt16();
                 var count = reader.ReadInt16();
                 for (int i = 0; i < count; i++)
                 {
-                    var newImg = new Image(reader);
-                    newImg.Read();
+                    var newImg = new Image();
+                    newImg.Read(reader);
                     Items.Add(newImg.Handle, newImg);
                 }
             }
@@ -39,8 +36,9 @@ namespace CTFAK.CCN.Chunks.Banks
                 var count = reader.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
-                    var newImg = new Image(reader);
-                    newImg.Read();
+                    
+                    var newImg = new Image();
+                    newImg.Read(reader);
                     OnImageLoaded?.Invoke(i,count);
                     Items.Add(newImg.Handle, newImg);
                 }
@@ -88,8 +86,46 @@ namespace CTFAK.CCN.Chunks.Banks
                         case 7:
                             NativeLib.ReadSixteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
                             break;
+                        case 16:
+                            int stride = width * 4;
+                            int pad = GetPadding(width, 4);
+                            int position = 0;
+                            for (int y = 0; y < height; y++)
+                            {
+                                for (int x = 0; x < width; x++)
+                                {
+                                    var bytes = BitConverter.GetBytes(transparent);
+                                    colorArray[(y * stride) + (x * 4) + 0] = imageData[position+0];
+                                    colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
+                                    colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
+                                    
+                                    if (Flags["Alpha"] && !Core.parameters.Contains("-noalpha"))
+                                    {
+                                        colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
+                                    }
+                                    
+                                    else
+                                    {
+                                        //colorArray[(y * stride) + (x * 4) + 3] = 255;
+                                        if (imageData[position] == bytes[0] && imageData[position + 1] == bytes[1] &&
+                                            imageData[position + 2] == bytes[2])
+                                            colorArray[(y * stride) + (x * 4) + 3] = 255;//bytes[3];
+                                    }
+
+                                    
+                                    position += 4;
+                                }
+
+                                position += pad * 4;
+                            }
+                            break;
                     }
-                    Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
+
+                    if (graphicMode != 16)
+                    {
+                        Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
+
+                    }
                     Marshal.FreeHGlobal(resultAllocated);
                     Marshal.FreeHGlobal(imageAllocated);
                     //colorArray = ReadPoint(imageData, width, height, 4).Item1;
@@ -105,7 +141,7 @@ namespace CTFAK.CCN.Chunks.Banks
                         Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
 
                     realBitmap.UnlockBits(bmpData);
-                        //bmp.Save($"Images\\{Handle}.png");
+                    //realBitmap.Save($"Images\\{Handle}.png");
                         //Logger.Log("Trying again");
                     
                     
@@ -120,6 +156,8 @@ namespace CTFAK.CCN.Chunks.Banks
             width = bmp.Width;
             height = bmp.Height;
             Flags["Alpha"] = true;
+            if (Core.parameters.Contains("-noalpha"))
+                Flags["Alpha"] = false;
             graphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
@@ -164,33 +202,40 @@ namespace CTFAK.CCN.Chunks.Banks
                     ImageLockMode.ReadOnly,
                     PixelFormat.Format32bppArgb);
                 int copyPadAlpha = GetPadding(width, 1);
-                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride+copyPadAlpha*4;
+                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
 
                 byte[] bytesAlpha = new byte[lengthAlpha];
                 int strideAlpha = bitmapDataAlpha.Stride;
                 // Copy bitmap to byte[]
                 Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
                 bmp.UnlockBits(bitmapDataAlpha);
-            
+
                 int aPad = GetPadding(width, 1, 4);
                 int alphaPos = position;
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x*4)+3];
+                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
                         alphaPos += 1;
                     }
 
                     alphaPos += aPad;
                 }
-            }catch(Exception ex){Console.WriteLine(ex);}
+            }
+            catch {}/*(Exception ex){Console.WriteLine(ex);}*/
             
         }
         
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
-            return (bytes - ((width * pointSize) % bytes)) % bytes;
+            int pad = bytes - ((width * pointSize) % bytes);
+            if (pad == bytes)
+            {
+                return 0;
+            }
+
+            return (int) Math.Ceiling((double) ((float) pad / (float) pointSize));
         }
         public bool IsMFA;
         public BitDict Flags = new BitDict(new string[]
@@ -217,27 +262,26 @@ namespace CTFAK.CCN.Chunks.Banks
         public int transparent;
         
 
-        public Image(ByteReader reader):base(reader)
-        {
 
-        }
 
         public static List<Task> imageReadingTasks = new List<Task>();
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             if (Settings.twofiveplus&&!IsMFA)
             {
                 Handle = reader.ReadInt32();
-
-                var unk2 = reader.ReadInt32();
-                var unk = reader.ReadInt32();
+                Handle -= 1;
+                var checksum = reader.ReadInt32();
+                var references = reader.ReadInt32();
                 //Flags.flag = reader.ReadUInt32();
                 var unk3 = reader.ReadInt32();
                 var dataSize = reader.ReadInt32();
                 width = reader.ReadInt16(); //width
                 height = reader.ReadInt16(); //height
+                reader.ReadByte();//color mode
+                Flags.flag = reader.ReadByte();
+
                 var unk6 = reader.ReadInt16();
-                var unk7 = reader.ReadInt16();
                 HotspotX = reader.ReadInt16();
                 HotspotY = reader.ReadInt16();
                 ActionX = reader.ReadInt16();
@@ -245,11 +289,22 @@ namespace CTFAK.CCN.Chunks.Banks
                 transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
+                Flags["Alpha"] = true;
+                if (Core.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 byte[] target = new byte[decompressedSize];
-                //LZ4Codec.Decode(rawImg, target);
+                LZ4Codec.Decode(rawImg, target);
+                imageData = target;
                 graphicMode = 16;
+                var bmp = bitmap;
+                var newImg = new Image();
+                newImg.FromBitmap(bmp);
+                imageData = newImg.imageData;
+                graphicMode = 4;
+                Flags = newImg.Flags;
+
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL)
+            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.android)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
@@ -340,6 +395,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
                 imageData = newImage.imageData;
                 Flags["Alpha"] = true;
+                if (Core.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 graphicMode = 4;
                 
             }

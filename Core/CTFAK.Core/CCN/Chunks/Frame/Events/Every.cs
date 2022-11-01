@@ -8,8 +8,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public int Delay;
         public int Compteur;
         
-        public Every(ByteReader reader) : base(reader) { }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Delay = reader.ReadInt32();
             Compteur = reader.ReadInt32();

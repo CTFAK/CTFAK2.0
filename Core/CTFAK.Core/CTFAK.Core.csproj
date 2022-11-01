@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
     <PackageReference Include="Joveler.Compression.ZLib" Version="4.1.0" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.5.22301.12" />
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
@@ -30,26 +31,42 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Remove="Resources\Active.png" />
+
+    <EmbeddedResource Include="Resources\Active Picture.png" />
     <EmbeddedResource Include="Resources\Active.png" />
-    <None Remove="Resources\Backdrop.png" />
+    <EmbeddedResource Include="Resources\ActiveSystemBox.png" />
     <EmbeddedResource Include="Resources\Backdrop.png" />
-    <None Remove="Resources\Counter.png" />
+    <EmbeddedResource Include="Resources\Button.png" />
+    <EmbeddedResource Include="Resources\ComboBox.png" />
     <EmbeddedResource Include="Resources\Counter.png" />
-    <None Remove="Resources\EmptyIcon.png" />
+    <EmbeddedResource Include="Resources\EasyScrollbar.png" />
+    <EmbeddedResource Include="Resources\EditBoxSel.png" />
+    <EmbeddedResource Include="Resources\EEEditbox.png" />
     <EmbeddedResource Include="Resources\EmptyIcon.png" />
-    <None Remove="Resources\Formatted Text.png" />
+    <EmbeddedResource Include="Resources\ExecuteInConsole.png" />
+    <EmbeddedResource Include="Resources\File.png" />
+    <EmbeddedResource Include="Resources\FileFolderObject.png" />
+    <EmbeddedResource Include="Resources\FontEmbedObject.png" />
     <EmbeddedResource Include="Resources\Formatted Text.png" />
-    <None Remove="Resources\Lives.png" />
+    <EmbeddedResource Include="Resources\Formatted_Text.png" />
+    <EmbeddedResource Include="Resources\Ini.png" />
+    <EmbeddedResource Include="Resources\IniPLUS.png" />
+    <EmbeddedResource Include="Resources\InputObject.png" />
+    <EmbeddedResource Include="Resources\InternalListObject.png" />
+    <EmbeddedResource Include="Resources\List.png" />
     <EmbeddedResource Include="Resources\Lives.png" />
-    <None Remove="Resources\QandA.png" />
+    <EmbeddedResource Include="Resources\PopupMenu.png" />
+    <EmbeddedResource Include="Resources\PopupMessageobject2.png" />
     <EmbeddedResource Include="Resources\QandA.png" />
-    <None Remove="Resources\Score.png" />
     <EmbeddedResource Include="Resources\Score.png" />
-    <None Remove="Resources\String.png" />
     <EmbeddedResource Include="Resources\String.png" />
-    <None Remove="Resources\SubApp.png" />
+    <EmbeddedResource Include="Resources\Editbox.png" />
     <EmbeddedResource Include="Resources\SubApp.png" />
+    <EmbeddedResource Include="Resources\TreeControl.png" />
+    <EmbeddedResource Include="Resources\WindowControl.png" />
+    <EmbeddedResource Include="Resources\XLua.png" />
+    <EmbeddedResource Include="Resources\Perspective.png" />
+    <EmbeddedResource Include="Resources\DateAndTime.png" />
   </ItemGroup>
 
 

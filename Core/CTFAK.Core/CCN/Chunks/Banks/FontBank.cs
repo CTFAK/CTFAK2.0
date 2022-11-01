@@ -19,7 +19,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
             if (Settings.Old) return;//TODO FIX FIX FIX
@@ -31,9 +31,9 @@ namespace CTFAK.CCN.Chunks.Banks
             for (int i = 0; i < count; i++)
             {
                 if (Settings.android) continue;
-                var item = new FontItem(reader);
+                var item = new FontItem();
                 item.Compressed = Compressed;
-                item.Read();
+                item.Read(reader);
                 item.Handle += (uint)offset;
                 Items.Add(item);
             }
@@ -49,9 +49,6 @@ namespace CTFAK.CCN.Chunks.Banks
             }
 
         }
-        public FontBank(ByteReader reader) : base(reader)
-        {
-        }
 
 
     }
@@ -63,13 +60,11 @@ namespace CTFAK.CCN.Chunks.Banks
         public int References;
         public LogFont Value;
 
-        public FontItem(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Handle = reader.ReadUInt32();
             ByteReader dataReader = null;
@@ -83,8 +78,8 @@ namespace CTFAK.CCN.Chunks.Banks
             Checksum = dataReader.ReadInt32();
             References = dataReader.ReadInt32();
             var size = dataReader.ReadInt32();
-            Value = new LogFont(dataReader);
-            Value.Read();
+            Value = new LogFont();
+            Value.Read(dataReader);
 
 
         }
@@ -122,13 +117,11 @@ namespace CTFAK.CCN.Chunks.Banks
         private byte _pitchAndFamily;
         private string _faceName;
 
-        public LogFont(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             _height = reader.ReadInt32();
             _width = reader.ReadInt32();

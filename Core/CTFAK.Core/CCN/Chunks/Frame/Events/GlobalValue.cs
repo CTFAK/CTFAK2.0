@@ -8,11 +8,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
     {
 
 
-        public GlobalValue(ByteReader reader) : base(reader) { }
-        public override void Read()
-        {
-            base.Read();           
-        }
+
         public override string ToString()
         {
             if(Value>26) return $"GlobalValue{Value}";

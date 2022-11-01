@@ -11,14 +11,8 @@ namespace CTFAK.CCN.Chunks
     public class FrameHandles : ChunkLoader
     {
         public Dictionary<int, int> Items;
-
-        public FrameHandles(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        
+        public override void Read(ByteReader reader)
         {
 
             var len = reader.Size() / 2;

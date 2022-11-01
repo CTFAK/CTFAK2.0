@@ -19,7 +19,6 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
         public int Unk1;
         public ushort Unk2;
         private int _unk;
-        public Expression(ByteReader reader) : base(reader) { }
 
         public override void Write(ByteWriter Writer)
         {
@@ -46,7 +45,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             var old = false;//Settings.GameType == GameType.OnePointFive&&!Settings.DoMFA;
@@ -58,18 +57,18 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
             var size = reader.ReadInt16();
             if (ObjectType == (int)Constants.ObjectType.System)
             {
-                if(Num==0) Loader=new LongExp(reader);
-                else if(Num==3) Loader= new StringExp(reader);
-                else if (Num == 23) Loader = new DoubleExp(reader);
-                else if (Num == 24) Loader = new GlobalCommon(reader);
-                else if (Num == 50) Loader = new GlobalCommon(reader);
+                if(Num==0) Loader=new LongExp();
+                else if(Num==3) Loader= new StringExp();
+                else if (Num == 23) Loader = new DoubleExp();
+                else if (Num == 24) Loader = new GlobalCommon();
+                else if (Num == 50) Loader = new GlobalCommon();
                 else if((int)ObjectType>=2|| (int)ObjectType==-7)
                 {
                     ObjectInfo = reader.ReadUInt16();
                     ObjectInfoList = reader.ReadInt16();
                     if (Num == 16 || Num == 19)
                     {
-                        Loader = new ExtensionExp(reader);
+                        Loader = new ExtensionExp();
                     }
                     else
                     {
@@ -83,10 +82,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
                 ObjectInfoList = reader.ReadInt16();
                 if (Num == 16 || Num == 19)
                 {
-                    Loader = new ExtensionExp(reader);
+                    Loader = new ExtensionExp();
                 }
             }
-            Loader?.Read();
+            Loader?.Read(reader);
             // Unk1 = reader.ReadInt32();
             // Unk2 = reader.ReadUInt16();
             reader.Seek(currentPosition+size);
@@ -102,13 +101,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     public class ExpressionLoader:ChunkLoader
     {
         public object Value;
-        public ExpressionLoader(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             throw new NotImplementedException();
         }
@@ -125,13 +121,11 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     {
         
 
-        public StringExp(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Value = reader.ReadUniversal();
         }
@@ -147,13 +141,11 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     {
         public int Val1;
 
-        public LongExp(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Value = reader.ReadInt32();
         }
@@ -165,13 +157,11 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     }
     public class ExtensionExp:ExpressionLoader
     {
-        public ExtensionExp(ByteReader reader) : base(reader)
-        {
-        }
+   
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Value = reader.ReadInt16();
         }
@@ -185,13 +175,11 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     {
         public float FloatValue;
 
-        public DoubleExp(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             Value = reader.ReadDouble();
             FloatValue = reader.ReadSingle();
@@ -205,13 +193,11 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
     }
     public class GlobalCommon:ExpressionLoader
     {
-        public GlobalCommon(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             reader.ReadInt32();
             Value = reader.ReadInt32();

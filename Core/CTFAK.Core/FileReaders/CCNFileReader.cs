@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using CTFAK.CCN;
+using CTFAK.CCN.Chunks.Banks;
 using CTFAK.FileReaders;
 using CTFAK.Memory;
 using CTFAK.Utils;
@@ -9,7 +10,7 @@ namespace CTFAK.EXE
 {
     public class CCNFileReader:IFileReader
     {
-        public string Name => "Android";
+        public string Name => "CCN";
         public GameData game;
         public GameData getGameData()
         {
@@ -23,7 +24,7 @@ namespace CTFAK.EXE
 
         public void LoadGame(string gamePath)
         {
-            
+
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             game = new GameData();
             game.Read(reader);
@@ -36,7 +37,7 @@ namespace CTFAK.EXE
 
         public void PatchMethods()
         {
-            
+            Settings.gameType = Settings.GameType.ANDROID;
         }
     }
 }

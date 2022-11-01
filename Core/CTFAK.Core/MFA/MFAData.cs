@@ -276,26 +276,26 @@ namespace CTFAK.MFA
             Stamp = reader.ReadBytes(stampLen);
 
             if (reader.ReadAscii(4) != FontBankId) throw new Exception("Invalid Font Bank");
-            Fonts = new FontBank(reader);
+            Fonts = new FontBank();
             Fonts.Compressed = false;
-            Fonts.Read();
+            Fonts.Read(reader);
 
             if (reader.ReadAscii(4) != SoundBankId) throw new Exception("Invalid Sound Bank");
-            Sounds = new SoundBank(reader);
+            Sounds = new SoundBank();
             Sounds.IsCompressed = false;
-            Sounds.Read();
+            Sounds.Read(reader);
 
             if (reader.ReadAscii(4) != MusicBankId) throw new Exception("Invalid Music Bank");
-            Music = new MusicBank(reader);
-            Music.Read();
+            Music = new MusicBank();
+            Music.Read(reader);
 
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Icon Bank: ");
-            Icons = new AGMIBank(reader);
-            Icons.Read();
+            Icons = new AGMIBank();
+            Icons.Read(reader);
 
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Image Bank");
-            Images = new AGMIBank(reader);
-            Images.Read();
+            Images = new AGMIBank();
+            Images.Read(reader);
             var nam = reader.AutoReadUnicode();
             Debug.Assert(Name == nam);
             
@@ -332,15 +332,15 @@ namespace CTFAK.MFA
                 BinaryFiles.Add(reader.ReadBytes(reader.ReadInt32()));
             }
 
-            Controls = new MFAControls(reader);
-            Controls.Read();
+            Controls = new MFAControls();
+            Controls.Read(reader);
 
             MenuSize = reader.ReadUInt32();
             var currentPosition = reader.Tell();
             try
             {
-                Menu = new AppMenu(reader);
-                Menu.Read();
+                Menu = new AppMenu();
+                Menu.Read(reader);
             }
             catch { }
             reader.Seek(MenuSize + currentPosition);
@@ -355,10 +355,10 @@ namespace CTFAK.MFA
             }
 
 
-            GlobalValues = new MFAValueList(reader);
-            GlobalValues.Read();
-            GlobalStrings = new MFAValueList(reader);
-            GlobalStrings.Read();
+            GlobalValues = new MFAValueList();
+            GlobalValues.Read(reader);
+            GlobalStrings = new MFAValueList();
+            GlobalStrings.Read(reader);
             GlobalEvents = reader.ReadBytes(reader.ReadInt32());
             GraphicMode = reader.ReadInt32();
 
@@ -411,14 +411,14 @@ namespace CTFAK.MFA
             foreach (var item in frameOffsets)
             {
                 reader.Seek(item);
-                var testframe = new MFAFrame(reader);
-                testframe.Read();
+                var testframe = new MFAFrame();
+                testframe.Read(reader);
                 Frames.Add(testframe);
             }
 
             reader.Seek(nextOffset);
-            Chunks = new MFAChunkList(reader);
-            Chunks.Read();
+            Chunks = new MFAChunkList();
+            Chunks.Read(reader);
             reader.Dispose();
             return;
         }

@@ -20,13 +20,11 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public byte[] ExtensionData;
         private byte[] _unk;
 
-        public MFAExtensionObject(ByteReader reader) : base(reader)
-        {
-        }
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
-            base.Read();
+            base.Read(reader);
             ExtensionType = reader.ReadInt32();
             if (ExtensionType == -1)
             {

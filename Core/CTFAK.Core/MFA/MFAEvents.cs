@@ -47,13 +47,11 @@ namespace CTFAK.MFA
         public byte[] _cache;
         public bool _ifMFA;
 
-        public MFAEvents(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
 
             Version = reader.ReadUInt16();
@@ -70,9 +68,9 @@ namespace CTFAK.MFA
                     uint end = (uint)(reader.Tell() + EventDataLen);
                     while (true)
                     {
-                        EventGroup evGrp = new EventGroup(reader);
+                        EventGroup evGrp = new EventGroup();
                         evGrp.isMFA = true;
-                        evGrp.Read();
+                        evGrp.Read(reader);
                         Items.Add(evGrp);
                         if (reader.Tell() >= end) break;
                     }
@@ -83,8 +81,8 @@ namespace CTFAK.MFA
                     {
                         CommentDataLen = reader.ReadUInt32();
                         Comments = new List<Comment>();
-                        Comment comment = new Comment(reader);
-                        comment.Read();
+                        Comment comment = new Comment();
+                        comment.Read(reader);
                         Comments.Add(comment);
                     }
                     catch
@@ -103,8 +101,8 @@ namespace CTFAK.MFA
                     uint len = reader.ReadUInt32();
                     for (int i = 0; i < len; i++)
                     {
-                        EventObject eventObject = new EventObject(reader);
-                        eventObject.Read();
+                        EventObject eventObject = new EventObject();
+                        eventObject.Read(reader);
                         Objects.Add(eventObject);
 
                     }
@@ -313,14 +311,8 @@ namespace CTFAK.MFA
     {
         public uint Handle;
         public string Value;
-
-        public Comment(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        
+        public override void Read(ByteReader reader)
         {
             Handle = reader.ReadUInt32();
             Value = reader.AutoReadUnicode();
@@ -349,13 +341,10 @@ namespace CTFAK.MFA
         public string IconBuffer;
         public ushort SystemQualifier;
 
-        public EventObject(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Handle = reader.ReadUInt32();
             ObjectType = reader.ReadUInt16();

@@ -18,13 +18,10 @@ namespace CTFAK.CCN.Chunks.Frame
         public string ModuleFile;
         public byte[] ParameterData;
 
-        public Transition(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPos = reader.Tell();
             Module = reader.ReadAscii(4);

@@ -15,15 +15,17 @@ namespace CTFAK.Utils
         public static bool android=>gameType == GameType.ANDROID;
         public static bool isMFA;
         public static GameType gameType;
+        
+        [Flags]
         public enum GameType
         {
-            NORMAL,
-            MMF2,
-            MMF15,
-            CNC,
-            ANDROID,
-            TWOFIVEPLUS,
-            UNKNOWN
+            NORMAL=1,
+            MMF2=2,
+            MMF15=4,
+            CNC=8,
+            ANDROID=16,
+            TWOFIVEPLUS=32,
+            UNKNOWN=64
         }
         public static object DumpPath { get; internal set; }
     }

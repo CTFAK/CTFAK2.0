@@ -64,12 +64,12 @@ namespace CTFAK.MFA
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
-            var start = base.reader.Tell();
+            var start = reader.Tell();
             while (true)
             {
-                var newChunk = new MFAChunk(base.reader);
+                var newChunk = new MFAChunk(reader);
                 newChunk.Read();
                 if (newChunk.Id == 0) break;
                 else Items.Add(newChunk);
@@ -78,13 +78,12 @@ namespace CTFAK.MFA
 
             }
 
-            var size = base.reader.Tell() - start;
-            base.reader.Seek(start);
-            Saved = base.reader.ReadBytes((int)size);
+            var size = reader.Tell() - start;
+            reader.Seek(start);
+            Saved = reader.ReadBytes((int)size);
 
 
         }
-        public MFAChunkList(ByteReader reader) : base(reader) { }
     }
 
 
@@ -110,12 +109,12 @@ namespace CTFAK.MFA
             switch (Id)
             {
                 case 33:
-                    Loader = new FrameVirtualRect(dataReader);
+                    Loader = new FrameVirtualRect();
 
                     break;
 
                 case 45:
-                    Loader = new Opacity(dataReader);
+                    Loader = new Opacity();
                     break;
                 default:
                     Loader = null;
@@ -123,7 +122,7 @@ namespace CTFAK.MFA
                     break;
 
             }
-            Loader?.Read();
+            Loader?.Read(dataReader);
 
 
 
@@ -156,15 +155,10 @@ namespace CTFAK.MFA
         public Color RGBCoeff;
         public byte Blend;
 
-        public Opacity(ByteReader dataReader) : base(dataReader) { }
-
-        public Opacity() : base()
-        {
-
-        }
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             var b = reader.ReadByte();
             var g = reader.ReadByte();
@@ -191,12 +185,8 @@ namespace CTFAK.MFA
         public int Top;
         public int Right;
         public int Bottom;
-        public FrameVirtualRect(ByteReader dataReader) : base(dataReader) { }
-        public FrameVirtualRect() : base()
-        {
 
-        }
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Left = reader.ReadInt32();
             Top = reader.ReadInt32();
@@ -215,16 +205,11 @@ namespace CTFAK.MFA
     }
     public abstract class MFAChunkLoader
     {
-        public ByteReader reader;
-        protected MFAChunkLoader(ByteReader reader)
-        {
-            this.reader = reader;
-        }
-
-        protected MFAChunkLoader() { }
 
 
-        public abstract void Read();
+
+
+        public abstract void Read(ByteReader reader);
         public abstract void Write(ByteWriter Writer);
     }
 }

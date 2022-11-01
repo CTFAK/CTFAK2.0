@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace Dumper
 {
@@ -11,8 +6,16 @@ namespace Dumper
     {
         public static string ClearName(string ogName)
         {
-            var str = string.Join("", ogName.Split(Path.GetInvalidFileNameChars()));
-            str = str.Replace("?", "");
+            string str;
+            try
+            {
+                str = string.Join("", ogName.Split(Path.GetInvalidFileNameChars()));
+                str = str.Replace("?", "");
+            }
+            catch
+            {
+                str = "CORRUPTED FRAME";
+            }
             return str;
         }
     }

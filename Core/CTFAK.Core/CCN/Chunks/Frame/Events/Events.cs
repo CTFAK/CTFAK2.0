@@ -34,7 +34,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             // if (Settings.GameType == GameType.OnePointFive) return;
             while (true)
@@ -53,8 +53,8 @@ namespace CTFAK.CCN.Chunks.Frame
                     var qualifierCount = reader.ReadInt16(); //should be 0, so i dont care
                     for (int i = 0; i < qualifierCount; i++)
                     {
-                        var newQualifier = new Quailifer(reader);
-                        newQualifier.Read();
+                        var newQualifier = new Quailifer();
+                        newQualifier.Read(reader);
                         if (!QualifiersList.ContainsKey(newQualifier.ObjectInfo)) QualifiersList.Add(newQualifier.ObjectInfo, newQualifier);
                     }
                 }
@@ -74,8 +74,8 @@ namespace CTFAK.CCN.Chunks.Frame
                     while (true)
                     {
                         i++;
-                        var eg = new EventGroup(reader);
-                        eg.Read();
+                        var eg = new EventGroup();
+                        eg.Read(reader);
                         Items.Add(eg);
 
                         if (reader.Tell() >= endPosition) break;
@@ -86,9 +86,6 @@ namespace CTFAK.CCN.Chunks.Frame
             }
         }
 
-        public Events(ByteReader reader) : base(reader)
-        {
-        }
     }
 
     public class Quailifer : ChunkLoader
@@ -100,13 +97,10 @@ namespace CTFAK.CCN.Chunks.Frame
 
 
 
-        public Quailifer(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             ObjectInfo = reader.ReadUInt16();
             Type = reader.ReadInt16();
@@ -139,13 +133,11 @@ namespace CTFAK.CCN.Chunks.Frame
 
 
 
-        public EventGroup(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             Size = reader.ReadInt16() * -1;
@@ -192,8 +184,8 @@ namespace CTFAK.CCN.Chunks.Frame
             for (int i = 0; i < NumberOfConditions; i++)
             {
                
-                var item = new Condition(reader);
-                item.Read();
+                var item = new Condition();
+                item.Read(reader);
                 Fixer.FixConditions(ref item);
                 Conditions.Add(item);
                 
@@ -201,8 +193,8 @@ namespace CTFAK.CCN.Chunks.Frame
 
             for (int i = 0; i < NumberOfActions; i++)
             {
-                var item = new Action(reader);
-                item.Read();
+                var item = new Action();
+                item.Read(reader);
                 Fixer.FixActions(ref item);
                 Actions.Add(item);
             }
@@ -266,7 +258,7 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             var num = cond.Num;
             //Alterable Values:
-            if (num == -42) num = -27;
+            if (num == -42||num==-43) num = -27;
             //Global Values
                 if(cond.ObjectType==-1)
                 if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33)
@@ -304,7 +296,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public int ObjectInfoList;
         public List<Parameter> Items = new List<Parameter>();
 
-        public Condition(ByteReader reader) : base(reader) { }
+
         public override void Write(ByteWriter Writer)
         {
             ByteWriter newWriter = new ByteWriter(new MemoryStream());
@@ -330,7 +322,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             var size = reader.ReadUInt16();
@@ -344,11 +336,15 @@ namespace CTFAK.CCN.Chunks.Frame
             NumberOfParameters = reader.ReadByte();
             DefType = reader.ReadByte();
             Identifier = reader.ReadInt16();
-            for (int i = 0; i < NumberOfParameters; i++)
+            if (Core.parameters.Contains("-noevnt")) return;
+            else
             {
-                var item = new Parameter(reader);
-                item.Read();
-                Items.Add(item);
+                for (int i = 0; i < NumberOfParameters; i++)
+                {
+                    var item = new Parameter();
+                    item.Read(reader);
+                    Items.Add(item);
+                }
             }
             
             //Logger.Log(this);
@@ -375,7 +371,6 @@ namespace CTFAK.CCN.Chunks.Frame
         public int ObjectInfoList;
         public List<Parameter> Items = new List<Parameter>();
         public byte NumberOfParameters;
-        public Action(ByteReader reader) : base(reader) { }
         public override void Write(ByteWriter Writer)
         {
             ByteWriter newWriter = new ByteWriter(new MemoryStream());
@@ -399,7 +394,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var old = false;
             var currentPosition = reader.Tell();
@@ -418,8 +413,8 @@ namespace CTFAK.CCN.Chunks.Frame
             DefType = reader.ReadByte();
             for (int i = 0; i < NumberOfParameters; i++)
             {
-                var item = new Parameter(reader);
-                item.Read();
+                var item = new Parameter();
+                item.Read(reader);
                 Items.Add(item);
             }
             //Logger.Log(this);
@@ -438,7 +433,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public int Code;
         public ChunkLoader Loader;
 
-        public Parameter(ByteReader reader) : base(reader) { }
+
 
         public override void Write(ByteWriter Writer)
         {
@@ -453,7 +448,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
             var size = reader.ReadInt16();
@@ -463,8 +458,12 @@ namespace CTFAK.CCN.Chunks.Frame
             var actualLoader = Parameter.LoadParameter(Code, reader);
             this.Loader = actualLoader;
             //// Loader?.Read();
-            if (Loader != null) Loader.Read();
-            else throw new Exception("Loader is null: " + Code);
+            if (Loader != null) Loader.Read(reader);
+            else
+            {
+                Logger.LogWarning("Loader is null: " + Code);
+                return;
+            }
 
             reader.Seek(currentPosition + size);
 
@@ -494,109 +493,111 @@ namespace CTFAK.CCN.Chunks.Frame
             ChunkLoader item = null;
             if (code == 1)
             {
-                item = new ParamObject(reader);
+                item = new ParamObject();
             }
 
-            if (code == 2)
+            if (code == 2||code==42)
             {
-                item = new Time(reader);
+                item = new Time();
             }
             if (code == 3 || code == 4 || code == 10 || code == 11 || code == 12 || code == 17 || code == 26 || code == 31 ||
                 code == 43 || code == 57 || code == 58 || code == 60 || code == 61)
             {
-                item = new Short(reader);
+                item = new Short();
             }
             if (code == 5 || code == 25 || code == 29 || code == 34 || code == 48 || code == 56)
             {
-                item = new Int(reader);
+                item = new Int();
             }
             if (code == 6 || code == 7 || code == 35 || code == 36)
             {
-                item = new Sample(reader);
+                item = new Sample();
             }
             if (code == 9 || code == 21)
             {
-                item = new Create(reader);
+                item = new Create();
             }
             if (code == 13)
             {
-                item = new Every(reader);
+                item = new Every();
             }
             if (code == 14 || code == 44)
             {
-                item = new KeyParameter(reader);
+                item = new KeyParameter();
             }
             if (code == 15 || code == 22 || code == 23 || code == 27 || code == 28 || code == 45 || code == 46 || code == 52 || code == 53 || code == 54 || code == 59 || code == 62)
             {
-                item = new ExpressionParameter(reader);
+                item = new ExpressionParameter();
             }
             if (code == 16)
             {
-                item = new Position(reader);
+                item = new Position();
             }
             if (code == 18)
             {
-                item = new Shoot(reader);
+                item = new Shoot();
             }
             if (code == 19)
             {
-                item = new Zone(reader);
+                item = new Zone();
             }
             if (code == 24)
             {
-                item = new Colour(reader);
+                item = new Colour();
             }
 
             if (code == 40)
             {
-                item = new Filename(reader);
+                item = new Filename();
             }
             if (code == 50)
             {
-                item = new AlterableValue(reader);
+                item = new AlterableValue();
             }
 
             if (code == 32)
             {
-                item = new Click(reader);
+                item = new Click();
             }
 
             if (code == 33)
             {
-                item = new MMFParser.EXE.Loaders.Events.Parameters.Program(reader);
+                item = new MMFParser.EXE.Loaders.Events.Parameters.Program();
             }
 
             if (code == 55)
             {
-                item = new Extension(reader);
+                item = new MMFParser.EXE.Loaders.Events.Parameters.Extension();
             }
 
             if (code == 38)
             {
-                item = new CTFAK.MMFParser.EXE.Loaders.Events.Parameters.Group(reader);
+                item = new CTFAK.MMFParser.EXE.Loaders.Events.Parameters.Group();
             }
 
             if (code == 39)
             {
-                item = new GroupPointer(reader);
+                item = new GroupPointer();
             }
 
             if (code == 49)
             {
-                item = new GlobalValue(reader);
+                item = new GlobalValue();
             }
 
             if (code == 41 || code == 64)
             {
-                item = new StringParam(reader);
+                item = new StringParam();
             }
 
             if (code == 47 || code == 51)
             {
-                item = new TwoShorts(reader);
+                item = new TwoShorts();
             }
-            if (code == 68) item = new MultipleVariables(reader);
-            if (code == 69) item = new ChildEvent(reader);
+            if (code == 67) item = new Int();
+            if (code == 68) item = new MultipleVariables();
+            if (code == 69) item = new ChildEvent();
+            if (code == 70) item = new Int();
 
 
 

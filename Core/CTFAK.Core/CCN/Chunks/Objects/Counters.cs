@@ -11,14 +11,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public int Initial;
         public int Minimum;
         public int Maximum;
-
-        public Counter(ByteReader reader) : base(reader)
-        {
-        }
-
-
-
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             Size = reader.ReadInt16();
             Initial = reader.ReadInt32();
@@ -49,6 +42,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public uint Height;
         public int IntegerDigits;
         public bool FormatFloat;
+        public uint size;
         public int FloatDigits;
         public bool UseDecimals;
         public int Decimals;
@@ -60,16 +54,13 @@ namespace CTFAK.CCN.Chunks.Objects
         public ushort Player;
         public Shape Shape;
 
-        public Counters(ByteReader reader) : base(reader)
-        {
-        }
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
 
-                var size = reader.ReadUInt32();
+                size = reader.ReadUInt32();
                 Width = reader.ReadUInt32();
                 Height = reader.ReadUInt32();
                 Player = reader.ReadUInt16();
@@ -99,15 +90,40 @@ namespace CTFAK.CCN.Chunks.Objects
             else if (DisplayType == 2 || DisplayType == 3 || DisplayType == 5)
             {
                 Frames = new List<int>() { 0 };
-                Shape = new Shape(reader);
-                Shape.Read();
+                Shape = new Shape();
+                Shape.Read(reader);
             }
 
         }
 
         public override void Write(ByteWriter writer)
         {
-            throw new NotImplementedException();
+            writer.WriteUInt32(size);
+            writer.WriteUInt32(Width);
+            writer.WriteUInt32(Height);
+            writer.WriteUInt16(Player);
+            writer.WriteUInt16(DisplayType);
+            writer.WriteUInt16(Flags);
+            writer.WriteUInt16(Font);
+            if (DisplayType == 0) return;
+            else if (DisplayType == 1 || DisplayType == 4 || DisplayType == 50)
+            {
+
+                Frames = new List<int>();
+                writer.WriteInt16(0);
+
+            }
+            else if (DisplayType == 2 || DisplayType == 3 || DisplayType == 5)
+            {
+                writer.WriteInt16(0);
+                writer.WriteColor(System.Drawing.Color.FromArgb(0, 255, 255, 255));
+                writer.WriteInt16(1);
+                writer.WriteInt16(1);
+                writer.WriteInt16(2);
+                writer.WriteInt16(0);
+                writer.WriteColor(System.Drawing.Color.FromArgb(0, 255, 255, 255));
+                writer.WriteInt16(0);
+            }
         }
 
     }

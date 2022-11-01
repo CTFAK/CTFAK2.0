@@ -47,7 +47,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
 
 
-        public override void Read()
+        public override void Read(ByteReader reader)
         {
             ObjectFlags = reader.ReadInt32();
             NewObjectFlags = reader.ReadInt32();
@@ -64,20 +64,19 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
             reader.Seek(end);
 
-            Values = new MFAValueList(reader);
-            Values.Read();
-            Strings = new MFAValueList(reader);
-            Strings.Read();
-            Movements = new MFAMovements(reader);
-            Movements.Read();
-            Behaviours = new Behaviours(reader);
-            Behaviours.Read();
+            Values = new MFAValueList();
+            Values.Read(reader);
+            Strings = new MFAValueList();
+            Strings.Read(reader);
+            Movements = new MFAMovements();
+            Movements.Read(reader);
+            Behaviours = new Behaviours();
+            Behaviours.Read(reader);
             reader.Skip(2);//Transitions
                            // Print();
 
 
 
         }
-        public ObjectLoader(ByteReader reader) : base(reader) { }
     }
 }

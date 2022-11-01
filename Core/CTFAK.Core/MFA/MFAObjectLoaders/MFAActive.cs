@@ -11,16 +11,12 @@ namespace CTFAK.MFA.MFAObjectLoaders
     {
  
 
-        public override void Read()
-        {
-            base.Read();
-        }
+
 
         public override void Write(ByteWriter Writer)
         {
             base.Write(Writer);
         }
 
-        public MFAActive(ByteReader reader) : base(reader) { }
     }
 }
