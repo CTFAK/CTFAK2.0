@@ -6,7 +6,7 @@ using Joveler.Compression.ZLib;
 
 namespace CTFAK
 {
-    public class Core
+    public class CTFAKCore
     {
         public delegate void SaveHandler(int index, int all);
         
@@ -29,7 +29,7 @@ namespace CTFAK
             };
             ZLibInit.GlobalInit("x64\\zlibwapi.dll");
 
-            String libraryFile = Path.Combine(Path.GetDirectoryName(typeof(Core).Assembly.Location), "x64",
+            String libraryFile = Path.Combine(Path.GetDirectoryName(typeof(CTFAKCore).Assembly.Location), "x64",
                 "CTFAK-Native.dll");
             NativeLib.LoadLibrary(libraryFile);
         }

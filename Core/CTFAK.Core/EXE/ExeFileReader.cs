@@ -22,7 +22,7 @@ namespace CTFAK.FileReaders
 
         public void LoadGame(string gamePath)
         {
-            Core.currentReader = this;
+            CTFAKCore.currentReader = this;
             Settings.gameType = Settings.GameType.NORMAL;
             var icoExt = new IconExtractor(gamePath);
             var icos = icoExt.GetAllIcons();

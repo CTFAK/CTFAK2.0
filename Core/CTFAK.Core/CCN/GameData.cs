@@ -20,8 +20,8 @@ namespace CTFAK.CCN
 {
     public class GameData
     {
-        public static event Core.SaveHandler OnChunkLoaded;
-        public static event CTFAK.Core.SaveHandler OnFrameLoaded;
+        public static event CTFAKCore.SaveHandler OnChunkLoaded;
+        public static event CTFAKCore.SaveHandler OnFrameLoaded;
         
         
         private short runtimeVersion;
@@ -85,8 +85,8 @@ namespace CTFAK.CCN
             productBuild = reader.ReadInt32();
             Settings.Build = productBuild;
             Logger.Log("Fusion Build: "+productBuild);
-            string gameExeName = Path.GetFileName(Core.path);
-            if (Core.parameters.Contains("-trace_chunks"))
+            string gameExeName = Path.GetFileName(CTFAKCore.path);
+            if (CTFAKCore.parameters.Contains("-trace_chunks"))
                 Directory.CreateDirectory($"CHUNK_TRACE\\{gameExeName}");
             int chunkIndex = 0;
             List<Task> readingTasks = new List<Task>();
@@ -106,7 +106,7 @@ namespace CTFAK.CCN
 
 
                     chunkIndex++;
-                    if (Core.parameters.Contains("-trace_chunks"))
+                    if (CTFAKCore.parameters.Contains("-trace_chunks"))
                     {
                         string chunkName = "";
                         if (!ChunkList.ChunkNames.TryGetValue(newChunk.Id, out chunkName))

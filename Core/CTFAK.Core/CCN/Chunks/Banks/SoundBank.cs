@@ -12,7 +12,7 @@ namespace CTFAK.CCN.Chunks.Banks
 {
     public class SoundBank : ChunkLoader
     {
-        public static event Core.SaveHandler OnSoundLoaded;
+        public static event CTFAKCore.SaveHandler OnSoundLoaded;
         
         public int NumOfItems = 0;
         public int References = 0;

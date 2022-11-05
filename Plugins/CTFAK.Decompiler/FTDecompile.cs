@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CTFAK.Properties;
+using CTFAKCore.Properties;
 using Ionic.Zlib;
 using Microsoft.VisualBasic;
 using Action = CTFAK.CCN.Chunks.Frame.Action;
@@ -245,7 +245,7 @@ namespace CTFAK.Tools
             Logger.Log($"Prepating to translate {game.frames.Count} frames");
             for (int a = 0; a < game.frames.Count; a++)
             {
-                if (Core.parameters.Contains(a.ToString()))
+                if (CTFAKCore.parameters.Contains(a.ToString()))
                 {
 
                 }
@@ -465,7 +465,7 @@ namespace CTFAK.Tools
 
                         }
                     }
-                    if (Core.parameters.Contains(a.ToString()) == false)
+                    if (CTFAKCore.parameters.Contains(a.ToString()) == false)
                     {
                         Logger.Log($"Translating frame {frame.name} - {a}");
                         mfa.Frames.Add(newFrame);
@@ -702,7 +702,7 @@ namespace CTFAK.Tools
                 }
                 
                 newItem.IconHandle = noicon ? 14 : lastAllocatedHandleImg;
-                if (item.InkEffect != 1 && !Core.parameters.Contains("notrans"))
+                if (item.InkEffect != 1 && !CTFAKCore.parameters.Contains("notrans"))
                 {
                     newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
                     newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;

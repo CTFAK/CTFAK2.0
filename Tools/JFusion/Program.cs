@@ -22,7 +22,7 @@ public class Program
     };
     public static void Main(string[] args)
     {
-        Core.Init();
+        CTFAK.CTFAKCore.Init();
         SELECT_MODE:
         Console.ForegroundColor = ConsoleColor.DarkMagenta;
         foreach (var ascartLine in asciiArt)

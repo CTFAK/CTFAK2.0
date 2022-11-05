@@ -68,7 +68,7 @@ namespace Dumper
                             }
                             catch
                             {
-                                if (Core.parameters.Contains("-log"))
+                                if (CTFAK.CTFAKCore.parameters.Contains("-log"))
                                     Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
                                 retry++;
                             }
@@ -90,7 +90,7 @@ namespace Dumper
                             }
                             catch
                             {
-                                if (Core.parameters.Contains("-log"))
+                                if (CTFAK.CTFAKCore.parameters.Contains("-log"))
                                     Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
                                 retry++;
                             }
@@ -147,7 +147,7 @@ namespace Dumper
                                             }
                                             catch
                                             {
-                                                if (Core.parameters.Contains("-log"))
+                                                if (CTFAK.CTFAKCore.parameters.Contains("-log"))
                                                     Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
                                                 retry++;
                                             }
@@ -178,7 +178,7 @@ namespace Dumper
                                     }
                                     catch
                                     {
-                                        if (Core.parameters.Contains("-log"))
+                                        if (CTFAK.CTFAKCore.parameters.Contains("-log"))
                                             Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
                                         retry++;
                                     }

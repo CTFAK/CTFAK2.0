@@ -336,7 +336,7 @@ namespace CTFAK.CCN.Chunks.Frame
             NumberOfParameters = reader.ReadByte();
             DefType = reader.ReadByte();
             Identifier = reader.ReadInt16();
-            if (Core.parameters.Contains("-noevnt")) return;
+            if (CTFAKCore.parameters.Contains("-noevnt")) return;
             else
             {
                 for (int i = 0; i < NumberOfParameters; i++)

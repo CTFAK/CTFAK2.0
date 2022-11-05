@@ -15,7 +15,7 @@ public class Program
 
     public static void Main(string[] args)
     {
-        Core.Init();
+        CTFAK.CTFAKCore.Init();
         ASCIIArt.SetStatus("Idle");
             Directory.CreateDirectory("Plugins");
             Directory.CreateDirectory("Dumps");
@@ -50,7 +50,7 @@ public class Program
             }
             Console.Write("Parameters: ");
             var loadParams = Console.ReadLine();
-            Core.parameters = loadParams;
+            CTFAK.CTFAKCore.parameters = loadParams;
 
             var types = Assembly.GetAssembly(typeof(ExeFileReader)).GetTypes();
 

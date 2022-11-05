@@ -145,7 +145,7 @@ namespace CTFAK.CCN.Chunks.Frame
                         
                         break;
                     case 13117:
-                        if (Core.parameters.Contains("-noevnt"))
+                        if (CTFAKCore.parameters.Contains("-noevnt"))
                             events = new Events();
                         else
                         {
