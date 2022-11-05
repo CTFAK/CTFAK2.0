@@ -1,11 +1,14 @@
 ﻿using CTFAK;
 using CTFAK.CCN.Chunks.Objects;
 using CTFAK.FileReaders;
+using CTFAK.Memory;
 using CTFAK.Tools;
 using CTFAK.Utils;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.Intrinsics.X86;
+using System.Text.RegularExpressions;
 
 namespace Dumper
 {
@@ -22,6 +25,8 @@ namespace Dumper
         public void Execute(IFileReader reader)
         {
             var outPath = reader.getGameData().name ?? "Unknown Game";
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            outPath = rgx.Replace(outPath, "");
             var images = reader.getGameData().Images.Items;
             var frames = reader.getGameData().frames;
             var objects = reader.getGameData().frameitems;
