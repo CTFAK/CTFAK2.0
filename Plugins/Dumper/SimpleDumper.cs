@@ -35,7 +35,12 @@ namespace Dumper
         public void Execute(IFileReader reader)
         {
             var images = reader.getGameData().Images.Items;
-            var outPath = reader.getGameData().name ?? "Unknown Game";
+            var outPath = reader.getGameData().name;
+            if (!String.IsNullOrEmpty(outPath))
+                outPath = Utils.ClearName(outPath);
+            else
+                outPath = "Unknown Game";
+
             Directory.CreateDirectory($"Dumps\\{outPath}\\Images");
             Task[] tasks = new Task[images.Count];
             int i = 0;
@@ -72,7 +77,12 @@ namespace Dumper
         public void Execute(IFileReader reader)
         {
             var sounds = reader.getGameData().Sounds.Items;
-            var outPath = reader.getGameData().name ?? "Unknown Game";
+            var outPath = reader.getGameData().name;
+            if (!String.IsNullOrEmpty(outPath))
+                outPath = Utils.ClearName(outPath);
+            else
+                outPath = "Unknown Game";
+
             Directory.CreateDirectory($"Dumps\\{outPath}\\Sounds");
             int soundint = 0;
             foreach (var snd in sounds)
