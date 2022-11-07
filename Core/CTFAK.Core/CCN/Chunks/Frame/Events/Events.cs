@@ -187,8 +187,9 @@ namespace CTFAK.CCN.Chunks.Frame
                 var item = new Condition();
                 item.Read(reader);
                 Fixer.FixConditions(ref item);
-                Conditions.Add(item);
-                
+                if (item.Num == -27 && item.ObjectType == -1 ||
+                    item.Num == -43 && item.ObjectType == -1) {} else
+                    Conditions.Add(item);
             }
 
             for (int i = 0; i < NumberOfActions; i++)
@@ -196,7 +197,8 @@ namespace CTFAK.CCN.Chunks.Frame
                 var item = new Action();
                 item.Read(reader);
                 Fixer.FixActions(ref item);
-                Actions.Add(item);
+                if (item.Num == 43 && item.ObjectType == -1) {} else
+                    Actions.Add(item);
             }
             reader.Seek(currentPosition + Size);
             // Logger.Log($"COND:{NumberOfConditions}, ACT: {NumberOfActions}");

@@ -90,7 +90,8 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
             // Unk2 = reader.ReadUInt16();
             reader.Seek(currentPosition+size);
 
-
+            if (ObjectInfo >= 32768)
+                ObjectInfo -= 32767;
         }
 
         public override string ToString()

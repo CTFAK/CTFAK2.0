@@ -440,6 +440,20 @@ namespace CTFAK.Tools
                                         {
                                             if (quailifer.Value.ObjectInfo == action.ObjectInfo)
                                                 action.ObjectInfo = quailifer.Key;
+                                            foreach (var param in action.Items)
+                                            {
+                                                var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
+                                                if (objInfoFld == null) continue;
+                                                try
+                                                {
+                                                    if ((int)objInfoFld?.GetValue(param?.Loader) ==
+                                                        quailifer.Value?.ObjectInfo)
+                                                        newFrame.Events.Items.Remove(eventGroup);
+                                                }
+                                                catch { }
+                                                param.Loader?.GetType().GetField("ObjectInfo")
+                                                    .SetValue(param.Loader, Convert.ToUInt16(quailifer.Key));
+                                            }
                                         }
 
                                     }
@@ -449,6 +463,19 @@ namespace CTFAK.Tools
                                         {
                                             if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
                                                 cond.ObjectInfo = quailifer.Key;
+                                            foreach (var param in cond.Items)
+                                            {
+                                                var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
+                                                if (objInfoFld == null) continue;
+                                                try
+                                                {
+                                                    if ((int)objInfoFld?.GetValue(param?.Loader) ==
+                                                        quailifer.Value?.ObjectInfo)
+                                                        param.Loader?.GetType().GetField("ObjectInfo")
+                                                            .SetValue(param.Loader, quailifer.Key);
+                                                }
+                                                catch { }
+                                            }
                                         }
                                     }
                                 }
