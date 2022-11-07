@@ -106,9 +106,9 @@ namespace CTFAK.CCN
 
 
                     chunkIndex++;
+                    string chunkName = "";
                     if (CTFAKCore.parameters.Contains("-trace_chunks"))
                     {
-                        string chunkName = "";
                         if (!ChunkList.ChunkNames.TryGetValue(newChunk.Id, out chunkName))
                         {
                             chunkName = $"UNKOWN-{newChunk.Id}";
@@ -119,7 +119,10 @@ namespace CTFAK.CCN
                         File.WriteAllBytes($"CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin",chunkData);
                         Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin");
                     }
-
+                    if (ChunkList.ChunkNames.TryGetValue(newChunk.Id, out chunkName))
+                        Logger.Log($"Reading Chunk {newChunk.Id} ({chunkName})");
+                    else
+                        Logger.Log($"Reading Chunk {newChunk.Id}");
                     switch (newChunk.Id)
                     {
                         case 4386:

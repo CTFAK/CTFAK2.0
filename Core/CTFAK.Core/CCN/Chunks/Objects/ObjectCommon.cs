@@ -341,6 +341,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 switch (Identifier)
                 {
                     //Text
+                    case "TE":
                     case "TEXT":
                         Text = new Text();
                         Text.Read(reader);
@@ -348,14 +349,13 @@ namespace CTFAK.CCN.Chunks.Objects
                     //Counter
                     case "CNTR":
                     case "SCORE":
+                    case "LIVE":
+                    case "CN":
                     case "LIVES":
                         Counters = new Counters();
                         Counters.Read(reader);
                         break;
-                    case "LIVE":
-                        Counters = new Counters();
-                        Counters.Read(reader);
-                        break;
+                    //Sub-Application
                     case "CCA ":
                         SubApplication = new SubApplication();
                         SubApplication.Read(reader);
