@@ -260,7 +260,7 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             var num = cond.Num;
             //Alterable Values:
-            if (num == -42||num==-43) num = -27;
+            if (num == -42 && cond.ObjectType != -1) num = -27;
             //Global Values
                 if(cond.ObjectType==-1)
                 if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33)
