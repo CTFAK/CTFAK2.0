@@ -198,10 +198,8 @@ namespace CTFAK.CCN
                             globalValues.Read(chunkReader);
                             break;
                         case 8755:
-                            
-                            //File.WriteAllBytes("anus2000.bin",chunkReader.ReadBytes());
-                            //globalStrings = new GlobalStrings(chunkReader);
-                            //globalStrings.Read();
+                            globalStrings = new GlobalStrings();
+                            globalStrings.Read(chunkReader);
                             break;
                         case 8756:
                             extensions = new Extensions();

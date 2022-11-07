@@ -352,7 +352,10 @@ namespace CTFAK.CCN.Chunks.Objects
                         Counters = new Counters();
                         Counters.Read(reader);
                         break;
-
+                    case "CCA":
+                        SubApplication = new SubApplication();
+                        SubApplication.Read(reader);
+                        break;
                 }
             }
 

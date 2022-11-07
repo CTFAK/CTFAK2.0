@@ -1,39 +1,30 @@
-using System.Collections.Generic;
-using System.Drawing;
-using System.Xml.Schema;
 using CTFAK.Memory;
-using CTFAK.Utils;
+using CTFAK.MFA;
 
 namespace CTFAK.CCN.Chunks.Objects
 {
     public class SubApplication : ChunkLoader
     {
-        public int FrameNumber;
-
-
-
-
+        public int odCx;                        // Size (ignored)
+        public int odCy;
+        public short odVersion;                    // 0
+        public short odNStartFrame;
+        public int odOptions;                    // Options
+        public string odName;
 
         public override void Read(ByteReader reader)
         {
-            if (Settings.Old)
-            {
-                FrameNumber = reader.ReadInt32();
-            }
-            else
-            {
-                FrameNumber = reader.ReadInt32();
-            }
-
-
-
+            odCx = reader.ReadInt32();
+            odCy = reader.ReadInt32();
+            odVersion = reader.ReadInt16();
+            odNStartFrame = reader.ReadInt16();
+            odOptions = reader.ReadInt32();
+            //odName = reader.ReadUniversal();
         }
 
         public override void Write(ByteWriter Writer)
         {
-            Writer.WriteInt32(FrameNumber);
+
         }
-
-
     }
 }
