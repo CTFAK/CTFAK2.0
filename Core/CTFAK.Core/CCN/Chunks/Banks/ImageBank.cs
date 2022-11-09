@@ -99,11 +99,10 @@ namespace CTFAK.CCN.Chunks.Banks
                                     colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
                                     colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
                                     
-                                    if (Flags["Alpha"] && !CTFAKCore.parameters.Contains("-noalpha"))
+                                    if (Flags["Alpha"])
                                     {
                                         colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
                                     }
-                                    
                                     else
                                     {
                                         //colorArray[(y * stride) + (x * 4) + 3] = 255;
@@ -153,11 +152,12 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public void FromBitmap(Bitmap bmp)
         {
+            if (bmp == null)
+                bmp = new Bitmap(1, 1);
             width = bmp.Width;
             height = bmp.Height;
-            Flags["Alpha"] = true;
-            if (CTFAKCore.parameters.Contains("-noalpha"))
-                Flags["Alpha"] = false;
+            if (!CTFAKCore.parameters.Contains("-noalpha"))
+                Flags["Alpha"] = true;
             graphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
@@ -289,9 +289,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
-                Flags["Alpha"] = true;
-                if (CTFAKCore.parameters.Contains("-noalpha"))
-                    Flags["Alpha"] = false;
+                if (!CTFAKCore.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = true;
                 byte[] target = new byte[decompressedSize];
                 LZ4Codec.Decode(rawImg, target);
                 imageData = target;
@@ -394,9 +393,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 }
                 var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
                 imageData = newImage.imageData;
-                Flags["Alpha"] = true;
-                if (CTFAKCore.parameters.Contains("-noalpha"))
-                    Flags["Alpha"] = false;
+                if (!CTFAKCore.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = true;
                 graphicMode = 4;
                 
             }

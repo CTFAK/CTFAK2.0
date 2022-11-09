@@ -85,8 +85,17 @@ namespace CTFAK.Tools
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
-            if (!CTFAKCore.parameters.Contains("-noimg"))
-                mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
+            try
+            {
+                if (!CTFAKCore.parameters.Contains("-noimg"))
+                    mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
+                else
+                    mfa.GraphicMode = 0;
+            }
+            catch
+            {
+                mfa.GraphicMode = 0;
+            }
 
             foreach (var item in mfa.Icons.Items)
             {
@@ -216,6 +225,7 @@ namespace CTFAK.Tools
 
             //Object Section
             FrameItems = new Dictionary<int, MFAObjectInfo>();
+            //Logger.Log("Frame Items: " + game.frameitems.Count);
             for (int i = 0; i < game.frameitems.Keys.Count; i++)
             {
                 var key = game.frameitems.Keys.ToArray()[i];
@@ -367,7 +377,7 @@ namespace CTFAK.Tools
                             else
                             {
                                 Logger.Log("WARNING: OBJECT NOT FOUND");
-                                break;
+                                continue;
                             }
                         }
                     }

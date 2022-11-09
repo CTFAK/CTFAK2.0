@@ -153,16 +153,16 @@ namespace CTFAK.CCN
                         case 8744:
                             //TODO: CHUNK_EXTENSIONS
                             break;
+                        case 8767:
                         case 8745:
                             var count = chunkReader.ReadInt32();
                             for (int i = 0; i < count; i++)
                             {
                                 var newObjInfo = new ObjectInfo();
                                 newObjInfo.Read(chunkReader);
+                                //Logger.Log("New Frame Item: " + newObjInfo.handle);
                                 frameitems.Add(newObjInfo.handle, newObjInfo);
-                                
                             }
-                            
                             break;
                         case 8746:
                             //TODO: CHUNK_GLOBALEVENT
