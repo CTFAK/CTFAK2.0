@@ -85,8 +85,17 @@ namespace CTFAK.Tools
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
-            if (!Core.parameters.Contains("-noimg"))
-                mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
+            try
+            {
+                if (!Core.parameters.Contains("-noimg"))
+                    mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
+                else
+                    mfa.GraphicMode = 0;
+            }
+            catch
+            {
+                mfa.GraphicMode = 0;
+            }
 
             foreach (var item in mfa.Icons.Items)
             {
@@ -206,6 +215,10 @@ namespace CTFAK.Tools
                 var newItem = new MFAObjectInfo();
                 if (item.ObjectType >= 32)
                 {
+                    //Deleting private extensions used in Clickteam APKs
+                    if ((item.properties as ObjectCommon).Identifier == "Oiÿÿ") //iOSExpansion.mfx
+                        continue;
+
                     newItem = TranslateObject(mfa, game, item, true);
                 }
                 else
@@ -350,7 +363,7 @@ namespace CTFAK.Tools
                             else
                             {
                                 Logger.Log("WARNING: OBJECT NOT FOUND");
-                                break;
+                                continue;
                             }
                         }
                     }
@@ -909,6 +922,8 @@ namespace CTFAK.Tools
                             newExt.ExtensionId = itemLoader.ExtensionId;
                             newExt.ExtensionPrivate = itemLoader.ExtensionPrivate;
                             newExt.ExtensionData = itemLoader.ExtensionData;
+
+                            //Logger.Log($"{ext.Name}, {(item.properties as ObjectCommon).Identifier}");
 
                             newItem.Loader = newExt;
                             var tuple = new Tuple<int, string, string, int, string>(ext.Handle, ext.Name, "",
