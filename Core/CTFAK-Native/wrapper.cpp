@@ -215,7 +215,7 @@ extern "C" {
 			} while (*v3);
 		}
 		v4 = password;
-		v5 = L"mqojhm:qskjhdsmkjsmkdjhq\u00f9clkcdhdlkjhd";
+		v5 = L"mqojhm:qskjhdsmkjsmkdjhq\u0063clkcdhdlkjhd";
 		if (password[0])
 		{
 			do
@@ -225,7 +225,7 @@ extern "C" {
 				++v4;
 				*(v4 - 1) = v7;
 				xor_result += v7 ^ 0xF3F3;
-				v8 = L"mqojhm:qskjhdsmkjsmkdjhq\u00f9clkcdhdlkjhd";
+				v8 = L"mqojhm:qskjhdsmkjsmkdjhq\u0063clkcdhdlkjhd";
 				if (*v6)
 					v8 = v6;
 				v5 = v8;

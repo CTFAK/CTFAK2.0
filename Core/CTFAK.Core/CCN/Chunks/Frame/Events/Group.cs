@@ -15,6 +15,38 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public byte[] Unk1;
         public byte[] Unk2;
 
+        private const string groupWords = "mqojhm:qskjhdsmkjsmkdjhq\u0063clkcdhdlkjhd";
+
+        static short wrapSingleChar(short value)
+        {
+            value = (short)(value & 0xFF);
+            if (value > 127)
+            {
+                value -= 256;
+            }
+
+            return value;
+        }
+        public static int generateChecksum(string name, string pass)
+        {
+            int v4 = 57;
+            foreach (var c in name)
+            {
+                v4 += Convert.ToInt16(c)^0x7F;
+            }
+            
+            int v5 = 0;
+            foreach (var c in pass)
+            {
+                v4 += wrapSingleChar((short)(Convert.ToInt16(groupWords[v5]) + (Convert.ToInt16(c) ^ 0xC3)))^ 0xF3;
+                v5++;
+                if (v5 > groupWords.Length)
+                    v5 = 0;
+            }
+            
+            return v4;
+        }
+
         public override void Read(ByteReader reader)
         {
             Offset = reader.Tell() - 24;
@@ -34,12 +66,8 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             Writer.WriteUInt16(Id);
             Writer.WriteUnicode(Name, true);
             Writer.WriteBytes(Unk1);
-            var namePtr = Marshal.StringToHGlobalUni(Name);
-            var passPtr = Marshal.StringToHGlobalUni("");
-            var result = NativeLib.GenChecksum(namePtr, passPtr);
-            Marshal.FreeHGlobal(namePtr);
-            Marshal.FreeHGlobal(passPtr);
-            Password = (int)result;
+            
+            Password = (int)generateChecksum(Name,"");
             Writer.WriteInt32(Password);
             Writer.WriteInt16(0);
         }

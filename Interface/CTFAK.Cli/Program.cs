@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using CTFAK;
 using CTFAK.FileReaders;
+using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Tools;
 using CTFAK.Utils;
 
@@ -15,6 +16,7 @@ public class Program
 
     public static void Main(string[] args)
     {
+        
         Core.Init();
         ASCIIArt.SetStatus("Idle");
         Directory.CreateDirectory("Plugins");
