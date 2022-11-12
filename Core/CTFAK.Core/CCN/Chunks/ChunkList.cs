@@ -86,7 +86,6 @@ namespace CTFAK.CCN.Chunks
                         catch(Exception ex)
                         {
                             Logger.LogWarning($"Error while reading chunk {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
-                            Console.ReadKey();
                         }
                         try
                         {
@@ -95,7 +94,6 @@ namespace CTFAK.CCN.Chunks
                         catch(Exception ex)
                         {
                             Logger.LogWarning($"Error while handling chunk loading {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
-                            Console.ReadKey();
                         }
                     }
                     else Logger.Log($"Loader not found for chunk {newChunk.Id}");
