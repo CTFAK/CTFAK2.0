@@ -85,17 +85,8 @@ namespace CTFAK.Tools
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
-            try
-            {
-                if (!Core.parameters.Contains("-noimg"))
-                    mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
-                else
-                    mfa.GraphicMode = 0;
-            }
-            catch
-            {
-                mfa.GraphicMode = 0;
-            }
+            mfa.GraphicMode = 0;
+            
 
             foreach (var item in mfa.Icons.Items)
             {

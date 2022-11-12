@@ -111,7 +111,7 @@ namespace CTFAK.CCN.Chunks.Frame
                     case 13109:
                         var frameName = new StringChunk();
                         frameName.Read(chunkReader);
-                        if (frameName.value == "" || frameName.value == null)
+                        if (string.IsNullOrEmpty(frameName.value))
                             name = "CORRUPTED FRAME";
                         else
                             name = frameName.value;
