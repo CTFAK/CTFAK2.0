@@ -27,13 +27,18 @@ namespace CTFAK.MMFParser.EXE.Loaders
 
             foreach (int offset in offsets)
             {
-                reader.Seek(start+offset);
-                var shader = new Shader();
-                shader.Read(reader);
-                ShaderList.Add(shader);
-                
+                try
+                {
+                    reader.Seek(start + offset);
+                    var shader = new Shader();
+                    shader.Read(reader);
+                    ShaderList.Add(shader);
+                }
+                catch
+                {
+                    Logger.Log("Invalid Shader.");
+                }
             }
-
         }
 
         public override void Write(ByteWriter Writer)
