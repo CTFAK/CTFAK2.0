@@ -65,7 +65,6 @@ namespace CTFAK.Memory
             Marshal.FreeHGlobal(rawKeyPtr);
             Array.Resize(ref key, data.Length);
             Array.Resize(ref key, 256);
-
             return key;
         }
 
