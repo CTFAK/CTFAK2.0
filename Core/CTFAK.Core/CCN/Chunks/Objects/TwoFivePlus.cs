@@ -24,6 +24,7 @@ namespace CTFAK.CCN.Chunks.Objects
         {    
             var start = reader.Tell();
             var end = start + reader.Size();
+            if (start == end) return;
             reader.ReadInt32();
             
             int current = 0;
@@ -44,6 +45,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     objectData.properties = new ObjectCommon(null);
 
                 objectData.properties.Read(decompressedReader);
+                TwoFilePlusContainer.instance.objectsContainer[current] = objectData;
                 reader.Seek(currentPosition+chunkSize+8);
                 current++;
             }

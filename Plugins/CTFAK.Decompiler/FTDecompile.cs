@@ -362,7 +362,7 @@ namespace CTFAK.Tools
                             }
                             else
                             {
-                                Logger.Log("WARNING: OBJECT NOT FOUND");
+                                Logger.Log($"WARNING: OBJECT NOT FOUND - {instance.objectInfo}");
                                 continue;
                             }
                         }

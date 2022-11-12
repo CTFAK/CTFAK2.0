@@ -195,7 +195,7 @@ namespace CTFAK.CCN
                     case 26216: //SoundBank
                         Sounds = loader as SoundBank;
                         break;
-                    case 8789:
+                    case 8790:
                         frameitems = TwoFilePlusContainer.instance.objectsContainer;
                         break;
                 }
