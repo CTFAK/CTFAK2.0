@@ -15,7 +15,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             Size = reader.ReadInt16();
             Type = reader.ReadInt16();
             Code = reader.ReadInt16();
-            Data = reader.ReadBytes((Size-20>0?Size-20:0));
+            Data = reader.ReadBytes(Size);
         }
 
         public override void Write(ByteWriter Writer)
