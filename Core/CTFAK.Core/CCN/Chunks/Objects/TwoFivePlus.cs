@@ -102,7 +102,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     var r = reader.ReadByte();
                     var g = reader.ReadByte();
                     var b = reader.ReadByte();
-                    newObject.rgbCoeff = Color.FromArgb(0, r, g, b);
+                    newObject.rgbCoeff = Color.FromArgb(0, b, g, r);
                     newObject.blend = reader.ReadByte();
                 }
                 else

@@ -174,7 +174,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 var item = new Action();
                 item.Read(reader);
                 Fixer.FixActions(ref item);
-                if (item.Num != 43 && item.ObjectType != -1)
+                if (item.Num == 43 && item.ObjectType == -1) {} else
                     Actions.Add(item);
             }
             reader.Seek(currentPosition + Size);
