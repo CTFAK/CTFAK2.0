@@ -245,7 +245,7 @@ namespace CTFAK.CCN
                                     var r = chunkReader.ReadByte();
                                     var g = chunkReader.ReadByte();
                                     var b = chunkReader.ReadByte();
-                                    newObject.rgbCoeff = Color.FromArgb(0, r, g, b);
+                                    newObject.rgbCoeff = Color.FromArgb(0, b, g, r);
                                     newObject.blend = chunkReader.ReadByte();
                                 }
                                 else

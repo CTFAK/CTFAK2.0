@@ -81,21 +81,7 @@ namespace CTFAK.Tools
 
             mfa.Music = game.Music;
             mfa.Images.Items = imgs;
-            foreach (var key in mfa.Images.Items.Keys)
-            {
-                mfa.Images.Items[key].IsMFA = true;
-            }
-            try
-            {
-                if (!CTFAKCore.parameters.Contains("-noimg"))
-                    mfa.GraphicMode = mfa.Images.Items[0].graphicMode;
-                else
-                    mfa.GraphicMode = 0;
-            }
-            catch
-            {
-                mfa.GraphicMode = 0;
-            }
+            mfa.GraphicMode = 0;
 
             foreach (var item in mfa.Icons.Items)
             {
@@ -376,7 +362,7 @@ namespace CTFAK.Tools
                             }
                             else
                             {
-                                Logger.Log("WARNING: OBJECT NOT FOUND");
+                                Logger.Log($"WARNING: OBJECT NOT FOUND - {instance.objectInfo}");
                                 continue;
                             }
                         }

@@ -29,10 +29,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         }
         public static int generateChecksum(string name, string pass)
         {
-            int v4 = 57;
+            int v4 = 0x3939;
             foreach (var c in name)
             {
-                v4 += Convert.ToInt16(c) ^ 0x7F;
+                v4 += Convert.ToInt16(c) ^ 0x7FFF;
             }
 
             int v5 = 0;
