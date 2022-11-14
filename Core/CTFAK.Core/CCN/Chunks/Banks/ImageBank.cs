@@ -324,6 +324,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     height = imageReader.ReadInt16();
 
                     graphicMode = imageReader.ReadByte();
+                    realGraphicMode = graphicMode;
                     Flags.flag = imageReader.ReadByte();
                     imageReader.Skip(2);
                     HotspotX = imageReader.ReadInt16();
@@ -394,6 +395,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 width = imageReader.ReadInt16();
                 height = imageReader.ReadInt16();
                 graphicMode = imageReader.ReadByte();
+                realGraphicMode = graphicMode;
                 Flags.flag = imageReader.ReadByte();
                 HotspotX = imageReader.ReadInt16();
                 HotspotY = imageReader.ReadInt16();
@@ -409,6 +411,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 }
                 else imageData = imageReader.ReadBytes((int)(size));
             }
+
         }
 
         public static List<Task> imageWritingTasks = new List<Task>();

@@ -744,6 +744,7 @@ namespace CTFAK.Tools
                     {
                         if (game.Images.Items[0].realGraphicMode < 4)
                         {
+                            
                             newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
                             newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
                             Color.FromArgb(item.rgbCoeff.A,
