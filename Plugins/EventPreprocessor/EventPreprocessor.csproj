@@ -3,7 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
-    </PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj" />
