@@ -85,7 +85,7 @@ namespace CTFAK.Tools
             {
                 mfa.Images.Items[key].IsMFA = true;
             }
-            mfa.GraphicMode = 0;
+            mfa.GraphicMode = 4;
             
 
             foreach (var item in mfa.Icons.Items)
@@ -427,6 +427,20 @@ namespace CTFAK.Tools
                                         {
                                             if (quailifer.Value.ObjectInfo == action.ObjectInfo)
                                                 action.ObjectInfo = quailifer.Key;
+                                            foreach (var param in action.Items)
+                                            {
+                                                var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
+                                                if (objInfoFld == null) continue;
+                                                try
+                                                {
+                                                    if ((int)objInfoFld?.GetValue(param?.Loader) ==
+                                                        quailifer.Value?.ObjectInfo)
+                                                        newFrame.Events.Items.Remove(eventGroup);
+                                                }
+                                                catch { }
+                                                param.Loader?.GetType().GetField("ObjectInfo")
+                                                    .SetValue(param.Loader, Convert.ToUInt16(quailifer.Key));
+                                            }
                                         }
 
                                     }
@@ -436,6 +450,19 @@ namespace CTFAK.Tools
                                         {
                                             if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
                                                 cond.ObjectInfo = quailifer.Key;
+                                            foreach (var param in cond.Items)
+                                            {
+                                                var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
+                                                if (objInfoFld == null) continue;
+                                                try
+                                                {
+                                                    if ((int)objInfoFld?.GetValue(param?.Loader) ==
+                                                        quailifer.Value?.ObjectInfo)
+                                                        param.Loader?.GetType().GetField("ObjectInfo")
+                                                            .SetValue(param.Loader, quailifer.Key);
+                                                }
+                                                catch { }
+                                            }
                                         }
                                     }
                                 }
@@ -708,7 +735,24 @@ namespace CTFAK.Tools
                 if (item.InkEffect != 1 && !Core.parameters.Contains("notrans"))
                 {
                     newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
+                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
+                            Color.FromArgb(item.rgbCoeff.A,
+                                           item.rgbCoeff.B,
+                                           item.rgbCoeff.G,
+                                           item.rgbCoeff.R);
+                    try
+                    {
+                        if (game.Images.Items[0].realGraphicMode < 4)
+                        {
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
+                            Color.FromArgb(item.rgbCoeff.A,
+                                     255 - item.rgbCoeff.B,
+                                     255 - item.rgbCoeff.G,
+                                     255 - item.rgbCoeff.R);
+                        }
+                    }
+                    catch {}
                 }
 
                 try
