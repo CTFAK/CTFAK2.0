@@ -1,11 +1,6 @@
 ﻿using CTFAK.Memory;
-using CTFAK.Utils;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks
@@ -39,7 +34,7 @@ namespace CTFAK.CCN.Chunks
             }
         }
     }
-    [ChunkLoader(2234,"Extensions")]
+    //[ChunkLoader(2234,"Extensions")] // this might have a purpose and I'm too scared to remove it
     public class Extension : ChunkLoader
     {
         public short Handle;
@@ -72,12 +67,6 @@ namespace CTFAK.CCN.Chunks
             Ext = arr[1];
             SubType = reader.ReadUniversal();
             reader.Seek(currentPosition + size);
-
-            var newString = string.Empty;
-            newString += $"MagicNumber={MagicNumber}\n";
-            newString += $"VersionLs={VersionLs}\n";
-            newString += $"VersionMs={VersionMs}\n";
-            newString += $"SubType={SubType}\n";
         }
 
         public override void Write(ByteWriter Writer)

@@ -72,8 +72,6 @@ namespace CTFAK.CCN.Chunks.Objects
             int ncurrent = 0;
             while (reader.Tell() < nend)
             {
-                var newName = "sex";
-
                 TwoFilePlusContainer.instance.objectsContainer[ncurrent].name = reader.ReadUniversal();
                 ncurrent++;
             }

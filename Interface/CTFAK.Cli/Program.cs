@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using CTFAK;
+using CTFAK.CCN.Chunks;
 using CTFAK.FileReaders;
 using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Tools;
@@ -132,40 +133,70 @@ public class Program
     SELECT_TOOL:
         Console.WriteLine("");
         Console.WriteLine($"Game Information:");
-        Console.WriteLine($"Game Name: "+gameParser.getGameData().name);
-        Console.WriteLine($"Author: "+gameParser.getGameData().author);
-        Console.WriteLine($"Number of frames: "+gameParser.getGameData().frames.Count);
+        Console.WriteLine($"Game Name: "+gameParser.getGameData().Name);
+        Console.WriteLine($"Author: "+gameParser.getGameData().Author);
+        Console.WriteLine($"Number of frames: "+gameParser.getGameData().Frames.Count);
         Console.WriteLine($"Fusion Build: "+Settings.Build);
         Console.WriteLine("");
         ASCIIArt.SetStatus("Selecting tool");
-        Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
+        Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool or specify a command ");
         Console.WriteLine("0. Exit CTFAK");
         for (int i = 0; i < availableTools.Count; i++)
         {
             Console.WriteLine($"{i+1}. {availableTools[i].Name}");
         }
-        var key = Console.ReadLine();
-        var toolSelect = int.Parse(key);
-        if (toolSelect == 0) Environment.Exit(0);
-        IFusionTool selectedTool = availableTools[toolSelect-1];
-        Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
-        var executeStopwatch = new Stopwatch();
-        executeStopwatch.Start();
-        ASCIIArt.SetStatus($"Executing {selectedTool.Name}");
-        try
+        Console.WriteLine();
+        Console.Write(">> ");
+        var commandInput = Console.ReadLine();
+        if (int.TryParse(commandInput, out var toolSelect))
         {
-            selectedTool.Execute(gameParser);
-        }
-        catch(Exception ex)
-        {
-            Logger.Log(ex);
-            Console.ReadKey();
-        }
-        executeStopwatch.Stop();
-        Console.Clear();
+            if (toolSelect == 0) Environment.Exit(0);
+            IFusionTool selectedTool = availableTools[toolSelect-1];
+            Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
+            var executeStopwatch = new Stopwatch();
+            executeStopwatch.Start();
+            ASCIIArt.SetStatus($"Executing {selectedTool.Name}");
+            try
+            {
+                selectedTool.Execute(gameParser);
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ex);
+                Console.ReadKey();
+            }
+            executeStopwatch.Stop();
+            Console.Clear();
             
-        ASCIIArt.DrawArt();
-        Console.WriteLine($"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds");
+            ASCIIArt.DrawArt();
+            Console.WriteLine($"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds"); 
+            
+        }
+        else
+        {
+            if (commandInput == "chunkList")
+            {
+                Console.WriteLine($"Loaded chunk loaders: {ChunkList.knownLoaders.Count}");
+                foreach (var loader in ChunkList.knownLoaders)
+                {
+                    var actualLoader = loader.Value;
+                    Console.WriteLine($"Loader \"{actualLoader.ChunkName}\" for ID {actualLoader.ChunkId}");
+                }
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("Command not found");
+                
+            }
+
+            
+            Console.Clear();
+            
+            ASCIIArt.DrawArt();
+        }
+        
         goto SELECT_TOOL;
 
         Console.ReadKey();

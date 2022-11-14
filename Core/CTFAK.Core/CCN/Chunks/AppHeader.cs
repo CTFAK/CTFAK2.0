@@ -2,15 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CTFAK.Attributes;
 using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
 {
-    [ChunkLoader(0x2223,"AppHeader")]
+    [ChunkLoader(0x2223, "AppHeader")]
     public class AppHeader : ChunkLoader
     {
         public int Size;
@@ -19,7 +16,8 @@ namespace CTFAK.CCN.Chunks
         public int InitialScore;
         public int InitialLives;
         public int NumberOfFrames;
-        public BitDict Flags = new BitDict(new string[]
+
+        public BitDict Flags = new BitDict(new[]
         {
             "BorderMax",
             "NoHeading",
@@ -38,7 +36,8 @@ namespace CTFAK.CCN.Chunks
             "Copyright",
             "OneFile"
         });
-        public BitDict NewFlags = new BitDict(new string[]
+
+        public BitDict NewFlags = new BitDict(new[]
         {
             "SamplesOverFrames",
             "RelocFiles",
@@ -64,10 +63,10 @@ namespace CTFAK.CCN.Chunks
         public short Otherflags;
         public Controls Controls;
         public int WindowsMenuIndex;
+
         public override void Read(ByteReader reader)
         {
-            var start = reader.Tell();
-            if(!Settings.Old) Size = reader.ReadInt32();
+            if (!Settings.Old) Size = reader.ReadInt32();
             Flags.flag = (uint)reader.ReadInt16();
             NewFlags.flag = (uint)reader.ReadInt16();
             GraphicsMode = reader.ReadInt16();
@@ -77,7 +76,7 @@ namespace CTFAK.CCN.Chunks
             InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);
             InitialLives = (int)(reader.ReadUInt32() ^ 0xffffffff);
             Controls = new Controls();
-            if(Settings.Old) reader.Skip(56);
+            if (Settings.Old) reader.Skip(56);
             else Controls.Read(reader);
             BorderColor = reader.ReadColor();
             NumberOfFrames = reader.ReadInt32();
@@ -91,6 +90,7 @@ namespace CTFAK.CCN.Chunks
             throw new NotImplementedException();
         }
     }
+
     public class Controls : ChunkLoader
     {
         public List<PlayerControl> Items;
@@ -106,11 +106,11 @@ namespace CTFAK.CCN.Chunks
             }
         }
 
-        public override void Write(ByteWriter Writer)
+        public override void Write(ByteWriter writer)
         {
             foreach (PlayerControl control in Items)
             {
-                control.Write(Writer);
+                control.Write(writer);
             }
         }
     }
@@ -133,10 +133,10 @@ namespace CTFAK.CCN.Chunks
             _keys.Read();
         }
 
-        public void Write(ByteWriter Writer)
+        public void Write(ByteWriter writer)
         {
-            Writer.WriteInt16((short)_controlType);
-            _keys.Write(Writer);
+            writer.WriteInt16((short)_controlType);
+            _keys.Write(writer);
 
         }
     }
@@ -171,16 +171,16 @@ namespace CTFAK.CCN.Chunks
             _button4 = _reader.ReadInt16();
         }
 
-        public void Write(ByteWriter Writer)
+        public void Write(ByteWriter writer)
         {
-            Writer.WriteInt16(_up);
-            Writer.WriteInt16(_down);
-            Writer.WriteInt16(_left);
-            Writer.WriteInt16(_right);
-            Writer.WriteInt16(_button1);
-            Writer.WriteInt16(_button2);
-            Writer.WriteInt16(_button3);
-            Writer.WriteInt16(_button4);
+            writer.WriteInt16(_up);
+            writer.WriteInt16(_down);
+            writer.WriteInt16(_left);
+            writer.WriteInt16(_right);
+            writer.WriteInt16(_button1);
+            writer.WriteInt16(_button2);
+            writer.WriteInt16(_button3);
+            writer.WriteInt16(_button4);
 
         }
     }

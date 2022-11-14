@@ -56,7 +56,7 @@ namespace EventPreprocessor
                 {
                     var newInstance = (ExtensionHandler)Activator.CreateInstance(type);
                     Console.WriteLine("Found extension handlers for extension " + newInstance.Name);
-                    foreach (var extension in game.extensions.Items)
+                    foreach (var extension in game.Extensions.Items)
                     {
                         if (extension.Name == newInstance.Name)
                         {
@@ -71,12 +71,12 @@ namespace EventPreprocessor
             
             SELECT_FRAME:
             
-            objects = game.frameitems;
+            objects = game.FrameItems;
             Console.WriteLine("Select frame");
             
-            for (int i = 0; i < game.frames.Count; i++)
+            for (int i = 0; i < game.Frames.Count; i++)
             {
-                var frame = game.frames[i];
+                var frame = game.Frames[i];
                 Console.WriteLine($"{i+1}. {frame.name}");
             }
             Console.WriteLine("0. All frames");
@@ -87,19 +87,19 @@ namespace EventPreprocessor
             if (selectedIndex == 0)
             {
                 Console.WriteLine("Selected all frames");
-                foreach (var frameToProcess in game.frames)
+                foreach (var frameToProcess in game.Frames)
                 {
-                    Directory.CreateDirectory($"Dumps\\{game.name}\\Events");
-                    streamWriter = new StreamWriter($"Dumps\\{game.name}\\Events\\{frameToProcess.name}.log",false);
+                    Directory.CreateDirectory($"Dumps\\{game.Name}\\Events");
+                    streamWriter = new StreamWriter($"Dumps\\{game.Name}\\Events\\{frameToProcess.name}.log",false);
                     ProcessFrame(frameToProcess);
                 }
             }
             else
             {
-                var selectedFrame = game.frames[selectedIndex - 1];
+                var selectedFrame = game.Frames[selectedIndex - 1];
                 Console.WriteLine("Selected frame: "+selectedFrame.name);
-                Directory.CreateDirectory($"Dumps\\{game.name}\\Events");
-                streamWriter = new StreamWriter($"Dumps\\{game.name}\\Events\\{selectedFrame.name}.log",false);
+                Directory.CreateDirectory($"Dumps\\{game.Name}\\Events");
+                streamWriter = new StreamWriter($"Dumps\\{game.Name}\\Events\\{selectedFrame.name}.log",false);
                 ProcessFrame(selectedFrame);
             }
         }
