@@ -132,9 +132,9 @@ public class Program
     SELECT_TOOL:
         Console.WriteLine("");
         Console.WriteLine($"Game Information:");
-        Console.WriteLine($"Game Name: "+gameParser.getGameData().name);
-        Console.WriteLine($"Author: "+gameParser.getGameData().author);
-        Console.WriteLine($"Number of frames: "+gameParser.getGameData().frames.Count);
+        Console.WriteLine($"Game Name: "+gameParser.getGameData().Name);
+        Console.WriteLine($"Author: "+gameParser.getGameData().Author);
+        Console.WriteLine($"Number of frames: "+gameParser.getGameData().Frames.Count);
         Console.WriteLine($"Fusion Build: "+Settings.Build);
         Console.WriteLine("");
         ASCIIArt.SetStatus("Selecting tool");

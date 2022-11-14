@@ -1,12 +1,6 @@
 ﻿using CTFAK.Memory;
 using CTFAK.Utils;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks
 {
@@ -17,6 +11,7 @@ namespace CTFAK.CCN.Chunks
         Encrypted = 2,
         CompressedAndEncrypted = 3
     }
+
     public class Chunk
     {
         public short Id;
@@ -26,7 +21,7 @@ namespace CTFAK.CCN.Chunks
         public byte[] Read(ByteReader reader)
         {
             Id = reader.ReadInt16();
-            
+
             Flag = (ChunkFlags)reader.ReadInt16();
             Size = reader.ReadInt32();
             var rawData = reader.ReadBytes(Size);
@@ -49,34 +44,26 @@ namespace CTFAK.CCN.Chunks
                         dataReader.Seek(start + Size);
                     }
                     else ChunkData = Decompressor.Decompress(dataReader, out DecompressedSize);
+
                     break;
                 case ChunkFlags.NotCompressed:
                     ChunkData = dataReader.ReadBytes(Size);
                     break;
                 default:
                     throw new InvalidDataException("Unsupported chunk flag");
-                    break;
             }
 
             if (ChunkData == null)
             {
                 Logger.Log($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
             }
+
             return ChunkData;
         }
     }
 
     public abstract class ChunkLoader
     {
-        public ChunkLoader()
-        {
-            /*if (GetType().GetCustomAttributes(true).First(a => a.GetType() == typeof(ChunkLoaderAttribute)) is ChunkLoaderAttribute attr)
-            {
-                Id = attr.chunkId;
-            }*/
-
-        }
-
         public abstract void Read(ByteReader reader);
         public abstract void Write(ByteWriter writer);
     }

@@ -36,7 +36,7 @@ namespace Dumper
         public void Execute(IFileReader reader)
         {
             var images = reader.getGameData().Images.Items;
-            var outPath = reader.getGameData().name ?? "Unknown Game";
+            var outPath = reader.getGameData().Name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
             outPath = rgx.Replace(outPath, "");
             Directory.CreateDirectory($"Dumps\\{outPath}\\Images");
@@ -75,7 +75,7 @@ namespace Dumper
         public void Execute(IFileReader reader)
         {
             var sounds = reader.getGameData().Sounds.Items;
-            var outPath = reader.getGameData().name ?? "Unknown Game";
+            var outPath = reader.getGameData().Name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
             outPath = rgx.Replace(outPath, "");
             Directory.CreateDirectory($"Dumps\\{outPath}\\Sounds");

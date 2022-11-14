@@ -1,13 +1,8 @@
 ﻿using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static CTFAK.CCN.Constants;
+
 
 namespace CTFAK.CCN.Chunks.Objects
 {
@@ -26,7 +21,7 @@ namespace CTFAK.CCN.Chunks.Objects
 
         public Animations Animations;
 
-        public BitDict Preferences = new BitDict(new string[]
+        public BitDict Preferences = new BitDict(new[]
             {
                 "Backsave",
                 "ScrollingIndependant",
@@ -43,7 +38,7 @@ namespace CTFAK.CCN.Chunks.Objects
             }
         );
 
-        public BitDict Flags = new BitDict(new string[]
+        public BitDict Flags = new BitDict(new[]
             {
                 "DisplayInFront",
                 "Background",
@@ -68,7 +63,7 @@ namespace CTFAK.CCN.Chunks.Objects
             }
         );
 
-        public BitDict NewFlags = new BitDict(new string[]
+        public BitDict NewFlags = new BitDict(new[]
             {
                 "DoNotSaveBackground",
                 "SolidBackground",
@@ -93,13 +88,17 @@ namespace CTFAK.CCN.Chunks.Objects
         public Movements Movements;
         public Text Text;
         public Counter Counter;
-        public short[] _qualifiers = new short[8];
+        public short[] Qualifiers = new short[8];
 
-        public ObjectCommon(ObjectInfo parent) { this.Parent = parent; }
+        public ObjectCommon(ObjectInfo parent)
+        {
+            this.Parent = parent;
+        }
+
         public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
-            if (Settings.Build >= 284&&Settings.gameType==Settings.GameType.NORMAL)
+            if (Settings.Build >= 284 && Settings.gameType == Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
                 _animationsOffset = reader.ReadInt16();
@@ -115,7 +114,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
-                    _qualifiers[i] = reader.ReadInt16();
+                    Qualifiers[i] = reader.ReadInt16();
                 }
 
                 reader.Seek(end);
@@ -130,7 +129,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL)
+            else if (Settings.gameType == Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
                 _movementsOffset = reader.ReadInt16();
@@ -146,7 +145,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
-                    _qualifiers[i] = reader.ReadInt16();
+                    Qualifiers[i] = reader.ReadInt16();
                 }
 
                 reader.Seek(end);
@@ -177,15 +176,17 @@ namespace CTFAK.CCN.Chunks.Objects
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
-                    _qualifiers[i] = reader.ReadInt16();
+                    Qualifiers[i] = reader.ReadInt16();
                 }
 
                 reader.Seek(end);
                 if (reader.Tell() > reader.Size() - 20)
                 {
-                    Console.WriteLine("E216: Ran out of bytes reading ObjectCommon (" + reader.Tell() + "/" + reader.Size() + ")");
+                    Console.WriteLine("E216: Ran out of bytes reading ObjectCommon (" + reader.Tell() + "/" +
+                                      reader.Size() + ")");
                     return; //really hacky shit, but it works
                 }
+
                 _systemObjectOffset = reader.ReadInt16();
                 _valuesOffset = reader.ReadInt16();
                 _stringsOffset = reader.ReadInt16();
@@ -203,10 +204,10 @@ namespace CTFAK.CCN.Chunks.Objects
                     var size = reader.ReadInt32();
                     //Console.WriteLine("MY ASS");
                     reader.Skip(-4);
-                    reader.ReadBytes(size+4);
-                    reader.Skip(-size+4);
-                    currentPosition =0;
-                    
+                    reader.ReadBytes(size + 4);
+                    reader.Skip(-size + 4);
+                    currentPosition = 0;
+
                     _movementsOffset = reader.ReadInt16();
                     var version = reader.ReadUInt16();
                     _extensionOffset = reader.ReadInt16();
@@ -215,13 +216,14 @@ namespace CTFAK.CCN.Chunks.Objects
                     Flags.flag = reader.ReadUInt16();
                     var penisFlags = reader.ReadInt16();
                     if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
-                
+
                     for (int i = 0; i < 8; i++)
                     {
-                        _qualifiers[i] = reader.ReadInt16();
+                        Qualifiers[i] = reader.ReadInt16();
                     }
+
                     _systemObjectOffset = reader.ReadInt16();
-                    _animationsOffset = (short)(reader.ReadInt16());
+                    _animationsOffset = reader.ReadInt16();
                     reader.Skip(2);
                     _stringsOffset = reader.ReadInt16();
                     NewFlags.flag = reader.ReadUInt32();
@@ -242,12 +244,13 @@ namespace CTFAK.CCN.Chunks.Objects
                     _systemObjectOffset = reader.ReadInt16();
                     var ocVariable = reader.ReadUInt32();
                     Flags.flag = reader.ReadUInt16();
-                    
+
                     var end = reader.Tell() + 8 * 2;
                     for (int i = 0; i < 8; i++)
                     {
-                        _qualifiers[i] = reader.ReadInt16();
+                        Qualifiers[i] = reader.ReadInt16();
                     }
+
                     reader.Seek(end);
 
                     _extensionOffset = reader.ReadInt16();
@@ -266,7 +269,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     //reader.Skip(-size+4);
                     _movementsOffset = reader.ReadInt16();
                     _animationsOffset = reader.ReadInt16();
-                
+
                     var version = reader.ReadInt16();
                     _counterOffset = reader.ReadInt16();
                     _systemObjectOffset = reader.ReadInt16();
@@ -274,11 +277,12 @@ namespace CTFAK.CCN.Chunks.Objects
                     Flags.flag = reader.ReadUInt16();
                     var penisFlags = reader.ReadInt16();
                     if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
-                
+
                     for (int i = 0; i < 8; i++)
                     {
-                        _qualifiers[i] = reader.ReadInt16();
+                        Qualifiers[i] = reader.ReadInt16();
                     }
+
                     _extensionOffset = reader.ReadInt16();
                     reader.Skip(2);
                     _stringsOffset = reader.ReadInt16();
@@ -291,7 +295,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 }
                 //currentPosition = reader.Tell();
             }
-            
+
             if (_animationsOffset > 0)
             {
                 //Console.WriteLine("ANIMS FOUND: "+Parent.name);

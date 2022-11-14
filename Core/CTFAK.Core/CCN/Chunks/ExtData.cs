@@ -5,14 +5,14 @@ namespace CTFAK.CCN.Chunks
 {
     public class ExtData:ChunkLoader
     {
-        public byte[] data;
-        public string name;
+        public byte[] Data;
+        public string Name;
 
         public override void Read(ByteReader reader)
         {
-            var filename = reader.ReadAscii();
-            var data = reader.ReadBytes();
-            Logger.Log($"Found file {filename}, {data.Length}"); 
+            Name = reader.ReadAscii();
+            Data = reader.ReadBytes();
+            Logger.Log($"Found file {Name}, {Data.Length}"); 
         }
 
         public override void Write(ByteWriter writer)

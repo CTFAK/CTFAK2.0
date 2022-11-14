@@ -20,6 +20,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public int InkEffect;
         public int InkEffectValue;
         public Color rgbCoeff;
+
         public byte blend;
         //public int shaderId;
         //public List<ByteReader> effectItems;
@@ -44,7 +45,7 @@ namespace CTFAK.CCN.Chunks.Objects
                         Flags = chunkReader.ReadInt16();
                         chunkReader.Skip(2);
                         InkEffect = chunkReader.ReadByte();
-                        if(InkEffect!=1)
+                        if (InkEffect != 1)
                         {
                             chunkReader.Skip(3);
                             var r = chunkReader.ReadByte();
@@ -65,24 +66,25 @@ namespace CTFAK.CCN.Chunks.Objects
                             rgbCoeff = Color.White;
                             blend = 255;
                         }
+
                         break;
-                    case 17478:        
+                    case 17478:
                         if (ObjectType == 0) properties = new Quickbackdrop();
                         else if (ObjectType == 1) properties = new Backdrop();
                         else properties = new ObjectCommon(this);
                         properties?.Read(chunkReader);
                         break;
 
-                        /*case 17480:
-                            shaderId = chunkReader.ReadInt32();
-                            var count = reader.ReadInt32();
-                            for (int i = 0; i < count; i++)
-                            {
-                                var newReader = new ByteReader(new MemoryStream(reader.ReadBytes(4)));
-                                effectItems.Add(newReader);
-                                Logger.Log("Loading Shader " + newReader.ReadInt32() + " on " + name);
-                            }
-                            break;*/
+                    /*case 17480:
+                        shaderId = chunkReader.ReadInt32();
+                        var count = reader.ReadInt32();
+                        for (int i = 0; i < count; i++)
+                        {
+                            var newReader = new ByteReader(new MemoryStream(reader.ReadBytes(4)));
+                            effectItems.Add(newReader);
+                            Logger.Log("Loading Shader " + newReader.ReadInt32() + " on " + name);
+                        }
+                        break;*/
                 }
             }
         }

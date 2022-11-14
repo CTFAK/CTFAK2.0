@@ -1,10 +1,5 @@
 ﻿using CTFAK.Memory;
-using CTFAK.Utils;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CTFAK.Attributes;
 using CTFAK.CCN.Chunks.Objects;
 
@@ -27,7 +22,7 @@ namespace CTFAK.CCN.Chunks
             }
         }
 
-        public override void Write(ByteWriter Writer)
+        public override void Write(ByteWriter writer)
         {
             
         }
@@ -48,7 +43,7 @@ namespace CTFAK.CCN.Chunks
             }
         }
 
-        public override void Write(ByteWriter Writer)
+        public override void Write(ByteWriter writer)
         {
             
         }

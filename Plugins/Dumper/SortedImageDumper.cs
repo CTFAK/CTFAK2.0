@@ -22,12 +22,12 @@ namespace Dumper
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
         public void Execute(IFileReader reader)
         {
-            var outPath = reader.getGameData().name ?? "Unknown Game";
+            var outPath = reader.getGameData().Name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
             outPath = rgx.Replace(outPath, "");
             var images = reader.getGameData().Images.Items;
-            var frames = reader.getGameData().frames;
-            var objects = reader.getGameData().frameitems;
+            var frames = reader.getGameData().Frames;
+            var objects = reader.getGameData().FrameItems;
             float curframe = 0;
             float maxdone = 0;
             int objectsdone = 0;

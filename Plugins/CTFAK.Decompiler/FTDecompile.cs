@@ -52,11 +52,11 @@ namespace CTFAK.Tools
                 Settings.gameType = Settings.GameType.MMF15;
             }
 
-            mfa.Name = game.name;
+            mfa.Name = game.Name;
             mfa.LangId = 0;//8192;
             mfa.Description = "";
-            mfa.Path = game.editorFilename;
-            mfa.Menu = game.menu;
+            mfa.Path = game.EditorFilename;
+            mfa.Menu = game.Menu;
 
             //if (game.Fonts != null) mfa.Fonts = game.Fonts;
             // mfa.Sounds.Items.Clear();
@@ -121,25 +121,25 @@ namespace CTFAK.Tools
                 }
                 catch
                 {
-                    Logger.LogWarning($"Requested icon is not found: {item.Key} - {item.Value.width}");
+                    Logger.LogWarning($"Requested icon is not found: {item.Key} - {item.Value.Width}");
                 }
             }
             var imageNull = new CCN.Chunks.Banks.Image();
             imageNull.Handle = 14;
-            imageNull.transparent = 0x3aebca;
+            imageNull.Transparent = 0x3aebca;
             imageNull.FromBitmap((Bitmap)Resources.EmptyIcon);
             mfa.Icons.Items.Add(14, imageNull);
             // game.Images.Images.Clea r();
 
-            mfa.Author = game.author;
-            mfa.Copyright = game.copyright;
+            mfa.Author = game.Author;
+            mfa.Copyright = game.Copyright;
             mfa.Company = "";
             mfa.Version = "";
             //TODO:Binary Files
             var displaySettings = mfa.DisplayFlags;
             var graphicSettings = mfa.GraphicFlags;
-            var flags = game.header.Flags;
-            var newFlags = game.header.NewFlags;
+            var flags = game.Header.Flags;
+            var newFlags = game.Header.NewFlags;
             mfa.Extensions.Clear();
 
             displaySettings["MaximizedOnBoot"] = flags["Maximize"];
@@ -184,25 +184,25 @@ namespace CTFAK.Tools
             }*/
             //mfa.GraphicFlags = graphicSettings;
             //mfa.DisplayFlags = displaySettings;
-            mfa.WindowX = game.header.WindowWidth;
-            mfa.WindowY = game.header.WindowHeight;
-            mfa.BorderColor = game.header.BorderColor;
+            mfa.WindowX = game.Header.WindowWidth;
+            mfa.WindowY = game.Header.WindowHeight;
+            mfa.BorderColor = game.Header.BorderColor;
             mfa.HelpFile = "";
-            mfa.InitialScore = game.header.InitialScore;
-            mfa.InitialLifes = game.header.InitialLives;
-            mfa.FrameRate = game.header.FrameRate;
+            mfa.InitialScore = game.Header.InitialScore;
+            mfa.InitialLifes = game.Header.InitialLives;
+            mfa.FrameRate = game.Header.FrameRate;
             mfa.BuildType = 0;
-            mfa.BuildPath = game.targetFilename;
+            mfa.BuildPath = game.TargetFilename;
             mfa.CommandLine = "";
-            mfa.Aboutbox = game.aboutText ?? "Decompiled with CTFAK 2.0";
+            mfa.Aboutbox = game.AboutText ?? "Decompiled with CTFAK 2.0";
             //TODO: Controls
 
             //Object Section
             FrameItems = new Dictionary<int, MFAObjectInfo>();
-            for (int i = 0; i < game.frameitems.Keys.Count; i++)
+            for (int i = 0; i < game.FrameItems.Keys.Count; i++)
             {
-                var key = game.frameitems.Keys.ToArray()[i];
-                var item = game.frameitems[key];
+                var key = game.FrameItems.Keys.ToArray()[i];
+                var item = game.FrameItems[key];
                 var newItem = new MFAObjectInfo();
                 if (item.ObjectType >= 32)
                 {
@@ -233,9 +233,9 @@ namespace CTFAK.Tools
             mfa.Frames.Clear();
 
             Dictionary<int, int> indexHandles = new Dictionary<int, int>();
-            if (game.frameHandles != null)
+            if (game.FrameHandles != null)
             {
-                foreach (var pair in game.frameHandles.Items)
+                foreach (var pair in game.FrameHandles.Items)
                 {
                     var key = pair.Key;
                     var handle = pair.Value;
@@ -244,8 +244,8 @@ namespace CTFAK.Tools
                 }
             }
 
-            Logger.Log($"Prepating to translate {game.frames.Count} frames");
-            for (int a = 0; a < game.frames.Count; a++)
+            Logger.Log($"Prepating to translate {game.Frames.Count} frames");
+            for (int a = 0; a < game.Frames.Count; a++)
             {
                 if (Core.parameters.Contains(a.ToString()))
                 {
@@ -253,7 +253,7 @@ namespace CTFAK.Tools
                 }
                 else
                 {
-                    var frame = game.frames[a];
+                    var frame = game.Frames[a];
 
                     if (frame.name == "") continue;
                     //if(frame.Palette==null|| frame.Events==null|| frame.Objects==null) continue;
@@ -482,11 +482,11 @@ namespace CTFAK.Tools
             }
             Settings.gameType = Settings.GameType.NORMAL;
 
-            var outPath = reader.getGameData().name ?? "Unknown Game";
+            var outPath = reader.getGameData().Name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
             outPath = rgx.Replace(outPath, "");
             Directory.CreateDirectory($"Dumps\\{outPath}");
-            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
+            mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.EditorFilename)}.mfa", FileMode.Create)));
 
             static MFATransition ConvertTransition(Transition gameTrans)
             {
@@ -526,7 +526,7 @@ namespace CTFAK.Tools
                 {
                     Extension ext = null;
                     
-                    foreach (var testExt in game.extensions.Items)
+                    foreach (var testExt in game.Extensions.Items)
                     {
                         if (testExt.Handle == (int)item.ObjectType - 32) ext = testExt;
                     }
@@ -758,9 +758,9 @@ namespace CTFAK.Tools
 
                 try
                 {
-                    for (int i = 0; i < game.globalValues.Items.Count; i++)
+                    for (int i = 0; i < game.GlobalValues.Items.Count; i++)
                     {
-                        var globalValue = game.globalValues.Items[i];
+                        var globalValue = game.GlobalValues.Items[i];
 
 
                         mfa.GlobalValues.Items.Add(new ValueItem()
@@ -770,9 +770,9 @@ namespace CTFAK.Tools
 
                         });
                     }
-                    for (int i = 0; i < game.globalStrings.Items.Count; i++)
+                    for (int i = 0; i < game.GlobalStrings.Items.Count; i++)
                     {
-                        var globalString = game.globalStrings.Items[i];
+                        var globalString = game.GlobalStrings.Items[i];
 
 
                         mfa.GlobalStrings.Items.Add(new ValueItem()
@@ -822,7 +822,7 @@ namespace CTFAK.Tools
                     newObject.ObjectFlags = (int)(itemLoader.Flags.flag);
                     newObject.NewObjectFlags = (int)(itemLoader.NewFlags.flag);
                     newObject.BackgroundColor = itemLoader.BackColor;
-                    newObject.Qualifiers = itemLoader._qualifiers;
+                    newObject.Qualifiers = itemLoader.Qualifiers;
 
                     newObject.Strings = new MFAValueList();//ConvertStrings(itemLoader.);
                     newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values);
@@ -976,7 +976,7 @@ namespace CTFAK.Tools
                         }
                         // if (Settings.GameType != GameType.OnePointFive)
                         {
-                            Extensions exts = game.extensions;
+                            Extensions exts = game.Extensions;
                             Extension ext = null;
                             foreach (var testExt in exts.Items)
                             {

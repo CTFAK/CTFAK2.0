@@ -58,81 +58,90 @@ namespace CTFAK.CCN.Chunks.Banks
             throw new NotImplementedException();
         }
     }
+
     public class Image : ChunkLoader
     {
         public Bitmap realBitmap;
-        
+
         public Bitmap bitmap
         {
             get
             {
-                if(realBitmap==null)
+                if (realBitmap == null)
                 {
                     byte[] colorArray = null;
-                    colorArray = new byte[width * height * 4];
+                    colorArray = new byte[Width * Height * 4];
 
-                    IntPtr resultAllocated = Marshal.AllocHGlobal(width * height * 4);
+                    IntPtr resultAllocated = Marshal.AllocHGlobal(Width * Height * 4);
                     IntPtr imageAllocated = Marshal.AllocHGlobal(imageData.Length);
 
                     Marshal.Copy(imageData, 0, imageAllocated, imageData.Length);
-                    switch (graphicMode)
+                    switch (GraphicMode)
                     {
-                        case 4:          
-                            NativeLib.ReadPoint(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                        case 4:
+                            NativeLib.ReadPoint(resultAllocated, Width, Height, Flags["Alpha"] ? 1 : 0,
+                                imageData.Length, imageAllocated, Transparent);
                             realGraphicMode = 4;
                             break;
                         case 6:
-                            NativeLib.ReadFifteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            NativeLib.ReadFifteen(resultAllocated, Width, Height, Flags["Alpha"] ? 1 : 0,
+                                imageData.Length, imageAllocated, Transparent);
                             realGraphicMode = 3;
                             break;
                         case 7:
-                            NativeLib.ReadSixteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
-                            realGraphicMode = 2; 
+                            NativeLib.ReadSixteen(resultAllocated, Width, Height, Flags["Alpha"] ? 1 : 0,
+                                imageData.Length, imageAllocated, Transparent);
+                            realGraphicMode = 2;
                             break;
                         case 16:
-                            int stride = width * 4;
-                            int pad = GetPadding(width, 4);
+                            int stride = Width * 4;
+                            int pad = GetPadding(Width, 4);
                             int position = 0;
-                            for (int y = 0; y < height; y++)
+                            for (int y = 0; y < Height; y++)
                             {
-                                for (int x = 0; x < width; x++)
+                                for (int x = 0; x < Width; x++)
                                 {
-                                    var bytes = BitConverter.GetBytes(transparent);
-                                    colorArray[(y * stride) + (x * 4) + 0] = imageData[position+0];
+                                    var bytes = BitConverter.GetBytes(Transparent);
+                                    colorArray[(y * stride) + (x * 4) + 0] = imageData[position + 0];
                                     colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
                                     colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
-                                    
+
                                     if (Flags["Alpha"] && !Core.parameters.Contains("-noalpha"))
                                     {
                                         colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
-                                    }                                    else
+                                    }
+                                    else
                                     {
                                         //colorArray[(y * stride) + (x * 4) + 3] = 255;
                                         if (imageData[position] == bytes[0] && imageData[position + 1] == bytes[1] &&
                                             imageData[position + 2] == bytes[2])
-                                            colorArray[(y * stride) + (x * 4) + 3] = 255;//bytes[3];
+                                            colorArray[(y * stride) + (x * 4) + 3] = 255; //bytes[3];
                                     }
+
                                     position += 4;
                                 }
+
                                 position += pad * 4;
                             }
+
                             realGraphicMode = 1;
                             break;
                     }
 
-                    if (graphicMode != 16)
+                    if (GraphicMode != 16)
                     {
                         Marshal.Copy(resultAllocated, colorArray, 0, colorArray.Length);
                     }
+
                     Marshal.FreeHGlobal(resultAllocated);
                     Marshal.FreeHGlobal(imageAllocated);
                     //colorArray = ReadPoint(imageData, width, height, 4).Item1;
-                    realBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+                    realBitmap = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
                     BitmapData bmpData = realBitmap.LockBits(new Rectangle(0, 0,
-                                                             realBitmap.Width,
-                                                             realBitmap.Height),
-                                                             ImageLockMode.WriteOnly,
-                                                             realBitmap.PixelFormat);
+                            realBitmap.Width,
+                            realBitmap.Height),
+                        ImageLockMode.WriteOnly,
+                        realBitmap.PixelFormat);
 
                     IntPtr pNative = bmpData.Scan0;
                     Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
@@ -143,26 +152,27 @@ namespace CTFAK.CCN.Chunks.Banks
                     if (Settings.twofiveplus)
                         realGraphicMode = 4;
                 }
+
                 return realBitmap;
             }
         }
 
         public void FromBitmap(Bitmap bmp)
         {
-            width = bmp.Width;
-            height = bmp.Height;
+            Width = bmp.Width;
+            Height = bmp.Height;
             if (!Core.parameters.Contains("-noalpha"))
                 Flags["Alpha"] = true;
-            graphicMode = 4;
+            GraphicMode = 4;
             realGraphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
-                                          bmp.Width,
-                                          bmp.Height),
-                                          ImageLockMode.ReadOnly,
-                                          PixelFormat.Format24bppRgb);
-            int copyPad = GetPadding(width, 4);
-            var length = bitmapData.Height * bitmapData.Stride+copyPad*4;
+                    bmp.Width,
+                    bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int copyPad = GetPadding(Width, 4);
+            var length = bitmapData.Height * bitmapData.Stride + copyPad * 4;
 
             byte[] bytes = new byte[length];
             int stride = bitmapData.Stride;
@@ -170,31 +180,32 @@ namespace CTFAK.CCN.Chunks.Banks
             Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
             bmp.UnlockBits(bitmapData);
 
-            imageData = new byte[width * height * 6];
+            imageData = new byte[Width * Height * 6];
             int position = 0;
-            int pad = GetPadding(width, 3);
-            
-            for (int y = 0; y < height; y++)
+            int pad = GetPadding(Width, 3);
+
+            for (int y = 0; y < Height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < Width; x++)
                 {
-                    int newPos = (y * stride) + (x*3);
+                    int newPos = (y * stride) + (x * 3);
                     imageData[position] = bytes[newPos];
                     imageData[position + 1] = bytes[newPos + 1];
                     imageData[position + 2] = bytes[newPos + 2];
                     position += 3;
                 }
+
                 position += 3 * pad;
             }
 
             try
             {
                 var bitmapDataAlpha = bmp.LockBits(new Rectangle(0, 0,
-                                                   bmp.Width,
-                                                   bmp.Height),
-                                                   ImageLockMode.ReadOnly,
-                                                   PixelFormat.Format32bppArgb);
-                int copyPadAlpha = GetPadding(width, 1);
+                        bmp.Width,
+                        bmp.Height),
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb);
+                int copyPadAlpha = GetPadding(Width, 1);
                 var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
 
                 byte[] bytesAlpha = new byte[lengthAlpha];
@@ -203,21 +214,24 @@ namespace CTFAK.CCN.Chunks.Banks
                 Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
                 bmp.UnlockBits(bitmapDataAlpha);
 
-                int aPad = GetPadding(width, 1, 4);
+                int aPad = GetPadding(Width, 1, 4);
                 int alphaPos = position;
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < Height; y++)
                 {
-                    for (int x = 0; x < width; x++)
+                    for (int x = 0; x < Width; x++)
                     {
                         imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
                         alphaPos += 1;
                     }
+
                     alphaPos += aPad;
                 }
             }
-            catch {}/*(Exception ex){Console.WriteLine(ex);}*/
+            catch
+            {
+            } /*(Exception ex){Console.WriteLine(ex);}*/
         }
-        
+
         public static int GetPadding(int width, int pointSize, int bytes = 2)
         {
             int pad = bytes - ((width * pointSize) % bytes);
@@ -226,11 +240,13 @@ namespace CTFAK.CCN.Chunks.Banks
                 return 0;
             }
 
-            return (int) Math.Ceiling((double) ((float) pad / (float) pointSize));
+            return (int)Math.Ceiling(pad / (float)pointSize);
         }
+
         public bool IsMFA;
-        public BitDict Flags = new BitDict(new string[]
-       {
+
+        public BitDict Flags = new BitDict(new[]
+        {
             "RLE",
             "RLEW",
             "RLET",
@@ -238,25 +254,27 @@ namespace CTFAK.CCN.Chunks.Banks
             "Alpha",
             "ACE",
             "Mac"
-       });
+        });
+
         public int Handle;
-        public int width;
-        public int height;
-        public byte graphicMode;
+        public int Width;
+        public int Height;
+        public byte GraphicMode;
         public int realGraphicMode;
-        public int checksum;
+        public int Checksum;
         public int references;
         public byte[] imageData;
         public short HotspotX;
         public short HotspotY;
         public short ActionX;
         public short ActionY;
-        public int transparent;
-        
+        public int Transparent;
+
         public static List<Task> imageReadingTasks = new List<Task>();
+
         public override void Read(ByteReader reader)
         {
-            if (Settings.twofiveplus&&!IsMFA)
+            if (Settings.twofiveplus && !IsMFA)
             {
                 Handle = reader.ReadInt32();
                 Handle -= 1;
@@ -265,9 +283,9 @@ namespace CTFAK.CCN.Chunks.Banks
                 //Flags.flag = reader.ReadUInt32();
                 var unk3 = reader.ReadInt32();
                 var dataSize = reader.ReadInt32();
-                width = reader.ReadInt16(); //width
-                height = reader.ReadInt16(); //height
-                reader.ReadByte();//color mode
+                Width = reader.ReadInt16(); //width
+                Height = reader.ReadInt16(); //height
+                reader.ReadByte(); //color mode
                 Flags.flag = reader.ReadByte();
 
                 var unk6 = reader.ReadInt16();
@@ -275,7 +293,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 HotspotY = reader.ReadInt16();
                 ActionX = reader.ReadInt16();
                 ActionY = reader.ReadInt16();
-                transparent = reader.ReadInt32();
+                Transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
                 if (!Core.parameters.Contains("-noalpha"))
@@ -283,20 +301,20 @@ namespace CTFAK.CCN.Chunks.Banks
                 byte[] target = new byte[decompressedSize];
                 LZ4Codec.Decode(rawImg, target);
                 imageData = target;
-                graphicMode = 16;
+                GraphicMode = 16;
                 var bmp = bitmap;
                 var newImg = new Image();
                 newImg.FromBitmap(bmp);
                 imageData = newImg.imageData;
-                graphicMode = 4;
+                GraphicMode = 4;
                 Flags = newImg.Flags;
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.android)
+            else if (Settings.gameType == Settings.GameType.NORMAL && !Settings.android)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
 
-                byte[] newImageData=null;
+                byte[] newImageData = null;
                 if (!IsMFA)
                 {
                     Int32 decompSize = reader.ReadInt32();
@@ -315,23 +333,23 @@ namespace CTFAK.CCN.Chunks.Banks
                     {
                         imageReader = new ByteReader(ZlibStream.UncompressBuffer(newImageData));
                     }
-                    
-                    checksum = imageReader.ReadInt32();
+
+                    Checksum = imageReader.ReadInt32();
                     references = imageReader.ReadInt32();
                     var size = imageReader.ReadInt32();
                     if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
-                    width = imageReader.ReadInt16();
-                    height = imageReader.ReadInt16();
+                    Width = imageReader.ReadInt16();
+                    Height = imageReader.ReadInt16();
 
-                    graphicMode = imageReader.ReadByte();
-                    realGraphicMode = graphicMode;
+                    GraphicMode = imageReader.ReadByte();
+                    realGraphicMode = GraphicMode;
                     Flags.flag = imageReader.ReadByte();
                     imageReader.Skip(2);
                     HotspotX = imageReader.ReadInt16();
                     HotspotY = imageReader.ReadInt16();
                     ActionX = imageReader.ReadInt16();
                     ActionY = imageReader.ReadInt16();
-                    transparent = imageReader.ReadInt32();
+                    Transparent = imageReader.ReadInt32();
                     //Logger.Log($"Loading image {Handle} with size {width}x{height}");
 
                     if (Flags["LZX"])
@@ -339,8 +357,8 @@ namespace CTFAK.CCN.Chunks.Banks
                         uint decompressedSize = imageReader.ReadUInt32();
 
                         imageData = Decompressor.DecompressBlock(imageReader,
-                                                                 (int)(imageReader.Size() - imageReader.Tell()),
-                                                                 (int)decompressedSize);
+                            (int)(imageReader.Size() - imageReader.Tell()),
+                            (int)decompressedSize);
                     }
                     else
                         imageData = imageReader.ReadBytes((int)(size));
@@ -357,15 +375,15 @@ namespace CTFAK.CCN.Chunks.Banks
                 Handle = reader.ReadInt16();
                 var unk = (uint)reader.ReadInt32();
 
-                width = reader.ReadInt16(); //width
-                height = reader.ReadInt16(); //height
+                Width = reader.ReadInt16(); //width
+                Height = reader.ReadInt16(); //height
                 HotspotX = reader.ReadInt16();
                 HotspotY = reader.ReadInt16();
                 ActionX = reader.ReadInt16();
                 ActionY = reader.ReadInt16();
                 var size = reader.ReadInt32();
                 var thefuk1 = reader.PeekByte();
-                Logger.Log($"Loading image {Handle}, size {width}x{height}, mode: {unk}");
+                Logger.Log($"Loading image {Handle}, size {Width}x{Height}, mode: {unk}");
                 ByteReader imageReader;
 
                 if (thefuk1 == 255)
@@ -379,23 +397,24 @@ namespace CTFAK.CCN.Chunks.Banks
                     imageReader.Seek(0);
                     imageData = imageReader.ReadBytes();
                 }
-                var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
+
+                var newImage = ImageHelper.DumpImage(Handle, imageData, Width, Height, unk);
                 imageData = newImage.imageData;
                 if (!Core.parameters.Contains("-noalpha"))
                     Flags["Alpha"] = true;
-                graphicMode = 4;
+                GraphicMode = 4;
             }
             else if (Settings.Old)
             {
                 Handle = reader.ReadInt32();
                 var imageReader = new ByteReader(Decompressor.DecompressOld(reader));
-                checksum = imageReader.ReadInt16();
+                Checksum = imageReader.ReadInt16();
                 references = imageReader.ReadInt32();
                 var size = imageReader.ReadInt32();
-                width = imageReader.ReadInt16();
-                height = imageReader.ReadInt16();
-                graphicMode = imageReader.ReadByte();
-                realGraphicMode = graphicMode;
+                Width = imageReader.ReadInt16();
+                Height = imageReader.ReadInt16();
+                GraphicMode = imageReader.ReadByte();
+                realGraphicMode = GraphicMode;
                 Flags.flag = imageReader.ReadByte();
                 HotspotX = imageReader.ReadInt16();
                 HotspotY = imageReader.ReadInt16();
@@ -406,8 +425,8 @@ namespace CTFAK.CCN.Chunks.Banks
                     uint decompressedSize = imageReader.ReadUInt32();
 
                     imageData = Decompressor.DecompressBlock(imageReader,
-                                                             (int)(imageReader.Size() - imageReader.Tell()),
-                                                             (int)decompressedSize);
+                        (int)(imageReader.Size() - imageReader.Tell()),
+                        (int)decompressedSize);
                 }
                 else imageData = imageReader.ReadBytes((int)(size));
             }
@@ -421,27 +440,27 @@ namespace CTFAK.CCN.Chunks.Banks
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var start = writer.Tell();
-            
+
             byte[] compressedImg = null;
             Flags["LZX"] = true;
 
             compressedImg = Decompressor.compress_block(imageData);
 
             writer.WriteInt32(Handle);
-            writer.WriteInt32(checksum);//4
-            writer.WriteInt32(references);//8
-            writer.WriteUInt32((uint)compressedImg.Length + 4);//12
-            writer.WriteInt16((short)width);//14
-            writer.WriteInt16((short)height);//16
-            writer.WriteInt8((byte)graphicMode);//17
-            writer.WriteInt8((byte)Flags.flag);//18
-            writer.WriteInt16(0);//20
-            writer.WriteInt16((short)HotspotX);//22
-            writer.WriteInt16((short)HotspotY);//24
-            writer.WriteInt16((short)ActionX);//26
-            writer.WriteInt16((short)ActionY);//28
-            writer.WriteInt32(transparent);//32
-            writer.WriteInt32(imageData.Length);//36
+            writer.WriteInt32(Checksum); //4
+            writer.WriteInt32(references); //8
+            writer.WriteUInt32((uint)compressedImg.Length + 4); //12
+            writer.WriteInt16((short)Width); //14
+            writer.WriteInt16((short)Height); //16
+            writer.WriteInt8((byte)GraphicMode); //17
+            writer.WriteInt8((byte)Flags.flag); //18
+            writer.WriteInt16(0); //20
+            writer.WriteInt16((short)HotspotX); //22
+            writer.WriteInt16((short)HotspotY); //24
+            writer.WriteInt16((short)ActionX); //26
+            writer.WriteInt16((short)ActionY); //28
+            writer.WriteInt32(Transparent); //32
+            writer.WriteInt32(imageData.Length); //36
             writer.WriteBytes(compressedImg);
             //writer.WriteWriter(chunk);
             // writer.WriteInt32(Handle-1);//FNAC3 FIX
@@ -450,11 +469,12 @@ namespace CTFAK.CCN.Chunks.Banks
             stopwatch.Stop();
             //Console.WriteLine($"Image: {Handle}, decompressed/compressed ratio: {((float)compressedImg.Length)/imageData.Length}, time: {stopwatch.ElapsedMilliseconds}, level:{Decompressor.compressionLevel}");
             //Console.ReadKey();
-            return (int)(chunkSize+4+start);
+            return (int)(chunkSize + 4 + start);
         }
+
         public override void Write(ByteWriter writer)
         {
-            
+
         }
     }
 }

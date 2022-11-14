@@ -5,10 +5,7 @@ using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CTFAK.CCN.Chunks;
+
 
 namespace CTFAK.FileReaders
 {
@@ -16,8 +13,8 @@ namespace CTFAK.FileReaders
     {
         public string Name => "Normal EXE";
 
-        public GameData game;
-        public Dictionary<int, Bitmap> icons = new Dictionary<int, Bitmap>();
+        public GameData Game;
+        public Dictionary<int, Bitmap> Icons = new Dictionary<int, Bitmap>();
         
         public void LoadGame(string gamePath)
         {
@@ -27,13 +24,13 @@ namespace CTFAK.FileReaders
             var icos = icoExt.GetAllIcons();
             foreach (var icon in icos)
             {
-                icons.Add(icon.Width, icon.ToBitmap());
+                Icons.Add(icon.Width, icon.ToBitmap());
             }
 
-            if (!icons.ContainsKey(16)) icons.Add(16, icons[32].resizeImage(new Size(16, 16)));
-            if (!icons.ContainsKey(48)) icons.Add(48, icons[32].resizeImage(new Size(48, 48)));
-            if (!icons.ContainsKey(128)) icons.Add(128, icons[32].resizeImage(new Size(128, 128)));
-            if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
+            if (!Icons.ContainsKey(16)) Icons.Add(16, Icons[32].resizeImage(new Size(16, 16)));
+            if (!Icons.ContainsKey(48)) Icons.Add(48, Icons[32].resizeImage(new Size(48, 48)));
+            if (!Icons.ContainsKey(128)) Icons.Add(128, Icons[32].resizeImage(new Size(128, 128)));
+            if (!Icons.ContainsKey(256)) Icons.Add(256, Icons[32].resizeImage(new Size(256, 256)));
 
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
             ReadHeader(reader);
@@ -46,13 +43,13 @@ namespace CTFAK.FileReaders
                     while (true)
                     {
                         if (reader.Tell() >= reader.Size()) break;
-                        var ID = reader.ReadInt16();
+                        var id = reader.ReadInt16();
                         var flag = reader.ReadInt16();
                         var size = reader.ReadInt32();
                         reader.ReadBytes(size);
                         //var newChunk = new Chunk(reader);
                         //var chunkData = newChunk.Read();
-                        if (ID == 32639) break;
+                        if (id == 32639) break;
                     } 
                 }
             }
@@ -62,9 +59,9 @@ namespace CTFAK.FileReaders
                 packData.Read(reader);
             }
             
-            game = new GameData();
-            game.Read(reader);
-            if(!Settings.Old)game.packData = packData;
+            Game = new GameData();
+            Game.Read(reader);
+            if(!Settings.Old)Game.PackData = packData;
         }
 
         public int ReadHeader(ByteReader reader)
@@ -130,12 +127,12 @@ namespace CTFAK.FileReaders
 
         public GameData getGameData()
         {
-            return game;
+            return Game;
         }
 
         public Dictionary<int,Bitmap> getIcons()
         {
-            return icons;
+            return Icons;
         }
 
         public void PatchMethods()
