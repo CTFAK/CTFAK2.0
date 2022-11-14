@@ -79,12 +79,15 @@ namespace CTFAK.CCN.Chunks.Banks
                     {
                         case 4:          
                             NativeLib.ReadPoint(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            realGraphicMode = 4;
                             break;
                         case 6:
                             NativeLib.ReadFifteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            realGraphicMode = 3;
                             break;
                         case 7:
                             NativeLib.ReadSixteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            realGraphicMode = 2;
                             break;
                         case 16:
                             int stride = width * 4;
@@ -117,6 +120,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
                                 position += pad * 4;
                             }
+                            realGraphicMode = 1;
                             break;
                     }
 
@@ -141,9 +145,10 @@ namespace CTFAK.CCN.Chunks.Banks
 
                     realBitmap.UnlockBits(bmpData);
                     //realBitmap.Save($"Images\\{Handle}.png");
-                        //Logger.Log("Trying again");
-                    
-                    
+                    //Logger.Log("Trying again");
+
+                    if (Settings.twofiveplus)
+                        realGraphicMode = 4;
                 }
                 return realBitmap;
 
@@ -159,6 +164,7 @@ namespace CTFAK.CCN.Chunks.Banks
             if (!CTFAKCore.parameters.Contains("-noalpha"))
                 Flags["Alpha"] = true;
             graphicMode = 4;
+            realGraphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
                     bmp.Width,
@@ -252,6 +258,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public int width;
         public int height;
         public byte graphicMode;
+        public byte realGraphicMode;
         public int checksum;
         public int references;
         public byte[] imageData;

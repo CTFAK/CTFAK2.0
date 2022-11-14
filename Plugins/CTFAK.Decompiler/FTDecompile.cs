@@ -81,7 +81,7 @@ namespace CTFAK.Tools
 
             mfa.Music = game.Music;
             mfa.Images.Items = imgs;
-            mfa.GraphicMode = 0;
+            mfa.GraphicMode = 4;
 
             foreach (var item in mfa.Icons.Items)
             {
@@ -744,7 +744,24 @@ namespace CTFAK.Tools
                 if (item.InkEffect != 1 && !CTFAKCore.parameters.Contains("notrans"))
                 {
                     newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
+                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
+                            Color.FromArgb(item.rgbCoeff.A,
+                                           item.rgbCoeff.B,
+                                           item.rgbCoeff.G,
+                                           item.rgbCoeff.R);
+                    try
+                    {
+                        if (game.Images.Items[0].realGraphicMode < 4)
+                        {
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
+                            Color.FromArgb(item.rgbCoeff.A,
+                                     255 - item.rgbCoeff.B,
+                                     255 - item.rgbCoeff.G,
+                                     255 - item.rgbCoeff.R);
+                        }
+                    }
+                    catch { }
                 }
 
                 
