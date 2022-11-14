@@ -51,7 +51,7 @@ jobs:
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.pdb" "D:\CTFAK\bin\Release\Plugins"
 
     - name: Download and Unzip the required files
-      uses: actions/schmiddim-wget-unzip@v1
+      uses: schmiddim/action-wget-unzip@v2
       with:
           url: 'https://cdn.discordapp.com/attachments/956312557000462436/1041801617848143922/ctfakrequirements.zip'
           destination: D:\CTFAK\bin\Release
