@@ -34,7 +34,7 @@ namespace CTFAK.CCN.Chunks
             }
         }
     }
-    [ChunkLoader(2234,"Extensions")]
+    //[ChunkLoader(2234,"Extensions")] // this might have a purpose and I'm too scared to remove it
     public class Extension : ChunkLoader
     {
         public short Handle;
