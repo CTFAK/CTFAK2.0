@@ -49,12 +49,13 @@ jobs:
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.pdb" "D:\CTFAK\bin\Release\Plugins"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.dll" "D:\CTFAK\bin\Release\Plugins"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.pdb" "D:\CTFAK\bin\Release\Plugins"
-
-    - name: Download and Unzip the required files
-      uses: schmiddim/action-wget-unzip@v2
+           
+           
+    - name: Download required files
+      uses: carlosperate/download-file-action@v2.0.0
       with:
-          url: 'https://cdn.discordapp.com/attachments/956312557000462436/1041801617848143922/ctfakrequirements.zip'
-          destination: D:\CTFAK\bin\Release
+          file-url: "https://cdn.discordapp.com/attachments/956312557000462436/1041801617848143922/ctfakrequirements.zip"
+          location: D:\CTFAK\bin\Release
          
     - name: Upload CTFAK (release)
       uses: actions/upload-artifact@v2
