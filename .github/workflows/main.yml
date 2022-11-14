@@ -35,7 +35,7 @@ jobs:
     - name: Copy template file to CTFAK directory
       run: |
            mkdir BINARY
-           cd CTFAK\bin\
+           cd CTFAK.Core\bin\
            Xcopy /E /I Release "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
            copy template.mfa "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
          
