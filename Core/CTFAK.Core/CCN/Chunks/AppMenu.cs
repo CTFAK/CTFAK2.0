@@ -22,8 +22,7 @@ namespace CTFAK.CCN.Chunks
 
         void Handle(GameData data)
         {
-            Logger.Log("I AM HANDLER AND I LOVE SEX I LOVE SEX");
-            Console.ReadKey();
+            //Kostya please.
         }
 
     public override void Read(ByteReader reader)
