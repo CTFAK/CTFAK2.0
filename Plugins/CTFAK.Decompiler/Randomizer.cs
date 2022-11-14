@@ -24,10 +24,10 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CTFAK.Tools
 {
-    class Randomizer : IFusionTool
+    class Randomizer// : IFusionTool
     {
         public int[] Progress = new int[] { };
-        int[] IFusionTool.Progress => Progress;
+        //int[] IFusionTool.Progress => Progress;
         public string Name => "Randomizer";
         public static int lastAllocatedHandleImg = 15;
 
