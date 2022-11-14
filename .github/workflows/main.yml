@@ -44,7 +44,7 @@ jobs:
            copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Newtonsoft.Json.dll" "D:\CTFAK\bin\Release"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Drawing.Common.dll" "D:\CTFAK\bin\Release"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Resources.Extensions.dll" "D:\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\runtimes" "D:\CTFAK\bin\Release"
+           Xcopy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\runtimes" "D:\CTFAK\bin\Release\runtimes" /i /s
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.dll" "D:\CTFAK\bin\Release\Plugins"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.pdb" "D:\CTFAK\bin\Release\Plugins"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.dll" "D:\CTFAK\bin\Release\Plugins"
