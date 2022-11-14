@@ -60,5 +60,5 @@ jobs:
     - name: Upload CTFAK (release)
       uses: actions/upload-artifact@v2
       with:
-       name: .\CTFAK_release
+       name: CTFAK
        path: D:\CTFAK\bin\Release      
