@@ -26,31 +26,31 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
         
     - name: Copy built files
-      run: mkdir .\CTFAK\bin\Release
-           mkdir .\CTFAK\bin\Release\Plugins
-           mkdir .\CTFAK\bin\Release\ref
-           mkdir .\CTFAK\bin\Release\runtimes
-           mkdir .\CTFAK\bin\Release\x64
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.pdb" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.deps.json" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.dll" ""CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.exe" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.pdb" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.runtimeconfig.json" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Ionic.Zip.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Joveler.Compression.ZLib.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Joveler.DynLoader.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\K4os.Compression.LZ4.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Microsoft.Win32.SystemEvents.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Newtonsoft.Json.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Drawing.Common.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Resources.Extensions.dll" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\runtimes" ".\CTFAK\bin\Release"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.dll" ".\CTFAK\bin\Release\Plugins"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.pdb" ".\CTFAK\bin\Release\Plugins"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.dll" ".\CTFAK\bin\Release\Plugins"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.pdb" ".\CTFAK\bin\Release\Plugins"
+      run: mkdir "D:\CTFAK\bin\Release"
+           mkdir "D:\CTFAK\bin\Release\Plugins"
+           mkdir "D:\CTFAK\bin\Release\ref"
+           mkdir "D:\CTFAK\bin\Release\runtimes"
+           mkdir "D:\CTFAK\bin\Release\x64"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.pdb" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.deps.json" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.exe" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.pdb" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.runtimeconfig.json" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Ionic.Zip.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Joveler.Compression.ZLib.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Joveler.DynLoader.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\K4os.Compression.LZ4.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Microsoft.Win32.SystemEvents.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Newtonsoft.Json.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Drawing.Common.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Resources.Extensions.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\runtimes" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.dll" "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.pdb" "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.dll" "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.pdb" "D:\CTFAK\bin\Release\Plugins"
 
     - name: Download required files
       uses: carlosperate/download-file-action@v2.0.0
@@ -61,11 +61,11 @@ jobs:
     - name: Unzip the required files
       uses: TonyBogdanov/zip@1.0
       with:
-          args: unzip -qq .\ctfakrequirements.zip -d .\CTFAK\bin\Release
+          args: unzip -qq .\ctfakrequirements.zip -d D:\CTFAK\bin\Release
 
          
     - name: Upload CTFAK (release)
       uses: actions/upload-artifact@v2
       with:
        name: .\CTFAK_release
-       path: .\CTFAK\bin\Release      
+       path: D:\CTFAK\bin\Release      
