@@ -30,15 +30,7 @@ jobs:
       name: Download a file
       with:
         url: "https://cdn.discordapp.com/attachments/808199033990152253/921667566546587668/template.mfa"
-        target: D:\a\CTFAK2.0\CTFAK2.0\
-
-    - name: Copy template file to CTFAK directory
-      run: |
-           mkdir BINARY
-           mkdir CTFAK\bin\
-           cd CTFAK\bin\
-           Xcopy /E /I Release "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
-           copy "D:\a\CTFAK2.0\CTFAK2.0\template.mfa" "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
+        target: D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN\template.mfa
          
     - name: Upload CTFAK (release)
       uses: actions/upload-artifact@v2
