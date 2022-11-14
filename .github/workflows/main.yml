@@ -30,7 +30,6 @@ jobs:
            mkdir "D:\CTFAK\bin\Release"
            mkdir "D:\CTFAK\bin\Release\Plugins"
            mkdir "D:\CTFAK\bin\Release\ref"
-           mkdir "D:\CTFAK\bin\Release\runtimes"
            mkdir "D:\CTFAK\bin\Release\x64"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.dll" "D:\CTFAK\bin\Release"
            copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.pdb" "D:\CTFAK\bin\Release"
