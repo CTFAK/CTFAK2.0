@@ -21,9 +21,14 @@ namespace CTFAK.Attributes
     {
         public Settings.GameType allowedGameTypes;
 
-        public LoaderReadAttribute(Settings.GameType allowedGameTypes)
+        public LoaderReadAttribute(Settings.GameType allowedGameTypes = Settings.GameType.NORMAL)
         {
             this.allowedGameTypes = allowedGameTypes;
         }
+    }
+    
+    [AttributeUsage(AttributeTargets.Method)]
+    public class LoaderHandleAttribute : Attribute
+    {
     }
 }

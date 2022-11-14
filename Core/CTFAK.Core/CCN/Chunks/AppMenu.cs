@@ -10,7 +10,7 @@ using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks
 {
-    [ChunkLoader(0x2226,"AppMenu")]
+    [ChunkLoader(0x2226, "AppMenu")]
     public class AppMenu : ChunkLoader
     {
         public List<AppMenuItem> Items = new List<AppMenuItem>();
@@ -18,7 +18,15 @@ namespace CTFAK.CCN.Chunks
         public List<short> AccelKey;
         public List<short> AccelId;
 
-        public override void Read(ByteReader reader)
+
+
+        void Handle(GameData data)
+        {
+            Logger.Log("I AM HANDLER AND I LOVE SEX I LOVE SEX");
+            Console.ReadKey();
+        }
+
+    public override void Read(ByteReader reader)
         {
             long currentPosition = reader.Tell();
             uint headerSize = reader.ReadUInt32();

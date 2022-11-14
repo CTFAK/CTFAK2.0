@@ -88,6 +88,10 @@ namespace CTFAK.CCN
             Logger.Log("Fusion Build: "+productBuild);
             
             var chunkList = new ChunkList();
+            chunkList.OnHandleChunk += (id, loader) =>
+            {
+                chunkList.HandleChunk(id,loader,this);
+            };
             chunkList.OnChunkLoaded += (id, loader) =>
             {
                 switch (id)

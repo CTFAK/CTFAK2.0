@@ -17,6 +17,7 @@ namespace CTFAK.CCN.Chunks
             public int chunkID;
             public string chunkName;
             public Dictionary<Settings.GameType, MethodBase> readingHandlers;
+            public MethodBase afterHandler;
         }
 
         public static Dictionary<int,ChunkLoaderData> knownLoaders=new Dictionary<int, ChunkLoaderData>();
@@ -34,6 +35,14 @@ namespace CTFAK.CCN.Chunks
                         newChunkLoaderData.loaderType = type;
                         newChunkLoaderData.chunkID = attribute.chunkId;
                         newChunkLoaderData.chunkName = attribute.chunkName;
+                        foreach (var method in type.GetMethods())
+                        {
+                            if (method.Name == "Handle") 
+                                newChunkLoaderData.afterHandler = method;
+                            
+                            if (method.GetCustomAttributes().Any(a => a.GetType() == typeof(LoaderHandleAttribute)))
+                                newChunkLoaderData.afterHandler = method;
+                        }
                         Logger.Log($"Found chunk loader handler for chunk id {newChunkLoaderData.chunkID} with name \"{newChunkLoaderData.chunkName}\"");
                         if (!knownLoaders.ContainsKey(newChunkLoaderData.chunkID))
                         {
@@ -50,7 +59,15 @@ namespace CTFAK.CCN.Chunks
         
         public List<Chunk> chunks;
         public delegate void OnChunkLoadedEvent(int chunkId, ChunkLoader loader);
+        public delegate void HandleChunkEvent(int chunkId, ChunkLoader loader);
 
+
+        public void HandleChunk(int id, ChunkLoader chunk, object parent)
+        {
+            if(knownLoaders.ContainsKey(id))
+                knownLoaders[id].afterHandler?.Invoke(chunk,new object[]{ parent});
+        }
+        public event HandleChunkEvent OnHandleChunk;
         public event OnChunkLoadedEvent OnChunkLoaded;
         
         int chunkIndex = 0;
@@ -85,7 +102,7 @@ namespace CTFAK.CCN.Chunks
                         }
                         catch(Exception ex)
                         {
-                            Logger.LogWarning($"Error while reading chunk {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
+                            Logger.LogWarning($"Error while reading chunk {loaderData.chunkName}\n{ex.Message}\n{ex.StackTrace}");
                         }
                         try
                         {
@@ -93,10 +110,23 @@ namespace CTFAK.CCN.Chunks
                         }
                         catch(Exception ex)
                         {
-                            Logger.LogWarning($"Error while handling chunk loading {loaderData.chunkName}\n{ex.Message}\nP{ex.StackTrace}");
+                            Logger.LogWarning($"Error while handling chunk loading {loaderData.chunkName}\n{ex.Message}\n{ex.StackTrace}");
+                        }
+
+                        try
+                        {
+                            OnHandleChunk?.Invoke(newChunk.Id, newInstance);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogWarning($"Error while doing chunk handling {loaderData.chunkName}\n{ex.Message}\n{ex.StackTrace}");
                         }
                     }
-                    else Logger.Log($"Loader not found for chunk {newChunk.Id}");
+                    else
+                    {
+                        var found = ChunkNames.TryGetValue(newChunk.Id, out var chunkName);
+                        Logger.Log($"Loader not found for chunk {newChunk.Id} - {(found ? chunkName : string.Empty)}");
+                    }
                 }
                 chunkIndex++;
                 

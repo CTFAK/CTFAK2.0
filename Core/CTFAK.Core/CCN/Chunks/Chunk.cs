@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.Attributes;
 
 namespace CTFAK.CCN.Chunks
 {
@@ -64,8 +65,18 @@ namespace CTFAK.CCN.Chunks
             return ChunkData;
         }
     }
+
     public abstract class ChunkLoader
     {
+        public ChunkLoader()
+        {
+            /*if (GetType().GetCustomAttributes(true).First(a => a.GetType() == typeof(ChunkLoaderAttribute)) is ChunkLoaderAttribute attr)
+            {
+                Id = attr.chunkId;
+            }*/
+
+        }
+
         public abstract void Read(ByteReader reader);
         public abstract void Write(ByteWriter writer);
     }
