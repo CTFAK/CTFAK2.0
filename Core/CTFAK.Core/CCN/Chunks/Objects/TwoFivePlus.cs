@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Xml.Linq;
 using System.Xml.Schema;
 using CTFAK.Attributes;
 using CTFAK.Memory;
@@ -17,16 +20,16 @@ namespace CTFAK.CCN.Chunks.Objects
         public static TwoFilePlusContainer instance;
         public Dictionary<int, ObjectInfo> objectsContainer = new Dictionary<int, ObjectInfo>();
     }
-    [ChunkLoader(8790,"TwoFivePlusProperties")]
-    public class TwoFilePlusProps:ChunkLoader
+    [ChunkLoader(8790, "TwoFivePlusProperties")]
+    public class TwoFilePlusProps : ChunkLoader
     {
         public override void Read(ByteReader reader)
-        {    
+        {
             var start = reader.Tell();
             var end = start + reader.Size();
             if (start == end) return;
             reader.ReadInt32();
-            
+
             int current = 0;
             while (reader.Tell() <= end)
             {
@@ -46,7 +49,7 @@ namespace CTFAK.CCN.Chunks.Objects
 
                 objectData.properties.Read(decompressedReader);
                 TwoFilePlusContainer.instance.objectsContainer[current] = objectData;
-                reader.Seek(currentPosition+chunkSize+8);
+                reader.Seek(currentPosition + chunkSize + 8);
                 current++;
             }
         }
@@ -57,20 +60,20 @@ namespace CTFAK.CCN.Chunks.Objects
         }
     }
 
-    [ChunkLoader(8788,"TwoFivePlusNames")]
+    [ChunkLoader(8788, "TwoFivePlusNames")]
     public class TwoFivePlusNames : ChunkLoader
     {
         public override void Read(ByteReader reader)
         {
             var nstart = reader.Tell();
-                    
+
             var nend = nstart + reader.Size();
             //reader.ReadInt32();
             int ncurrent = 0;
             while (reader.Tell() < nend)
             {
                 var newName = "sex";
-                        
+
                 TwoFilePlusContainer.instance.objectsContainer[ncurrent].name = reader.ReadUniversal();
                 ncurrent++;
             }
@@ -81,7 +84,7 @@ namespace CTFAK.CCN.Chunks.Objects
             throw new System.NotImplementedException();
         }
     }
-    [ChunkLoader(8787,"TwoFivePlusHeaders")]
+    [ChunkLoader(8787, "TwoFivePlusHeaders")]
     public class TwoFivePlusHeaders : ChunkLoader
     {
         public override void Read(ByteReader reader)
@@ -96,7 +99,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 newObject.Flags = reader.ReadInt16();
                 reader.Skip(2);
                 newObject.InkEffect = reader.ReadByte();
-                if(newObject.InkEffect!=1)
+                if (newObject.InkEffect != 1)
                 {
                     reader.Skip(3);
                     var r = reader.ReadByte();
@@ -112,7 +115,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     newObject.InkEffectValue = reader.ReadByte();
                     reader.Skip(3);
                 }
-                TwoFilePlusContainer.instance.objectsContainer.Add(newObject.handle,newObject);
+                TwoFilePlusContainer.instance.objectsContainer.Add(newObject.handle, newObject);
             }
         }
         public override void Write(ByteWriter Writer)
@@ -120,4 +123,36 @@ namespace CTFAK.CCN.Chunks.Objects
             throw new System.NotImplementedException();
         }
     }
+    /*[ChunkLoader(8791, "TwoFivePlusShaders")]
+    public class TwoFivePlusShaders : ChunkLoader
+    {
+        public override void Read(ByteReader reader)
+        {
+            while (true)
+            {
+                var start = reader.Tell();
+                var end = start + reader.Size();
+                if (start == end) return;
+                reader.ReadInt32();
+
+                int current = 0;
+                while (start <= end)
+                {
+                    TwoFilePlusContainer.instance.objectsContainer[current].shaderId = reader.ReadInt32();
+                    var count = reader.ReadInt32();
+                    for (int i = 0; i < count; i++)
+                    {
+                        var newReader = new ByteReader(new MemoryStream(reader.ReadBytes(4)));
+                        TwoFilePlusContainer.instance.objectsContainer[current].effectItems.Add(newReader);
+                        Logger.Log("Loading Shader " + newReader.ReadInt32() + " on " + TwoFilePlusContainer.instance.objectsContainer[current].name);
+                    }
+                    current++;
+                }
+            }
+        }
+
+        public override void Write(ByteWriter Writer)
+        {
+
+        }*/
 }

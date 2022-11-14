@@ -826,6 +826,40 @@ namespace CTFAK.Tools
                     newObject.Strings = new MFAValueList();//ConvertStrings(itemLoader.);
                     newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values);
                     newObject.Movements = new MFAMovements();
+
+                    if (itemLoader.Values != null)
+                    {
+                        for (int j = 0; j < itemLoader.Values.Items.Count; j++)
+                        {
+                            string ch = "A";
+                            if (j >= 26)
+                                ch = ((char)('A' + (((j - (j % 26)) / 26) - 1))).ToString() + ((char)('A' + (j % 26))).ToString();
+                            else
+                                ch = ((char)('A' + j)).ToString();
+
+                            var newVal = new ValueItem();
+                            newVal.Name = $"Alterable Value {ch}";
+                            newVal.Value = itemLoader.Values.Items[j];
+                            newObject.Values.Items.Add(newVal);
+                        }
+                    }
+
+                    if (itemLoader.Strings != null)
+                    {
+                        for (int j = 0; j < itemLoader.Strings.Items.Count; j++)
+                        {
+                            string ch = "A";
+                            if (j >= 26)
+                                ch = ((char)('A' + (((j - (j % 26)) / 26) - 1))).ToString() + ((char)('A' + (j % 26))).ToString();
+                            else
+                                ch = ((char)('A' + j)).ToString();
+
+                            var newStr = new ValueItem();
+                            newStr.Name = $"Alterable String {ch}";
+                            newStr.Value = itemLoader.Strings.Items[j];
+                            newObject.Strings.Items.Add(newStr);
+                        }
+                    }
                     if (itemLoader.Movements == null)
                     {
                         var newMov = new MFAMovement();
