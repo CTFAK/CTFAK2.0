@@ -432,6 +432,8 @@ namespace CTFAK.Tools
                                     var eventGroup = newFrame.Events.Items[eg];
                                     foreach (Action action in eventGroup.Actions)
                                     {
+                                        if (action.ObjectType == -5 && action.Num == 0)
+                                            continue;
                                         foreach (var quailifer in qualifiers)
                                         {
                                             if (quailifer.Value.ObjectInfo == action.ObjectInfo)
