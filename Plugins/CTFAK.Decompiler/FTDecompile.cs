@@ -21,6 +21,7 @@ using Action = CTFAK.CCN.Chunks.Frame.Action;
 using Constants = CTFAK.CCN.Constants;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using CTFAK.CCN.Chunks.Banks;
 
 namespace CTFAK.Tools
 {
@@ -737,18 +738,18 @@ namespace CTFAK.Tools
                 if (item.InkEffect != 1 && !Core.parameters.Contains("notrans"))
                 {
                     newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
+                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = 
                             Color.FromArgb(item.rgbCoeff.A,
                                            item.rgbCoeff.B,
                                            item.rgbCoeff.G,
                                            item.rgbCoeff.R);
                     try
                     {
-                        if (game.Images.Items[0].realGraphicMode < 4)
+                        if (ImageBank.realGraphicMode < 4)
                         {
                             
                             newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
-                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff =
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = 
                             Color.FromArgb(item.rgbCoeff.A,
                                      255 - item.rgbCoeff.B,
                                      255 - item.rgbCoeff.G,

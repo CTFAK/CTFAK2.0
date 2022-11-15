@@ -18,6 +18,7 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public static event SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
+        public static int realGraphicMode = 4;
         public override void Read(ByteReader reader)
         {
             if (Core.parameters.Contains("-noimg")) return;
@@ -81,17 +82,17 @@ namespace CTFAK.CCN.Chunks.Banks
                         case 4:
                             NativeLib.ReadPoint(resultAllocated, Width, Height, Flags["Alpha"] ? 1 : 0,
                                 imageData.Length, imageAllocated, Transparent);
-                            realGraphicMode = 4;
+                            ImageBank.realGraphicMode = 4;
                             break;
                         case 6:
                             NativeLib.ReadFifteen(resultAllocated, Width, Height, Flags["Alpha"] ? 1 : 0,
                                 imageData.Length, imageAllocated, Transparent);
-                            realGraphicMode = 3;
+                            ImageBank.realGraphicMode = 3;
                             break;
                         case 7:
                             NativeLib.ReadSixteen(resultAllocated, Width, Height, Flags["Alpha"] ? 1 : 0,
                                 imageData.Length, imageAllocated, Transparent);
-                            realGraphicMode = 2;
+                            ImageBank.realGraphicMode = 2;
                             break;
                         case 16:
                             int stride = Width * 4;
@@ -124,7 +125,7 @@ namespace CTFAK.CCN.Chunks.Banks
                                 position += pad * 4;
                             }
 
-                            realGraphicMode = 1;
+                            ImageBank.realGraphicMode = 1;
                             break;
                     }
 
@@ -150,7 +151,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     //realBitmap.Save($"Images\\{Handle}.png");
                     //Logger.Log("Trying again");
                     if (Settings.twofiveplus)
-                        realGraphicMode = 4;
+                        ImageBank.realGraphicMode = 4;
                 }
 
                 return realBitmap;
@@ -164,7 +165,6 @@ namespace CTFAK.CCN.Chunks.Banks
             if (!Core.parameters.Contains("-noalpha"))
                 Flags["Alpha"] = true;
             GraphicMode = 4;
-            realGraphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
                     bmp.Width,
@@ -260,7 +260,6 @@ namespace CTFAK.CCN.Chunks.Banks
         public int Width;
         public int Height;
         public byte GraphicMode;
-        public int realGraphicMode;
         public int Checksum;
         public int references;
         public byte[] imageData;
@@ -342,7 +341,6 @@ namespace CTFAK.CCN.Chunks.Banks
                     Height = imageReader.ReadInt16();
 
                     GraphicMode = imageReader.ReadByte();
-                    realGraphicMode = GraphicMode;
                     Flags.flag = imageReader.ReadByte();
                     imageReader.Skip(2);
                     HotspotX = imageReader.ReadInt16();
@@ -414,7 +412,6 @@ namespace CTFAK.CCN.Chunks.Banks
                 Width = imageReader.ReadInt16();
                 Height = imageReader.ReadInt16();
                 GraphicMode = imageReader.ReadByte();
-                realGraphicMode = GraphicMode;
                 Flags.flag = imageReader.ReadByte();
                 HotspotX = imageReader.ReadInt16();
                 HotspotY = imageReader.ReadInt16();
