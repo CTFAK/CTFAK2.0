@@ -487,7 +487,7 @@ namespace CTFAK.Tools
 
             var outPath = reader.getGameData().Name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            outPath = rgx.Replace(outPath, "");
+            outPath = rgx.Replace(outPath, "").Trim(' ');
             Directory.CreateDirectory($"Dumps\\{outPath}");
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.EditorFilename)}.mfa", FileMode.Create)));
 
