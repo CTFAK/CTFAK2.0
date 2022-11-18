@@ -26,7 +26,7 @@ namespace Dumper
         {
             var outPath = reader.getGameData().name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            outPath = rgx.Replace(outPath, "").Replace(" ", "");
+            outPath = rgx.Replace(outPath, "").Trim(' ');
             var images = reader.getGameData().Images.Items;
             var frames = reader.getGameData().frames;
             var objects = reader.getGameData().frameitems;
