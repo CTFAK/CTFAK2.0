@@ -21,6 +21,7 @@ using Constants = CTFAK.CCN.Constants;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using CTFAK.Core.Properties;
+using CTFAK.CCN.Chunks.Banks;
 
 namespace CTFAK.Tools
 {
@@ -81,7 +82,7 @@ namespace CTFAK.Tools
 
             mfa.Music = game.Music;
             mfa.Images.Items = imgs;
-            mfa.GraphicMode = 0;
+            mfa.GraphicMode = 4;
 
             foreach (var item in mfa.Icons.Items)
             {
@@ -432,6 +433,8 @@ namespace CTFAK.Tools
                                     var eventGroup = newFrame.Events.Items[eg];
                                     foreach (Action action in eventGroup.Actions)
                                     {
+                                        if (action.ObjectType == -5 && action.Num == 0)
+                                            continue;
                                         foreach (var quailifer in qualifiers)
                                         {
                                             if (quailifer.Value.ObjectInfo == action.ObjectInfo)
@@ -493,7 +496,7 @@ namespace CTFAK.Tools
 
             var outPath = reader.getGameData().name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            outPath = rgx.Replace(outPath, "");
+            outPath = rgx.Replace(outPath, "").Trim(' ');
             Directory.CreateDirectory($"Dumps\\{outPath}");
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
 
@@ -744,7 +747,24 @@ namespace CTFAK.Tools
                 if (item.InkEffect != 1 && !CTFAKCore.parameters.Contains("notrans"))
                 {
                     newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
+                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff =
+                            Color.FromArgb(item.rgbCoeff.A,
+                                           item.rgbCoeff.B,
+                                           item.rgbCoeff.G,
+                                           item.rgbCoeff.R);
+                    try
+                    {
+                        if (ImageBank.realGraphicMode < 4)
+                        {
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
+                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff =
+                            Color.FromArgb(item.rgbCoeff.A,
+                                     255 - item.rgbCoeff.B,
+                                     255 - item.rgbCoeff.G,
+                                     255 - item.rgbCoeff.R);
+                        }
+                    }
+                    catch { }
                 }
 
                 
@@ -791,6 +811,41 @@ namespace CTFAK.Tools
                     newObject.Strings = new MFAValueList();//ConvertStrings(itemLoader.);
                     newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values);
                     newObject.Movements = new MFAMovements();
+
+                    if (itemLoader.Values != null)
+                    {
+                        for (int j = 0; j < itemLoader.Values.Items.Count; j++)
+                        {
+                            string ch = "A";
+                            if (j >= 26)
+                                ch = ((char)('A' + (((j - (j % 26)) / 26) - 1))).ToString() + ((char)('A' + (j % 26))).ToString();
+                            else
+                                ch = ((char)('A' + j)).ToString();
+
+                            var newVal = new ValueItem();
+                            newVal.Name = $"Alterable Value {ch}";
+                            newVal.Value = itemLoader.Values.Items[j];
+                            newObject.Values.Items.Add(newVal);
+                        }
+                    }
+
+                    if (itemLoader.Strings != null)
+                    {
+                        for (int j = 0; j < itemLoader.Strings.Items.Count; j++)
+                        {
+                            string ch = "A";
+                            if (j >= 26)
+                                ch = ((char)('A' + (((j - (j % 26)) / 26) - 1))).ToString() + ((char)('A' + (j % 26))).ToString();
+                            else
+                                ch = ((char)('A' + j)).ToString();
+
+                            var newStr = new ValueItem();
+                            newStr.Name = $"Alterable String {ch}";
+                            newStr.Value = itemLoader.Strings.Items[j];
+                            newObject.Strings.Items.Add(newStr);
+                        }
+                    }
+
                     if (itemLoader.Movements == null)
                     {
                         var newMov = new MFAMovement();

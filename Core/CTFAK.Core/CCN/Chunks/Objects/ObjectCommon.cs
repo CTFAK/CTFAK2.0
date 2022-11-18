@@ -88,8 +88,8 @@ namespace CTFAK.CCN.Chunks.Objects
         public int ExtensionPrivate;
         public int ExtensionId;
         public int ExtensionVersion;
-        //public AlterableValues Values;
-        //public AlterableStrings Strings;
+        public AlterableValues Values;
+        public AlterableStrings Strings;
         public Movements Movements;
         public Text Text;
         public Counter Counter;
@@ -297,18 +297,34 @@ namespace CTFAK.CCN.Chunks.Objects
                     _fadeoutOffset = reader.ReadUInt32();
                 }
                 //currentPosition = reader.Tell();
-                
-                
-            }
-            
 
-            
+
+            }
+
+
+
             if (_animationsOffset > 0)
             {
                 //Console.WriteLine("ANIMS FOUND: "+Parent.name);
                 reader.Seek(currentPosition + _animationsOffset);
                 Animations = new Animations();
                 Animations.Read(reader);
+            }
+
+            if (_valuesOffset > 0)
+            {
+                //Logger.Log("ALTVALS FOUND");
+                reader.Seek(currentPosition + _valuesOffset);
+                Values = new AlterableValues();
+                Values.Read(reader);
+            }
+
+            if (_stringsOffset > 0)
+            {
+                //Logger.Log("ALTSTRS FOUND");
+                reader.Seek(currentPosition + _stringsOffset);
+                Strings = new AlterableStrings();
+                Strings.Read(reader);
             }
 
 

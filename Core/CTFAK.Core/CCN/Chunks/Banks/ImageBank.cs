@@ -16,6 +16,7 @@ namespace CTFAK.CCN.Chunks.Banks
     {
         public static event CTFAKCore.SaveHandler OnImageLoaded;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
+        public static int realGraphicMode = 4;
         public override void Read(ByteReader reader)
         {
             if (CTFAKCore.parameters.Contains("-noimg")) return;
@@ -79,12 +80,15 @@ namespace CTFAK.CCN.Chunks.Banks
                     {
                         case 4:          
                             NativeLib.ReadPoint(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            ImageBank.realGraphicMode = 4;
                             break;
                         case 6:
                             NativeLib.ReadFifteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            ImageBank.realGraphicMode = 3;
                             break;
                         case 7:
                             NativeLib.ReadSixteen(resultAllocated, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, imageAllocated, transparent);
+                            ImageBank.realGraphicMode = 2;
                             break;
                         case 16:
                             int stride = width * 4;
@@ -117,6 +121,7 @@ namespace CTFAK.CCN.Chunks.Banks
 
                                 position += pad * 4;
                             }
+                            ImageBank.realGraphicMode = 1;
                             break;
                     }
 
@@ -141,9 +146,10 @@ namespace CTFAK.CCN.Chunks.Banks
 
                     realBitmap.UnlockBits(bmpData);
                     //realBitmap.Save($"Images\\{Handle}.png");
-                        //Logger.Log("Trying again");
-                    
-                    
+                    //Logger.Log("Trying again");
+
+                    if (Settings.twofiveplus)
+                        ImageBank.realGraphicMode = 4;
                 }
                 return realBitmap;
 

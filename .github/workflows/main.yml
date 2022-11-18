@@ -24,23 +24,41 @@ jobs:
     - name: Compile (release)
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
-
-    - uses: suisei-cn/actions-download-file@v1
-      id: template.mfa
-      name: Download a file
-      with:
-        url: "https://cdn.discordapp.com/attachments/808199033990152253/921667566546587668/template.mfa"
-        target: D:\a\CTFAK2.0\CTFAK2.0\
-
-    - name: Copy template file to CTFAK directory
+        
+    - name: Copy built files
       run: |
-           mkdir BINARY
-           cd CTFAK\bin\
-           Xcopy /E /I Release "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
-           copy template.mfa "D:\a\CTFAK2.0\CTFAK2.0\BINARY\CTFAK_BIN"
+           mkdir "D:\CTFAK\bin\Release"
+           mkdir "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Release\net6.0-windows\CTFAK.Core.pdb" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.deps.json" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.exe" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.pdb" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\CTFAK.Cli.runtimeconfig.json" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Ionic.Zip.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Joveler.Compression.ZLib.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Joveler.DynLoader.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\K4os.Compression.LZ4.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Microsoft.Win32.SystemEvents.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\Newtonsoft.Json.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Drawing.Common.dll" "D:\CTFAK\bin\Release"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\System.Resources.Extensions.dll" "D:\CTFAK\bin\Release"
+           Xcopy "D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Release\net6.0-windows\runtimes" "D:\CTFAK\bin\Release\runtimes" /i /s
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.dll" "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Release\net6.0-windows\CTFAK.Decompiler.pdb" "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.dll" "D:\CTFAK\bin\Release\Plugins"
+           copy "D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Release\net6.0-windows\Dumper.pdb" "D:\CTFAK\bin\Release\Plugins"
+           
+           
+    - name: Download required files
+      uses: carlosperate/download-file-action@v2.0.0
+      with:
+          file-url: "https://cdn.discordapp.com/attachments/956312557000462436/1041801617848143922/ctfakrequirements.zip"
+          location: D:\CTFAK\bin\Release
          
     - name: Upload CTFAK (release)
       uses: actions/upload-artifact@v2
       with:
-       name: CTFAK_release
-       path: CTFAK\bin\Release      
+       name: CTFAK
+       path: D:\CTFAK\bin\Release      

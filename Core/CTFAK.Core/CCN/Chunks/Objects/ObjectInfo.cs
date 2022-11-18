@@ -3,6 +3,7 @@ using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace CTFAK.CCN.Chunks.Objects
         public int InkEffectValue;
         public Color rgbCoeff;
         public byte blend;
+        //public int shaderId;
+        //public List<ByteReader> effectItems;
 
         public override void Read(ByteReader reader)
         {
@@ -30,7 +33,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
                 if (newChunk.Id == 32639) break;
-                
+                //Logger.Log("Object Chunk ID " + newChunk.Id);
                 switch (newChunk.Id)
                 {
                     case 17477:
@@ -74,7 +77,16 @@ namespace CTFAK.CCN.Chunks.Objects
                         properties?.Read(chunkReader);
                         break;
 
-
+                    /*case 17480:
+                        shaderId = chunkReader.ReadInt32();
+                        var count = reader.ReadInt32();
+                        for (int i = 0; i < count; i++)
+                        {
+                            var newReader = new ByteReader(new MemoryStream(reader.ReadBytes(4)));
+                            effectItems.Add(newReader);
+                            Logger.Log("Loading Shader " + newReader.ReadInt32() + " on " + name);
+                        }
+                        break;*/
                 }
                 
             }

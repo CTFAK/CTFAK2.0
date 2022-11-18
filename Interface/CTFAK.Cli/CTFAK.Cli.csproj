@@ -9,7 +9,7 @@
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishReadyToRun>true</PublishReadyToRun>!-->
-
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
 
     </PropertyGroup>
