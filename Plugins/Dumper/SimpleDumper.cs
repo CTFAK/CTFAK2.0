@@ -40,7 +40,7 @@ namespace Dumper
             var images = reader.getGameData().Images.Items;
             var outPath = reader.getGameData().name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            outPath = rgx.Replace(outPath, "");
+            outPath = rgx.Replace(outPath, "").Replace(" ", "");
             Directory.CreateDirectory($"Dumps\\{outPath}\\Images");
             Task[] tasks = new Task[images.Count];
             int i = 0;
@@ -79,7 +79,7 @@ namespace Dumper
             var sounds = reader.getGameData().Sounds.Items;
             var outPath = reader.getGameData().name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            outPath = rgx.Replace(outPath, "");
+            outPath = rgx.Replace(outPath, "").Replace(" ", "");
             Directory.CreateDirectory($"Dumps\\{outPath}\\Sounds");
             int soundint = 0;
             foreach (var snd in sounds)
