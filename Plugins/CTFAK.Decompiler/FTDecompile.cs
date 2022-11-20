@@ -220,6 +220,9 @@ namespace CTFAK.Tools
                 var newItem = new MFAObjectInfo();
                 if (item.ObjectType >= 32)
                 {
+                    //Logger.Log(item.ObjectType + ", " + item.name);
+                    if (item.ObjectType == 36 && item.name == "iOS Plus Object" || item.ObjectType == 45 && item.name.Contains("KYSO"))
+                        continue; //DIE YOU UNDEAD FLESH MAGGOT! 
                     newItem = TranslateObject(mfa, game, item, true);
                 }
                 else
