@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using CTFAK.EXE;
 using CTFAK.MMFParser.EXE.Loaders;
+using CTFAK.FileReaders;
 
 namespace CTFAK.CCN
 {
@@ -170,6 +171,8 @@ namespace CTFAK.CCN
                         break;
                     case 26216: //SoundBank
                         Sounds = loader as SoundBank;
+                        if (Settings.gameType == Settings.GameType.ANDROID && !Core.parameters.Contains("-nosounds"))
+                            Sounds = ApkFileReader.androidSoundBank;
                         break;
                     case 8790: //TwoFivePlusProperties
                         FrameItems = TwoFilePlusContainer.instance.objectsContainer;

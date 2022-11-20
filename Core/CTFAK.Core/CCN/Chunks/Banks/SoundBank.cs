@@ -31,7 +31,7 @@ namespace CTFAK.CCN.Chunks.Banks
             for (int i = 0; i < NumOfItems; i++)
             {
                 if (Settings.android) continue;
-                if(Settings.Old) continue;
+                if (Settings.Old) continue;
                 
                 var item = new SoundItem();
                 
@@ -103,6 +103,14 @@ namespace CTFAK.CCN.Chunks.Banks
             }
             Name = soundData.ReadWideString(nameLenght);
             Name = Name.Replace(" ", "");
+            Data = soundData.ReadBytes((int)soundData.Size());
+        }
+
+        public void AndroidRead(ByteReader soundData, string itemName)
+        {
+            Handle = uint.Parse(Path.GetFileNameWithoutExtension(itemName).TrimStart('s'));
+            Size = (int)soundData.Size();
+            Name = Path.GetFileNameWithoutExtension(itemName);
             Data = soundData.ReadBytes((int)soundData.Size());
         }
 
