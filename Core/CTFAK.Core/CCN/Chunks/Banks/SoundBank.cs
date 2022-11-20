@@ -32,17 +32,15 @@ namespace CTFAK.CCN.Chunks.Banks
             {
 
                 if (Settings.android) continue;
-                if(Settings.Old) continue;
+                if (Settings.Old) continue;
                 
                 var item = new SoundItem();
                 
-                    item.IsCompressed = IsCompressed;
-                    item.Read(reader);
-                OnSoundLoaded?.Invoke(i,NumOfItems);
-
+                item.IsCompressed = IsCompressed;
+                item.Read(reader);
+                OnSoundLoaded?.Invoke(i, NumOfItems);
 
                 Items.Add(item);
-
             }
 
         }
@@ -119,9 +117,16 @@ namespace CTFAK.CCN.Chunks.Banks
             Name = soundData.ReadWideString(nameLenght);
             Name = Name.Replace(" ", "");
             Data = soundData.ReadBytes((int)soundData.Size());
-
+        
         }
 
+        public void AndroidRead(ByteReader soundData, string itemName)
+        {
+            Handle = uint.Parse(Path.GetFileNameWithoutExtension(itemName).TrimStart('s'));
+            Size = (int)soundData.Size();
+            Name = Path.GetFileNameWithoutExtension(itemName);
+            Data = soundData.ReadBytes((int)soundData.Size());
+        }
 
         public override void Write(ByteWriter writer)
         {

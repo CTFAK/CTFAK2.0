@@ -754,7 +754,7 @@ namespace CTFAK.Tools
                                            item.rgbCoeff.R);
                     try
                     {
-                        if (ImageBank.realGraphicMode < 4)
+                        if (ImageBank.realGraphicMode < 4 && !Settings.android)
                         {
                             newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
                             newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff =

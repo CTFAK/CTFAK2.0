@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using CTFAK.EXE;
 using CTFAK.MMFParser.EXE.Loaders;
 using Ionic.Zlib;
+using CTFAK.FileReaders;
 
 namespace CTFAK.CCN
 {
@@ -353,6 +354,8 @@ namespace CTFAK.CCN
                         case 26216:
                             Sounds = new SoundBank();
                             Sounds.Read(chunkReader);
+                            if (Settings.gameType == Settings.GameType.ANDROID && !CTFAKCore.parameters.Contains("-nosounds"))
+                                Sounds = ApkFileReader.androidSoundBank;
                             break;
                         case 21217:
                             Music = new MusicBank();

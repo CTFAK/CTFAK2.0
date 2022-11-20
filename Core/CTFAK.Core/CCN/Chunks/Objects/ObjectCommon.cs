@@ -357,12 +357,14 @@ namespace CTFAK.CCN.Chunks.Objects
                 switch (Identifier)
                 {
                     //Text
+                    case "XTÿÿ":
                     case "TE":
                     case "TEXT":
                         Text = new Text();
                         Text.Read(reader);
                         break;
                     //Counter
+                    case "TRÿÿ":
                     case "CNTR":
                     case "SCORE":
                     case "LIVE":
