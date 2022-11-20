@@ -207,9 +207,9 @@ namespace CTFAK.Tools
                 var newItem = new MFAObjectInfo();
                 if (item.ObjectType >= 32)
                 {
-                    //Deleting private extensions used in Clickteam APKs
-                    if ((item.properties as ObjectCommon).Identifier == "Oiÿÿ") //iOSExpansion.mfx
-                        continue;
+                    //Logger.Log(item.ObjectType + ", " + item.name);
+                    if (item.ObjectType == 36 && item.name == "iOS Plus Object" || item.ObjectType == 45 && item.name.Contains("KYSO"))
+                        continue; //DIE YOU UNDEAD FLESH MAGGOT! 
 
                     newItem = TranslateObject(mfa, game, item, true);
                 }

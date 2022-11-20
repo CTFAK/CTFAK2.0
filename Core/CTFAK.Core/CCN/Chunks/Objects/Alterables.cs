@@ -15,7 +15,14 @@ namespace CTFAK.CCN.Chunks.Objects
             var count = reader.ReadInt16();
             for (int i = 0; i < count; i++)
             {
-                Items.Add(reader.ReadInt32());
+                try
+                {
+                    Items.Add(reader.ReadInt32());
+                }
+                catch
+                {
+                    break;
+                }
                 //Logger.Log($"Reading AltVal {i}: {Items[i]}");
             }
         }
@@ -35,7 +42,14 @@ namespace CTFAK.CCN.Chunks.Objects
             var count = reader.ReadInt16();
             for (int i = 0; i < count; i++)
             {
-                Items.Add(reader.ReadWideString());
+                try
+                {
+                    Items.Add(reader.ReadWideString());
+                }
+                catch
+                {
+                    break;
+                }
                 //Logger.Log($"Reading AltStr {i}: {Items[i]}");
             }
         }
