@@ -11,25 +11,29 @@ namespace CTFAK.CCN.Chunks
 
         public override void Read(ByteReader reader)
         {
-            var count = reader.ReadInt16();
-            List<ByteReader> tempReaders = new List<ByteReader>();
-            for (int i = 0; i < count; i++)
+            try
             {
-                tempReaders.Add(new ByteReader(reader.ReadBytes(4)));
-            }
+                var count = reader.ReadInt16();
+                List<ByteReader> tempReaders = new List<ByteReader>();
+                for (int i = 0; i < count; i++)
+                {
+                    tempReaders.Add(new ByteReader(reader.ReadBytes(4)));
+                }
 
-            foreach (var glob in tempReaders)
-            {
-                var type = reader.ReadByte();
-                if (type == 2)
+                foreach (var glob in tempReaders)
                 {
-                    Items.Add(glob.ReadSingle());
-                }
-                else if (type == 0)
-                {
-                    Items.Add(glob.ReadInt32());
+                    var type = reader.ReadByte();
+                    if (type == 2)
+                    {
+                        Items.Add(glob.ReadSingle());
+                    }
+                    else if (type == 0)
+                    {
+                        Items.Add(glob.ReadInt32());
+                    }
                 }
             }
+            catch { }
         }
 
         public override void Write(ByteWriter writer)
@@ -44,12 +48,16 @@ namespace CTFAK.CCN.Chunks
 
         public override void Read(ByteReader reader)
         {
-            var count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
+            try
             {
-                var str = reader.ReadWideString();
-                Items.Add(str);
+                var count = reader.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    var str = reader.ReadWideString();
+                    Items.Add(str);
+                }
             }
+            catch { }
         }
 
         public override void Write(ByteWriter writer)
