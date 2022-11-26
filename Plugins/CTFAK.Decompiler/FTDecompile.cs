@@ -207,9 +207,9 @@ namespace CTFAK.Tools
                 var newItem = new MFAObjectInfo();
                 if (item.ObjectType >= 32)
                 {
-                    //Deleting private extensions used in Clickteam APKs
-                    if ((item.properties as ObjectCommon).Identifier == "Oiÿÿ") //iOSExpansion.mfx
-                        continue;
+                    //Logger.Log(item.ObjectType + ", " + item.name);
+                    if (item.ObjectType == 36 && item.name == "iOS Plus Object" || item.ObjectType == 45 && item.name.Contains("KYSO"))
+                        continue; //DIE YOU UNDEAD FLESH MAGGOT! 
 
                     newItem = TranslateObject(mfa, game, item, true);
                 }
@@ -487,7 +487,7 @@ namespace CTFAK.Tools
 
             var outPath = reader.getGameData().Name ?? "Unknown Game";
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            outPath = rgx.Replace(outPath, "");
+            outPath = rgx.Replace(outPath, "").Trim(' ');
             Directory.CreateDirectory($"Dumps\\{outPath}");
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.EditorFilename)}.mfa", FileMode.Create)));
 
@@ -745,9 +745,8 @@ namespace CTFAK.Tools
                                            item.rgbCoeff.R);
                     try
                     {
-                        if (ImageBank.realGraphicMode < 4)
+                        if (ImageBank.realGraphicMode < 4 && !Settings.android)
                         {
-                            
                             newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
                             newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = 
                             Color.FromArgb(item.rgbCoeff.A,
