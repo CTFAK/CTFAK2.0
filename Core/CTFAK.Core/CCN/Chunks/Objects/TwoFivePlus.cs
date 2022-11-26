@@ -168,6 +168,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 reader.Seek(paramStart+size);
             }
             Console.WriteLine("=====SHADERS_END=====");
+            current++;
 
         }
 
