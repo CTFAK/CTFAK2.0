@@ -153,6 +153,9 @@ namespace CTFAK.CCN
                     case 8767: //FrameItems2
                         FrameItems = (loader as FrameItems2)?.Items;
                         break;
+                    case 8771:
+                        Shaders = (loader as Shaders);
+                        break;
                     case 8792: //FontBank
                         Fonts = loader as FontBank;
                         break;

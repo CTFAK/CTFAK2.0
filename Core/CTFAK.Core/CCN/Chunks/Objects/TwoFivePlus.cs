@@ -20,6 +20,7 @@ namespace CTFAK.CCN.Chunks.Objects
         public static TwoFilePlusContainer instance;
         public Dictionary<int, ObjectInfo> objectsContainer = new Dictionary<int, ObjectInfo>();
     }
+    
     [ChunkLoader(8790, "TwoFivePlusProperties")]
     public class TwoFilePlusProps : ChunkLoader
     {
@@ -121,36 +122,58 @@ namespace CTFAK.CCN.Chunks.Objects
             throw new System.NotImplementedException();
         }
     }
-    /*[ChunkLoader(8791, "TwoFivePlusShaders")]
+
+    [ChunkLoader(8789, "TwoFivePlusShaders")]
     public class TwoFivePlusShaders : ChunkLoader
     {
         public override void Read(ByteReader reader)
         {
-            while (true)
-            {
-                var start = reader.Tell();
-                var end = start + reader.Size();
-                if (start == end) return;
-                reader.ReadInt32();
 
-                int current = 0;
-                while (start <= end)
+            Console.WriteLine("=====SHADERS=====");
+            var start = reader.Tell();
+            var end = start + reader.Size();
+            if (start == end) return;
+            
+            int current = 0;
+            while (start <= end)
+            {
+                var paramStart = reader.Tell()+4;
+                if (reader.Tell() == end) return;
+                var size = reader.ReadInt32();
+                var obj = TwoFilePlusContainer.instance.objectsContainer[current];
+                var shaderHandle = reader.ReadInt32();
+                var numberOfParams = reader.ReadInt32();
+                var shdr = Core.currentReader.getGameData().Shaders.ShaderList[shaderHandle];
+
+                for (int i = 0; i < numberOfParams; i++)
                 {
-                    TwoFilePlusContainer.instance.objectsContainer[current].shaderId = reader.ReadInt32();
-                    var count = reader.ReadInt32();
-                    for (int i = 0; i < count; i++)
+                    var param = shdr.Parameters[i];
+                    object paramValue;
+                    switch (param.Type)
                     {
-                        var newReader = new ByteReader(new MemoryStream(reader.ReadBytes(4)));
-                        TwoFilePlusContainer.instance.objectsContainer[current].effectItems.Add(newReader);
-                        Logger.Log("Loading Shader " + newReader.ReadInt32() + " on " + TwoFilePlusContainer.instance.objectsContainer[current].name);
+                        case 0:
+                            paramValue = reader.ReadInt32();
+                            break;
+                        case 1:
+                            paramValue = reader.ReadSingle();
+                            break;
+                        default:
+                            paramValue = "unknownType";
+                            break;
                     }
-                    current++;
+
+                    Console.WriteLine(
+                        $"Loaded shader parameter for object \"{obj.name}\" with name \"{param.Name}\" for shader \"{shdr.Name}\" with value {paramValue}({param.GetValueType()})");
                 }
+                reader.Seek(paramStart+size);
             }
+            Console.WriteLine("=====SHADERS_END=====");
+
         }
 
         public override void Write(ByteWriter Writer)
         {
 
-        }*/
+        }
+    }
 }

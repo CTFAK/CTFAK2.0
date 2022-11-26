@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 using CTFAK.Attributes;
 using CTFAK.Memory;
 using CTFAK.Utils;
@@ -73,10 +74,13 @@ namespace CTFAK.CCN.Chunks
         int chunkIndex = 0;
         public void Read(ByteReader reader)
         {
+            int i = 0;
             while (true)
             {
+                i++;
                 Chunk newChunk=null;
                 byte[] chunkData=null;
+                Directory.CreateDirectory("Chunks");
                 if (reader.Tell() >= reader.Size()) break;
                 try
                 {
@@ -179,7 +183,7 @@ namespace CTFAK.CCN.Chunks
             { 8764, "GLOBALVALUENAMES" },
             { 8765, "GLOBALSTRINGNAMES" },
             { 8766, "MVTEXTS" },
-            { 8767, "PRAMEITEMS_2" },
+            { 8767, "FRAMEITEMS_2" },
             { 8768, "EXEONLY" },
             { 8770, "PROTECTION" },
             { 8771, "SHADERS" },

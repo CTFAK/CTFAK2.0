@@ -995,9 +995,7 @@ namespace CTFAK.Tools
                             newExt.ExtensionId = itemLoader.ExtensionId;
                             newExt.ExtensionPrivate = itemLoader.ExtensionPrivate;
                             newExt.ExtensionData = itemLoader.ExtensionData;
-
-                            //Logger.Log($"{ext.Name}, {(item.properties as ObjectCommon).Identifier}");
-
+                            
                             newItem.Loader = newExt;
                             var tuple = new Tuple<int, string, string, int, string>(ext.Handle, ext.Name, "",
                                 ext.MagicNumber, ext.SubType);
@@ -1104,9 +1102,7 @@ namespace CTFAK.Tools
                         }
 
                         var shape = counter?.Shape;
-                        // if(counter==null) throw new NullReferenceException(nameof(counter));
-                        // counter = null;
-                        // shape = null;
+                        
                         if (counter == null)
                         {
                             newCount.DisplayType = 0;
