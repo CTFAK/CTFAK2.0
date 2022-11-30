@@ -739,6 +739,17 @@ namespace CTFAK.Tools
                 var shdrData = newItem.Chunks.GetOrCreateChunk<ShaderSettings>();
                 shdrData.Blend = item.blend;
                 shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, item.rgbCoeff.B, item.rgbCoeff.G, item.rgbCoeff.R);
+
+                try
+                {
+                    if (ImageBank.realGraphicMode < 3 && !Settings.android)
+                    {
+                        shdrData.Blend = (byte)(255 - item.blend);
+                        shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, 255 - item.rgbCoeff.B, 255 - item.rgbCoeff.G, 255 - item.rgbCoeff.R);
+                    }
+                }
+                catch { }
+
                 if (item.shaderData.hasShader)
                 {
                     var newShader = new ShaderSettings.MFAShader();
