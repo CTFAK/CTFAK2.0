@@ -305,6 +305,37 @@ namespace CTFAK.Tools
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect?.top ?? 0;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
+                    var shdrData = newFrame.Chunks.GetOrCreateChunk<ShaderSettings>();
+                    if (frame.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
+                    {
+                        shdrData.Blend = frame.blend;
+                        shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, frame.rgbCoeff.R, frame.rgbCoeff.G, frame.rgbCoeff.B);
+                    }
+
+                    if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                    {
+                        shdrData.Blend = (byte)(255 - frame.blend);
+                        shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, 255 - frame.rgbCoeff.R, 255 - frame.rgbCoeff.G, 255 - frame.rgbCoeff.B);
+                    }
+
+                    if (frame.shaderData.hasShader)
+                    {
+                        var newShader = new ShaderSettings.MFAShader();
+                        newShader.Name = frame.shaderData.name;
+                        foreach (var param in frame.shaderData.parameters)
+                        {
+                            var newParam = new ShaderSettings.ShaderParameter();
+                            newParam.Name = param.Name;
+                            newParam.Value = param.Value;
+                            newParam.ValueType = param.ValueType;
+                            newShader.Parameters.Add(newParam);
+                        }
+                        shdrData.Shaders.Add(newShader);
+                    }
+                    ByteWriter newWriter = new(new MemoryStream());
+                    shdrData.Write(newWriter);
+                    File.WriteAllBytes("Chunks\\outchunk" + frame.name + ".bin", newWriter.GetBuffer());
+
                     //LayerInfo
                     if (Settings.Old)
                     {
@@ -330,6 +361,35 @@ namespace CTFAK.Tools
                             newLayer.Flags["WrapHorizontally"] = layer.Flags["WrapHorizontally"];
                             newLayer.XCoefficient = layer.XCoeff;
                             newLayer.YCoefficient = layer.YCoeff;
+                            newLayer.Chunks = new();
+
+                            var lyrShdrData = newLayer.Chunks.GetOrCreateChunk<ShaderSettings>();
+                            if (layer.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
+                            {
+                                lyrShdrData.Blend = layer.blend;
+                                lyrShdrData.RGBCoeff = Color.FromArgb(layer.rgbCoeff.A, layer.rgbCoeff.R, layer.rgbCoeff.G, layer.rgbCoeff.B);
+                            }
+
+                            if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                            {
+                                lyrShdrData.Blend = (byte)(255 - layer.blend);
+                                lyrShdrData.RGBCoeff = Color.FromArgb(layer.rgbCoeff.A, 255 - layer.rgbCoeff.R, 255 - layer.rgbCoeff.G, 255 - layer.rgbCoeff.B);
+                            }
+
+                            if (layer.shaderData.hasShader)
+                            {
+                                var newShader = new ShaderSettings.MFAShader();
+                                newShader.Name = layer.shaderData.name;
+                                foreach (var param in layer.shaderData.parameters)
+                                {
+                                    var newParam = new ShaderSettings.ShaderParameter();
+                                    newParam.Name = param.Name;
+                                    newParam.Value = param.Value;
+                                    newParam.ValueType = param.ValueType;
+                                    newShader.Parameters.Add(newParam);
+                                }
+                                lyrShdrData.Shaders.Add(newShader);
+                            }
 
                             newFrame.Layers.Add(newLayer);
                         }
