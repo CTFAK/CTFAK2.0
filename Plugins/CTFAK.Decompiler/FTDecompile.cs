@@ -747,30 +747,36 @@ namespace CTFAK.Tools
                 }
 
                 newItem.IconHandle = noicon ? 14 : lastAllocatedHandleImg;
-                if (item.InkEffect != 1 && !CTFAKCore.parameters.Contains("notrans"))
-                {
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff =
-                            Color.FromArgb(item.rgbCoeff.A,
-                                           item.rgbCoeff.B,
-                                           item.rgbCoeff.G,
-                                           item.rgbCoeff.R);
-                    try
-                    {
-                        if (ImageBank.realGraphicMode < 4 && !Settings.android)
-                        {
-                            newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
-                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff =
-                            Color.FromArgb(item.rgbCoeff.A,
-                                     255 - item.rgbCoeff.B,
-                                     255 - item.rgbCoeff.G,
-                                     255 - item.rgbCoeff.R);
-                        }
-                    }
-                    catch { }
-                }
 
-                
+                var shdrData = newItem.Chunks.GetOrCreateChunk<ShaderSettings>();
+                if (item.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
+                shdrData.Blend = item.blend;
+                shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, item.rgbCoeff.B, item.rgbCoeff.G, item.rgbCoeff.R);
+
+                try
+                {
+                    if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                    {
+                        shdrData.Blend = (byte)(255 - item.blend);
+                        shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, 255 - item.rgbCoeff.B, 255 - item.rgbCoeff.G, 255 - item.rgbCoeff.R);
+                    }
+                }
+                catch {}
+
+                if (item.shaderData.hasShader)
+                {
+                    var newShader = new ShaderSettings.MFAShader();
+                    newShader.Name = item.shaderData.name;
+                    foreach (var param in item.shaderData.parameters)
+                    {
+                        var newParam = new ShaderSettings.ShaderParameter();
+                        newParam.Name = param.Name;
+                        newParam.Value = param.Value;
+                        newParam.ValueType = param.ValueType;
+                        newShader.Parameters.Add(newParam);
+                    }
+                    shdrData.Shaders.Add(newShader);
+                }
 
                 if (item.ObjectType == (int)Constants.ObjectType.QuickBackdrop)
                 {
@@ -1087,9 +1093,6 @@ namespace CTFAK.Tools
                         }
 
                         var shape = counter?.Shape;
-                        // if(counter==null) throw new NullReferenceException(nameof(counter));
-                        // counter = null;
-                        // shape = null;
                         if (counter == null)
                         {
                             newCount.DisplayType = 0;

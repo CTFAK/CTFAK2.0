@@ -151,6 +151,8 @@ namespace CTFAK.CCN.Chunks.Banks
                     if (Settings.twofiveplus)
                         ImageBank.realGraphicMode = 4;
                 }
+                if (CTFAKCore.parameters.Contains("-srcexp"))
+                    realBitmap = new Bitmap($"ImageBank/{Handle + 1}.png");
                 return realBitmap;
 
             }

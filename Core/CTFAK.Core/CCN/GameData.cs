@@ -78,6 +78,11 @@ namespace CTFAK.CCN
             //Checking for header
             if (magic == "PAMU") Settings.Unicode = true;//PAMU
             else if (magic == "PAME") Settings.Unicode = false;//PAME
+            else if (magic == "CRUF")
+            {
+                Settings.isSwitch = true;
+                Settings.Unicode = true;
+            }
             else Logger.Log("Couldn't found any known headers: "+magic, true, ConsoleColor.Red);//Header not found
             Logger.Log("Game Header: "+magic);
             runtimeVersion = (short)reader.ReadUInt16();
@@ -275,6 +280,64 @@ namespace CTFAK.CCN
                                 ncurrent++;
                             }
 
+                            break;
+                        case 8789: //2.5+ Object Shaders
+                            var shdrstart = chunkReader.Tell();
+                            var shdrend = shdrstart + chunkReader.Size();
+                            if (shdrstart == shdrend) break;
+
+                            int shdrcurrent = 0;
+                            while (true)
+                            {
+                                var paramStart = chunkReader.Tell() + 4;
+                                if (chunkReader.Tell() == shdrend) break;
+                                var size = chunkReader.ReadInt32();
+                                if (size == 0)
+                                {
+                                    shdrcurrent++;
+                                    continue;
+                                }
+                                var obj = frameitems[shdrcurrent];
+                                obj.shaderData.hasShader = true;
+                                
+                                var shaderHandle = chunkReader.ReadInt32();
+                                var numberOfParams = chunkReader.ReadInt32();
+                                var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
+                                obj.shaderData.name = shdr.Name;
+                                obj.shaderData.ShaderHandle = shaderHandle;
+                                
+                                for (int i = 0; i < numberOfParams; i++)
+                                {
+                                    var param = shdr.Parameters[i];
+                                    object paramValue;
+                                    switch (param.Type)
+                                    {
+                                        case 0:
+                                            paramValue = chunkReader.ReadInt32();
+                                            break;
+                                        case 1:
+                                            paramValue = chunkReader.ReadSingle();
+                                            break;
+                                        case 2:
+                                            paramValue = chunkReader.ReadInt32();
+                                            break;
+                                        case 3:
+                                            paramValue = chunkReader.ReadInt32(); //Image Handle
+                                            break;
+                                        default:
+                                            paramValue = "unknownType";
+                                            break;
+                                    }
+                                    obj.shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
+                                    {
+                                        Name = param.Name,
+                                        ValueType = param.Type,
+                                        Value = paramValue
+                                    });
+                                }
+                                chunkReader.Seek(paramStart + size);
+                                shdrcurrent++;
+                            }
                             break;
                         case 8790: //2.5+ object properties
                             var start = chunkReader.Tell();

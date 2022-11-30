@@ -22,7 +22,6 @@ namespace CTFAK.EXE
             long start = reader.Tell();
             _header = reader.ReadBytes(8);
 
-            // reader.Skip(8);
             uint headerSize = reader.ReadUInt32();
             Debug.Assert(headerSize == 32);
             uint dataSize = reader.ReadUInt32();

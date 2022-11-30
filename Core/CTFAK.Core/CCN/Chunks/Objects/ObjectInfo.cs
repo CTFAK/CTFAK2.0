@@ -22,8 +22,24 @@ namespace CTFAK.CCN.Chunks.Objects
         public int InkEffectValue;
         public Color rgbCoeff;
         public byte blend;
+
+        public ShaderData shaderData = new();
         //public int shaderId;
         //public List<ByteReader> effectItems;
+
+        public class ShaderParameter
+        {
+            public string Name;
+            public int ValueType;
+            public object Value;
+        }
+        public class ShaderData
+        {
+            public bool hasShader;
+            public string name;
+            public int ShaderHandle;
+            public List<ShaderParameter> parameters = new();
+        }
 
         public override void Read(ByteReader reader)
         {
@@ -77,20 +93,46 @@ namespace CTFAK.CCN.Chunks.Objects
                         properties?.Read(chunkReader);
                         break;
 
-                    /*case 17480:
-                        shaderId = chunkReader.ReadInt32();
-                        var count = reader.ReadInt32();
-                        for (int i = 0; i < count; i++)
+                    case 17480:
+                        shaderData.hasShader = true;
+                        var shaderHandle = chunkReader.ReadInt32();
+                        var numberOfParams = chunkReader.ReadInt32();
+                        var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
+                        shaderData.name = shdr.Name;
+                        shaderData.ShaderHandle = shaderHandle;
+
+                        for (int i = 0; i < numberOfParams; i++)
                         {
-                            var newReader = new ByteReader(new MemoryStream(reader.ReadBytes(4)));
-                            effectItems.Add(newReader);
-                            Logger.Log("Loading Shader " + newReader.ReadInt32() + " on " + name);
+                            var param = shdr.Parameters[i];
+                            object paramValue;
+                            switch (param.Type)
+                            {
+                                case 0:
+                                    paramValue = chunkReader.ReadInt32();
+                                    break;
+                                case 1:
+                                    paramValue = chunkReader.ReadSingle();
+                                    break;
+                                case 2:
+                                    paramValue = chunkReader.ReadInt32();
+                                    break;
+                                case 3:
+                                    paramValue = chunkReader.ReadInt32(); //Image Handle
+                                    break;
+                                default:
+                                    paramValue = "unknownType";
+                                    break;
+                            }
+                            shaderData.parameters.Add(new ShaderParameter()
+                            {
+                                Name = param.Name,
+                                ValueType = param.Type,
+                                Value = paramValue
+                            });
                         }
-                        break;*/
+                        break;
                 }
-                
             }
-            
         }
 
         public override void Write(ByteWriter writer)

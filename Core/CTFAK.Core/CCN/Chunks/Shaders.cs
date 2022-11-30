@@ -9,17 +9,14 @@ namespace CTFAK.MMFParser.EXE.Loaders
 {
     public class Shaders:ChunkLoader
     {
-        public List<Shader> ShaderList;
-
-
-        
+        public Dictionary<int, Shader> ShaderList;
 
         public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
             var count = reader.ReadInt32();
             List<int> offsets = new List<int>();
-            ShaderList = new List<Shader>();
+            ShaderList = new Dictionary<int, Shader>();
             for (int i = 0; i < count; i++)
             {
                 offsets.Add(reader.ReadInt32());
@@ -32,7 +29,7 @@ namespace CTFAK.MMFParser.EXE.Loaders
                     reader.Seek(start + offset);
                     var shader = new Shader();
                     shader.Read(reader);
-                    ShaderList.Add(shader);
+                    ShaderList.Add(offsets.IndexOf(offset),shader);
                 }
                 catch
                 {
