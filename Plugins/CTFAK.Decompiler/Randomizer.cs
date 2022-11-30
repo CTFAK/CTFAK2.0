@@ -667,8 +667,8 @@ namespace CTFAK.Tools
                 newItem.IconHandle = noicon ? 14 : lastAllocatedHandleImg;
                 if (item.InkEffect != 1 && !Core.parameters.Contains("notrans"))
                 {
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = item.rgbCoeff;
+                    newItem.Chunks.GetOrCreateChunk<ShaderSettings>().Blend = item.blend;
+                    newItem.Chunks.GetOrCreateChunk<ShaderSettings>().RGBCoeff = item.rgbCoeff;
                 }
 
                 try

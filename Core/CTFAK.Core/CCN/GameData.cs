@@ -60,7 +60,11 @@ namespace CTFAK.CCN
 
             if (magic == "PAMU") Settings.Unicode = true;
             else if (magic == "PAME") Settings.Unicode = false;
-            else if (magic == "CRUF") Settings.Unicode = true;
+            else if (magic == "CRUF")
+            {
+                Settings.isSwitch = true;
+                Settings.Unicode = false;
+            }
             else Logger.Log("Couldn't found any known headers: " + magic, true, ConsoleColor.Red); //Header not found
 
 

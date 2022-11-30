@@ -10,6 +10,7 @@ namespace CTFAK.MMFParser.EXE.Loaders
 {
     [ChunkLoader(8771,"Shaders")]
     public class Shaders:ChunkLoader
+    
     {
         public Dictionary<int,Shader> ShaderList;
 

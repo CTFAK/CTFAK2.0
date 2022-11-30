@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CTFAK.MFA;
 
 namespace CTFAK.CCN.Chunks.Objects
 {
@@ -23,9 +24,23 @@ namespace CTFAK.CCN.Chunks.Objects
         public Color rgbCoeff;
 
         public byte blend;
+
+        public ShaderData shaderData = new ShaderData();
         //public int shaderId;
         //public List<ByteReader> effectItems;
-
+        public class ShaderParameter
+        {
+            public string Name;
+            public int ValueType;
+            public object Value;
+        }
+        public class ShaderData
+        {
+            public bool hasShader;
+            public string name;
+            public int ShaderHandle;
+            public List<ShaderParameter> parameters = new List<ShaderParameter>();
+        }
         public override void Read(ByteReader reader)
         {
             while (true)
@@ -79,10 +94,13 @@ namespace CTFAK.CCN.Chunks.Objects
                         break;
 
                     case 17480:
+                        shaderData.hasShader = true;
                         var shaderHandle = chunkReader.ReadInt32();
                         var numberOfParams = chunkReader.ReadInt32();
                         var shdr = Core.currentReader.getGameData().Shaders.ShaderList[shaderHandle];
-                        
+                        shaderData.name = shdr.Name;
+                        shaderData.ShaderHandle = shaderHandle;
+                            
                         for (int i = 0; i < numberOfParams; i++)
                         {
                             var param = shdr.Parameters[i];
@@ -95,11 +113,18 @@ namespace CTFAK.CCN.Chunks.Objects
                                 case 1:
                                     paramValue = chunkReader.ReadSingle();
                                     break;
+                                case 2:
+                                    paramValue = chunkReader.ReadInt32();
+                                    break;
+                                case 3:
+                                    paramValue = chunkReader.ReadInt32();//image handle
+                                    break;
                                 default:
                                     paramValue = "unknownType";
                                     break;
                             }
-                            Console.WriteLine($"Loaded shader parameter for object \"{name}\" with name \"{param.Name}\" for shader \"{shdr.Name}\" with value {paramValue}({param.GetValueType()})");
+                            shaderData.parameters.Add( new ShaderParameter(){Name=param.Name,ValueType = param.Type, Value = paramValue});
+                            //Console.WriteLine($"Loaded shader parameter for object \"{name}\" with name \"{param.Name}\" for shader \"{shdr.Name}\" with value {paramValue}({param.GetValueType()})");
                         }
                         break;
                 }

@@ -3,6 +3,7 @@ using System.IO;
 using CTFAK;
 using CTFAK.Memory;
 using CTFAK.MFA;
+using CTFAK.Utils;
 using Ionic;
 using JFusion;
 
@@ -23,6 +24,7 @@ public class Program
     public static void Main(string[] args)
     {
         Core.Init();
+        
         SELECT_MODE:
         Console.ForegroundColor = ConsoleColor.DarkMagenta;
         foreach (var ascartLine in asciiArt)

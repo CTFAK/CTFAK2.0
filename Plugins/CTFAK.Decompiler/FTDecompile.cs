@@ -735,28 +735,25 @@ namespace CTFAK.Tools
                 }
                 
                 newItem.IconHandle = noicon ? 14 : lastAllocatedHandleImg;
-                if (item.InkEffect != 1 && !Core.parameters.Contains("notrans"))
+                
+                var shdrData = newItem.Chunks.GetOrCreateChunk<ShaderSettings>();
+                shdrData.Blend = item.blend;
+                shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, item.rgbCoeff.B, item.rgbCoeff.G, item.rgbCoeff.R);
+                if (item.shaderData.hasShader)
                 {
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = item.blend;
-                    newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = 
-                            Color.FromArgb(item.rgbCoeff.A,
-                                           item.rgbCoeff.B,
-                                           item.rgbCoeff.G,
-                                           item.rgbCoeff.R);
-                    try
+                    var newShader = new ShaderSettings.MFAShader();
+                    newShader.Name = item.shaderData.name;
+                    foreach (var param in item.shaderData.parameters)
                     {
-                        if (ImageBank.realGraphicMode < 4 && !Settings.android)
-                        {
-                            newItem.Chunks.GetOrCreateChunk<Opacity>().Blend = (byte)(255 - item.blend);
-                            newItem.Chunks.GetOrCreateChunk<Opacity>().RGBCoeff = 
-                            Color.FromArgb(item.rgbCoeff.A,
-                                     255 - item.rgbCoeff.B,
-                                     255 - item.rgbCoeff.G,
-                                     255 - item.rgbCoeff.R);
-                        }
+                        var newParam = new ShaderSettings.ShaderParameter();
+                        newParam.Name = param.Name;
+                        newParam.Value = param.Value;
+                        newParam.ValueType = param.ValueType;
+                        newShader.Parameters.Add(newParam);
                     }
-                    catch {}
+                    shdrData.Shaders.Add(newShader);
                 }
+               
 
                 try
                 {

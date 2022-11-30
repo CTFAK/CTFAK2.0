@@ -7,6 +7,8 @@ using System.Threading;
 using CTFAK;
 using CTFAK.CCN.Chunks;
 using CTFAK.FileReaders;
+using CTFAK.Memory;
+using CTFAK.MFA;
 using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Tools;
 using CTFAK.Utils;
@@ -19,6 +21,7 @@ public class Program
     {
         
         Core.Init();
+
         ASCIIArt.SetStatus("Idle");
         Directory.CreateDirectory("Plugins");
         Directory.CreateDirectory("Dumps");

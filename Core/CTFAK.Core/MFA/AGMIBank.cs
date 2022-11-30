@@ -26,7 +26,7 @@ namespace CTFAK.MMFParser.MFA.Loaders
             PaletteVersion = reader.ReadInt16();
             PaletteEntries = reader.ReadInt16();
             Palette = new List<Color>();
-            for (int i = 0; i < 256; i++)
+            for (int i = 0; i < PaletteEntries; i++)
             {
                 Palette.Add(reader.ReadColor());
             }
@@ -38,7 +38,8 @@ namespace CTFAK.MMFParser.MFA.Loaders
                 var item = new Image();
                 item.IsMFA = true;
                 item.Read(reader);
-                Items.Add(item.Handle, item);
+                if(!Items.ContainsKey(item.Handle))
+                    Items.Add(item.Handle, item);
             }
         }
 

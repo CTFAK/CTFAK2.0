@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using CTFAK.Attributes;
 using CTFAK.Memory;
+using CTFAK.MFA;
 using CTFAK.Utils;
 using Ionic.Zlib;
 
@@ -128,22 +129,25 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public override void Read(ByteReader reader)
         {
-
             Console.WriteLine("=====SHADERS=====");
             var start = reader.Tell();
             var end = start + reader.Size();
             if (start == end) return;
             
             int current = 0;
-            while (start <= end)
+            while (true)
             {
                 var paramStart = reader.Tell()+4;
                 if (reader.Tell() == end) return;
                 var size = reader.ReadInt32();
                 var obj = TwoFilePlusContainer.instance.objectsContainer[current];
+                obj.shaderData.hasShader = true;
+
                 var shaderHandle = reader.ReadInt32();
                 var numberOfParams = reader.ReadInt32();
                 var shdr = Core.currentReader.getGameData().Shaders.ShaderList[shaderHandle];
+                obj.shaderData.name = shdr.Name;
+                obj.shaderData.ShaderHandle = shaderHandle;
 
                 for (int i = 0; i < numberOfParams; i++)
                 {
@@ -157,18 +161,24 @@ namespace CTFAK.CCN.Chunks.Objects
                         case 1:
                             paramValue = reader.ReadSingle();
                             break;
+                        case 2:
+                            paramValue = reader.ReadInt32();
+                            break;
+                        case 3:
+                            paramValue = reader.ReadInt32();
+                            break;
                         default:
                             paramValue = "unknownType";
                             break;
                     }
+                    obj.shaderData.parameters.Add( new ObjectInfo.ShaderParameter(){Name=param.Name,ValueType = param.Type, Value = paramValue});
 
-                    Console.WriteLine(
-                        $"Loaded shader parameter for object \"{obj.name}\" with name \"{param.Name}\" for shader \"{shdr.Name}\" with value {paramValue}({param.GetValueType()})");
                 }
                 reader.Seek(paramStart+size);
+                current++;
+
             }
             Console.WriteLine("=====SHADERS_END=====");
-            current++;
 
         }
 
