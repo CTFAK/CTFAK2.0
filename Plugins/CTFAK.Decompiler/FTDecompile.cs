@@ -332,9 +332,6 @@ namespace CTFAK.Tools
                         }
                         shdrData.Shaders.Add(newShader);
                     }
-                    ByteWriter newWriter = new(new MemoryStream());
-                    shdrData.Write(newWriter);
-                    File.WriteAllBytes("Chunks\\outchunk" + frame.name + ".bin", newWriter.GetBuffer());
 
                     //LayerInfo
                     if (Settings.Old)
