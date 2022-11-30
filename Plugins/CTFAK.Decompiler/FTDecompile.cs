@@ -361,35 +361,6 @@ namespace CTFAK.Tools
                             newLayer.Flags["WrapHorizontally"] = layer.Flags["WrapHorizontally"];
                             newLayer.XCoefficient = layer.XCoeff;
                             newLayer.YCoefficient = layer.YCoeff;
-                            newLayer.Chunks = new();
-
-                            var lyrShdrData = newLayer.Chunks.GetOrCreateChunk<ShaderSettings>();
-                            if (layer.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
-                            {
-                                lyrShdrData.Blend = layer.blend;
-                                lyrShdrData.RGBCoeff = Color.FromArgb(layer.rgbCoeff.A, layer.rgbCoeff.R, layer.rgbCoeff.G, layer.rgbCoeff.B);
-                            }
-
-                            if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
-                            {
-                                lyrShdrData.Blend = (byte)(255 - layer.blend);
-                                lyrShdrData.RGBCoeff = Color.FromArgb(layer.rgbCoeff.A, 255 - layer.rgbCoeff.R, 255 - layer.rgbCoeff.G, 255 - layer.rgbCoeff.B);
-                            }
-
-                            if (layer.shaderData.hasShader)
-                            {
-                                var newShader = new ShaderSettings.MFAShader();
-                                newShader.Name = layer.shaderData.name;
-                                foreach (var param in layer.shaderData.parameters)
-                                {
-                                    var newParam = new ShaderSettings.ShaderParameter();
-                                    newParam.Name = param.Name;
-                                    newParam.Value = param.Value;
-                                    newParam.ValueType = param.ValueType;
-                                    newShader.Parameters.Add(newParam);
-                                }
-                                lyrShdrData.Shaders.Add(newShader);
-                            }
 
                             newFrame.Layers.Add(newLayer);
                         }

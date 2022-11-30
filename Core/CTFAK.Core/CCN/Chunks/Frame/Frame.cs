@@ -1,14 +1,11 @@
 ﻿using CTFAK.CCN.Chunks.Objects;
 using CTFAK.Memory;
-using CTFAK.MMFParser.EXE.Loaders;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using static CTFAK.CCN.Chunks.Objects.ObjectInfo;
@@ -112,7 +109,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 var newChunk = new Chunk();
                 var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
-                Logger.Log("Reading Frame Chunk: " + newChunk.Id);
+                //Logger.Log("Reading Frame Chunk: " + newChunk.Id);
                 if (newChunk.Id == 32639) break;
                 if (reader.Tell() >= reader.Size()) break;
                 switch (newChunk.Id)
@@ -191,7 +188,6 @@ namespace CTFAK.CCN.Chunks.Frame
                         int current = 0;
                         while (true)
                         {
-                            Logger.Log(chunkReader.Tell() + "/" + end);
                             if (chunkReader.Tell() == end) break;
                             var layer = layers.Items[current];
                             layer.InkEffect = chunkReader.ReadByte();
@@ -246,7 +242,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                         Value = paramValue
                                     });
                                 }
-                                Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
+                                //Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
                             }
                             catch // No Shader Found
                             {
@@ -310,7 +306,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                     Value = paramValue
                                 });
                             }
-                            Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
+                            //Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
                         }
                         catch // No Shader Found
                         {
