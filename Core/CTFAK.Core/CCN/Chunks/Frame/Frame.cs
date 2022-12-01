@@ -251,8 +251,7 @@ namespace CTFAK.CCN.Chunks.Frame
                         }
                         break;
                     case 13129: // Frame Effects
-                        InkEffect = chunkReader.ReadByte();
-                        chunkReader.Skip(3);
+                        InkEffect = chunkReader.ReadInt32();
                         if (InkEffect != 1)
                         {
                             var r = chunkReader.ReadByte();
