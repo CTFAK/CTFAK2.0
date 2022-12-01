@@ -190,8 +190,7 @@ namespace CTFAK.CCN.Chunks.Frame
                         {
                             if (chunkReader.Tell() == end) break;
                             var layer = layers.Items[current];
-                            layer.InkEffect = chunkReader.ReadByte();
-                            chunkReader.Skip(3);
+                            layer.InkEffect = chunkReader.ReadInt32();
                             if (layer.InkEffect != 1)
                             {
                                 var r = chunkReader.ReadByte();
@@ -255,8 +254,7 @@ namespace CTFAK.CCN.Chunks.Frame
                         }
                         break;
                     case 13129: // Frame Effects
-                        InkEffect = chunkReader.ReadByte();
-                        chunkReader.Skip(3);
+                        InkEffect = chunkReader.ReadInt32();
                         if (InkEffect != 1)
                         {
                             var r = chunkReader.ReadByte();
@@ -268,10 +266,11 @@ namespace CTFAK.CCN.Chunks.Frame
                         else
                             InkEffectValue = chunkReader.ReadByte();
 
-                        shaderData.hasShader = true;
+                        shaderData.hasShader = false;
                         try
                         {
                             var shaderHandle = chunkReader.ReadInt32();
+                            if (shaderHandle == 255) break;
                             var numberOfParams = chunkReader.ReadInt32();
                             var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
                             shaderData.name = shdr.Name;
@@ -299,7 +298,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                         paramValue = "unknownType";
                                         break;
                                 }
-                                shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
+                                shaderData.parameters.Add(new ShaderParameter()
                                 {
                                     Name = param.Name,
                                     ValueType = param.Type,
@@ -311,7 +310,6 @@ namespace CTFAK.CCN.Chunks.Frame
                         catch // No Shader Found
                         {
                             shaderData.hasShader = false;
-                            break;
                         }
                         break;
                 }

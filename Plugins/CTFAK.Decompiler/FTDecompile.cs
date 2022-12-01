@@ -305,21 +305,22 @@ namespace CTFAK.Tools
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect?.top ?? 0;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
-                    var shdrData = newFrame.Chunks.GetOrCreateChunk<ShaderSettings>();
-                    if (frame.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
-                    {
-                        shdrData.Blend = frame.blend;
-                        shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, frame.rgbCoeff.R, frame.rgbCoeff.G, frame.rgbCoeff.B);
-                    }
-
-                    if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
-                    {
-                        shdrData.Blend = (byte)(255 - frame.blend);
-                        shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, 255 - frame.rgbCoeff.R, 255 - frame.rgbCoeff.G, 255 - frame.rgbCoeff.B);
-                    }
 
                     if (frame.shaderData.hasShader)
                     {
+                        var shdrData = newFrame.Chunks.GetOrCreateChunk<ShaderSettings>();
+                        if (frame.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
+                        {
+                            shdrData.Blend = frame.blend;
+                            shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, frame.rgbCoeff.R, frame.rgbCoeff.G, frame.rgbCoeff.B);
+                        }
+
+                        if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                        {
+                            shdrData.Blend = (byte)(255 - frame.blend);
+                            shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, 255 - frame.rgbCoeff.R, 255 - frame.rgbCoeff.G, 255 - frame.rgbCoeff.B);
+                        }
+
                         var newShader = new ShaderSettings.MFAShader();
                         newShader.Name = frame.shaderData.name;
                         foreach (var param in frame.shaderData.parameters)
