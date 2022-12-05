@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using CTFAK.Memory;
+using CTFAK.MFA;
 using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
@@ -12,27 +14,38 @@ namespace CTFAK.CCN.Chunks
 
         public override void Read(ByteReader reader)
         {
-            name = reader.ReadAscii(reader.ReadInt16());
+            name = reader.ReadUniversal(reader.ReadInt16());
             data = reader.ReadBytes(reader.ReadInt32());
-            File.WriteAllBytes($"FileDumps\\{name}",data);
         }
 
         public override void Write(ByteWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.AutoWriteUnicode(name);
         }
     }
 
     public class BinaryFiles:ChunkLoader
     {
+        public List<BinaryFile> files;
+        public int count;
 
         public override void Read(ByteReader reader)
         {
+            count = reader.ReadInt32();
+            files = new();
+            for (int i = 0; i < count; i++)
+            {
+                BinaryFile file = new BinaryFile();
+                file.Read(reader);
+                files.Add(file);
+            }
         }
 
         public override void Write(ByteWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.WriteInt32(files.Count);
+            foreach (var item in files)
+                item.Write(writer);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace CTFAK.MFA
         public string Description;
         public string Path;
 
-        public List<byte[]> BinaryFiles = new List<byte[]>();
+        public BinaryFiles binaryFiles = new BinaryFiles();
 
         public FontBank Fonts;
         public SoundBank Sounds;
@@ -174,12 +174,7 @@ namespace CTFAK.MFA
             Writer.AutoWriteUnicode(Aboutbox);
             Writer.WriteInt32(0);
             
-            Writer.WriteInt32(BinaryFiles.Count);
-            foreach (byte[] binaryFile in BinaryFiles)
-            {
-                Writer.WriteInt32(binaryFile.Length);
-                Writer.WriteBytes(binaryFile);
-            }
+            binaryFiles.Write(Writer);
             
             Controls.Write(Writer);
 
@@ -325,12 +320,8 @@ namespace CTFAK.MFA
             Aboutbox = reader.AutoReadUnicode();
             reader.ReadUInt32();
 
-            var binCount = reader.ReadInt32(); //wtf i cant put it in loop fuck shit
-
-            for (int i = 0; i < binCount; i++)
-            {
-                BinaryFiles.Add(reader.ReadBytes(reader.ReadInt32()));
-            }
+            binaryFiles = new BinaryFiles();
+            binaryFiles.Read(reader);
 
             Controls = new MFAControls();
             Controls.Read(reader);

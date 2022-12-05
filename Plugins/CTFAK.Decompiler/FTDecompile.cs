@@ -131,7 +131,7 @@ namespace CTFAK.Tools
             mfa.Copyright = game.copyright;
             mfa.Company = "";
             mfa.Version = "";
-            //TODO:Binary Files
+            mfa.binaryFiles = game.binaryFiles;
             var displaySettings = mfa.DisplayFlags;
             var graphicSettings = mfa.GraphicFlags;
             var flags = game.header.Flags;
@@ -305,34 +305,15 @@ namespace CTFAK.Tools
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect?.top ?? 0;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
+                    /*var EffectHeader = newFrame.Chunks.NewChunk<ShaderSettings>(); // Frame and Layer Effect Headers
+                    EffectHeader.Blend = 255;
+                    EffectHeader.RGBCoeff = Color.FromArgb(0, 255, 255, 255);
+                    EffectHeader.Shaders = new();
+                    EffectHeader.HeaderID = 1;
+                    ByteWriter newWriter3 = new(new MemoryStream());
+                    EffectHeader.Write(newWriter3);
+                    File.WriteAllBytes("Chunks\\BAHEffectHeaderchunk.bin", newWriter3.GetBuffer());*/
 
-                    if (frame.shaderData.hasShader)
-                    {
-                        var shdrData = newFrame.Chunks.GetOrCreateChunk<ShaderSettings>();
-                        if (frame.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
-                        {
-                            shdrData.Blend = frame.blend;
-                            shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, frame.rgbCoeff.R, frame.rgbCoeff.G, frame.rgbCoeff.B);
-                        }
-
-                        if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
-                        {
-                            shdrData.Blend = (byte)(255 - frame.blend);
-                            shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, 255 - frame.rgbCoeff.R, 255 - frame.rgbCoeff.G, 255 - frame.rgbCoeff.B);
-                        }
-
-                        var newShader = new ShaderSettings.MFAShader();
-                        newShader.Name = frame.shaderData.name;
-                        foreach (var param in frame.shaderData.parameters)
-                        {
-                            var newParam = new ShaderSettings.ShaderParameter();
-                            newParam.Name = param.Name;
-                            newParam.Value = param.Value;
-                            newParam.ValueType = param.ValueType;
-                            newShader.Parameters.Add(newParam);
-                        }
-                        shdrData.Shaders.Add(newShader);
-                    }
 
                     //LayerInfo
                     if (Settings.Old)
@@ -360,9 +341,74 @@ namespace CTFAK.Tools
                             newLayer.XCoefficient = layer.XCoeff;
                             newLayer.YCoefficient = layer.YCoeff;
 
+                            /*var lyrShdrData = newFrame.Chunks.NewChunk<ShaderSettings>();
+                            lyrShdrData.Shaders = new();
+                            lyrShdrData.HeaderID = 0;
+                            if (layer.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
+                            {
+                                lyrShdrData.Blend = layer.blend;
+                                lyrShdrData.RGBCoeff = Color.FromArgb(layer.rgbCoeff.A, layer.rgbCoeff.R, layer.rgbCoeff.G, layer.rgbCoeff.B);
+                            }
+
+                            if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                            {
+                                lyrShdrData.Blend = (byte)(255 - layer.blend);
+                                lyrShdrData.RGBCoeff = Color.FromArgb(layer.rgbCoeff.A, 255 - layer.rgbCoeff.R, 255 - layer.rgbCoeff.G, 255 - layer.rgbCoeff.B);
+                            }
+                            */
+                            if (layer.shaderData.hasShader)
+                            {
+                                var newShader = new ShaderSettings.MFAShader();
+                                newShader.Name = layer.shaderData.name;
+                                Logger.Log(newShader.Name + " on layer " + layer.Name + " in frame " + frame.name);
+                                foreach (var param in layer.shaderData.parameters)
+                                {
+                                    var newParam = new ShaderSettings.ShaderParameter();
+                                    newParam.Name = param.Name;
+                                    newParam.Value = param.Value;
+                                    newParam.ValueType = param.ValueType;
+                                    newShader.Parameters.Add(newParam);
+                                    Logger.Log("Parameter: " + param.Name + " = " + param.Value);
+                                }
+                            }
+
                             newFrame.Layers.Add(newLayer);
                         }
                     }
+                    /*
+                    var shdrData = newFrame.Chunks.NewChunk<ShaderSettings>();
+                    shdrData.Shaders = new();
+                    shdrData.HeaderID = 2;
+                    shdrData.InkEffect = frame.InkEffect;
+                    if (frame.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
+                    {
+                        shdrData.Blend = frame.blend;
+                        shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, frame.rgbCoeff.R, frame.rgbCoeff.G, frame.rgbCoeff.B);
+                    }
+
+                    if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                    {
+                        shdrData.Blend = (byte)(255 - frame.blend);
+                        shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, 255 - frame.rgbCoeff.R, 255 - frame.rgbCoeff.G, 255 - frame.rgbCoeff.B);
+                    }
+
+                    if (frame.shaderData.hasShader)
+                    {
+                        var newShader = new ShaderSettings.MFAShader();
+                        newShader.Name = frame.shaderData.name;
+                        foreach (var param in frame.shaderData.parameters)
+                        {
+                            var newParam = new ShaderSettings.ShaderParameter();
+                            newParam.Name = param.Name;
+                            newParam.Value = param.Value;
+                            newParam.ValueType = param.ValueType;
+                            newShader.Parameters.Add(newParam);
+                        }
+                        shdrData.Shaders.Add(newShader);
+                    }
+                    ByteWriter newWriter = new(new MemoryStream());
+                    shdrData.Write(newWriter);
+                    File.WriteAllBytes("Chunks\\BAHShdrDatachunk.bin", newWriter.GetBuffer());*/
 
                     var newFrameItems = new List<MFAObjectInfo>();
                     var newInstances = new List<MFAObjectInstance>();

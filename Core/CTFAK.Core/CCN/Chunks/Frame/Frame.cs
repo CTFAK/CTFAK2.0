@@ -193,9 +193,9 @@ namespace CTFAK.CCN.Chunks.Frame
                             layer.InkEffect = chunkReader.ReadInt32();
                             if (layer.InkEffect != 1)
                             {
-                                var r = chunkReader.ReadByte();
-                                var g = chunkReader.ReadByte();
                                 var b = chunkReader.ReadByte();
+                                var g = chunkReader.ReadByte();
+                                var r = chunkReader.ReadByte();
                                 layer.rgbCoeff = Color.FromArgb(0, r, g, b);
                                 layer.blend = chunkReader.ReadByte();
                             }
@@ -257,16 +257,16 @@ namespace CTFAK.CCN.Chunks.Frame
                         InkEffect = chunkReader.ReadInt32();
                         if (InkEffect != 1)
                         {
-                            var r = chunkReader.ReadByte();
-                            var g = chunkReader.ReadByte();
                             var b = chunkReader.ReadByte();
+                            var g = chunkReader.ReadByte();
+                            var r = chunkReader.ReadByte();
                             rgbCoeff = Color.FromArgb(0, r, g, b);
                             blend = chunkReader.ReadByte();
                         }
                         else
                             InkEffectValue = chunkReader.ReadByte();
 
-                        shaderData.hasShader = false;
+                        shaderData.hasShader = true;
                         try
                         {
                             var shaderHandle = chunkReader.ReadInt32();

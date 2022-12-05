@@ -1,5 +1,7 @@
 ﻿using CTFAK.CCN.Chunks;
+using CTFAK.CCN.Chunks.Frame;
 using CTFAK.Memory;
+using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CTFAK.CCN.Chunks.Objects.ObjectInfo;
 
 namespace CTFAK.MFA
 {
@@ -45,13 +48,16 @@ namespace CTFAK.MFA
             return false;
         }
 
-        public MFAChunk NewChunk<T>() where T : MFAChunkLoader, new()
+        public T NewChunk<T>() where T : MFAChunkLoader, new()
         {
             var newChunk = new MFAChunk(null);
-            newChunk.Id = 33;
+            if (typeof(T) == typeof(ShaderSettings)) newChunk.Id = 45;
+            else if (typeof(T) == typeof(FrameVirtualRect)) newChunk.Id = 33;
             newChunk.Loader = new T();
-            return newChunk;
+            Items.Add(newChunk);
+            return (T)newChunk.Loader;
         }
+
         public override void Write(ByteWriter Writer)
         {
             foreach (MFAChunk chunk in Items)
@@ -230,6 +236,8 @@ namespace CTFAK.MFA
 
         public Color RGBCoeff;
         public byte Blend;
+        public int HeaderID = 0;
+        public int InkEffect;
         public List<MFAShader> Shaders = new();
 
         public override void Read(ByteReader reader)
@@ -251,13 +259,18 @@ namespace CTFAK.MFA
 
         public override void Write(ByteWriter Writer)
         {
+            if (HeaderID == 2) Writer.WriteInt32(InkEffect);
             Writer.WriteInt8(RGBCoeff.B);
             Writer.WriteInt8(RGBCoeff.G);
             Writer.WriteInt8(RGBCoeff.R);
             Writer.WriteInt8(Blend);
-            Writer.WriteInt32(Shaders.Count);
-            foreach (var shdr in Shaders)
-                shdr.Write(Writer);
+            if (HeaderID == 1) Writer.WriteInt32(9253);
+            else
+            {
+                Writer.WriteInt32(Shaders.Count);
+                foreach (var shdr in Shaders)
+                    shdr.Write(Writer);
+            }
         }
     }
 
