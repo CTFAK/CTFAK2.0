@@ -136,7 +136,7 @@ namespace CTFAK.Tools
             mfa.Copyright = game.Copyright;
             mfa.Company = "";
             mfa.Version = "";
-            //TODO:Binary Files
+            mfa.binaryFiles = game.BinaryFiles;
             var displaySettings = mfa.DisplayFlags;
             var graphicSettings = mfa.GraphicFlags;
             var flags = game.Header.Flags;
