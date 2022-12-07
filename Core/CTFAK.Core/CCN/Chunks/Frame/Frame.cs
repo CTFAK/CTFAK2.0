@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CTFAK.Attributes;
+using static CTFAK.CCN.Chunks.Objects.ObjectInfo;
 
 namespace CTFAK.CCN.Chunks.Frame
 {
@@ -67,16 +68,6 @@ namespace CTFAK.CCN.Chunks.Frame
             throw new NotImplementedException();
         }
     }
-
-    public class LayerEffect
-    {
-        public int InkEffect;
-        public byte r;
-        public byte g;
-        public byte b;
-        public byte blend;
-        private List<ObjectInfo.ShaderData> shaders = new List<ObjectInfo.ShaderData>();
-    }
     [ChunkLoader(0x3333,"Frame")]
     public class Frame : ChunkLoader
     {
@@ -105,8 +96,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public Transition fadeIn;
         public Transition fadeOut;
         public VirtualRect virtualRect;
-        
-        public ObjectInfo.ShaderData shaderData = new();
+        public ShaderData shaderData = new();
         public int InkEffect;
         public int InkEffectValue;
         public Color rgbCoeff;
@@ -149,15 +139,13 @@ namespace CTFAK.CCN.Chunks.Frame
                         break;
                     case 13112:
                         var count = chunkReader.ReadInt32();
-                        
-                            for (int i = 0; i < count; i++)
-                            {
-                                var objInst = new ObjectInstance();
-                                objInst.Read(chunkReader);
-                                objects.Add(objInst);
-                            }
-
-                            break;
+                        for (int i = 0; i < count; i++)
+                        {
+                            var objInst = new ObjectInstance();
+                            objInst.Read(chunkReader);
+                            objects.Add(objInst);
+                        }
+                        break;
                     case 13117:
                         if (Core.parameters.Contains("-noevnt"))
                             events = new Events();
@@ -202,9 +190,9 @@ namespace CTFAK.CCN.Chunks.Frame
                             chunkReader.Skip(3);
                             if (layer.InkEffect != 1)
                             {
-                                var r = chunkReader.ReadByte();
-                                var g = chunkReader.ReadByte();
                                 var b = chunkReader.ReadByte();
+                                var g = chunkReader.ReadByte();
+                                var r = chunkReader.ReadByte();
                                 layer.rgbCoeff = Color.FromArgb(0, r, g, b);
                                 layer.blend = chunkReader.ReadByte();
                             }
@@ -263,13 +251,12 @@ namespace CTFAK.CCN.Chunks.Frame
                         }
                         break;
                     case 13129: // Frame Effects
-                        InkEffect = chunkReader.ReadByte();
-                        chunkReader.Skip(3);
+                        InkEffect = chunkReader.ReadInt32();
                         if (InkEffect != 1)
                         {
-                            var r = chunkReader.ReadByte();
-                            var g = chunkReader.ReadByte();
                             var b = chunkReader.ReadByte();
+                            var g = chunkReader.ReadByte();
+                            var r = chunkReader.ReadByte();
                             rgbCoeff = Color.FromArgb(0, r, g, b);
                             blend = chunkReader.ReadByte();
                         }
@@ -381,13 +368,12 @@ namespace CTFAK.CCN.Chunks.Frame
         public float YCoeff;
         public int NumberOfBackgrounds;
         public int BackgroudIndex;
-        
-        public ObjectInfo.ShaderData shaderData = new();
+        public ShaderData shaderData = new();
         public int InkEffect;
         public int InkEffectValue;
         public Color rgbCoeff;
         public byte blend;
-        
+
         public override void Read(ByteReader reader)
         {
             Flags.flag = reader.ReadUInt32();

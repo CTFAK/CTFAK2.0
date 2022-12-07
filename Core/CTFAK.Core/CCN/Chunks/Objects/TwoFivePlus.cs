@@ -129,7 +129,7 @@ namespace CTFAK.CCN.Chunks.Objects
     {
         public override void Read(ByteReader reader)
         {
-            Console.WriteLine("=====SHADERS=====");
+            //Console.WriteLine("=====SHADERS=====");
             var start = reader.Tell();
             var end = start + reader.Size();
             if (start == end) return;
@@ -183,7 +183,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 current++;
 
             }
-            Console.WriteLine("=====SHADERS_END=====");
+            //Console.WriteLine("=====SHADERS_END=====");
 
         }
 

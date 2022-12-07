@@ -99,6 +99,7 @@ namespace CTFAK.MFA
         public void Read()
         {
             Id = Reader.ReadByte();
+            //Console.WriteLine(Id);
 
             if (Id == 0) return;
             var size = Reader.ReadInt32();
