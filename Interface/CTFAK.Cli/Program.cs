@@ -21,12 +21,11 @@ public class Program
     {
         
         Core.Init();
-        Settings.Build = 294;
+        /*Settings.Build = 294;
         Settings.gameType = Settings.GameType.NORMAL;
         var newMFA = new MFAData();
         newMFA.Read(new ByteReader(new FileStream(args[0],FileMode.Open)));
-        newMFA.Write(new ByteWriter(new FileStream(args[0]+".retard.mfa",FileMode.Create)));
-        return;
+        newMFA.Write(new ByteWriter(new FileStream(args[0]+".retard.mfa",FileMode.Create)));*/
         ASCIIArt.SetStatus("Idle");
         Directory.CreateDirectory("Plugins");
         Directory.CreateDirectory("Dumps");
