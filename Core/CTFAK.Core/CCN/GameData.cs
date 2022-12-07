@@ -65,6 +65,11 @@ namespace CTFAK.CCN
                 Settings.isSwitch = true;
                 Settings.Unicode = false;
             }
+
+            if (Core.parameters.Contains("-android"))
+            {
+                Settings.gameType = Settings.GameType.ANDROID;
+            }
             else Logger.Log("Couldn't found any known headers: " + magic, true, ConsoleColor.Red); //Header not found
 
 

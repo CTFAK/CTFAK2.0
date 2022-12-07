@@ -141,7 +141,7 @@ namespace CTFAK.MFA
 
             PaletteSize = reader.ReadInt32();
             Palette = new List<Color>();
-            for (int i = 0; i < 256; i++)
+            for (int i = 0; i < PaletteSize; i++)
             {
                 Palette.Add(reader.ReadColor());
             }

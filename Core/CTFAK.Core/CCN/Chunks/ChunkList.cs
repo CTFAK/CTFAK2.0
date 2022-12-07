@@ -27,34 +27,38 @@ namespace CTFAK.CCN.Chunks
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var asm in assemblies)
             {
-                foreach (var type in asm.GetTypes())
-                {
-                    if (type.GetCustomAttributes().Any((a) => a.GetType()==typeof(ChunkLoaderAttribute)))
-                    {
-                        var attribute = type.GetCustomAttributes().First((a) => a.GetType() == typeof(ChunkLoaderAttribute)) as ChunkLoaderAttribute;
-                        var newChunkLoaderData = new ChunkLoaderData();
-                        newChunkLoaderData.LoaderType = type;
-                        newChunkLoaderData.ChunkId = attribute.chunkId;
-                        newChunkLoaderData.ChunkName = attribute.chunkName;
-                        foreach (var method in type.GetMethods())
-                        {
-                            if (method.Name == "Handle") 
-                                newChunkLoaderData.AfterHandler = method;
-                            
-                            if (method.GetCustomAttributes().Any(a => a.GetType() == typeof(LoaderHandleAttribute)))
-                                newChunkLoaderData.AfterHandler = method;
-                        }
-                        Logger.Log($"Found chunk loader handler for chunk id {newChunkLoaderData.ChunkId} with name \"{newChunkLoaderData.ChunkName}\"");
-                        if (!knownLoaders.ContainsKey(newChunkLoaderData.ChunkId))
-                        {
-                            knownLoaders.Add(newChunkLoaderData.ChunkId,newChunkLoaderData);
-                        }
-                        else
-                        {
-                            Logger.Log("Multiple loaders are getting registered for chunk: "+newChunkLoaderData.ChunkId);
-                        }
-                    }
-                }
+            try
+            {
+            foreach (var type in asm.GetTypes())
+                            {
+                                if (type.GetCustomAttributes().Any((a) => a.GetType()==typeof(ChunkLoaderAttribute)))
+                                {
+                                    var attribute = type.GetCustomAttributes().First((a) => a.GetType() == typeof(ChunkLoaderAttribute)) as ChunkLoaderAttribute;
+                                    var newChunkLoaderData = new ChunkLoaderData();
+                                    newChunkLoaderData.LoaderType = type;
+                                    newChunkLoaderData.ChunkId = attribute.chunkId;
+                                    newChunkLoaderData.ChunkName = attribute.chunkName;
+                                    foreach (var method in type.GetMethods())
+                                    {
+                                        if (method.Name == "Handle") 
+                                            newChunkLoaderData.AfterHandler = method;
+                                        
+                                        if (method.GetCustomAttributes().Any(a => a.GetType() == typeof(LoaderHandleAttribute)))
+                                            newChunkLoaderData.AfterHandler = method;
+                                    }
+                                    Logger.Log($"Found chunk loader handler for chunk id {newChunkLoaderData.ChunkId} with name \"{newChunkLoaderData.ChunkName}\"");
+                                    if (!knownLoaders.ContainsKey(newChunkLoaderData.ChunkId))
+                                    {
+                                        knownLoaders.Add(newChunkLoaderData.ChunkId,newChunkLoaderData);
+                                    }
+                                    else
+                                    {
+                                        Logger.Log("Multiple loaders are getting registered for chunk: "+newChunkLoaderData.ChunkId);
+                                    }
+                                }
+                            }
+            }
+               catch{} 
             }
         }
         

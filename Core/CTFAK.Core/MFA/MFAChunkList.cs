@@ -16,7 +16,7 @@ namespace CTFAK.MFA
         public List<MFAChunk> Items = new List<MFAChunk>();
         public bool Log = false;
 
-        public T GetOrCreateChunk<T>() where T : MFAChunkLoader, new()
+        public T GetOrCreateChunk<T>(byte overrideId = 0) where T : MFAChunkLoader, new()
         {
             foreach (MFAChunk chunk in Items)
             {
@@ -28,6 +28,10 @@ namespace CTFAK.MFA
             var newChunk = new MFAChunk(null);
             if (typeof(T)==typeof(ShaderSettings)) newChunk.Id = 45;
             else if (typeof(T)==typeof(FrameVirtualRect)) newChunk.Id = 33;
+            if (overrideId != 0)
+            {
+                newChunk.Id = overrideId;
+            }
             newChunk.Loader = new T();
             Items.Add(newChunk);
             return (T)newChunk.Loader;
@@ -95,7 +99,6 @@ namespace CTFAK.MFA
         public void Read()
         {
             Id = Reader.ReadByte();
-            Console.WriteLine(Id);
 
             if (Id == 0) return;
             var size = Reader.ReadInt32();

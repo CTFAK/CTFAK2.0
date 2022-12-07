@@ -185,6 +185,10 @@ namespace CTFAK.Tools
             }*/
             //mfa.GraphicFlags = graphicSettings;
             //mfa.DisplayFlags = displaySettings;
+            
+            
+            
+            
             mfa.WindowX = game.Header.WindowWidth;
             mfa.WindowY = game.Header.WindowHeight;
             mfa.BorderColor = game.Header.BorderColor;
@@ -293,6 +297,10 @@ namespace CTFAK.Tools
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect?.top ?? 0;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
+                    
+                   
+                    
+                    
                     //LayerInfo
                     if (Settings.Old)
                     {

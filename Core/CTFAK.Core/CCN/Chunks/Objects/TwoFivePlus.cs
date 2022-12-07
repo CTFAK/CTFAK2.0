@@ -140,6 +140,11 @@ namespace CTFAK.CCN.Chunks.Objects
                 var paramStart = reader.Tell()+4;
                 if (reader.Tell() == end) return;
                 var size = reader.ReadInt32();
+                if (size == 0)
+                {
+                    current++;
+                    continue;
+                }
                 var obj = TwoFilePlusContainer.instance.objectsContainer[current];
                 obj.shaderData.hasShader = true;
 

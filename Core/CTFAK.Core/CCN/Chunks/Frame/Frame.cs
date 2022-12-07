@@ -22,11 +22,8 @@ namespace CTFAK.CCN.Chunks.Frame
         public short layer;
         public short flags;
         public short parentHandle;
-        public Random rnd = new Random(1337);
         public override void Read(ByteReader reader)
         {
-            Console.WriteLine("Reading object inst");
-            
             handle = (ushort)reader.ReadInt16();
             objectInfo = (ushort)reader.ReadInt16();
             if (Settings.Old)
@@ -70,6 +67,16 @@ namespace CTFAK.CCN.Chunks.Frame
             throw new NotImplementedException();
         }
     }
+
+    public class LayerEffect
+    {
+        public int InkEffect;
+        public byte r;
+        public byte g;
+        public byte b;
+        public byte blend;
+        private List<ObjectInfo.ShaderData> shaders = new List<ObjectInfo.ShaderData>();
+    }
     [ChunkLoader(0x3333,"Frame")]
     public class Frame : ChunkLoader
     {
@@ -98,6 +105,12 @@ namespace CTFAK.CCN.Chunks.Frame
         public Transition fadeIn;
         public Transition fadeOut;
         public VirtualRect virtualRect;
+        
+        public ObjectInfo.ShaderData shaderData = new();
+        public int InkEffect;
+        public int InkEffectValue;
+        public Color rgbCoeff;
+        public byte blend;
 
         public override void Read(ByteReader reader)
         {
@@ -175,6 +188,140 @@ namespace CTFAK.CCN.Chunks.Frame
                         virtualRect = new VirtualRect();
                         virtualRect.Read(chunkReader);
                         break;
+                    case 13125: // Layer Effects
+                        var start = chunkReader.Tell();
+                        var end = start + chunkReader.Size();
+                        if (start == end) break;
+
+                        int current = 0;
+                        while (true)
+                        {
+                            if (chunkReader.Tell() == end) break;
+                            var layer = layers.Items[current];
+                            layer.InkEffect = chunkReader.ReadByte();
+                            chunkReader.Skip(3);
+                            if (layer.InkEffect != 1)
+                            {
+                                var r = chunkReader.ReadByte();
+                                var g = chunkReader.ReadByte();
+                                var b = chunkReader.ReadByte();
+                                layer.rgbCoeff = Color.FromArgb(0, r, g, b);
+                                layer.blend = chunkReader.ReadByte();
+                            }
+                            else
+                                layer.InkEffectValue = chunkReader.ReadByte();
+
+                            layer.shaderData.hasShader = true;
+                            try
+                            {
+
+                                var shaderHandle = chunkReader.ReadInt32();
+                                var numberOfParams = chunkReader.ReadInt32();
+                                var shdr = Core.currentReader.getGameData().Shaders.ShaderList[shaderHandle];
+                                layer.shaderData.name = shdr.Name;
+                                layer.shaderData.ShaderHandle = shaderHandle;
+
+                                for (int i = 0; i < numberOfParams; i++)
+                                {
+                                    var param = shdr.Parameters[i];
+                                    object paramValue;
+                                    switch (param.Type)
+                                    {
+                                        case 0:
+                                            paramValue = chunkReader.ReadInt32();
+                                            break;
+                                        case 1:
+                                            paramValue = chunkReader.ReadSingle();
+                                            break;
+                                        case 2:
+                                            paramValue = chunkReader.ReadInt32();
+                                            break;
+                                        case 3:
+                                            paramValue = chunkReader.ReadInt32(); //Image Handle
+                                            break;
+                                        default:
+                                            paramValue = "unknownType";
+                                            break;
+                                    }
+                                    layer.shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
+                                    {
+                                        Name = param.Name,
+                                        ValueType = param.Type,
+                                        Value = paramValue
+                                    });
+                                }
+                                //Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
+                            }
+                            catch // No Shader Found
+                            {
+                                layer.shaderData.hasShader = false;
+                                current++;
+                                break;
+                            }
+                            chunkReader.Seek(chunkReader.Tell() + 4);
+                            current++;
+                        }
+                        break;
+                    case 13129: // Frame Effects
+                        InkEffect = chunkReader.ReadByte();
+                        chunkReader.Skip(3);
+                        if (InkEffect != 1)
+                        {
+                            var r = chunkReader.ReadByte();
+                            var g = chunkReader.ReadByte();
+                            var b = chunkReader.ReadByte();
+                            rgbCoeff = Color.FromArgb(0, r, g, b);
+                            blend = chunkReader.ReadByte();
+                        }
+                        else
+                            InkEffectValue = chunkReader.ReadByte();
+
+                        shaderData.hasShader = true;
+                        try
+                        {
+                            var shaderHandle = chunkReader.ReadInt32();
+                            var numberOfParams = chunkReader.ReadInt32();
+                            var shdr = Core.currentReader.getGameData().Shaders.ShaderList[shaderHandle];
+                            shaderData.name = shdr.Name;
+                            shaderData.ShaderHandle = shaderHandle;
+
+                            for (int i = 0; i < numberOfParams; i++)
+                            {
+                                var param = shdr.Parameters[i];
+                                object paramValue;
+                                switch (param.Type)
+                                {
+                                    case 0:
+                                        paramValue = chunkReader.ReadInt32();
+                                        break;
+                                    case 1:
+                                        paramValue = chunkReader.ReadSingle();
+                                        break;
+                                    case 2:
+                                        paramValue = chunkReader.ReadInt32();
+                                        break;
+                                    case 3:
+                                        paramValue = chunkReader.ReadInt32(); //Image Handle
+                                        break;
+                                    default:
+                                        paramValue = "unknownType";
+                                        break;
+                                }
+                                shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
+                                {
+                                    Name = param.Name,
+                                    ValueType = param.Type,
+                                    Value = paramValue
+                                });
+                            }
+                            //Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
+                        }
+                        catch // No Shader Found
+                        {
+                            shaderData.hasShader = false;
+                            break;
+                        }
+                        break;
                 }
             }
             Logger.Log($"Frame Found: {name}, {width}x{height}, {objects.Count} objects.", true, ConsoleColor.Green);
@@ -234,6 +381,12 @@ namespace CTFAK.CCN.Chunks.Frame
         public float YCoeff;
         public int NumberOfBackgrounds;
         public int BackgroudIndex;
+        
+        public ObjectInfo.ShaderData shaderData = new();
+        public int InkEffect;
+        public int InkEffectValue;
+        public Color rgbCoeff;
+        public byte blend;
         
         public override void Read(ByteReader reader)
         {

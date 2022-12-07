@@ -91,10 +91,11 @@ namespace CTFAK.CCN.Chunks.Banks
             Flags = reader.ReadUInt32();
             var res = reader.ReadInt32();
             var nameLenght = reader.ReadInt32();
-            Size = reader.ReadInt32();
+            
             ByteReader soundData;
             if (IsCompressed)
             {
+                Size = reader.ReadInt32();
                 soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
             }
             else
