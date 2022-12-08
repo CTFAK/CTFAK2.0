@@ -175,70 +175,74 @@ namespace CTFAK.CCN.Chunks.Frame
                 } 
                 else if (item.Num == -25)
                 {
-                    if (item.Items[0].Loader is MultipleVariables multivar)
+                    if (item.Items.Count > 0)
                     {
-                        //To the no-lifer who decided that it was a good idea to do that kind of shit:
-                        //All that bit logic bullshit is probably slower than the normal way of value comparsion
-                        //And if it was done to prevent decompilers from working with it - you have failed
-                        //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
-                        if (multivar.flags == 0)
+                        if (item.Items[0].Loader is MultipleVariables multivar)
                         {
-                            
-                            int cnt = 0;
-                            int mask = 1;
-                            while (true)
+                            //To the no-lifer who decided that it was a good idea to do that kind of shit:
+                            //All that bit logic bullshit is probably slower than the normal way of value comparsion
+                            //And if it was done to prevent decompilers from working with it - you have failed
+                            //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
+                            if (multivar.flags == 0)
                             {
 
-                                if ((mask & multivar.flagMasks) == 0)
-                                    break;
-                                var newCondition = new Condition();
-                                newCondition.DefType = item.DefType;
-                                newCondition.Identifier = item.Identifier;
-                                newCondition.ObjectInfo = item.ObjectInfo;
-                                newCondition.Flags = item.Flags;
-                                newCondition.OtherFlags = item.OtherFlags;
-                                newCondition.ObjectType = item.ObjectType;
-                                newCondition.Num = ((mask & multivar.flagValues) == 0) ? -24:-25;
-                                var exp = new ExpressionParameter() { Comparsion = 0 };
-                                exp.Items.Add(new Expression()
-                                    { Loader = new LongExp() { Value = cnt }, ObjectType = -1 });
-                                newCondition.Items.Add(new Parameter() { Code = 22, Loader = exp });
-                                Conditions.Add(newCondition);
-                                mask <<= 1;
-                                cnt++;
+                                int cnt = 0;
+                                int mask = 1;
+                                while (true)
+                                {
+
+                                    if ((mask & multivar.flagMasks) == 0)
+                                        break;
+                                    var newCondition = new Condition();
+                                    newCondition.DefType = item.DefType;
+                                    newCondition.Identifier = item.Identifier;
+                                    newCondition.ObjectInfo = item.ObjectInfo;
+                                    newCondition.Flags = item.Flags;
+                                    newCondition.OtherFlags = item.OtherFlags;
+                                    newCondition.ObjectType = item.ObjectType;
+                                    newCondition.Num = ((mask & multivar.flagValues) == 0) ? -24 : -25;
+                                    var exp = new ExpressionParameter() { Comparsion = 0 };
+                                    exp.Items.Add(new Expression()
+                                        { Loader = new LongExp() { Value = cnt }, ObjectType = -1 });
+                                    newCondition.Items.Add(new Parameter() { Code = 22, Loader = exp });
+                                    Conditions.Add(newCondition);
+                                    mask <<= 1;
+                                    cnt++;
+                                }
+                                //Alterable Flags
+
+
                             }
-                            //Alterable Flags
-                            
-
-                        }
-                        else
-                        {
-                            //Alterable Values
-
-                            for (int j = 0; j < multivar.values.Length; j++)
+                            else
                             {
-                                var val = multivar.values[j];
-                                var newCondition = new Condition();
-                                newCondition.DefType = item.DefType;
-                                newCondition.Identifier = item.Identifier;
-                                newCondition.ObjectInfo = item.ObjectInfo;
-                                newCondition.Flags = item.Flags;
-                                newCondition.OtherFlags = item.OtherFlags;
-                                newCondition.ObjectType = item.ObjectType;
-
                                 //Alterable Values
-                                newCondition.Num = -27;
-                                var newParam = new AlterableValue();
-                                newParam.Value = (short)j;
-                                newCondition.Items.Add(new Parameter() { Code = 50, Loader = newParam });
-                                var exp = new ExpressionParameter() { Comparsion = (short)val.op };
-                                exp.Items.Add(new Expression()
-                                    { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
-                                newCondition.Items.Add(new Parameter() { Code = 23, Loader = exp });
-                                Conditions.Add(newCondition);
+
+                                for (int j = 0; j < multivar.values.Length; j++)
+                                {
+                                    var val = multivar.values[j];
+                                    var newCondition = new Condition();
+                                    newCondition.DefType = item.DefType;
+                                    newCondition.Identifier = item.Identifier;
+                                    newCondition.ObjectInfo = item.ObjectInfo;
+                                    newCondition.Flags = item.Flags;
+                                    newCondition.OtherFlags = item.OtherFlags;
+                                    newCondition.ObjectType = item.ObjectType;
+
+                                    //Alterable Values
+                                    newCondition.Num = -27;
+                                    var newParam = new AlterableValue();
+                                    newParam.Value = (short)j;
+                                    newCondition.Items.Add(new Parameter() { Code = 50, Loader = newParam });
+                                    var exp = new ExpressionParameter() { Comparsion = (short)val.op };
+                                    exp.Items.Add(new Expression()
+                                        { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
+                                    newCondition.Items.Add(new Parameter() { Code = 23, Loader = exp });
+                                    Conditions.Add(newCondition);
+                                }
                             }
                         }
-
+                        else 
+                            Conditions.Add(item);
                     }
                     else 
                         Conditions.Add(item);

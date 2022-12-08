@@ -136,7 +136,7 @@ namespace CTFAK.Tools
             mfa.Copyright = game.Copyright;
             mfa.Company = "";
             mfa.Version = "";
-            mfa.binaryFiles = game.BinaryFiles;
+            //mfa.binaryFiles = game.BinaryFiles;
             var displaySettings = mfa.DisplayFlags;
             var graphicSettings = mfa.GraphicFlags;
             var flags = game.Header.Flags;
@@ -339,8 +339,8 @@ namespace CTFAK.Tools
                             var layer = frame.layers.Items[i];
                             var newLayer = new MFALayer();
                             newLayer.Name = layer.Name;
-                            newLayer.Flags["HideAtStart"] = layer.Flags["ToHide"];
-                            newLayer.Flags["Visible"] = layer.Flags["Visible"];;
+                            newLayer.Flags["HideAtStart"] = true;//layer.Flags["ToHide"];
+                            newLayer.Flags["Visible"] = true;//layer.Flags["Visible"];;
                             newLayer.Flags["NoBackground"] = layer.Flags["DoNotSaveBackground"];
                             newLayer.Flags["WrapHorizontally"] = layer.Flags["WrapHorizontally"];
                             newLayer.XCoefficient = layer.XCoeff;

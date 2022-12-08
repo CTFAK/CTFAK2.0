@@ -387,6 +387,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 XCoeff = 1;
                 YCoeff = 1;
             }
+            Console.WriteLine(Flags);
         }
 
         public override void Write(ByteWriter Writer)
