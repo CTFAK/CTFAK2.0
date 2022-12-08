@@ -340,7 +340,7 @@ namespace CTFAK.Tools
                             var newLayer = new MFALayer();
                             newLayer.Name = layer.Name;
                             newLayer.Flags["HideAtStart"] = layer.Flags["ToHide"];
-                            newLayer.Flags["Visible"] = true;
+                            newLayer.Flags["Visible"] = layer.Flags["Visible"];;
                             newLayer.Flags["NoBackground"] = layer.Flags["DoNotSaveBackground"];
                             newLayer.Flags["WrapHorizontally"] = layer.Flags["WrapHorizontally"];
                             newLayer.XCoefficient = layer.XCoeff;
