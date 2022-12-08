@@ -24,6 +24,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public Dictionary<int, Quailifer> QualifiersList = new Dictionary<int, Quailifer>();
         public List<int> NumberOfConditions = new List<int>();
         public List<EventGroup> Items = new List<EventGroup>();
+        public static int IdentifierCounter;
 
         public override void Write(ByteWriter Writer)
         {
@@ -32,6 +33,7 @@ namespace CTFAK.CCN.Chunks.Frame
 
         public override void Read(ByteReader reader)
         {
+            IdentifierCounter = 0;
             // if (Settings.GameType == GameType.OnePointFive) return;
             while (true)
             {
@@ -165,8 +167,9 @@ namespace CTFAK.CCN.Chunks.Frame
                 //Child Event fix by -liz
                 var item = new Condition();
                 item.Read(reader);
+                item.Identifier += Events.IdentifierCounter;
                 Fixer.FixConditions(ref item);
-                
+                Console.WriteLine(item.Identifier);
                 if (item.Num == -27 && item.ObjectType == -1 ||
                     item.Num == -43 && item.ObjectType == -1)
                 {
@@ -208,6 +211,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                     Conditions.Add(newCondition);
                                     mask <<= 1;
                                     cnt++;
+                                    Events.IdentifierCounter++;
                                 }
                                 //Alterable Flags
 
@@ -238,7 +242,9 @@ namespace CTFAK.CCN.Chunks.Frame
                                         { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
                                     newCondition.Items.Add(new Parameter() { Code = 23, Loader = exp });
                                     Conditions.Add(newCondition);
+                                    Events.IdentifierCounter++;
                                 }
+                                
                             }
                         }
                         else 
@@ -387,7 +393,7 @@ namespace CTFAK.CCN.Chunks.Frame
             OtherFlags = reader.ReadSByte();
             NumberOfParameters = reader.ReadByte();
             DefType = reader.ReadByte();
-            Identifier = reader.ReadInt16();
+            Identifier = reader.ReadUInt16();
             if (Core.parameters.Contains("-noevnt")) return;
             else
             {

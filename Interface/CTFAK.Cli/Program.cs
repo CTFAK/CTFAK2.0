@@ -173,7 +173,7 @@ public class Program
                 Console.ReadKey();
             }
             executeStopwatch.Stop();
-            Console.Clear();
+            //Console.Clear();
             
             ASCIIArt.DrawArt();
             Console.WriteLine($"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds"); 
