@@ -198,7 +198,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                         break;
                                     var newCondition = new Condition();
                                     newCondition.DefType = item.DefType;
-                                    newCondition.Identifier = item.Identifier;
+                                    newCondition.Identifier = item.Identifier+cnt;
                                     newCondition.ObjectInfo = item.ObjectInfo;
                                     newCondition.Flags = item.Flags;
                                     newCondition.OtherFlags = item.OtherFlags;
@@ -226,7 +226,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                     var val = multivar.values[j];
                                     var newCondition = new Condition();
                                     newCondition.DefType = item.DefType;
-                                    newCondition.Identifier = item.Identifier;
+                                    newCondition.Identifier = item.Identifier+j;
                                     newCondition.ObjectInfo = item.ObjectInfo;
                                     newCondition.Flags = item.Flags;
                                     newCondition.OtherFlags = item.OtherFlags;
