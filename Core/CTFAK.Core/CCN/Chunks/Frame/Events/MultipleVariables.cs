@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
 using CTFAK.Utils;
@@ -11,7 +12,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public bool isDouble;
         public double value;
         private int index;
-        private int op;
+        public int op;
 
         public override void Read(ByteReader reader)
         {
@@ -45,10 +46,10 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
     }
     class MultipleVariables : ParameterCommon
     {
-        int flags;
-        int flagMasks;
-        int flagValues;
-        Multivar[] values;
+        public int flags;
+        public int flagMasks;
+        public int flagValues;
+        public Multivar[] values;
 
         public override void Read(ByteReader reader)
         {

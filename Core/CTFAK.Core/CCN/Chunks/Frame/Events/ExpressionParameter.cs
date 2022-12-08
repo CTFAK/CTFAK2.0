@@ -9,13 +9,13 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
     public class ExpressionParameter:ParameterCommon
     {
-        public List<Expression> Items;
+        public List<Expression> Items = new List<Expression>();
+        
         public short Comparsion;
 
         public override void Read(ByteReader reader)
         {
             Comparsion = reader.ReadInt16();
-            Items = new List<Expression>();
             while (true)
             {
                 var expression = new Expression();

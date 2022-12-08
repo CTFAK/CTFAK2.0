@@ -13,8 +13,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
         public int Num;
         public int ObjectInfo;
         public int ObjectInfoList;
-        public object value;
-        public object floatValue;
+
         public ChunkLoader Loader;
         public int Unk1;
         public ushort Unk2;
