@@ -312,7 +312,7 @@ namespace CTFAK.CCN.Chunks.Objects
 
             if (_valuesOffset > 0)
             {
-                Logger.Log("ALTVALS/FLAGS FOUND");
+                //Logger.Log("ALTVALS/FLAGS FOUND");
                 reader.Seek(currentPosition + _valuesOffset);
                 Values = new AlterableValues();
                 Values.Read(reader);

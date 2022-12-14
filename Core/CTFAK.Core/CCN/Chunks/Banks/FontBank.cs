@@ -139,7 +139,6 @@ namespace CTFAK.CCN.Chunks.Banks
             _quality = reader.ReadByte();
             _pitchAndFamily = reader.ReadByte();
             _faceName = reader.ReadWideString(32);
-            Logger.Log(_faceName);
         }
 
         public override void Write(ByteWriter Writer)

@@ -206,7 +206,7 @@ namespace CTFAK.CCN
                         shaders = new Shaders();
                         shaders.Read(chunkReader);
                         break;
-                    //case 8773:
+                    case 8773:
                         ExtHeader = new ExtendedHeader();
                         ExtHeader.Read(chunkReader);
                         break;
