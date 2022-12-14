@@ -164,8 +164,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 bmp = new Bitmap(1, 1);
             width = bmp.Width;
             height = bmp.Height;
-            if (!CTFAKCore.parameters.Contains("-noalpha"))
-                Flags["Alpha"] = true;
+            Flags["Alpha"] = !CTFAKCore.parameters.Contains("-noalpha");
             graphicMode = 4;
 
             var bitmapData = bmp.LockBits(new Rectangle(0, 0,
@@ -247,7 +246,7 @@ namespace CTFAK.CCN.Chunks.Banks
         }
         public bool IsMFA;
         public BitDict Flags = new BitDict(new string[]
-       {
+        {
             "RLE",
             "RLEW",
             "RLET",
@@ -255,7 +254,7 @@ namespace CTFAK.CCN.Chunks.Banks
             "Alpha",
             "ACE",
             "Mac"
-       });
+        });
         public int Handle;
         public int width;
         public int height;
@@ -323,54 +322,47 @@ namespace CTFAK.CCN.Chunks.Banks
                     Int32 compSize = reader.ReadInt32();
                     newImageData = reader.ReadBytes(compSize);
                 }
-                    
-                    
-                    ByteReader imageReader;
-                    var imageReadingTask = new Task(() =>
-                    {
-                        if (IsMFA)
-                        {
-                            imageReader = reader;
-                        }
-                        else
-                        {
-                            imageReader = new ByteReader(ZlibStream.UncompressBuffer(newImageData));
-                        }
-                    
-                        
-                        checksum = imageReader.ReadInt32();
-                        references = imageReader.ReadInt32();
-                        var size = imageReader.ReadInt32();
-                        if (IsMFA) imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
-                        width = imageReader.ReadInt16();
-                        height = imageReader.ReadInt16();
-
-                        graphicMode = imageReader.ReadByte();
-                        Flags.flag = imageReader.ReadByte();
-                        imageReader.Skip(2);
-                        HotspotX = imageReader.ReadInt16();
-                        HotspotY = imageReader.ReadInt16();
-                        ActionX = imageReader.ReadInt16();
-                        ActionY = imageReader.ReadInt16();
-                        transparent = imageReader.ReadInt32();
-                        //Logger.Log($"Loading image {Handle} with size {width}x{height}");
-
-                        if (Flags["LZX"])
-                        {
-                            uint decompressedSize = imageReader.ReadUInt32();
-
-                            imageData = Decompressor.DecompressBlock(imageReader,
-                                (int)(imageReader.Size() - imageReader.Tell()),
-                                (int)decompressedSize);
-                        }
-                        else imageData = imageReader.ReadBytes((int)(size));
-                    });
-                    imageReadingTasks.Add(imageReadingTask);
-                    if(IsMFA) imageReadingTask.RunSynchronously();
-                    else imageReadingTask.Start();
-                //imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
-
                 
+                ByteReader imageReader;
+                var imageReadingTask = new Task(() =>
+                {
+                    if (IsMFA)
+                        imageReader = reader;
+                    else
+                        imageReader = new ByteReader(ZlibStream.UncompressBuffer(newImageData));
+                    
+                    checksum = imageReader.ReadInt32();
+                    references = imageReader.ReadInt32();
+                    var size = imageReader.ReadInt32();
+                    if (IsMFA)
+                        imageReader = new ByteReader(imageReader.ReadBytes(size + 20));
+                    width = imageReader.ReadInt16();
+                    height = imageReader.ReadInt16();
+
+                    graphicMode = imageReader.ReadByte();
+                    Flags.flag = imageReader.ReadByte();
+                    imageReader.Skip(2);
+                    HotspotX = imageReader.ReadInt16();
+                    HotspotY = imageReader.ReadInt16();
+                    ActionX = imageReader.ReadInt16();
+                    ActionY = imageReader.ReadInt16();
+                    transparent = imageReader.ReadInt32();
+                    //Logger.Log($"Loading image {Handle} with size {width}x{height}");
+
+                    if (Flags["LZX"])
+                    {
+                        uint decompressedSize = imageReader.ReadUInt32();
+
+                        imageData = Decompressor.DecompressBlock(imageReader,
+                        (int)(imageReader.Size() - imageReader.Tell()),
+                        (int)decompressedSize);
+                    }
+                    else imageData = imageReader.ReadBytes(size);
+                });
+                imageReadingTasks.Add(imageReadingTask);
+                if(IsMFA) imageReadingTask.RunSynchronously();
+                else imageReadingTask.Start();
+                //imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
             }
             else if (Settings.android)
             {

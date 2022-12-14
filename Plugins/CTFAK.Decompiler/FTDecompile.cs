@@ -257,7 +257,7 @@ namespace CTFAK.Tools
                 }
             }
 
-            Logger.Log($"Prepating to translate {game.frames.Count} frames");
+            Logger.Log($"Preparing to translate {game.frames.Count} frames");
             for (int a = 0; a < game.frames.Count; a++)
             {
                 if (CTFAKCore.parameters.Contains(a.ToString()))
@@ -893,7 +893,8 @@ namespace CTFAK.Tools
                     newObject.Qualifiers = itemLoader._qualifiers;
 
                     newObject.Strings = new MFAValueList();//ConvertStrings(itemLoader.);
-                    newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values);
+                    newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values
+                    newObject.AltFlags = new MFAObjectFlags();
                     newObject.Movements = new MFAMovements();
 
                     if (itemLoader.Values != null)
@@ -911,6 +912,18 @@ namespace CTFAK.Tools
                             newVal.Value = itemLoader.Values.Items[j];
                             newObject.Values.Items.Add(newVal);
                         }
+                        for (int j = 0; j < 32; j++)
+                        {
+                            var newFlag = new ObjectFlag();
+                            newFlag.Name = $"Flag {j}";
+                            newFlag.Value = ByteFlag.GetFlag((uint)itemLoader.Values.Flags, j);
+                            newObject.AltFlags.Items.Add(newFlag);
+                        }
+                        for (int j = 31; j >= 0; j--)
+                            if (newObject.AltFlags.Items[j].Value == false)
+                                newObject.AltFlags.Items.Remove(newObject.AltFlags.Items[j]);
+                            else
+                                break;
                     }
 
                     if (itemLoader.Strings != null)
@@ -973,6 +986,7 @@ namespace CTFAK.Tools
                             active.BackgroundColor = newObject.BackgroundColor;
                             active.Strings = newObject.Strings;
                             active.Values = newObject.Values;
+                            active.AltFlags = newObject.AltFlags;
                             active.Movements = newObject.Movements;
                             active.Behaviours = newObject.Behaviours;
                             active.Qualifiers = newObject.Qualifiers;
@@ -1039,6 +1053,7 @@ namespace CTFAK.Tools
                             newExt.BackgroundColor = newObject.BackgroundColor;
                             newExt.Strings = newObject.Strings;
                             newExt.Values = newObject.Values;
+                            newExt.AltFlags = newObject.AltFlags;
                             newExt.Movements = newObject.Movements;
                             newExt.Behaviours = newObject.Behaviours;
                             newExt.Qualifiers = newObject.Qualifiers;
@@ -1079,6 +1094,7 @@ namespace CTFAK.Tools
                             newText.BackgroundColor = newObject.BackgroundColor;
                             newText.Strings = newObject.Strings;
                             newText.Values = newObject.Values;
+                            newText.AltFlags = newObject.AltFlags;
                             newText.Movements = newObject.Movements;
                             newText.Behaviours = newObject.Behaviours;
                             newText.Qualifiers = newObject.Qualifiers;
@@ -1126,6 +1142,7 @@ namespace CTFAK.Tools
                             lives.BackgroundColor = newObject.BackgroundColor;
                             lives.Strings = newObject.Strings;
                             lives.Values = newObject.Values;
+                            lives.AltFlags = newObject.AltFlags;
                             lives.Movements = newObject.Movements;
                             lives.Behaviours = newObject.Behaviours;
                             lives.Qualifiers = newObject.Qualifiers;
@@ -1150,6 +1167,7 @@ namespace CTFAK.Tools
                             newCount.BackgroundColor = newObject.BackgroundColor;
                             newCount.Strings = newObject.Strings;
                             newCount.Values = newObject.Values;
+                            newCount.AltFlags = newObject.AltFlags;
                             newCount.Movements = newObject.Movements;
                             newCount.Behaviours = newObject.Behaviours;
                             newCount.Qualifiers = newObject.Qualifiers;
@@ -1215,6 +1233,7 @@ namespace CTFAK.Tools
                         newSubApp.BackgroundColor = newObject.BackgroundColor;
                         newSubApp.Strings = newObject.Strings;
                         newSubApp.Values = newObject.Values;
+                        newSubApp.AltFlags = newObject.AltFlags;
                         newSubApp.Movements = newObject.Movements;
                         newSubApp.Behaviours = newObject.Behaviours;
                         newSubApp.Qualifiers = newObject.Qualifiers;

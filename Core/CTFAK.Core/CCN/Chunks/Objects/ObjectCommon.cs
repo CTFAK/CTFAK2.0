@@ -166,7 +166,6 @@ namespace CTFAK.CCN.Chunks.Objects
             }
             else if (Settings.twofiveplus)
             {
-                Console.WriteLine("Reading stuff for 2.5+");
                 var size = reader.ReadInt32();
                 _animationsOffset = reader.ReadInt16();
                 _movementsOffset = reader.ReadInt16();
@@ -313,7 +312,7 @@ namespace CTFAK.CCN.Chunks.Objects
 
             if (_valuesOffset > 0)
             {
-                //Logger.Log("ALTVALS FOUND");
+                Logger.Log("ALTVALS/FLAGS FOUND");
                 reader.Seek(currentPosition + _valuesOffset);
                 Values = new AlterableValues();
                 Values.Read(reader);

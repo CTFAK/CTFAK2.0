@@ -17,12 +17,14 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public short[] Qualifiers = new short[8];
         public MFAValueList Values;
         public MFAValueList Strings;
+        public MFAObjectFlags AltFlags;
         public MFAMovements Movements;
         public Behaviours Behaviours;
 
         public override void Write(ByteWriter Writer)
         {
             // if(Qualifiers==null) throw new NullReferenceException("QUALIFIERS NULL");
+            //AltFlags.Write(Writer);
             Writer.WriteInt32((int)ObjectFlags);
             Writer.WriteInt32(NewObjectFlags);
             // var col = Color.FromArgb(255,BackgroundColor.R,BackgroundColor.G,BackgroundColor.B);

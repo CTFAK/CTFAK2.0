@@ -28,7 +28,6 @@ namespace CTFAK.CCN.Chunks
                 var ext = new Extension();
                 ext.Read(reader);
                 Items.Add(ext);
-
             }
         }
 

@@ -114,7 +114,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 if (reader.Tell() >= reader.Size()) break;
                 switch (newChunk.Id)
                 {
-
                     case 13109:
                         var frameName = new StringChunk();
                         frameName.Read(chunkReader);
@@ -311,6 +310,11 @@ namespace CTFAK.CCN.Chunks.Frame
                         {
                             shaderData.hasShader = false;
                         }
+                        break;
+                    default:
+                        Logger.Log("No Reader for Frame Chunk " + newChunk.Id);
+                        if (CTFAKCore.parameters.Contains("-dumpnewchunks"))
+                            File.WriteAllBytes("UnkChunks\\Frame\\" + newChunk.Id + ".bin", chunkReader.ReadBytes());
                         break;
                 }
             }

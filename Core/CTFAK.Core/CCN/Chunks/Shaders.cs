@@ -122,8 +122,6 @@ namespace CTFAK.MMFParser.EXE.Loaders
                 case 2: return "int_float4";
                 case 3: return "image";
                 default: return "unk";
-                    
-                
             }
         }
     }

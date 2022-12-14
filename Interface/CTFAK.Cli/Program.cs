@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using CTFAK;
+using CTFAK.EXE;
 using CTFAK.FileReaders;
 using CTFAK.Tools;
 using CTFAK.Utils;
@@ -56,38 +57,31 @@ public class Program
 
             List<IFileReader> availableReaders = new List<IFileReader>();
 
-            
+
 
             if (Path.GetExtension(path)==".exe")
-            {
                 gameParser = new ExeFileReader();
-            }
             else if (Path.GetExtension(path) == ".apk")
             {
                 if (File.Exists(Path.GetTempPath() + "application.ccn"))
                     File.Delete(Path.GetTempPath() + "application.ccn");
                 path = ApkFileReader.ExtractCCN(path);
-                gameParser = new CTFAK.EXE.CCNFileReader();
+                gameParser = new CCNFileReader();
             }
+            else if (Path.GetExtension(path) == ".mfa")
+                gameParser = new MFAFileReader();
             else
             {
                 SELECT_READER:
                 foreach (var rawType in types)
-                {
                     if (rawType.GetInterface(typeof(IFileReader).FullName) != null)
-                    {
                         availableReaders.Add((IFileReader)Activator.CreateInstance(rawType));
-                    }
-                       
-                }
                 foreach (var item in Directory.GetFiles("Plugins", "*.dll"))
                 {
                     var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
                     foreach (var pluginType in newAsm.GetTypes())
-                    {
                         if (pluginType.GetInterface(typeof(IFileReader).FullName) != null)
                             availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
-                    }
                 }
                 //Console.Clear();
                 ASCIIArt.DrawArt();
@@ -95,22 +89,13 @@ public class Program
                 Console.WriteLine($"{availableReaders.Count} readers(s) available\n\nSelect reader: ");
                 Console.WriteLine("0. Exit CTFAK");
                 for (int i = 0; i < availableReaders.Count; i++)
-                {
                     Console.WriteLine($"{i + 1}. {availableReaders[i].Name}");
-                }
                 var key1 = Console.ReadLine();
                 var readerSelect = int.Parse(key1);
                 if (readerSelect == 0) Environment.Exit(0);
                 gameParser = availableReaders[readerSelect - 1];
             }
             
-            
-
-
-                
-            
-
-
             var readStopwatch = new Stopwatch();
             readStopwatch.Start();
             //Console.Clear();
@@ -119,18 +104,13 @@ public class Program
             Console.WriteLine($"Reading game with \"{gameParser.Name}\"");
             gameParser.PatchMethods();
             
-            
+
             gameParser.LoadGame(path);
             readStopwatch.Stop();
 
-            
             //Console.Clear();
             ASCIIArt.DrawArt();
             Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
-            
-            
-
-
             
             List<IFusionTool> availableTools = new List<IFusionTool>();
             foreach (var rawType in types)

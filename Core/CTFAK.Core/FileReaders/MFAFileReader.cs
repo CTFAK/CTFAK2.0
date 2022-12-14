@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using CTFAK.CCN;
-using CTFAK.CCN.Chunks.Banks;
+using CTFAK.Core.MFA;
 using CTFAK.FileReaders;
 using CTFAK.Memory;
+using CTFAK.MFA;
 using CTFAK.Utils;
 
 namespace CTFAK.EXE
 {
-    public class CCNFileReader:IFileReader
+    public class MFAFileReader : IFileReader
     {
-        public string Name => "CCN";
+        public string Name => "MFA";
         public GameData game;
+        public MFAData mfa;
         public GameData getGameData()
         {
             return game;
@@ -25,13 +27,11 @@ namespace CTFAK.EXE
         public void LoadGame(string gamePath)
         {
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
-
-            if (reader.PeekInt32() == 2004318071)
-                reader.Skip(32);
-            reader.ReadUInt32();
-
-            game = new GameData();
-            game.Read(reader);
+            mfa = new MFAData();
+            Settings.isMFA = true;
+            mfa.Read(reader);
+            Settings.isMFA = false;
+            game = MFA2Pame.ConvertMFA2Pame(mfa);
         }
 
         public Dictionary<int, Bitmap> getIcons()
@@ -41,7 +41,7 @@ namespace CTFAK.EXE
 
         public void PatchMethods()
         {
-            Settings.gameType = Settings.GameType.ANDROID;
+            Settings.gameType = Settings.GameType.NORMAL;
         }
     }
 }

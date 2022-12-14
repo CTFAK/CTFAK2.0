@@ -26,13 +26,12 @@ namespace CTFAK.CCN.Chunks
 
     public class BinaryFiles:ChunkLoader
     {
-        public List<BinaryFile> files;
+        public List<BinaryFile> files = new List<BinaryFile>();
         public int count;
 
         public override void Read(ByteReader reader)
         {
             count = reader.ReadInt32();
-            files = new();
             for (int i = 0; i < count; i++)
             {
                 BinaryFile file = new BinaryFile();

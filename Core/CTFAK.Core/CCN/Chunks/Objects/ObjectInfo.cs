@@ -82,8 +82,6 @@ namespace CTFAK.CCN.Chunks.Objects
                             rgbCoeff = Color.White;
                             blend = 255;
                         }
-                        
-                        
                         break;
                     case 17478:        
                         if (ObjectType == 0) properties = new Quickbackdrop();
@@ -92,7 +90,6 @@ namespace CTFAK.CCN.Chunks.Objects
 
                         properties?.Read(chunkReader);
                         break;
-
                     case 17480:
                         shaderData.hasShader = true;
                         var shaderHandle = chunkReader.ReadInt32();
@@ -130,6 +127,11 @@ namespace CTFAK.CCN.Chunks.Objects
                                 Value = paramValue
                             });
                         }
+                        break;
+                    default:
+                        Logger.Log("No Reader for ObjectInfo Chunk " + newChunk.Id);
+                        if (CTFAKCore.parameters.Contains("-dumpnewchunks"))
+                            File.WriteAllBytes("UnkChunks\\ObjectInfo\\" + newChunk.Id + ".bin", chunkReader.ReadBytes());
                         break;
                 }
             }

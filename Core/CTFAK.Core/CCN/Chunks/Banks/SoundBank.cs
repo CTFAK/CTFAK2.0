@@ -96,28 +96,38 @@ namespace CTFAK.CCN.Chunks.Banks
 
             var start = reader.Tell();
 
+            Logger.Log($"Handle Position: {reader.Tell()}");
             Handle = reader.ReadUInt32();
+            Logger.Log($"Checksum Position: {reader.Tell()}");
             Checksum = reader.ReadInt32();
 
+            Logger.Log($"References Position: {reader.Tell()}");
             References = reader.ReadUInt32();
+            Logger.Log($"Decompressed Size Position: {reader.Tell()}");
             var decompressedSize = reader.ReadInt32();
+            Logger.Log($"Size: {decompressedSize}");
+            Logger.Log($"Flags Position: {reader.Tell()}");
             Flags = reader.ReadUInt32();
+            Logger.Log($"Res Position: {reader.Tell()}");
             var res = reader.ReadInt32();
+            Logger.Log($"Name Length Position: {reader.Tell()}");
             var nameLenght = reader.ReadInt32();
-            Size = reader.ReadInt32();
+            Logger.Log($"Name Length: {nameLenght}");
+            Logger.Log($"Name Position: {reader.Tell()}");
+            start = reader.Tell();
             ByteReader soundData;
             if (IsCompressed)
             {
+                Size = reader.ReadInt32();
                 soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
             }
             else
             {
                 soundData = new ByteReader(reader.ReadBytes(decompressedSize));
             }
-            Name = soundData.ReadWideString(nameLenght);
-            Name = Name.Replace(" ", "");
+            Name = soundData.ReadWideString(nameLenght).Trim((char)0);
+            Logger.Log($"Sound Position: {start + soundData.Tell()}");
             Data = soundData.ReadBytes((int)soundData.Size());
-        
         }
 
         public void AndroidRead(ByteReader soundData, string itemName)

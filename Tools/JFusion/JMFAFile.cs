@@ -71,7 +71,7 @@ namespace JFusion
             fProj.graphicFlags = mfa.GraphicFlags.flag;
             fProj.frameRate = mfa.FrameRate;
             fProj.buildType = mfa.BuildType;
-            fProj.mfaBuild = mfa.MfaBuild;
+            fProj.mfaBuild = mfa.MfaVersion + mfa.MfaSubversion;
             fProj.product = mfa.Product;
             fProj.buildVersion = mfa.BuildType;
             fProj.langId = mfa.LangId;
@@ -131,7 +131,8 @@ namespace JFusion
             mfa.FrameRate = frameRate;
             mfa.BuildType = buildType;
 
-            mfa.MfaBuild = 6;
+            mfa.MfaVersion = 3;
+            mfa.MfaSubversion = 3;
             mfa.Product = 2;
             mfa.BuildVersion = 292;
             mfa.LangId = 1033;

@@ -3,8 +3,10 @@ using CTFAK.MFA;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -137,6 +139,7 @@ namespace CTFAK.CCN.Chunks.Banks
             _quality = reader.ReadByte();
             _pitchAndFamily = reader.ReadByte();
             _faceName = reader.ReadWideString(32);
+            Logger.Log(_faceName);
         }
 
         public override void Write(ByteWriter Writer)
@@ -158,5 +161,75 @@ namespace CTFAK.CCN.Chunks.Banks
         }
 
 
+    }
+
+    public class TrueTypeMeta : ChunkLoader
+    {
+        public List<TTM> TTFMetas = new List<TTM>();
+
+        public override void Read(ByteReader reader)
+        {
+            var end = reader.Tell() + reader.Size();
+            while (reader.Tell() < end)
+            {
+                var newTTM = new TTM();
+                newTTM.Read(reader);
+                TTFMetas.Add(newTTM);
+            }
+        }
+
+        public class TTM
+        {
+            string FontName;
+            int FontSize;
+            int FontStyle;
+            bool Bold;
+            bool Italic;
+            bool Underline;
+            bool Strikeout;
+            int ScriptType;
+
+            public void Read (ByteReader reader)
+            {
+                FontSize = reader.ReadInt32();
+                FontSize = -(FontSize + 6);
+                reader.ReadInt32(); //Idk Yet
+                reader.ReadInt32(); //Idk Yet
+                reader.ReadInt32(); //Idk Yet
+                FontStyle = reader.ReadByte();
+                Bold = reader.ReadByte() > 01;
+                reader.ReadInt16(); //Idk Yet
+                Italic = reader.ReadByte() != 00;
+                Underline = reader.ReadByte() != 00;
+                Strikeout = reader.ReadByte() != 00;
+                ScriptType = reader.ReadByte();
+                if (ScriptType > 0)
+                    ScriptType = 179 - ScriptType;
+                FontName = reader.ReadWideString(32).TrimEnd((char)0);
+                reader.ReadInt32(); //Idk Yet
+            }
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TrueTypeFonts : ChunkLoader
+    {
+        public List<byte[]> Fonts = new();
+
+        public override void Read(ByteReader reader)
+        {
+            var end = reader.Tell() + reader.Size();
+            while (reader.Tell() < end)
+                Fonts.Add(Decompressor.Decompress(reader, out int decomp));
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

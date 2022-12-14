@@ -19,7 +19,8 @@ namespace CTFAK.MFA
         public static readonly string MusicBankId = "ASUM";
         public static readonly string SoundBankId = "APMS";
 
-        public int MfaBuild;
+        public short MfaVersion;
+        public short MfaSubversion;
         public int Product;
         public int BuildVersion;
         public int LangId = 32;
@@ -28,7 +29,7 @@ namespace CTFAK.MFA
         public string Description;
         public string Path;
 
-        public BinaryFiles binaryFiles = new BinaryFiles();
+        public BinaryFiles binaryFiles;
 
         public FontBank Fonts;
         public SoundBank Sounds;
@@ -124,8 +125,8 @@ namespace CTFAK.MFA
 
             Writer.WriteAscii("MFU2");
             
-            Writer.WriteInt32(MfaBuild);
-            
+            Writer.WriteInt16(MfaVersion);
+            Writer.WriteInt16(MfaSubversion);
             Writer.WriteInt32(Product);
             Writer.WriteInt32(BuildVersion);
             Writer.WriteInt32(LangId);
@@ -174,8 +175,11 @@ namespace CTFAK.MFA
             Writer.AutoWriteUnicode(Aboutbox);
             Writer.WriteInt32(0);
             
-            binaryFiles.Write(Writer);
-            
+            if (binaryFiles != null)
+                binaryFiles.Write(Writer);
+            else
+                Writer.WriteInt32(0);
+
             Controls.Write(Writer);
 
             if (Menu != null)
@@ -258,11 +262,12 @@ namespace CTFAK.MFA
         public void Read(ByteReader reader)
         {
             reader.ReadAscii(4);
-            MfaBuild = reader.ReadInt32();
+            MfaVersion = reader.ReadInt16();
+            MfaSubversion = reader.ReadInt16();
             Product = reader.ReadInt32();
             BuildVersion = reader.ReadInt32();
             //reader.ReadInt32();//unknown
-            // Settings.Build = BuildVersion;
+            Settings.Build = BuildVersion;
             LangId = reader.ReadInt32();
             Name = reader.AutoReadUnicode();
             Description = reader.AutoReadUnicode();
@@ -270,24 +275,29 @@ namespace CTFAK.MFA
             var stampLen = reader.ReadInt32();
             Stamp = reader.ReadBytes(stampLen);
 
+            Logger.Log("Reading Fonts");
             if (reader.ReadAscii(4) != FontBankId) throw new Exception("Invalid Font Bank");
             Fonts = new FontBank();
             Fonts.Compressed = false;
             Fonts.Read(reader);
 
+            Logger.Log("Reading Sounds");
             if (reader.ReadAscii(4) != SoundBankId) throw new Exception("Invalid Sound Bank");
             Sounds = new SoundBank();
             Sounds.IsCompressed = false;
             Sounds.Read(reader);
 
+            Logger.Log("Reading Music");
             if (reader.ReadAscii(4) != MusicBankId) throw new Exception("Invalid Music Bank");
             Music = new MusicBank();
             Music.Read(reader);
 
+            Logger.Log("Reading Icons");
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Icon Bank: ");
             Icons = new AGMIBank();
             Icons.Read(reader);
 
+            Logger.Log("Reading Images");
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Image Bank");
             Images = new AGMIBank();
             Images.Read(reader);
