@@ -72,7 +72,6 @@ namespace CTFAK.MFA
             if (ObjectType >= 32)//extension base
             {
                 Loader = new MFAExtensionObject();
-
             }
             else if (ObjectType == 0)
             {
@@ -82,10 +81,6 @@ namespace CTFAK.MFA
             {
                 Loader = new MFABackdrop();
             }
-            else if (ObjectType == 7)
-            {
-                Loader = new MFACounter();
-            }
             else if (ObjectType == 2)
             {
                 Loader = new MFAActive();
@@ -94,6 +89,11 @@ namespace CTFAK.MFA
             {
                 Loader = new MFAText();
             }
+            else if (ObjectType == 7)
+            {
+                Loader = new MFACounter();
+            }
+            
             else throw new NotImplementedException("Unsupported object: " + ObjectType);
             Loader.Read(reader);
         }

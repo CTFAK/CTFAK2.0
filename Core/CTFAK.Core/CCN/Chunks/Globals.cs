@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CTFAK.Attributes;
 using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
 
@@ -41,6 +42,7 @@ namespace CTFAK.CCN.Chunks
             throw new System.NotImplementedException();
         }
     }
+    [ChunkLoader(8755,"GlobalStrings")]
     public class GlobalStrings:ChunkLoader
     {
         public List<string> Items = new List<string>();

@@ -6,6 +6,7 @@ using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using CTFAK.EXE;
 using CTFAK.MMFParser.EXE.Loaders;
 using CTFAK.FileReaders;
@@ -195,7 +196,16 @@ namespace CTFAK.CCN
             // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
             // it's safe to just read again
             chunkList.Read(reader);
+        }
 
+        public void Write(ByteWriter writer)
+        {
+            writer.WriteAscii(Settings.Unicode ? "PAMU" : "PAME");
+            writer.WriteInt32(3);
+            writer.WriteInt32(770);
+            writer.WriteInt32(0);
+            writer.WriteInt32(Settings.Build);
+            
         }
     }
 }

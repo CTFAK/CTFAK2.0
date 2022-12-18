@@ -169,7 +169,6 @@ namespace CTFAK.CCN.Chunks.Frame
                 item.Read(reader);
                 item.Identifier += Events.IdentifierCounter;
                 Fixer.FixConditions(ref item);
-                Console.WriteLine(item.Identifier);
                 if (item.Num == -27 && item.ObjectType == -1 ||
                     item.Num == -43 && item.ObjectType == -1)
                 {

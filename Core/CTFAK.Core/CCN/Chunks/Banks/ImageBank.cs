@@ -31,6 +31,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 {
                     var newImg = new Image();
                     newImg.Read(reader);
+                    OnImageLoaded?.Invoke(i,count);
                     Items.Add(newImg.Handle, newImg);
                 }
             }
@@ -52,6 +53,7 @@ namespace CTFAK.CCN.Chunks.Banks
             {
                 task.Wait();
             }
+            Image.imageReadingTasks.Clear();
         }
 
         public override void Write(ByteWriter writer)
@@ -323,7 +325,9 @@ namespace CTFAK.CCN.Chunks.Banks
                 }
 
                 ByteReader imageReader;
-                var imageReadingTask = new Task(() =>
+                Task newTask = null;
+                
+                var mainRead = () =>
                 {
                     if (IsMFA)
                     {
@@ -350,23 +354,27 @@ namespace CTFAK.CCN.Chunks.Banks
                     ActionY = imageReader.ReadInt16();
                     Transparent = imageReader.ReadInt32();
                     //Logger.Log($"Loading image {Handle} with size {width}x{height}");
-
-                    if (Flags["LZX"])
+                    var decompress = () =>
                     {
-                        uint decompressedSize = imageReader.ReadUInt32();
+                        if (Flags["LZX"])
+                        {
+                            uint decompressedSize = imageReader.ReadUInt32();
 
-                        imageData = Decompressor.DecompressBlock(imageReader,
-                            (int)(imageReader.Size() - imageReader.Tell()),
-                            (int)decompressedSize);
-                    }
-                    else
-                        imageData = imageReader.ReadBytes((int)(size));
-                });
-                imageReadingTasks.Add(imageReadingTask);
-                if (IsMFA)
-                    imageReadingTask.RunSynchronously();
-                else
-                    imageReadingTask.Start();
+                            imageData = Decompressor.DecompressBlock(imageReader,
+                                (int)(imageReader.Size() - imageReader.Tell()),
+                                (int)decompressedSize);
+                        }
+                        else
+                            imageData = imageReader.ReadBytes((int)(size));
+                    };
+                    newTask = new Task(decompress);
+                };
+                if (IsMFA) mainRead();
+                imageReadingTasks.Add(newTask);
+                //if (IsMFA)
+                //    imageReadingTask.RunSynchronously();
+                //else
+                newTask.Start();
                 //imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
             }
             else if (Settings.android)

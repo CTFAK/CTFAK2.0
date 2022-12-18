@@ -1,4 +1,4 @@
-﻿#define USE_IONIC
+﻿//#define USE_IONIC
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -32,7 +32,7 @@ namespace CTFAK.Memory
 #else
             ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
 
-            using (MemoryStream fsComp = new MemoryStream(reader.readArray(size)))
+            using (MemoryStream fsComp = new MemoryStream(reader.ReadBytes(size)))
             using (MemoryStream fsDecomp = new MemoryStream())
             using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
             {
@@ -53,7 +53,7 @@ namespace CTFAK.Memory
 #else
             ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
 
-            using (MemoryStream fsComp = new MemoryStream(reader.readArray(size)))
+            using (MemoryStream fsComp = new MemoryStream(reader.ReadBytes(size)))
             using (MemoryStream fsDecomp = new MemoryStream())
             using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
             {

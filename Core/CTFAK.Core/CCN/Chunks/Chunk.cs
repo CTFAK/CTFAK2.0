@@ -60,6 +60,11 @@ namespace CTFAK.CCN.Chunks
 
             return ChunkData;
         }
+
+        public void Write(ByteWriter fileWriter, ByteWriter dataWriter)
+        {
+            
+        }
     }
 
     public abstract class ChunkLoader

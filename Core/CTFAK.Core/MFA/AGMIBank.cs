@@ -18,6 +18,7 @@ namespace CTFAK.MMFParser.MFA.Loaders
         private int PaletteVersion;
         private int PaletteEntries;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
+        public event SaveHandler OnImageLoaded;
         public List<Color> Palette=new Color[256].ToList();
 
         public override void Read(ByteReader reader)
@@ -38,9 +39,15 @@ namespace CTFAK.MMFParser.MFA.Loaders
                 var item = new Image();
                 item.IsMFA = true;
                 item.Read(reader);
+                OnImageLoaded?.Invoke(i,count);
                 if(!Items.ContainsKey(item.Handle))
                     Items.Add(item.Handle, item);
             }
+            foreach (var task in Image.imageReadingTasks)
+            {
+                task.Wait();
+            }
+            Image.imageReadingTasks.Clear();
         }
 
         private List<Task> imageWriteTasks = new List<Task>();
