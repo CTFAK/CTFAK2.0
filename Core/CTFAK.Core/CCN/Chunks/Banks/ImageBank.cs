@@ -85,6 +85,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     var dataPtr = Marshal.AllocHGlobal(imageData.Length);
                     Marshal.Copy(imageData,0,dataPtr,imageData.Length);
                     NativeLib.TranslateToRGBA(bmpData.Scan0,Width,Height,Flags["Alpha"] ? 1:0,imageData.Length,dataPtr,Transparent,internalColorMode);
+                    newImageData = null;
 
                 }
                 return realBitmap;
@@ -254,7 +255,6 @@ namespace CTFAK.CCN.Chunks.Banks
                 if (!IsMFA)
                     mainRead.Start();
                 else mainRead.RunSynchronously();
-
             }
 
         }
