@@ -25,6 +25,41 @@ namespace CTFAK.Memory
         public static ByteReader DecompressAsReader(ByteReader exeReader, out int decompressed) =>
             new ByteReader(Decompress(exeReader, out decompressed));
 
+        public static byte[] DecompressBlock(byte[] data, int size, int decompSize)
+        {
+#if USE_IONIC
+            return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
+#else
+            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
+
+            using (MemoryStream fsComp = new MemoryStream(data))
+            using (MemoryStream fsDecomp = new MemoryStream())
+            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
+            {
+                zs.CopyTo(fsDecomp);
+                var newData = fsDecomp.GetBuffer();
+                Array.Resize<byte>(ref newData, decompSize);
+                return newData;
+            }
+#endif
+        }
+        public static byte[] DecompressBlock(byte[] data, int size)
+        {
+#if USE_IONIC
+            return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
+#else
+            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
+
+            using (MemoryStream fsComp = new MemoryStream(data))
+            using (MemoryStream fsDecomp = new MemoryStream())
+            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
+            {
+                zs.CopyTo(fsDecomp);
+                var newData = fsDecomp.GetBuffer();
+                return newData;
+            }
+#endif
+        }
         public static byte[] DecompressBlock(ByteReader reader, int size, int decompSize)
         {
 #if USE_IONIC

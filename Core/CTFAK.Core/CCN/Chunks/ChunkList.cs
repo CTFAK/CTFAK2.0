@@ -121,7 +121,7 @@ namespace CTFAK.CCN.Chunks
                         try
                         {
                             newInstance.Read(new ByteReader(new MemoryStream(chunkData)));
-                            File.WriteAllBytes($"Chunks\\{loaderData.ChunkName}-{reader.Tell()-newChunk.Size}.bin",chunkData);
+                            //File.WriteAllBytes($"Chunks\\{loaderData.ChunkName}-{reader.Tell()-newChunk.Size}.bin",chunkData);
                         }
                         catch(Exception ex)
                         {

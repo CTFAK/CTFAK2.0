@@ -37,7 +37,8 @@ namespace CTFAK.EXE
             else if (uheader == "PAME")
             {
                 Logger.Log("Found PAME header",false);
-                Settings.gameType = Settings.GameType.MMF2;
+                if(Settings.gameType!=Settings.GameType.MMF15)
+                    Settings.gameType = Settings.GameType.MMF2;
                 Settings.Unicode = false;
             }
             reader.Seek(start + 16);

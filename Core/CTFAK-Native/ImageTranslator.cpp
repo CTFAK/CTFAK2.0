@@ -14,6 +14,9 @@ int GetPadding(int width, int pointSize, int bytes = 2)
     return ceil((double)((float)pad / (float)pointSize));
 }
 extern "C" {
+    //
+   
+    
 	DllExport void ReadPoint(char* result, int width, int height, int alpha,int size, char* imageData,int transparentColor)
 	{
 
@@ -159,7 +162,13 @@ extern "C" {
                 alphaSize += aPad;
             }
         }
-
-
+    }
+    DllExport void TranslateToRGBMasked(char* result, int width, int height, int alpha,int size, char* imageData,int transparentColor, int colorMode)
+	{
+        
+	}
+    DllExport void TranslateToRGBA(char* result, int width, int height, int alpha,int size, char* imageData,int transparentColor, int colorMode)
+	{
+	    ReadPoint(result,width,height,alpha,size,imageData,transparentColor);
     }
 }
