@@ -25,7 +25,7 @@ using CTFAK.CCN.Chunks.Banks;
 
 namespace CTFAK.Tools
 {
-    class FTDecompile : IFusionTool
+    public class FTDecompile : IFusionTool
     {
         public int[] Progress = new int[] { };
         int[] IFusionTool.Progress => Progress;

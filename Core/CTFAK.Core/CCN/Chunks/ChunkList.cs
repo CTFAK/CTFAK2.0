@@ -1,10 +1,13 @@
-﻿using System;
+﻿#define RELEASE
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
 using CTFAK.Attributes;
+using CTFAK.CCN.Chunks.Banks;
 using CTFAK.Memory;
 using CTFAK.Utils;
 
@@ -14,6 +17,7 @@ namespace CTFAK.CCN.Chunks
     {
         public class ChunkLoaderData
         {
+            //[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type LoaderType;
             public int ChunkId;
             public string ChunkName;
@@ -23,8 +27,31 @@ namespace CTFAK.CCN.Chunks
 
         public static readonly Dictionary<int,ChunkLoaderData> knownLoaders=new Dictionary<int, ChunkLoaderData>();
 
+        #if RELEASE
+        static void AddChunkLoader(int id, string chunkName,[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]Type loaderType)
+        {
+            var loader = new ChunkLoaderData();
+            loader.ChunkId = id;
+            loader.ChunkName = chunkName;
+            loader.LoaderType = loaderType;
+            knownLoaders.Add(id,loader);
+        }
+        #endif
+        [RequiresUnreferencedCode("ChunkList locates ChunkLoaders with reflection")]
         public static void Init()
         {
+#if RELEASE
+
+            Console.WriteLine("Using AOT-friendly mode");
+            AddChunkLoader(0x2223,"AppHeader",typeof(AppHeader));
+            AddChunkLoader(0x2224,"AppName",typeof(AppName));
+            AddChunkLoader(26214,"ImageBank",typeof(ImageBank));
+            AddChunkLoader(8767,"FrameItems",typeof(FrameItems));
+            AddChunkLoader(8745,"FrameItems",typeof(FrameItems));
+            AddChunkLoader(0x3333,"Frame",typeof(Frame.Frame));
+            AddChunkLoader(0x222E,"EditorFilename",typeof(EditorFilename));
+            AddChunkLoader(0x223B,"Copyright",typeof(Copyright));
+#else
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var asm in assemblies)
             {
@@ -68,6 +95,8 @@ namespace CTFAK.CCN.Chunks
                 {
                 }
             }
+#endif
+
         }
 
         public Chunk CreateChunk(ChunkLoader loader, int flag = 0)
@@ -98,7 +127,6 @@ namespace CTFAK.CCN.Chunks
                 i++;
                 Chunk newChunk=null;
                 byte[] chunkData=null;
-                Directory.CreateDirectory("Chunks");
                 if (reader.Tell() >= reader.Size()) break;
                 try
                 {

@@ -1,4 +1,4 @@
-﻿//#define USE_IONIC
+﻿#define USE_IONIC
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -6,7 +6,6 @@ using CTFAK.Utils;
 using Ionic.Zlib;
 using Joveler.Compression.ZLib;
 using DeflateStream = Joveler.Compression.ZLib.DeflateStream;
-
 
 
 namespace CTFAK.Memory
@@ -28,7 +27,7 @@ namespace CTFAK.Memory
         public static byte[] DecompressBlock(byte[] data, int size, int decompSize)
         {
 #if USE_IONIC
-            return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
+            return ZlibStream.UncompressBuffer(data);
 #else
             ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
 
@@ -37,8 +36,7 @@ namespace CTFAK.Memory
             using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
             {
                 zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.GetBuffer();
-                Array.Resize<byte>(ref newData, decompSize);
+                var newData = fsDecomp.ToArray();
                 return newData;
             }
 #endif
@@ -46,7 +44,7 @@ namespace CTFAK.Memory
         public static byte[] DecompressBlock(byte[] data, int size)
         {
 #if USE_IONIC
-            return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
+            return ZlibStream.UncompressBuffer(data);
 #else
             ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
 
@@ -55,7 +53,7 @@ namespace CTFAK.Memory
             using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
             {
                 zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.GetBuffer();
+                var newData = fsDecomp.ToArray();
                 return newData;
             }
 #endif
@@ -72,8 +70,7 @@ namespace CTFAK.Memory
             using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
             {
                 zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.GetBuffer();
-                Array.Resize<byte>(ref newData, decompSize);
+                var newData = fsDecomp.ToArray();
                 return newData;
             }
 #endif
@@ -93,7 +90,7 @@ namespace CTFAK.Memory
             using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
             {
                 zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.GetBuffer();
+                var newData = fsDecomp.ToArray();
                 return newData;
             }
 #endif
@@ -139,8 +136,8 @@ namespace CTFAK.Memory
             decompressedStream.CopyTo(zs);
             zs.Close();
 
-            compressedData = compressedStream.GetBuffer();
-            Array.Resize<byte>(ref compressedData, (int)zs.TotalOut);
+            compressedData = compressedStream.ToArray();
+            //Array.Resize<byte>(ref compressedData, (int)zs.TotalOut);
 
             return compressedData;
         }

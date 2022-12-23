@@ -1,4 +1,5 @@
-﻿using CTFAK.Memory;
+﻿using System;
+using CTFAK.Memory;
 using CTFAK.Utils;
 using System.IO;
 
@@ -27,7 +28,6 @@ namespace CTFAK.CCN.Chunks
             var rawData = reader.ReadBytes(Size);
             var dataReader = new ByteReader(rawData);
             byte[] ChunkData = null;
-
             switch (Flag)
             {
                 case ChunkFlags.Encrypted:
@@ -69,6 +69,10 @@ namespace CTFAK.CCN.Chunks
 
     public abstract class ChunkLoader
     {
+        public ChunkLoader()
+        {
+            
+        }
         public abstract void Read(ByteReader reader);
         public abstract void Write(ByteWriter writer);
     }

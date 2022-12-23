@@ -58,7 +58,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public Bitmap realBitmap;
         
 #pragma warning disable CA1416
-        public Bitmap bitmap
+        public unsafe Bitmap bitmap
         {
             get
             {
@@ -82,12 +82,16 @@ namespace CTFAK.CCN.Chunks.Banks
                             break;
                     }
 
-                    var dataPtr = Marshal.AllocHGlobal(imageData.Length);
-                    Marshal.Copy(imageData,0,dataPtr,imageData.Length);
-                    NativeLib.TranslateToRGBA(bmpData.Scan0,Width,Height,Flags["Alpha"] ? 1:0,imageData.Length,dataPtr,Transparent,internalColorMode);
+                    fixed (byte* dataPtr = imageData)
+                    {
+                        NativeLib.TranslateToRGBA(bmpData.Scan0,Width,Height,Flags["Alpha"] ? 1:0,imageData.Length,new IntPtr(dataPtr),Transparent,internalColorMode);
+
+                    }
                     newImageData = null;
+                    realBitmap.UnlockBits(bmpData);
 
                 }
+
                 return realBitmap;
             }
         }

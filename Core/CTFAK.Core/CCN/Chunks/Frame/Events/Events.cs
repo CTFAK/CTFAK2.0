@@ -6,7 +6,6 @@ using CTFAK.Memory;
 using CTFAK.MMFParser.EXE.Loaders.Events.Expressions;
 using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Utils;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 
 namespace CTFAK.CCN.Chunks.Frame

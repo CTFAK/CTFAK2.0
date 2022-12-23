@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net7.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <ApplicationIcon>CTFAK2.ico</ApplicationIcon>
         <!--<PublishSingleFile>true</PublishSingleFile>
@@ -10,12 +10,19 @@
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishReadyToRun>true</PublishReadyToRun>!-->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <PublishAOT>true</PublishAOT>
+        <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
 
 
-	</PropertyGroup>
+
+    </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj" />
+        <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj">
+            <IsTrimmable>false</IsTrimmable>
+        </ProjectReference>
+        <ProjectReference Include="..\..\Plugins\CTFAK.Decompiler\CTFAK.Decompiler.csproj" />
+        <ProjectReference Include="..\..\Plugins\Dumper\Dumper.csproj" />
     </ItemGroup>
 
 </Project>

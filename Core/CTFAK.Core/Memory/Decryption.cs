@@ -79,7 +79,6 @@ namespace CTFAK.Memory
             {
                 rawData[0] ^= (byte)((byte)(chunkId & 0xFF) ^ (byte)(chunkId >> 0x8));
             }
-            
             rawData = DecryptChunk(rawData, chunkSize);
             
             using (ByteReader data = new ByteReader(rawData))
@@ -104,23 +103,26 @@ namespace CTFAK.Memory
             anotherWriter.WriteBytes(encryptedData);
             return anotherWriter.GetBuffer();
         }
-        public static byte[] DecryptChunk(byte[] chunkData, int chunkSize)
+        public static unsafe byte[] DecryptChunk(byte[] chunkData, int chunkSize)
         {
-            IntPtr inputChunkPtr = Marshal.AllocHGlobal(chunkData.Length);
+            /*IntPtr inputChunkPtr = Marshal.AllocHGlobal(chunkData.Length);
             Marshal.Copy(chunkData, 0, inputChunkPtr, chunkData.Length);
 
             IntPtr keyPtr = Marshal.AllocHGlobal(_decryptionKey.Length);
-            Marshal.Copy(_decryptionKey, 0, keyPtr, _decryptionKey.Length);
-
-            var outputChunkPtr = NativeLib.decode_chunk(inputChunkPtr, chunkSize, MagicChar, keyPtr);
+            Marshal.Copy(_decryptionKey, 0, keyPtr, _decryptionKey.Length);*/
             
-            byte[] decodedChunk = new byte[chunkSize];
-            Marshal.Copy(outputChunkPtr, decodedChunk, 0, chunkSize);
-
-            Marshal.FreeHGlobal(inputChunkPtr);
-            Marshal.FreeHGlobal(keyPtr);
-
-            return decodedChunk;
+            fixed (byte* inputChunkPtr = chunkData)
+            {
+                fixed (byte* keyPtr = _decryptionKey)
+                {
+                    
+                    var outputChunkPtr = NativeLib.decode_chunk(new IntPtr(inputChunkPtr), chunkSize, MagicChar, new IntPtr(keyPtr));
+                    byte[] decodedChunk = new byte[chunkSize];
+                    Marshal.Copy(outputChunkPtr, decodedChunk, 0, chunkSize);
+                    return decodedChunk;
+                }
+                    
+            }
         }
 
         public static byte[] EncryptChunk(byte[] chunkData, int chunkSize)

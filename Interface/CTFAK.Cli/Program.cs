@@ -35,7 +35,7 @@ public class Program
         Console.WriteLine("by 1987kostya");
         Console.ResetColor();
         Thread.Sleep(700);
-        Console.Clear();
+        //Console.Clear();
         ASCIIArt.DrawArt();
 
         ASK_FOR_PATH:
@@ -123,6 +123,10 @@ public class Program
         Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
         
         List<IFusionTool> availableTools = new List<IFusionTool>();
+        #if RELEASE
+        availableTools.Add(new Dumper.ImageDumper());
+        availableTools.Add(new CTFAK.Tools.FTDecompile());
+        #endif
         foreach (var rawType in types)
         {
             if (rawType.GetInterface(typeof(IFusionTool).FullName) != null)

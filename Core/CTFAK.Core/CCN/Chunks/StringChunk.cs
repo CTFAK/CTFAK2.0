@@ -48,7 +48,7 @@ namespace CTFAK.CCN.Chunks
     class AboutText : StringChunk
     {
     }
-    [ChunkLoader(0x223B,"TargetFilename")]
+    [ChunkLoader(0x223B,"Copyright")]
     public class Copyright : StringChunk
     {
     }

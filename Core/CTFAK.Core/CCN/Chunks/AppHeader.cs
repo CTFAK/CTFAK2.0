@@ -1,13 +1,17 @@
 ﻿using CTFAK.Memory;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using CTFAK.Attributes;
+using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Utils;
 
 namespace CTFAK.CCN.Chunks
 {
     [ChunkLoader(0x2223, "AppHeader")]
+    //[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+
     public class AppHeader : ChunkLoader
     {
         public int Size;
@@ -63,7 +67,9 @@ namespace CTFAK.CCN.Chunks
         public short Otherflags;
         public Controls Controls;
         public int WindowsMenuIndex;
+        
 
+        
         public override void Read(ByteReader reader)
         {
             if (!Settings.Old) Size = reader.ReadInt32();
