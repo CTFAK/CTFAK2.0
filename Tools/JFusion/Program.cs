@@ -70,7 +70,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            Logger.LogWarning(ex);
             while (true)
             {
                 if (Console.ReadKey().Key == ConsoleKey.Enter) break;

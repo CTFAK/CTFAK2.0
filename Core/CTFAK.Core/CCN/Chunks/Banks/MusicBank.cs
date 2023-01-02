@@ -1,76 +1,69 @@
-﻿using CTFAK.Memory;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CTFAK.Memory;
 using CTFAK.Utils;
 
-namespace CTFAK.CCN.Chunks.Banks
+namespace CTFAK.CCN.Chunks.Banks;
+
+public class MusicBank : ChunkLoader
 {
-    public class MusicBank : ChunkLoader
+    public List<MusicFile> Items = new();
+    public int NumOfItems;
+    public int References = 0;
+
+    public override void Write(ByteWriter Writer)
     {
-        public int NumOfItems = 0;
-        public int References = 0;
-        public List<MusicFile> Items=new List<MusicFile>();
-
-        public override void Write(ByteWriter Writer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Read(ByteReader reader)
-        {
-            Items = new List<MusicFile>();
-            // if (!Settings.DoMFA)return;
-            NumOfItems = reader.ReadInt32();
-            for (int i = 0; i < NumOfItems; i++)
-            {
-                if (Settings.android) continue;
-                var item = new MusicFile();
-                item.Read(reader);
-                Items.Add(item);
-            }
-        }
+        throw new NotImplementedException();
     }
 
-    public class MusicFile : ChunkLoader
+    public override void Read(ByteReader reader)
     {
-        public int Checksum;
-        public int References;
-        public string Name;
-        private uint _flags;
-        public byte[] Data;
-        public int Handle;
-
-        public override void Write(ByteWriter Writer)
+        Items = new List<MusicFile>();
+        // if (!Settings.DoMFA)return;
+        NumOfItems = reader.ReadInt32();
+        for (var i = 0; i < NumOfItems; i++)
         {
-            throw new NotImplementedException();
+            if (Settings.Android) continue;
+            var item = new MusicFile();
+            item.Read(reader);
+            Items.Add(item);
         }
+    }
+}
 
-        public override void Read(ByteReader reader)
-        {
-            var compressed = true;
-            Handle = reader.ReadInt32();
-            if (compressed)
-            {
-                reader = Decompressor.DecompressAsReader(reader, out int decompressed);
-            }
+public class MusicFile : ChunkLoader
+{
+    private uint _flags;
+    public int Checksum;
+    public byte[] Data;
+    public int Handle;
+    public string Name;
+    public int References;
 
-            Checksum = reader.ReadInt32();
-            References = reader.ReadInt32();
-            var size = reader.ReadUInt32();
-            _flags = reader.ReadUInt32();
-            var reserved = reader.ReadInt32();
-            var nameLen = reader.ReadInt32();
-            Name = reader.ReadWideString(nameLen);
-            Data = reader.ReadBytes((int)(size - nameLen));
-        }
+    public override void Write(ByteWriter Writer)
+    {
+        throw new NotImplementedException();
+    }
 
-        public void Save(string filename)
-        {
-            File.WriteAllBytes(filename, Data);
-        }
+    public override void Read(ByteReader reader)
+    {
+        var compressed = true;
+        Handle = reader.ReadInt32();
+        if (compressed) reader = Decompressor.DecompressAsReader(reader, out var decompressed);
+
+        Checksum = reader.ReadInt32();
+        References = reader.ReadInt32();
+        var size = reader.ReadUInt32();
+        _flags = reader.ReadUInt32();
+        var reserved = reader.ReadInt32();
+        var nameLen = reader.ReadInt32();
+        Name = reader.ReadWideString(nameLen);
+        Data = reader.ReadBytes((int)(size - nameLen));
+    }
+
+    public void Save(string filename)
+    {
+        File.WriteAllBytes(filename, Data);
     }
 }

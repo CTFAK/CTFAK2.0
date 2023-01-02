@@ -12,6 +12,8 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <PublishAOT>true</PublishAOT>
         <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+        <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
+
 
 
 

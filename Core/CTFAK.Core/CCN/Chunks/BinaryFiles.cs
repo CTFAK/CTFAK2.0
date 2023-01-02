@@ -1,52 +1,50 @@
 ﻿using System.Collections.Generic;
-using CTFAK.Memory;
 using CTFAK.Attributes;
+using CTFAK.Memory;
 using CTFAK.MFA;
-using CTFAK.Utils;
 
-namespace CTFAK.CCN.Chunks
+namespace CTFAK.CCN.Chunks;
+
+public class BinaryFile : ChunkLoader
 {
-    public class BinaryFile : ChunkLoader
+    public byte[] Data;
+    public string Name;
+
+
+    public override void Read(ByteReader reader)
     {
-        public string Name;
-        public byte[] Data;
+        Name = reader.ReadUniversal(reader.ReadInt16());
+        Data = reader.ReadBytes(reader.ReadInt32());
+    }
 
+    public override void Write(ByteWriter writer)
+    {
+        writer.AutoWriteUnicode(Name);
+    }
+}
 
-        public override void Read(ByteReader reader)
+[ChunkLoader(8760, "BinaryFiles")]
+public class BinaryFiles : ChunkLoader
+{
+    public int Count;
+    public List<BinaryFile> Files;
+
+    public override void Read(ByteReader reader)
+    {
+        Count = reader.ReadInt32();
+        Files = new List<BinaryFile>();
+        for (var i = 0; i < Count; i++)
         {
-            Name = reader.ReadUniversal(reader.ReadInt16());
-            Data = reader.ReadBytes(reader.ReadInt32());
-        }
-
-        public override void Write(ByteWriter writer)
-        {
-            writer.AutoWriteUnicode(Name);
+            var File = new BinaryFile();
+            File.Read(reader);
+            Files.Add(File);
         }
     }
 
-    [ChunkLoader(8760, "BinaryFiles")]
-    public class BinaryFiles : ChunkLoader
+    public override void Write(ByteWriter writer)
     {
-        public List<BinaryFile> Files;
-        public int Count;
-
-        public override void Read(ByteReader reader)
-        {
-            Count = reader.ReadInt32();
-            Files = new();
-            for (int i = 0; i < Count; i++)
-            {
-                BinaryFile File = new BinaryFile();
-                File.Read(reader);
-                Files.Add(File);
-            }
-        }
-
-        public override void Write(ByteWriter writer)
-        {
-            writer.WriteInt32(Files.Count);
-            foreach (var Item in Files)
-                Item.Write(writer);
-        }
+        writer.WriteInt32(Files.Count);
+        foreach (var Item in Files)
+            Item.Write(writer);
     }
 }

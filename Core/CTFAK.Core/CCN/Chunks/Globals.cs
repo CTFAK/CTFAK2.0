@@ -1,69 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using CTFAK.Attributes;
-using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
 
-namespace CTFAK.CCN.Chunks
+namespace CTFAK.CCN.Chunks;
+
+public class GlobalValues : ChunkLoader
 {
-    public class GlobalValues:ChunkLoader
+    public List<object> Items = new();
+
+    public override void Read(ByteReader reader)
     {
-        public List<object> Items = new List<object>();
-
-        public override void Read(ByteReader reader)
+        try
         {
-            try
+            var count = reader.ReadInt16();
+            var tempReaders = new List<ByteReader>();
+            for (var i = 0; i < count; i++) tempReaders.Add(new ByteReader(reader.ReadBytes(4)));
+
+            foreach (var glob in tempReaders)
             {
-                var count = reader.ReadInt16();
-                List<ByteReader> tempReaders = new List<ByteReader>();
-                for (int i = 0; i < count; i++)
-                {
-                    tempReaders.Add(new ByteReader(reader.ReadBytes(4)));
-                }
-
-                foreach (var glob in tempReaders)
-                {
-                    var type = reader.ReadByte();
-                    if (type == 2)
-                    {
-                        Items.Add(glob.ReadSingle());
-                    }
-                    else if (type == 0)
-                    {
-                        Items.Add(glob.ReadInt32());
-                    }
-                }
+                var type = reader.ReadByte();
+                if (type == 2)
+                    Items.Add(glob.ReadSingle());
+                else if (type == 0) Items.Add(glob.ReadInt32());
             }
-            catch { }
         }
-
-        public override void Write(ByteWriter writer)
+        catch
         {
-            throw new System.NotImplementedException();
         }
     }
-    [ChunkLoader(8755,"GlobalStrings")]
-    public class GlobalStrings:ChunkLoader
-    {
-        public List<string> Items = new List<string>();
- 
-        public override void Read(ByteReader reader)
-        {
-            try
-            {
-                var count = reader.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    var str = reader.ReadWideString();
-                    Items.Add(str);
-                }
-            }
-            catch { }
-        }
 
-        public override void Write(ByteWriter writer)
+    public override void Write(ByteWriter writer)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+[ChunkLoader(8755, "GlobalStrings")]
+public class GlobalStrings : ChunkLoader
+{
+    public List<string> Items = new();
+
+    public override void Read(ByteReader reader)
+    {
+        try
         {
-            throw new System.NotImplementedException();
+            var count = reader.ReadInt32();
+            for (var i = 0; i < count; i++)
+            {
+                var str = reader.ReadWideString();
+                Items.Add(str);
+            }
         }
+        catch
+        {
+        }
+    }
+
+    public override void Write(ByteWriter writer)
+    {
+        throw new NotImplementedException();
     }
 }

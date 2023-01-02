@@ -1,62 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
-using CTFAK.Utils;
 
-namespace CTFAK.CCN.Chunks.Objects
+namespace CTFAK.CCN.Chunks.Objects;
+
+public class AlterableValues : ChunkLoader
 {
-    public class AlterableValues:ChunkLoader
+    public List<int> Items = new();
+
+    public override void Read(ByteReader reader)
     {
-        public List<int> Items = new List<int>();
-
-        public override void Read(ByteReader reader)
-        {
-            var count = reader.ReadInt16();
-            for (int i = 0; i < count; i++)
+        var count = reader.ReadInt16();
+        for (var i = 0; i < count; i++)
+            try
             {
-                try
-                {
-                    Items.Add(reader.ReadInt32());
-                }
-                catch
-                {
-                    break;
-                }
-                //Logger.Log($"Reading AltVal {i}: {Items[i]}");
+                Items.Add(reader.ReadInt32());
             }
-        }
-
-        public override void Write(ByteWriter writer)
-        {
-            throw new System.NotImplementedException();
-        }
+            catch
+            {
+                break;
+            }
+        //Logger.Log($"Reading AltVal {i}: {Items[i]}");
     }
 
-    public class AlterableStrings : ChunkLoader
+    public override void Write(ByteWriter writer)
     {
-        public List<string> Items = new List<string>();
+        throw new NotImplementedException();
+    }
+}
 
-        public override void Read(ByteReader reader)
-        {
-            var count = reader.ReadInt16();
-            for (int i = 0; i < count; i++)
+public class AlterableStrings : ChunkLoader
+{
+    public List<string> Items = new();
+
+    public override void Read(ByteReader reader)
+    {
+        var count = reader.ReadInt16();
+        for (var i = 0; i < count; i++)
+            try
             {
-                try
-                {
-                    Items.Add(reader.ReadWideString());
-                }
-                catch
-                {
-                    break;
-                }
-                //Logger.Log($"Reading AltStr {i}: {Items[i]}");
+                Items.Add(reader.ReadWideString());
             }
-        }
+            catch
+            {
+                break;
+            }
+        //Logger.Log($"Reading AltStr {i}: {Items[i]}");
+    }
 
-        public override void Write(ByteWriter writer)
-        {
-            throw new System.NotImplementedException();
-        }
+    public override void Write(ByteWriter writer)
+    {
+        throw new NotImplementedException();
     }
 }

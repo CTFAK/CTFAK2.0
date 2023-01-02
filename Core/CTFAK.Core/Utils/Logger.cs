@@ -1,43 +1,26 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
+using EasyNetLog;
 
-namespace CTFAK.Utils
+namespace CTFAK.Utils;
+
+public static class Logger
 {
-    public static class Logger
+    private static EasyNetLogger logger;
+
+    static Logger()
     {
-        static StreamWriter _writer;
-        public static event LoggerHandler OnLogged;
-        static Logger()
-        {
-            File.Delete("Latest.log");
-            _writer = new StreamWriter("Latest.log", false);
-            _writer.AutoFlush = true;
-        }
-
-        public static void Log(object text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White)
-        {
-            Log(text.ToString(), logToScreen, color);
-        }
-        public static void LogWarning(object text)
-        {
-            Log(text.ToString(), true, ConsoleColor.Yellow);
-        }
-        public static void Log(string text, bool logToScreen = true, ConsoleColor color = ConsoleColor.White)
-        {
-            var actualText = $"[{DateTime.Now.ToString("HH:mm:ss:ff")}] {text}";
-            if (logToScreen)
-            {
-                Console.ForegroundColor = color;
-                Console.WriteLine(actualText);
-                Console.ForegroundColor = ConsoleColor.White;
-                OnLogged?.Invoke(actualText);
-            }
-
-            _writer.WriteLine(actualText);
-            _writer.Flush();
-
-            //if (logToConsole) MainConsole.Message(text);
-        }
+        logger = new(log => $"<color=gray>[<color=purple>{DateTime.Now:HH:mm:ss.fff}</color>]</color> {log}", true, new string[] { Path.Combine("Logs", $"{DateTime.Now:yy-MM-dd_HH_mm_ss}.log") }, Array.Empty<LogStream>());
     }
+
+
+
+    public static event LoggerHandler OnLogged;
+
+
+    public static void LogWarning(object msg) => logger.Log($"<color=yellow>{msg.ToString() ?? "null"}</color>");
+
+
+    public static void Log(string msg) => logger.Log(msg);
+    public static void Log(object msg) => Log(msg.ToString());
 }

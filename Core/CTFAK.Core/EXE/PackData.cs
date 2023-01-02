@@ -1,106 +1,100 @@
-﻿using CTFAK.Memory;
-using CTFAK.Utils;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ionic.Zlib;
+using CTFAK.Memory;
+using CTFAK.Utils;
 
-namespace CTFAK.EXE
+namespace CTFAK.EXE;
+
+public class PackData
 {
-    public class PackData
+    private byte[] _header;
+    public uint FormatVersion;
+    public List<PackFile> Items = new();
+
+    public void Read(ByteReader reader)
     {
-        public List<PackFile> Items = new List<PackFile>();
-        private byte[] _header;
-        public uint FormatVersion;
-        public void Read(ByteReader reader)
+        Logger.Log("Reading PackData");
+        var start = reader.Tell();
+        _header = reader.ReadBytes(8);
+
+        var headerSize = reader.ReadUInt32();
+        Debug.Assert(headerSize == 32);
+        var dataSize = reader.ReadUInt32();
+
+        reader.Seek((int)(start + dataSize - 32));
+        var uheader = reader.ReadAscii(4);
+        if (uheader == "PAMU")
         {
-            Logger.Log("Reading PackData",false);
-            long start = reader.Tell();
-            _header = reader.ReadBytes(8);
-            
-            uint headerSize = reader.ReadUInt32();
-            Debug.Assert(headerSize == 32);
-            uint dataSize = reader.ReadUInt32();
+            Logger.Log("Found PAMU header");
+            Settings.gameType |= Settings.GameType.NORMAL;
+            Settings.Unicode = true;
+        }
+        else if (uheader == "PAME")
+        {
+            Logger.Log("Found PAME header");
+            if (!Settings.Old)
+                Settings.gameType |= Settings.GameType.MMF2;
+            Settings.Unicode = false;
+        }
 
-            reader.Seek((int)(start + dataSize - 32));
-            var uheader = reader.ReadAscii(4);
-            if (uheader == "PAMU")
-            {
-                Logger.Log("Found PAMU header",false);
-                Settings.gameType = Settings.GameType.NORMAL;
-                Settings.Unicode = true;
-            }
-            else if (uheader == "PAME")
-            {
-                Logger.Log("Found PAME header",false);
-                if(Settings.gameType!=Settings.GameType.MMF15)
-                    Settings.gameType = Settings.GameType.MMF2;
-                Settings.Unicode = false;
-            }
-            reader.Seek(start + 16);
+        reader.Seek(start + 16);
 
-            FormatVersion = reader.ReadUInt32();
-            var check = reader.ReadInt32();
-            //Removing this seemed to not break anything, adding it breaks things for me.
-            //Debug.Assert(check == 0);
-            check = reader.ReadInt32();
-            Debug.Assert(check == 0);
+        FormatVersion = reader.ReadUInt32();
+        var check = reader.ReadInt32();
+        //Removing this seemed to not break anything, adding it breaks things for me.
+        //Debug.Assert(check == 0);
+        check = reader.ReadInt32();
+        Debug.Assert(check == 0);
 
-            uint count = reader.ReadUInt32();
+        var count = reader.ReadUInt32();
 
-            long offset = reader.Tell();
-            for (int i = 0; i < count; i++)
-            {
-                if (!reader.HasMemory(2)) break;
-                UInt16 value = reader.ReadUInt16();
-                if (!reader.HasMemory(value)) break;
-                reader.ReadBytes(value);
-                reader.Skip(value);
-                if (!reader.HasMemory(value)) break;
-            }
+        var offset = reader.Tell();
+        for (var i = 0; i < count; i++)
+        {
+            if (!reader.HasMemory(2)) break;
+            var value = reader.ReadUInt16();
+            if (!reader.HasMemory(value)) break;
+            reader.ReadBytes(value);
+            reader.Skip(value);
+            if (!reader.HasMemory(value)) break;
+        }
 
-            var newHeader = reader.ReadAscii(4);
-            bool hasBingo = newHeader != "PAME" && newHeader != "PAMU";
+        var newHeader = reader.ReadAscii(4);
+        var hasBingo = newHeader != "PAME" && newHeader != "PAMU";
 
-            reader.Seek(offset);
-            for (int i = 0; i < count; i++)
-            {
-                var item = new PackFile();
-                item.HasBingo = hasBingo;
-                item.Read(reader);
-                Items.Add(item);
-            }
+        reader.Seek(offset);
+        for (var i = 0; i < count; i++)
+        {
+            var item = new PackFile();
+            item.HasBingo = hasBingo;
+            item.Read(reader);
+            Items.Add(item);
         }
     }
-    public class PackFile
+}
+
+public class PackFile
+{
+    private int _bingo;
+    public byte[] Data;
+    public bool HasBingo;
+    public string PackFilename = "ERROR";
+
+    public void Read(ByteReader exeReader)
     {
-        public string PackFilename = "ERROR";
-        int _bingo = 0;
-        public byte[] Data;
-        public bool HasBingo;
-        public void Read(ByteReader exeReader)
+        var len = exeReader.ReadUInt16();
+        PackFilename = exeReader.ReadWideString(len);
+        _bingo = exeReader.ReadInt32();
+        Data = exeReader.ReadBytes(exeReader.ReadInt32());
+        Logger.Log($"New packfile data: Name - {PackFilename}; Data size - {Data.Length}");
+        try
         {
-            Logger.Log("Found new packfile",false);
-            UInt16 len = exeReader.ReadUInt16();
-            PackFilename = exeReader.ReadWideString(len);
-            _bingo = exeReader.ReadInt32();
-            Data = exeReader.ReadBytes(exeReader.ReadInt32());
-            Logger.Log($"New packfile data: Name - {PackFilename}; Data size - {Data.Length}",false);
-            try
-            {
-                //File.WriteAllBytes($"ExtDump\\{PackFilename}", ZlibStream.UncompressBuffer(Data));
-
-            }
-            catch
-            {
-                //File.WriteAllBytes($"ExtDump\\{PackFilename}", Data);
-
-            }
-            //Dump();
+            //File.WriteAllBytes($"ExtDump\\{PackFilename}", ZlibStream.UncompressBuffer(Data));
         }
+        catch
+        {
+            //File.WriteAllBytes($"ExtDump\\{PackFilename}", Data);
+        }
+        //Dump();
     }
 }

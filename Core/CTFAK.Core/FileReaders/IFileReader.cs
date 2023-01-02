@@ -1,23 +1,17 @@
-﻿using CTFAK.CCN;
-using CTFAK.Memory;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CTFAK.CCN;
+using CTFAK.Memory;
 
-namespace CTFAK.FileReaders
+namespace CTFAK.FileReaders;
+
+public interface IFileReader
 {
-    public interface IFileReader
-    {
-        string Name { get; }
+    string Name { get; }
 
-        GameData getGameData();
-        int ReadHeader(ByteReader reader);
-        void LoadGame(string gamePath);
-        Dictionary<int, Bitmap> getIcons();
-        void PatchMethods();
-
-    }
+    GameData getGameData();
+    int ReadHeader(ByteReader reader);
+    void LoadGame(string gamePath);
+    Dictionary<int, Bitmap> getIcons();
+    void PatchMethods();
 }

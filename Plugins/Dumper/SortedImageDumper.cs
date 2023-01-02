@@ -32,7 +32,7 @@ namespace Dumper
             float maxdone = 0;
             int objectsdone = 0;
 
-            Logger.Log($"2.5+?: {Settings.twofiveplus}");
+            Logger.Log($"2.5+?: {Settings.TwoFivePlus}");
 
             foreach (var frame in frames)
                 foreach (var instance in frame.objects)
@@ -101,7 +101,7 @@ namespace Dumper
                     }
                     else if (oi.properties is ObjectCommon common)
                     {
-                        if (Settings.twofiveplus && common.Identifier == "SPRI" || !Settings.twofiveplus && common.Parent.ObjectType == 2)
+                        if (Settings.TwoFivePlus && common.Identifier == "SPRI" || !Settings.TwoFivePlus && common.Parent.ObjectType == 2)
                         {
                             int cntrAnims = 0;
                             foreach (var anim in common.Animations?.AnimationDict)
@@ -153,7 +153,7 @@ namespace Dumper
                                 }
                             }
                         }
-                        else if (Settings.twofiveplus && common.Identifier == "CNTR" || !Settings.twofiveplus && common.Parent.ObjectType == 7)
+                        else if (Settings.TwoFivePlus && common.Identifier == "CNTR" || !Settings.TwoFivePlus && common.Parent.ObjectType == 7)
                         {
                             var counter = common.Counters;
                             if (counter == null) continue;

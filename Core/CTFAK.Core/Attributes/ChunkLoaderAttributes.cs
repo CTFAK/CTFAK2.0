@@ -1,34 +1,33 @@
 ﻿using System;
 using CTFAK.Utils;
 
-namespace CTFAK.Attributes
+namespace CTFAK.Attributes;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class ChunkLoaderAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ChunkLoaderAttribute:Attribute
-    {
-        public int chunkId;
-        public string chunkName;
+    public int chunkId;
+    public string chunkName;
 
-        public ChunkLoaderAttribute(int chunkId, string chunkName)
-        {
-            this.chunkId = chunkId;
-            this.chunkName = chunkName;
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Method)]
-    public class LoaderReadAttribute : Attribute
+    public ChunkLoaderAttribute(int chunkId, string chunkName)
     {
-        public Settings.GameType allowedGameTypes;
+        this.chunkId = chunkId;
+        this.chunkName = chunkName;
+    }
+}
 
-        public LoaderReadAttribute(Settings.GameType allowedGameTypes = Settings.GameType.NORMAL)
-        {
-            this.allowedGameTypes = allowedGameTypes;
-        }
-    }
-    
-    [AttributeUsage(AttributeTargets.Method)]
-    public class LoaderHandleAttribute : Attribute
+[AttributeUsage(AttributeTargets.Method)]
+public class LoaderReadAttribute : Attribute
+{
+    public Settings.GameType allowedGameTypes;
+
+    public LoaderReadAttribute(Settings.GameType allowedGameTypes = Settings.GameType.NORMAL)
     {
+        this.allowedGameTypes = allowedGameTypes;
     }
+}
+
+[AttributeUsage(AttributeTargets.Method)]
+public class LoaderHandleAttribute : Attribute
+{
 }

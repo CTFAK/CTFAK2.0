@@ -1,10 +1,5 @@
-﻿using CTFAK.Memory;
-using CTFAK.Utils;
+﻿namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 
-namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
+internal class Remark : ParameterCommon
 {
-    class Remark : ParameterCommon
-    {
-        
-    }
 }

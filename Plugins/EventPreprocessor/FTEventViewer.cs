@@ -8,6 +8,7 @@ using CTFAK.CCN.Chunks.Objects;
 using CTFAK.FileReaders;
 using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 using CTFAK.Tools;
+using CTFAK.Utils;
 using EventPreprocessor.Handlers;
 using EventPreprocessor.Handlers.ExtensionsHandlers;
 using Action = CTFAK.CCN.Chunks.Frame.Action;
@@ -55,12 +56,12 @@ namespace EventPreprocessor
                 if (type.IsSubclassOf(typeof(ExtensionHandler)))
                 {
                     var newInstance = (ExtensionHandler)Activator.CreateInstance(type);
-                    Console.WriteLine("Found extension handlers for extension " + newInstance.Name);
+                    Logger.Log("Found extension handlers for extension " + newInstance.Name);
                     foreach (var extension in game.Extensions.Items)
                     {
                         if (extension.Name == newInstance.Name)
                         {
-                            Console.WriteLine($"Adding handlers for extension {extension.Name} with handle {extension.Handle+32}");
+                            Logger.Log($"Adding handlers for extension {extension.Name} with handle {extension.Handle+32}");
                             newInstance.Init();
                             conditionHandlers.Add(extension.Handle+32,newInstance.extensionConditionHandlers);
                             actionHandlers.Add(extension.Handle+32,newInstance.extensionActionHandlers);

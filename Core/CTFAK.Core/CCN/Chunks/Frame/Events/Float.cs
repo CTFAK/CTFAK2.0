@@ -1,19 +1,18 @@
 ﻿using CTFAK.Memory;
-using CTFAK.Utils;
 
-namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
+namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
+
+internal class Float : ParameterCommon
 {
-    class Float : ParameterCommon
-    {
-        public float Value;
+    public float Value;
 
-        public override void Read(ByteReader reader)
-        {
-            Value = reader.ReadSingle();
-        }
-        public override string ToString()
-        {
-            return $"{this.GetType().Name} value: {Value}";
-        }
+    public override void Read(ByteReader reader)
+    {
+        Value = reader.ReadSingle();
+    }
+
+    public override string ToString()
+    {
+        return $"{GetType().Name} value: {Value}";
     }
 }

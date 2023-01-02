@@ -1,59 +1,59 @@
-﻿using CTFAK.CCN;
+﻿using System.IO;
+using System.IO.Compression;
 using CTFAK.CCN.Chunks.Banks;
-using CTFAK.FileReaders;
 using CTFAK.Memory;
 using CTFAK.Utils;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.IO.Compression;
 
-namespace CTFAK.FileReaders
+namespace CTFAK.FileReaders;
+
+public class ApkFileReader
 {
-    public class ApkFileReader
-    {
-        public static SoundBank androidSoundBank = new();
+    public static SoundBank androidSoundBank = new();
 
-        public static string ExtractCCN(string apkPath)
+    public static string ExtractCCN(string apkPath)
+    {
+        Settings.gameType = Settings.GameType.ANDROID;
+        try
         {
-            Settings.gameType = Settings.GameType.ANDROID;
+            File.Delete(Path.GetTempPath() + "application.ccn");
+            foreach (var TheFile in Directory.GetFiles(Path.GetTempPath() + "CTFAK\\AndroidSounds"))
+                File.Delete(TheFile);
+        }
+        catch
+        {
+        }
+
+        Directory.CreateDirectory(Path.GetTempPath() + "CTFAK\\AndroidSounds");
+        using (var archive = ZipFile.OpenRead(apkPath))
+        {
+            foreach (var entry in archive.Entries)
+                if (entry.Name == "application.ccn")
+                {
+                    entry.ExtractToFile(Path.GetTempPath() + "application.ccn");
+                }
+                else if (Path.GetExtension(entry.Name) == ".mp3" || Path.GetExtension(entry.Name) == ".ogg" ||
+                         Path.GetExtension(entry.Name) == ".wav")
+                {
+                    entry.ExtractToFile(Path.GetTempPath() + "CTFAK\\AndroidSounds\\" + entry.Name);
+                    var sound = File.Open(Path.GetTempPath() + "CTFAK\\AndroidSounds\\" + entry.Name, FileMode.Open);
+                    var soundBytes = entry.Open();
+                    var Sound = new SoundItem();
+                    Sound.AndroidRead(new ByteReader(soundBytes), entry.Name);
+                    androidSoundBank.Items.Add(Sound);
+                }
+
             try
             {
-                File.Delete(Path.GetTempPath() + "application.ccn");
-                foreach (string TheFile in Directory.GetFiles(Path.GetTempPath() + "CTFAK\\AndroidSounds"))
+                foreach (var TheFile in Directory.GetFiles(Path.GetTempPath() + "CTFAK\\AndroidSounds"))
                     File.Delete(TheFile);
             }
-            catch { }
-            Directory.CreateDirectory(Path.GetTempPath() + "CTFAK\\AndroidSounds");
-            using (ZipArchive archive = ZipFile.OpenRead(apkPath))
+            catch
             {
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    if (entry.Name == "application.ccn")
-                    {
-                        entry.ExtractToFile(Path.GetTempPath() + "application.ccn");
-                    }
-                    else if (Path.GetExtension(entry.Name) == ".mp3" || Path.GetExtension(entry.Name) == ".ogg" || Path.GetExtension(entry.Name) == ".wav")
-                    {
-                        entry.ExtractToFile(Path.GetTempPath() + "CTFAK\\AndroidSounds\\" + entry.Name);
-                        var sound = File.Open(Path.GetTempPath() + "CTFAK\\AndroidSounds\\" + entry.Name, FileMode.Open);
-                        Stream soundBytes = entry.Open();
-                        SoundItem Sound = new SoundItem();
-                        Sound.AndroidRead(new ByteReader(soundBytes), entry.Name);
-                        androidSoundBank.Items.Add(Sound);
-                    }
-                }
-                try
-                {
-                    foreach (string TheFile in Directory.GetFiles(Path.GetTempPath() + "CTFAK\\AndroidSounds"))
-                        File.Delete(TheFile);
-                }
-                catch { }
             }
-            if (File.Exists(Path.GetTempPath() + "application.ccn"))
-                return Path.GetTempPath() + "application.ccn";
-            else
-                return apkPath;
         }
+
+        if (File.Exists(Path.GetTempPath() + "application.ccn"))
+            return Path.GetTempPath() + "application.ccn";
+        return apkPath;
     }
 }

@@ -1,51 +1,48 @@
-﻿using CTFAK.Memory;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CTFAK.Attributes;
 using CTFAK.CCN.Chunks.Objects;
+using CTFAK.Memory;
 
-namespace CTFAK.CCN.Chunks
+namespace CTFAK.CCN.Chunks;
+
+[ChunkLoader(8745, "FrameItems")]
+public class FrameItems : ChunkLoader
 {
-    [ChunkLoader(8745,"FrameItems")]
+    public Dictionary<int, ObjectInfo> Items = new();
 
-    public class FrameItems : ChunkLoader
+    public override void Read(ByteReader reader)
     {
-        public Dictionary<int, ObjectInfo> Items=new Dictionary<int, ObjectInfo>();
-        
-        public override void Read(ByteReader reader)
+        var count = reader.ReadInt32();
+        for (var i = 0; i < count; i++)
         {
-            var count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                var newObject = new ObjectInfo();
-                newObject.Read(reader);
-                Items.Add(newObject.handle,newObject);
-            }
-        }
-
-        public override void Write(ByteWriter writer)
-        {
-            
+            var newObject = new ObjectInfo();
+            newObject.Read(reader);
+            Items.Add(newObject.handle, newObject);
         }
     }
-    [ChunkLoader(8767,"FrameItems2")]
-    public class FrameItems2 : ChunkLoader
-    {
-        public Dictionary<int, ObjectInfo> Items=new Dictionary<int, ObjectInfo>();
-        
-        public override void Read(ByteReader reader)
-        {
-            var count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                var newObject = new ObjectInfo();
-                newObject.Read(reader);
-                Items.Add(newObject.handle,newObject);
-            }
-        }
 
-        public override void Write(ByteWriter writer)
+    public override void Write(ByteWriter writer)
+    {
+    }
+}
+
+[ChunkLoader(8767, "FrameItems2")]
+public class FrameItems2 : ChunkLoader
+{
+    public Dictionary<int, ObjectInfo> Items = new();
+
+    public override void Read(ByteReader reader)
+    {
+        var count = reader.ReadInt32();
+        for (var i = 0; i < count; i++)
         {
-            
+            var newObject = new ObjectInfo();
+            newObject.Read(reader);
+            Items.Add(newObject.handle, newObject);
         }
+    }
+
+    public override void Write(ByteWriter writer)
+    {
     }
 }

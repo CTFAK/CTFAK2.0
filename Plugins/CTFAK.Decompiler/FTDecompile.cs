@@ -41,7 +41,6 @@ namespace CTFAK.Tools
             Dictionary<int, CCN.Chunks.Banks.Image> imgs = game.Images.Items;
             if (Core.parameters.Contains("-noimg"))
                 game.Images.Items.Clear();
-            Settings.gameType = Settings.GameType.NORMAL;
             if (Settings.Old)
             {
                 myAss = true;
@@ -302,7 +301,7 @@ namespace CTFAK.Tools
                             shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, frame.rgbCoeff.R, frame.rgbCoeff.G, frame.rgbCoeff.B);
                         }
 
-                        if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                        if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.Android)
                         {
                             shdrData.Blend = (byte)(255 - frame.blend);
                             shdrData.RGBCoeff = Color.FromArgb(frame.rgbCoeff.A, 255 - frame.rgbCoeff.R, 255 - frame.rgbCoeff.G, 255 - frame.rgbCoeff.B);

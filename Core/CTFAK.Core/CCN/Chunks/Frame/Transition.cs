@@ -1,43 +1,38 @@
-﻿using CTFAK.Memory;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CTFAK.Memory;
 
-namespace CTFAK.CCN.Chunks.Frame
+namespace CTFAK.CCN.Chunks.Frame;
+
+public class Transition : ChunkLoader
 {
-    public class Transition : ChunkLoader
+    public Color Color;
+    public int Duration;
+    public int Flags;
+    public string Module;
+    public string ModuleFile;
+    public string Name;
+    public byte[] ParameterData;
+
+    public override void Read(ByteReader reader)
     {
-        public string Module;
-        public string Name;
-        public int Duration;
-        public int Flags;
-        public Color Color;
-        public string ModuleFile;
-        public byte[] ParameterData;
+        var currentPos = reader.Tell();
+        Module = reader.ReadAscii(4);
+        Name = reader.ReadAscii(4);
+        Duration = reader.ReadInt32();
+        Flags = reader.ReadInt32();
+        Color = reader.ReadColor();
+        var nameOffset = reader.ReadInt32();
+        var parameterOffset = reader.ReadInt32();
+        var parameterSize = reader.ReadInt32();
+        reader.Seek(currentPos + nameOffset);
+        ModuleFile = reader.ReadUniversal();
+        reader.Seek(currentPos + parameterOffset);
+        ParameterData = reader.ReadBytes(parameterSize);
+    }
 
-        public override void Read(ByteReader reader)
-        {
-            var currentPos = reader.Tell();
-            Module = reader.ReadAscii(4);
-            Name = reader.ReadAscii(4);
-            Duration = reader.ReadInt32();
-            Flags = reader.ReadInt32();
-            Color = reader.ReadColor();
-            var nameOffset = reader.ReadInt32();
-            var parameterOffset = reader.ReadInt32();
-            var parameterSize = reader.ReadInt32();
-            reader.Seek(currentPos + nameOffset);
-            ModuleFile = reader.ReadUniversal();
-            reader.Seek(currentPos + parameterOffset);
-            ParameterData = reader.ReadBytes(parameterSize);
-        }
-
-        public override void Write(ByteWriter Writer)
-        {
-            throw new System.NotImplementedException();
-        }
+    public override void Write(ByteWriter Writer)
+    {
+        throw new NotImplementedException();
     }
 }
