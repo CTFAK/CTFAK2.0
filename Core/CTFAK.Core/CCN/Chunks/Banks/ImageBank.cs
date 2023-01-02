@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CTFAK.Attributes;
 using CTFAK.Memory;
@@ -40,6 +41,17 @@ public class ImageBank : ChunkLoader
             OnImageLoaded?.Invoke(i, count);
             Items.Add(newImg.Handle, newImg);
         }
+
+        if (Settings.Android)
+        {
+            foreach (var img in Items)
+            {
+                var image = img.Value;
+                image.FromBitmap(ImageHelper.DumpImage(image.Handle,image.imageData,image.Width,image.Height,image.GraphicMode));
+            }
+            
+        }
+        
 
         foreach (var task in Image.imageReadingTasks) task.Wait();
         Image.imageReadingTasks.Clear();
@@ -129,9 +141,75 @@ public class Image : ChunkLoader
     public void FromBitmap(Bitmap bmp)
     {
         Width = bmp.Width;
-        Height = bmp.Height;
-        imageData = new byte[Width * Height * 3];
-        Flags["Alpha"] = false;
+            Height = bmp.Height;
+            if (!Core.parameters.Contains("-noalpha"))
+                Flags["Alpha"] = true;
+            GraphicMode = 4;
+
+            var bitmapData = bmp.LockBits(new Rectangle(0, 0,
+                    bmp.Width,
+                    bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int copyPad = ImageHelper.GetPadding(Width, 4);
+            var length = bitmapData.Height * bitmapData.Stride + copyPad * 4;
+
+            byte[] bytes = new byte[length];
+            int stride = bitmapData.Stride;
+            // Copy bitmap to byte[]
+            Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
+            bmp.UnlockBits(bitmapData);
+
+            imageData = new byte[Width * Height * 6];
+            int position = 0;
+            int pad = ImageHelper.GetPadding(Width, 3);
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int newPos = (y * stride) + (x * 3);
+                    imageData[position] = bytes[newPos];
+                    imageData[position + 1] = bytes[newPos + 1];
+                    imageData[position + 2] = bytes[newPos + 2];
+                    position += 3;
+                }
+
+                position += 3 * pad;
+            }
+
+            try
+            {
+                var bitmapDataAlpha = bmp.LockBits(new Rectangle(0, 0,
+                        bmp.Width,
+                        bmp.Height),
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb);
+                int copyPadAlpha = ImageHelper.GetPadding(Width, 1);
+                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
+
+                byte[] bytesAlpha = new byte[lengthAlpha];
+                int strideAlpha = bitmapDataAlpha.Stride;
+                // Copy bitmap to byte[]
+                Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
+                bmp.UnlockBits(bitmapDataAlpha);
+
+                int aPad = ImageHelper.GetPadding(Width, 1, 4);
+                int alphaPos = position;
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
+                        alphaPos += 1;
+                    }
+
+                    alphaPos += aPad;
+                }
+            }
+            catch
+            {
+            } /*(Exception ex){Console.WriteLine(ex);}*/
     }
 
     public int onepointfiveDecompressedSize;
@@ -142,7 +220,7 @@ public class Image : ChunkLoader
         var dataSize = 0;
         if (Settings.Android)
         {
-            /*Handle = reader.ReadInt16();
+            Handle = reader.ReadInt16();
 
             switch (Handle >> 16)
             {
@@ -159,14 +237,21 @@ public class Image : ChunkLoader
 
             if (Settings.Build >= 284 && !IsMFA)
                 Handle--;
-            reader.ReadInt32();
+            GraphicMode = (byte)reader.ReadInt32();
             Width = reader.ReadInt16();
             Height = reader.ReadInt16();
             HotspotX = reader.ReadInt16();
             HotspotY = reader.ReadInt16();
             ActionX = reader.ReadInt16();
             ActionY = reader.ReadInt16();
-            DataSize = reader.ReadInt32();*/
+            dataSize = reader.ReadInt32();
+
+            if (reader.PeekByte() == 255)
+                imageData = reader.ReadBytes(dataSize);
+            else
+                imageData = Decompressor.DecompressBlock(reader, dataSize);
+            
+            return;
 
             // couldn't care less
         }
@@ -192,6 +277,7 @@ public class Image : ChunkLoader
                 }
                 
             }
+        }
 
             var mainRead = new Task(() =>
             {
@@ -243,12 +329,7 @@ public class Image : ChunkLoader
 
                 if (Settings.Android)
                 {
-                    /*
-                    if (reader.PeekByte() == 255)
-                        imageData = reader.ReadBytes(datas);
-                    else
-                        imageData = Decompressor.DecompressBlock(reader, DataSize);
-                        */
+                   
                     //couldn't care less
                 }
                 else
@@ -280,7 +361,7 @@ public class Image : ChunkLoader
             if (!IsMFA&&!Settings.Old)
                 mainRead.Start();
             else mainRead.RunSynchronously();
-        }
+        
     }
 
     public int WriteNew(ByteWriter writer)

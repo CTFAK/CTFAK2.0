@@ -37,20 +37,14 @@ namespace CTFAK.Tools
         {
             var game = reader.getGameData();
             var mfa = new MFAData();
-            bool myAss = false;
+            Settings.GameType originalGameType = Settings.gameType;
+            Settings.gameType = Settings.GameType.NORMAL;
             Dictionary<int, CCN.Chunks.Banks.Image> imgs = game.Images.Items;
             if (Core.parameters.Contains("-noimg"))
                 game.Images.Items.Clear();
-            if (Settings.Old)
-            {
-                myAss = true;
-                Settings.gameType = Settings.GameType.NORMAL;
-            }
+
             mfa.Read(new ByteReader("template.mfa", FileMode.Open));
-            if (myAss)
-            {
-                Settings.gameType = Settings.GameType.MMF15;
-            }
+            Settings.gameType = originalGameType;
 
             mfa.Name = game.Name;
             mfa.LangId = 0;//8192;

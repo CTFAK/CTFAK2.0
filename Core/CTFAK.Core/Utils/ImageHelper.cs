@@ -18,7 +18,7 @@ public static class ImageHelper
         return (int)Math.Ceiling(pad / (float)pointSize);
     }
 
-    public static Image DumpImage(int Handle, byte[] imageData, int width, int height, uint unk)
+    public static Bitmap DumpImage(int Handle, byte[] imageData, int width, int height, uint unk)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -175,21 +175,19 @@ public static class ImageHelper
             Console.WriteLine("BROKEN COLOR MODE " + unk);
         }
 
-        using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
-        {
-            var bmpData = bmp.LockBits(new Rectangle(0, 0,
-                    bmp.Width,
-                    bmp.Height),
-                ImageLockMode.WriteOnly,
-                bmp.PixelFormat);
+        var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
-            var pNative = bmpData.Scan0;
-            Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
+        var bmpData = bmp.LockBits(new Rectangle(0, 0,
+                bmp.Width,
+                bmp.Height),
+            ImageLockMode.WriteOnly,
+            bmp.PixelFormat);
 
-            bmp.UnlockBits(bmpData);
-            var newImage = new Image();
-            newImage.FromBitmap(bmp);
-            return newImage;
-        }
+        var pNative = bmpData.Scan0;
+        Marshal.Copy(colorArray, 0, pNative, colorArray.Length);
+
+        bmp.UnlockBits(bmpData);
+        return bmp;
+
     }
 }
