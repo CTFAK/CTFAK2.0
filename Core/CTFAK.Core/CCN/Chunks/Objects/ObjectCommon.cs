@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using CTFAK.Memory;
 using CTFAK.Utils;
 
@@ -101,8 +102,8 @@ public class ObjectCommon : ChunkLoader
     {
         var currentPosition = reader.Tell();
         
-        //START NEW PART
-        /*int size = 0;
+        //START NEW PART. This has no support for 290+ android games. I will ask Yuni to rewrite it once I officially come back
+        int size = 0;
         if (Settings.Old)
             size = reader.ReadInt16();
         else size = reader.ReadInt32();
@@ -111,7 +112,8 @@ public class ObjectCommon : ChunkLoader
             var checksum = reader.ReadInt16();
         }
 
-        if (Settings.Build >= 284)
+        //offset 4
+        if (Settings.Build >= 284&&!Settings.Old&&!Settings.Android)
         {
             _animationsOffset = reader.ReadInt16();
             _movementsOffset = reader.ReadInt16();
@@ -121,14 +123,67 @@ public class ObjectCommon : ChunkLoader
             _movementsOffset = reader.ReadInt16();
             _animationsOffset = reader.ReadInt16();
         }
+        
+        //offset 8
+        var version = reader.ReadInt16();
+        
+        //offset 10
+        if (Settings.Build < 284 || Settings.Old || Settings.Android)
+        {
+            _counterOffset = reader.ReadInt16();
+        }
+        else reader.Skip(2);
+        
+        //offset 12
+        if (Settings.Build < 284 || Settings.Old || Settings.Android)
+            _systemObjectOffset = reader.ReadInt16();
+        else _extensionOffset = reader.ReadInt16();
+        
+        //offset 14
+        if (Settings.Build >= 284)
+            _counterOffset = reader.ReadInt16();
+        else reader.Skip(2); // either a zero byte or ocVariable part1
 
-        var version = reader.ReadInt16();*/
-        // Too complicated, imma do it later xD
+        //offset 16
+        if (!Settings.Old)
+            Flags.flag = reader.ReadUInt16();
+        else
+            reader.Skip(2); //ocVariable part2
+
+        //offset 18
+        if (Settings.Old)
+            Flags.flag = (uint)reader.ReadInt16();
+        else
+        {
+            var penisFlags = reader.ReadInt16();
+            if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
+        }
+
+        //offset 20
+        var end = reader.Tell() + 8 * 2;
+        for (var i = 0; i < 8; i++) Qualifiers[i] = reader.ReadInt16();
         
+        //offset 36
+        if (Settings.Old || Settings.Build < 284 || Settings.Android)
+            _extensionOffset = reader.ReadInt16();
+        else _systemObjectOffset = reader.ReadInt16();
         
+        //offset 38
+        _valuesOffset = reader.ReadInt16();
+
+        if (!Settings.Old)
+            _stringsOffset = reader.ReadInt16();
+        
+        //Can't calculate offset here, because old games are 2 bytes shorter. Use common sense to figure it out
+        NewFlags.flag = reader.ReadUInt16();
+        Preferences.flag = reader.ReadUInt16();
+        Identifier = reader.ReadAscii(4);
+        BackColor = reader.ReadColor();
+        _fadeinOffset = reader.ReadUInt32();
+        _fadeoutOffset = reader.ReadUInt32();
         
         //END NEW PART
-        if (Settings.Build >= 284 && Settings.gameType == Settings.GameType.NORMAL)
+        /*if (Settings.Build >= 284 && Settings.gameType == Settings.GameType.NORMAL)
         {
             var size = reader.ReadInt32();
             _animationsOffset = reader.ReadInt16();
@@ -137,6 +192,7 @@ public class ObjectCommon : ChunkLoader
             reader.Skip(2);
             _extensionOffset = reader.ReadInt16();
             _counterOffset = reader.ReadInt16();
+
             Flags.flag = reader.ReadUInt16();
             var penisFlags = reader.ReadInt16();
             if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
@@ -159,6 +215,7 @@ public class ObjectCommon : ChunkLoader
         else if (Settings.gameType == Settings.GameType.NORMAL)
         {
             //I have absolutely no idea what this is. Probably used for custom builder, but I'm not sure
+            Logger.Log("Is this it?");
             var size = reader.ReadInt32();
             _movementsOffset = reader.ReadInt16();
             _animationsOffset = reader.ReadInt16();
@@ -180,7 +237,8 @@ public class ObjectCommon : ChunkLoader
             _stringsOffset = reader.ReadInt16();
             NewFlags.flag = reader.ReadUInt16();
             Preferences.flag = reader.ReadUInt16();
-            Identifier = reader.ReadAscii(2);
+            Identifier = reader.ReadAscii(4); //Is this right
+            Logger.Log(Identifier);
             BackColor = reader.ReadColor();
             _fadeinOffset = reader.ReadUInt32();
             _fadeoutOffset = reader.ReadUInt32();
@@ -244,7 +302,7 @@ public class ObjectCommon : ChunkLoader
             {
                 var size = reader.ReadInt32();
                 reader.Skip(-4);
-                reader.ReadBytes(size + 4);
+                var data = reader.ReadBytes(size + 4);
                 reader.Skip(-size + 4);
                 currentPosition = 0;
 
@@ -273,8 +331,8 @@ public class ObjectCommon : ChunkLoader
             else
             {
                 var size = reader.ReadInt32();
-                //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
-                //reader.Skip(-size+4);
+                File.WriteAllBytes($"Test\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
+                reader.Skip(-size+4);
                 _movementsOffset = reader.ReadInt16();
                 _animationsOffset = reader.ReadInt16();
 
@@ -298,7 +356,7 @@ public class ObjectCommon : ChunkLoader
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-        }
+        }*/
 
         if (_animationsOffset > 0)
         {

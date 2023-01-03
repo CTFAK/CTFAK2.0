@@ -13,6 +13,7 @@ public class SubApplication : ChunkLoader
 
 
     //Sub App stuff by -liz
+    //This is stolen from XNA exporter and is absolutely useless
 
     public override void Read(ByteReader reader)
     {
