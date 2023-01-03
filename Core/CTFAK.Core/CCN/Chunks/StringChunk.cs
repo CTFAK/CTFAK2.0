@@ -28,7 +28,7 @@ internal class AppName : StringChunk
     {
         var start = reader.Tell();
         var str = reader.ReadAscii();
-        if (str.Length == reader.Size())
+        if (str.Length + 1 == reader.Size())
         {
             Settings.Unicode = false;
             value = str;
