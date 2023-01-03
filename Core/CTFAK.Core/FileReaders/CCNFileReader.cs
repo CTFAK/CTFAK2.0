@@ -38,6 +38,6 @@ public class CCNFileReader : IFileReader
 
     public void PatchMethods()
     {
-        Settings.gameType = Settings.GameType.ANDROID;
+        //Settings.gameType = Settings.GameType.ANDROID;
     }
 }

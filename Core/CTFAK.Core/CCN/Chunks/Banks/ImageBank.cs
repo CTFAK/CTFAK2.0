@@ -258,8 +258,8 @@ public class Image : ChunkLoader
         else
         {
             Handle = reader.ReadInt32();
-            //if (Settings.Build >= 284 && !IsMFA)
-             //   Handle--;
+            if (Settings.Build >= 284 && !IsMFA) 
+                Handle--;
 
             if (!IsMFA)
             {

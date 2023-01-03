@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using CTFAK.Attributes;
 using CTFAK.Memory;
 using CTFAK.Utils;
@@ -36,7 +37,11 @@ public class ObjectInstance : ChunkLoader
 
         parentType = reader.ReadInt16();
         parentHandle = reader.ReadInt16();
-        if (Settings.Old) return;
+
+        if (Settings.Old || Settings.F3 /*either clickteam is being funny or my eyes are lying to me*/)
+        {
+            return;
+        }
         layer = reader.ReadInt16();
         flags = reader.ReadInt16();
     }
@@ -140,8 +145,10 @@ public class Frame : ChunkLoader
 
                     break;
                 case 13112:
+                   
                     var count = chunkReader.ReadInt32();
                     for (var i = 0; i < count; i++)
+                    //while (reader.Tell()<reader.Size())
                     {
                         var objInst = new ObjectInstance();
                         objInst.Read(chunkReader);

@@ -100,6 +100,34 @@ public class ObjectCommon : ChunkLoader
     public override void Read(ByteReader reader)
     {
         var currentPosition = reader.Tell();
+        
+        //START NEW PART
+        /*int size = 0;
+        if (Settings.Old)
+            size = reader.ReadInt16();
+        else size = reader.ReadInt32();
+        if (Settings.Old)
+        {
+            var checksum = reader.ReadInt16();
+        }
+
+        if (Settings.Build >= 284)
+        {
+            _animationsOffset = reader.ReadInt16();
+            _movementsOffset = reader.ReadInt16();
+        }
+        else
+        {
+            _movementsOffset = reader.ReadInt16();
+            _animationsOffset = reader.ReadInt16();
+        }
+
+        var version = reader.ReadInt16();*/
+        // Too complicated, imma do it later xD
+        
+        
+        
+        //END NEW PART
         if (Settings.Build >= 284 && Settings.gameType == Settings.GameType.NORMAL)
         {
             var size = reader.ReadInt32();
@@ -130,6 +158,7 @@ public class ObjectCommon : ChunkLoader
         }
         else if (Settings.gameType == Settings.GameType.NORMAL)
         {
+            //I have absolutely no idea what this is. Probably used for custom builder, but I'm not sure
             var size = reader.ReadInt32();
             _movementsOffset = reader.ReadInt16();
             _animationsOffset = reader.ReadInt16();

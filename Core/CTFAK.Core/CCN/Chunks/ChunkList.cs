@@ -135,7 +135,7 @@ public class ChunkList
             }
             finally
             {
-                if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
+                if (newChunk.Id == 8787) Settings.gameType |= Settings.GameType.TWOFIVEPLUS;
 
                 if (knownLoaders.TryGetValue(newChunk.Id, out var loaderData))
                 {
@@ -181,8 +181,9 @@ public class ChunkList
 
             chunkIndex++;
 
-            /*if (Core.parameters.Contains("-trace_chunks"))
+            if (Core.parameters.Contains("-trace_chunks"))
             {
+                Directory.CreateDirectory("CHUNK_TRACE");
                 string chunkName = "";
                 if (!ChunkList.ChunkNames.TryGetValue(newChunk.Id, out chunkName))
                 {
@@ -191,9 +192,9 @@ public class ChunkList
 
                 Logger.Log(
                     $"Encountered chunk: {chunkName}, chunk flag: {newChunk.Flag}, exe size: {newChunk.Size}, decompressed size: {chunkData.Length}");
-                File.WriteAllBytes($"CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin",chunkData);
-                Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{gameExeName}\\{chunkName}-{chunkIndex}.bin");
-            } */
+                File.WriteAllBytes($"CHUNK_TRACE\\{chunkName}-{chunkIndex}.bin",chunkData);
+                Logger.Log($"Raw chunk data written to CHUNK_TRACE\\{chunkName}-{chunkIndex}.bin");
+            }
         }
     }
 

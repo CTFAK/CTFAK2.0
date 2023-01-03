@@ -74,7 +74,12 @@ public class GameData
 
         if (Core.parameters.Contains("-android"))
             Settings.gameType |= Settings.GameType.ANDROID;
-
+        if (Core.parameters.Contains("-f3"))
+        {
+            Logger.Log("Forcing F3 mode");
+            Settings.gameType |= Settings.GameType.F3;
+        }
+        
         _runtimeVersion = (short)reader.ReadUInt16();
         _runtimeSubversion = (short)reader.ReadUInt16();
         _productVersion = reader.ReadInt32();
