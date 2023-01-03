@@ -68,7 +68,6 @@ public class GameData
         else if (magic == "CRUF")
         {
             Settings.gameType |= Settings.GameType.F3;
-            Settings.Unicode = false;
         }
         else Logger.LogWarning("Couldn't found any known headers: " + magic); //Header not found
 
