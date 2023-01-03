@@ -216,6 +216,8 @@ public class Image : ChunkLoader
     public int onepointfiveStart;
     public override void Read(ByteReader reader)
     {
+        //tysm LAK
+        //Yuni asked my to add this back
         var start = reader.Tell();
         var dataSize = 0;
         if (Settings.Android)
