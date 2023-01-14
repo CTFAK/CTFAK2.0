@@ -11,7 +11,7 @@
 #ifndef TINF_H_INCLUDED
 #define TINF_H_INCLUDED
 
- /* calling convention */
+/* calling convention */
 #ifndef TINFCC
 #ifdef __WATCOMC__
 #define TINFCC __cdecl
@@ -27,12 +27,12 @@ extern "C" {
 #define TINF_OK             0
 #define TINF_DATA_ERROR    (-3)
 
-    /* function prototypes */
+/* function prototypes */
 
-    void TINFCC tinf_init();
+void TINFCC tinf_init();
 
-    int TINFCC tinf_uncompress(void* dest, unsigned int* destLen,
-        const void* source, unsigned int sourceLen);
+int TINFCC tinf_uncompress(void* dest, unsigned int* destLen,
+                           const void* source, unsigned int sourceLen);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
-using CTFAK.CCN.Chunks;
-using CTFAK.FileReaders;
+﻿using CTFAK.FileReaders;
+using CTFAK.MMFParser.CCN;
 using CTFAK.Utils;
 using Joveler.Compression.ZLib;
 
@@ -17,21 +15,14 @@ public delegate T2 SimpleMessage<T, T2>(T data);
 
 public class Core
 {
-    public static IFileReader currentReader;
-    public static string parameters;
-    public static string path;
+    public static IFileReader CurrentReader;
+    public static string Parameters;
 
     public static void Init()
     {
         ChunkList.Init();
-        AppDomain.CurrentDomain.UnhandledException += (o, e) =>
-        {
-            Console.WriteLine(e.ExceptionObject.GetType());
-            //NativeLib.MessageBox((IntPtr)0, $"{e.Exception.ToString()}", "ERROR", 0);
-        };
         ZLibInit.GlobalInit("x64\\zlibwapi.dll");
-        var libraryFile = Path.Combine("x64",
-            "CTFAK-Native.dll");
+        var libraryFile = System.IO.Path.Combine("x64", "CTFAK-Native.dll");
         NativeLib.LoadLibrary(libraryFile);
     }
 }

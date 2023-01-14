@@ -9,12 +9,10 @@
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishReadyToRun>true</PublishReadyToRun>!-->
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <PublishAOT>true</PublishAOT>
         <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
         <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
-
-
 
 
     </PropertyGroup>
@@ -23,8 +21,8 @@
         <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj">
             <IsTrimmable>false</IsTrimmable>
         </ProjectReference>
-        <ProjectReference Include="..\..\Plugins\CTFAK.Decompiler\CTFAK.Decompiler.csproj" />
-        <ProjectReference Include="..\..\Plugins\Dumper\Dumper.csproj" />
+        <ProjectReference Include="..\..\Plugins\CTFAK.Decompiler\CTFAK.Decompiler.csproj"/>
+        <ProjectReference Include="..\..\Plugins\Dumper\Dumper.csproj"/>
     </ItemGroup>
 
 </Project>

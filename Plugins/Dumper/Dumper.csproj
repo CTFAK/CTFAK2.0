@@ -1,17 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <OutputType>Library</OutputType>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj" />
-  </ItemGroup>
-
-
+    <ItemGroup>
+        <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj"/>
+    </ItemGroup>
 
 
 </Project>

@@ -1,17 +1,17 @@
 ﻿using System.Drawing;
 using Newtonsoft.Json;
 
-namespace JFusion
+namespace JFusion;
+
+public class JMfAImage
 {
-    public class JMfAImage
-    {
-        public int Handle;
-        public short HotspotX;
-        public short HotspotY;
-        public short ActionX;
-        public short ActionY;
-        public uint Flags;
-        [JsonIgnore]
-        public Bitmap bmp;
-    }
+    public short ActionX;
+    public short ActionY;
+
+    [JsonIgnore] public Bitmap bmp;
+
+    public uint Flags;
+    public int Handle;
+    public short HotspotX;
+    public short HotspotY;
 }

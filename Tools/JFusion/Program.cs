@@ -4,7 +4,6 @@ using CTFAK;
 using CTFAK.Memory;
 using CTFAK.MFA;
 using CTFAK.Utils;
-using Ionic;
 using JFusion;
 
 public class Program
@@ -19,21 +18,19 @@ public class Program
         @"  | | |  | |_| \__ \ | (_) | | | |",
         @"  | |_|   \__,_|___/_|\___/|_| |_|",
         @" _/ |                             ",
-        @"|__/                              ",
+        @"|__/                              "
     };
+
     public static void Main(string[] args)
     {
         Core.Init();
-        
+
         SELECT_MODE:
         Console.ForegroundColor = ConsoleColor.DarkMagenta;
-        foreach (var ascartLine in asciiArt)
-        {
-            Console.WriteLine(ascartLine);
-        }
+        foreach (var ascartLine in asciiArt) Console.WriteLine(ascartLine);
 
         Console.ForegroundColor = ConsoleColor.White;
-        
+
         Console.WriteLine("1. Convert MFA->Json");
         Console.WriteLine("2. Convert Json-MFA");
         Console.WriteLine("3. Read and write MFA (Debug)");
@@ -60,11 +57,10 @@ public class Program
                     break;
                 case ConsoleKey.D3:
                     var testMfa = new MFAData();
-                    testMfa.Read(new ByteReader("test.mfa",FileMode.Open));
-                    testMfa.Write(new ByteWriter("test_out.mfa",FileMode.Create));
+                    testMfa.Read(new ByteReader("test.mfa", FileMode.Open));
+                    testMfa.Write(new ByteWriter("test_out.mfa", FileMode.Create));
                     break;
                 default:
-                    goto SELECT_MODE;
                     break;
             }
         }
@@ -72,10 +68,10 @@ public class Program
         {
             Logger.LogWarning(ex);
             while (true)
-            {
-                if (Console.ReadKey().Key == ConsoleKey.Enter) break;
-            }
+                if (Console.ReadKey().Key == ConsoleKey.Enter)
+                    break;
         }
+
         goto SELECT_MODE;
     }
 }

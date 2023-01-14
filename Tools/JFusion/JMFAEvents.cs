@@ -1,7 +1,5 @@
-﻿namespace JFusion
+﻿namespace JFusion;
+
+public class JMFAEvents
 {
-    public class JMFAEvents
-    {
-        
-    }
 }

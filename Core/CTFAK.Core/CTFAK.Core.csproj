@@ -9,6 +9,7 @@
         <OutputType>Library</OutputType>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
+        <RootNamespace>CTFAK</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -72,6 +73,10 @@
         <EmbeddedResource Include="Resources\XLua.png" />
         <EmbeddedResource Include="Resources\Perspective.png" />
         <EmbeddedResource Include="Resources\DateAndTime.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="MMFParser\Shared" />
     </ItemGroup>
 
 

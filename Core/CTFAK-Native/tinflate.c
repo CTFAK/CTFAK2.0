@@ -33,16 +33,18 @@
 
 #include "tinf.h"
 
- /* ------------------------------ *
-  * -- internal data structures -- *
-  * ------------------------------ */
+/* ------------------------------ *
+ * -- internal data structures -- *
+ * ------------------------------ */
 
-typedef struct {
-    unsigned short table[16];  /* table of code length counts */
+typedef struct
+{
+    unsigned short table[16]; /* table of code length counts */
     unsigned short trans[288]; /* code -> symbol translation table */
 } TINF_TREE;
 
-typedef struct {
+typedef struct
+{
     const unsigned char* source;
     unsigned int tag;
     unsigned int bitcount;
@@ -80,7 +82,7 @@ const unsigned char clcidx[] = {
  * -- utility functions -- *
  * ----------------------- */
 
- /* build extra bits and base tables */
+/* build extra bits and base tables */
 static void tinf_build_bits_base(unsigned char* bits, unsigned short* base, int delta, int first)
 {
     int i, sum;
@@ -154,7 +156,7 @@ static void tinf_build_tree(TINF_TREE* t, const unsigned char* lengths, unsigned
  * -- decode functions -- *
  * ---------------------- */
 
- /* get one bit from source stream */
+/* get one bit from source stream */
 static int tinf_getbit(TINF_DATA* d)
 {
     unsigned int bit;
@@ -198,16 +200,16 @@ static int tinf_decode_symbol(TINF_DATA* d, TINF_TREE* t)
     int sum = 0, cur = 0, len = 0;
 
     /* get more bits while code value is above sum */
-    do {
-
+    do
+    {
         cur = 2 * cur + tinf_getbit(d);
 
         ++len;
 
         sum += t->table[len];
         cur -= t->table[len];
-
-    } while (cur >= 0);
+    }
+    while (cur >= 0);
 
     return t->trans[sum + cur];
 }
@@ -244,7 +246,7 @@ static void tinf_decode_trees(TINF_DATA* d, TINF_TREE* lt, TINF_TREE* dt)
     tinf_build_tree(&code_tree, lengths, 19);
 
     /* decode code lengths for the dynamic trees */
-    for (num = 0; num < hlit + hdist; )
+    for (num = 0; num < hlit + hdist;)
     {
         int sym = tinf_decode_symbol(d, &code_tree);
 
@@ -252,14 +254,14 @@ static void tinf_decode_trees(TINF_DATA* d, TINF_TREE* lt, TINF_TREE* dt)
         {
         case 16:
             /* copy previous code length 3-6 times (read 2 bits) */
-        {
-            unsigned char prev = lengths[num - 1];
-            for (length = tinf_read_bits(d, 2, 3); length; --length)
             {
-                lengths[num++] = prev;
+                unsigned char prev = lengths[num - 1];
+                for (length = tinf_read_bits(d, 2, 3); length; --length)
+                {
+                    lengths[num++] = prev;
+                }
             }
-        }
-        break;
+            break;
         case 17:
             /* repeat code length 0 for 3-10 times (read 3 bits) */
             for (length = tinf_read_bits(d, 3, 3); length; --length)
@@ -290,7 +292,7 @@ static void tinf_decode_trees(TINF_DATA* d, TINF_TREE* lt, TINF_TREE* dt)
  * -- block inflate functions -- *
  * ----------------------------- */
 
- /* given a stream and two trees, inflate a block of data */
+/* given a stream and two trees, inflate a block of data */
 static int tinf_inflate_block_data(TINF_DATA* d, TINF_TREE* lt, TINF_TREE* dt)
 {
     /* remember current output position */
@@ -310,10 +312,9 @@ static int tinf_inflate_block_data(TINF_DATA* d, TINF_TREE* lt, TINF_TREE* dt)
         if (sym < 256)
         {
             *d->dest++ = sym;
-
         }
-        else {
-
+        else
+        {
             int length, dist, offs;
             int i;
 
@@ -382,7 +383,7 @@ static int tinf_inflate_dynamic_block(TINF_DATA* d)
  * -- public functions -- *
  * ---------------------- */
 
- /* initialize global (static) data */
+/* initialize global (static) data */
 void tinf_init()
 {
     /* build fixed huffman trees */
@@ -399,7 +400,7 @@ void tinf_init()
 
 /* inflate stream from source to dest */
 int tinf_uncompress(void* dest, unsigned int* destLen,
-    const void* source, unsigned int sourceLen)
+                    const void* source, unsigned int sourceLen)
 {
     TINF_DATA d;
     int bfinal;
@@ -413,8 +414,8 @@ int tinf_uncompress(void* dest, unsigned int* destLen,
 
     *destLen = 0;
 
-    do {
-
+    do
+    {
         unsigned int btype;
         int res;
 
@@ -444,8 +445,8 @@ int tinf_uncompress(void* dest, unsigned int* destLen,
         }
 
         if (res != TINF_OK) return -1;
-
-    } while (!bfinal);
+    }
+    while (!bfinal);
 
     return ((char*)d.source - (char*)source);
 }

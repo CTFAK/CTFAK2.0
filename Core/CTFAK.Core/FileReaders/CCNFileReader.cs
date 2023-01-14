@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using CTFAK.CCN;
-using CTFAK.FileReaders;
 using CTFAK.Memory;
-using CTFAK.Utils;
+using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.EXE;
+namespace CTFAK.FileReaders;
 
 public class CCNFileReader : IFileReader
 {
-    public GameData game;
+    public GameData Game;
     public string Name => "CCN";
 
-    public GameData getGameData()
+    public GameData GetGameData()
     {
-        return game;
+        return Game;
     }
 
     public int ReadHeader(ByteReader reader)
@@ -27,11 +25,11 @@ public class CCNFileReader : IFileReader
     public void LoadGame(string gamePath)
     {
         var reader = new ByteReader(gamePath, FileMode.Open);
-        game = new GameData();
-        game.Read(reader);
+        Game = new GameData();
+        Game.Read(reader);
     }
 
-    public Dictionary<int, Bitmap> getIcons()
+    public Dictionary<int, Bitmap> GetIcons()
     {
         return new Dictionary<int, Bitmap>();
     }

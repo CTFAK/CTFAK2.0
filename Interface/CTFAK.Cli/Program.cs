@@ -5,11 +5,8 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using CTFAK;
-using CTFAK.CCN.Chunks;
 using CTFAK.FileReaders;
-using CTFAK.Memory;
-using CTFAK.MFA;
-using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
+using CTFAK.MMFParser.CCN;
 using CTFAK.Tools;
 using CTFAK.Utils;
 
@@ -19,7 +16,6 @@ public class Program
 
     public static void Main(string[] args)
     {
-        
         Core.Init();
         /*Settings.Build = 294;
         Settings.gameType = Settings.GameType.NORMAL;
@@ -40,28 +36,32 @@ public class Program
 
         ASK_FOR_PATH:
         ASCIIArt.SetStatus("Waiting for file");
-        string path = string.Empty;
+        var path = string.Empty;
         if (args.Length == 0)
         {
             Console.Write("Game path: ");
             path = Console.ReadLine().Trim('"');
         }
-        else path = args[0];
+        else
+        {
+            path = args[0];
+        }
 
         if (!File.Exists(path))
         {
             Console.WriteLine("ERROR: File not found");
             goto ASK_FOR_PATH;
         }
+
         Console.Write("Parameters: ");
         var loadParams = Console.ReadLine();
-        Core.parameters = loadParams;
+        Core.Parameters = loadParams;
 
         var types = Assembly.GetAssembly(typeof(ExeFileReader)).GetTypes();
 
-        List<IFileReader> availableReaders = new List<IFileReader>();
+        var availableReaders = new List<IFileReader>();
 
-        if (Path.GetExtension(path)==".exe")
+        if (Path.GetExtension(path) == ".exe")
         {
             gameParser = new ExeFileReader();
         }
@@ -69,38 +69,28 @@ public class Program
         {
             if (File.Exists(Path.GetTempPath() + "application.ccn"))
                 File.Delete(Path.GetTempPath() + "application.ccn");
-            path = ApkFileReader.ExtractCCN(path);
-            gameParser = new CTFAK.EXE.CCNFileReader();
+            path = ApkFileReader.ExtractCcn(path);
+            gameParser = new CCNFileReader();
         }
         else
         {
-            SELECT_READER:
             foreach (var rawType in types)
-            {
                 if (rawType.GetInterface(typeof(IFileReader).FullName) != null)
-                {
                     availableReaders.Add((IFileReader)Activator.CreateInstance(rawType));
-                }
-                       
-            }
             foreach (var item in Directory.GetFiles("Plugins", "*.dll"))
             {
                 var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
                 foreach (var pluginType in newAsm.GetTypes())
-                {
                     if (pluginType.GetInterface(typeof(IFileReader).FullName) != null)
                         availableReaders.Add((IFileReader)Activator.CreateInstance(pluginType));
-                }
             }
+
             //Console.Clear();
             ASCIIArt.DrawArt();
             ASCIIArt.SetStatus("Selecting tool");
             Console.WriteLine($"{availableReaders.Count} readers(s) available\n\nSelect reader: ");
             Console.WriteLine("0. Exit CTFAK");
-            for (int i = 0; i < availableReaders.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {availableReaders[i].Name}");
-            }
+            for (var i = 0; i < availableReaders.Count; i++) Console.WriteLine($"{i + 1}. {availableReaders[i].Name}");
             var key1 = Console.ReadLine();
             var readerSelect = int.Parse(key1);
             if (readerSelect == 0) Environment.Exit(0);
@@ -114,55 +104,49 @@ public class Program
         ASCIIArt.SetStatus("Reading game");
         Console.WriteLine($"Reading game with \"{gameParser.Name}\"");
         gameParser.PatchMethods();
-        
+
         gameParser.LoadGame(path);
         readStopwatch.Stop();
 
         //Console.Clear();
         ASCIIArt.DrawArt();
         Console.WriteLine($"Reading finished in {readStopwatch.Elapsed.TotalSeconds} seconds");
-        
-        List<IFusionTool> availableTools = new List<IFusionTool>();
-        #if RELEASE
+
+        var availableTools = new List<IFusionTool>();
+#if RELEASE
         availableTools.Add(new Dumper.ImageDumper());
         availableTools.Add(new CTFAK.Tools.FTDecompile());
-        #endif
+#endif
         foreach (var rawType in types)
-        {
             if (rawType.GetInterface(typeof(IFusionTool).FullName) != null)
-            availableTools.Add((IFusionTool)Activator.CreateInstance(rawType));
-        }
-        foreach (var item in Directory.GetFiles("Plugins","*.dll"))
+                availableTools.Add((IFusionTool)Activator.CreateInstance(rawType));
+        foreach (var item in Directory.GetFiles("Plugins", "*.dll"))
         {
             var newAsm = Assembly.LoadFrom(Path.GetFullPath(item));
             foreach (var pluginType in newAsm.GetTypes())
-            {
                 if (pluginType.GetInterface(typeof(IFusionTool).FullName) != null)
                     availableTools.Add((IFusionTool)Activator.CreateInstance(pluginType));
-            }
         }
-    SELECT_TOOL:
+
+        SELECT_TOOL:
         Console.WriteLine("");
-        Console.WriteLine($"Game Information:");
-        Console.WriteLine($"Game Name: "+gameParser.getGameData().Name);
-        Console.WriteLine($"Author: "+gameParser.getGameData().Author);
-        Console.WriteLine($"Number of frames: "+gameParser.getGameData().Frames.Count);
-        Console.WriteLine($"Fusion Build: "+Settings.Build);
+        Console.WriteLine("Game Information:");
+        Console.WriteLine("Game Name: " + gameParser.GetGameData().Name);
+        Console.WriteLine("Author: " + gameParser.GetGameData().Author);
+        Console.WriteLine("Number of frames: " + gameParser.GetGameData().Frames.Count);
+        Console.WriteLine("Fusion Build: " + Settings.Build);
         Console.WriteLine("");
         ASCIIArt.SetStatus("Selecting tool");
         Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool or specify a command ");
         Console.WriteLine("0. Exit CTFAK");
-        for (int i = 0; i < availableTools.Count; i++)
-        {
-            Console.WriteLine($"{i+1}. {availableTools[i].Name}");
-        }
+        for (var i = 0; i < availableTools.Count; i++) Console.WriteLine($"{i + 1}. {availableTools[i].Name}");
         Console.WriteLine();
         Console.Write(">> ");
         var commandInput = Console.ReadLine();
         if (int.TryParse(commandInput, out var toolSelect))
         {
             if (toolSelect == 0) Environment.Exit(0);
-            IFusionTool selectedTool = availableTools[toolSelect-1];
+            var selectedTool = availableTools[toolSelect - 1];
             Console.WriteLine($"Selected tool: {selectedTool.Name}. Executing");
             var executeStopwatch = new Stopwatch();
             executeStopwatch.Start();
@@ -171,43 +155,44 @@ public class Program
             {
                 selectedTool.Execute(gameParser);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log(ex);
                 Console.ReadKey();
             }
+
             executeStopwatch.Stop();
             //Console.Clear();
-            
+
             ASCIIArt.DrawArt();
-            Console.WriteLine($"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds"); 
-            
+            Console.WriteLine(
+                $"Execution of {selectedTool.Name} finished in {executeStopwatch.Elapsed.TotalSeconds} seconds");
         }
         else
         {
             if (commandInput == "chunkList")
             {
-                Console.WriteLine($"Loaded chunk loaders: {ChunkList.knownLoaders.Count}");
-                foreach (var loader in ChunkList.knownLoaders)
+                Console.WriteLine($"Loaded chunk loaders: {ChunkList.KnownLoaders.Count}");
+                foreach (var loader in ChunkList.KnownLoaders)
                 {
                     var actualLoader = loader.Value;
                     Console.WriteLine($"Loader \"{actualLoader.ChunkName}\" for ID {actualLoader.ChunkId}");
                 }
+
                 Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
             }
             else
             {
                 Console.WriteLine("Command not found");
-                
             }
 
-            
+
             Console.Clear();
-            
+
             ASCIIArt.DrawArt();
         }
-        
+
         goto SELECT_TOOL;
 
         Console.ReadKey();

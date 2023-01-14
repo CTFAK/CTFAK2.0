@@ -20,7 +20,7 @@ public static class Decompressor
 
     public static ByteReader DecompressAsReader(ByteReader exeReader, out int decompressed)
     {
-        return new(Decompress(exeReader, out decompressed));
+        return new ByteReader(Decompress(exeReader, out decompressed));
     }
 
     public static byte[] DecompressBlock(byte[] data, int size, int decompSize)

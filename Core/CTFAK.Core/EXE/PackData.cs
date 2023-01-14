@@ -7,7 +7,6 @@ namespace CTFAK.EXE;
 
 public class PackData
 {
-    private byte[] _header;
     public uint FormatVersion;
     public List<PackFile> Items = new();
 
@@ -15,7 +14,7 @@ public class PackData
     {
         Logger.Log("Reading PackData");
         var start = reader.Tell();
-        _header = reader.ReadBytes(8);
+        var header = reader.ReadBytes(8); //PackData header. I can probably validate that, but I don't think I need to
 
         var headerSize = reader.ReadUInt32();
         Debug.Assert(headerSize == 32);

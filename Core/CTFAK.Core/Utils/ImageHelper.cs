@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using Image = CTFAK.CCN.Chunks.Banks.Image;
 
 namespace CTFAK.Utils;
 
@@ -188,6 +187,5 @@ public static class ImageHelper
 
         bmp.UnlockBits(bmpData);
         return bmp;
-
     }
 }

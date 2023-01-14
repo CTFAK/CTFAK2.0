@@ -1,7 +1,8 @@
 #include "encryption.h"
-bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key, char magic_char, const __m128_temp* xmmword)
-{
 
+bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key, char magic_char,
+                   const __m128_temp* xmmword)
+{
     //std::cout << "Decoding with magic key " << magic_char << std::endl;
     __m128_temp* bufferPtr = &decodeBuffer->buffer[0]; // edx@1
     __m128i offset = _mm_load_si128((const __m128i*)xmmword); // xmm1@1
@@ -30,7 +31,8 @@ bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key,
         {
             if (v15)
                 rtn = magic_char_2 == magic_key[magic_key_pos + 1];
-            if (!rtn) cout << (char)magic_char_2 << " " << (char)magic_char_3 << " " << (char)magic_key[magic_key_pos + 1] << endl;
+            if (!rtn) cout << static_cast<char>(magic_char_2) << " " << static_cast<char>(magic_char_3) << " " <<
+                static_cast<char>(magic_key[magic_key_pos + 1]) << endl;
             magic_char_3 = (magic_char >> 1) + (magic_char << 7);
             magic_key_pos = 0;
             v15 = false;
@@ -58,11 +60,12 @@ void FinishDecode(DecodeBuffer* decodeBuffer, vector<uint8_t>& chunk_buffer)
         decodeBuffer->buffer[0].m128i_i32[decodeBuffer->i32_1] = v9;
         decodeBuffer->buffer[0].m128i_i32[decodeBuffer->i32_2] = v7;
 
-        chunk_buffer[i] ^= decodeBuffer->buffer[0].m128i_u8[4 * (uint8_t)(v7 + v9)];
+        chunk_buffer[i] ^= decodeBuffer->buffer[0].m128i_u8[4 * static_cast<uint8_t>(v7 + v9)];
     }
 }
 
-void DecodeChunk(vector<uint8_t>& chunk_buffer, const vector<uint8_t>& magic_key, const __m128_temp* xmmword, char magic_char)
+void DecodeChunk(vector<uint8_t>& chunk_buffer, const vector<uint8_t>& magic_key, const __m128_temp* xmmword,
+                 char magic_char)
 {
     DecodeBuffer decodeBuffer;
     //cout << "decoding" << endl;

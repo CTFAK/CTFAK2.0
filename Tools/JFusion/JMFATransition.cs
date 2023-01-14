@@ -1,7 +1,5 @@
-﻿namespace JFusion
+﻿namespace JFusion;
+
+public class JMFATransition
 {
-    public class JMFATransition
-    {
-        
-    }
 }
