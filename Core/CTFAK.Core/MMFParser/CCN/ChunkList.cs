@@ -90,9 +90,26 @@ public class ChunkList
 #endif
     }
 
-    public Chunk CreateChunk(ChunkLoader loader, int flag = 0)
+    private int GetChunkId(ChunkLoader loader)
+    {
+        foreach (var loaderData in KnownLoaders)
+        {
+            if (loaderData.Value.LoaderType == loader.GetType())
+            {
+                return loaderData.Value.ChunkId;
+            }
+        }
+
+        return -1;
+    }
+    public Chunk CreateChunk(ChunkLoader loader, int flag = 0, int id=-1)
     {
         var newChk = new Chunk();
+        if (id != -1)
+        {
+            newChk.Id = (short)GetChunkId(loader);
+        }
+        else newChk.Id = (short)id;
         return newChk;
     }
 

@@ -124,7 +124,7 @@ public class EventGroup : ChunkLoader
         NumberOfConditions = reader.ReadByte();
         NumberOfActions = reader.ReadByte();
         Flags = reader.ReadUInt16();
-        if (Settings.Android || Settings.Old || Settings.CBM)
+        if (Settings.Old || Settings.CBM)
         {
             IsRestricted = reader.ReadInt16(); //For MFA
             RestrictCpt = reader.ReadInt16();
@@ -409,7 +409,7 @@ public class Condition : ChunkLoader
             Items.Add(item);
         }
 
-        //Logger.Log(this);
+        Logger.Log(this);
         //Console.ReadKey();
     }
 
@@ -474,7 +474,7 @@ public class Action : ChunkLoader
             item.Read(reader);
             Items.Add(item);
         }
-        //Logger.Log(this);
+        Logger.Log(this);
     }
 
     public override string ToString()

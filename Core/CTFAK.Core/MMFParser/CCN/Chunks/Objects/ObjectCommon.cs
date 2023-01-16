@@ -99,6 +99,7 @@ public class ObjectCommon : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
+        if (Settings.Android) return;
         var currentPosition = reader.Tell();
 
         //START NEW PART. This has no support for 290+ android games. I will ask Yuni to rewrite it once I officially come back
