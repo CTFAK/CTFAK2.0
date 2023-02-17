@@ -27,7 +27,7 @@ public class BinaryFile : ChunkLoader
 public class BinaryFiles : ChunkLoader
 {
     public int Count;
-    public List<BinaryFile> Files;
+    public List<BinaryFile> Files = new List<BinaryFile>();
 
     public override void Read(ByteReader reader)
     {

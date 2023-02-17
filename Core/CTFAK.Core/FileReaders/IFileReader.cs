@@ -7,11 +7,11 @@ namespace CTFAK.FileReaders;
 
 public interface IFileReader
 {
+    int Priority { get; }
     string Name { get; }
 
     GameData GetGameData();
     int ReadHeader(ByteReader reader);
-    void LoadGame(string gamePath);
+    bool LoadGame(string gamePath);
     Dictionary<int, Bitmap> GetIcons();
-    void PatchMethods();
 }

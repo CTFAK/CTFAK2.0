@@ -206,6 +206,8 @@ public class GameData
         writer.WriteInt32(770);
         writer.WriteInt32(0);
         writer.WriteInt32(Settings.Build);
+        var chunkList = new ChunkList();
         
+
     }
 }

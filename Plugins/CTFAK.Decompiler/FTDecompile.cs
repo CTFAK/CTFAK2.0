@@ -40,7 +40,7 @@ public class FTDecompile : IFusionTool
         if (Core.Parameters.Contains("-noimg"))
             game.Images.Items.Clear();
 
-        mfa.Read(new ByteReader("template.mfa", FileMode.Open));
+        //mfa.Read(new ByteReader("template.mfa", FileMode.Open));
         Settings.gameType = originalGameType;
 
         mfa.Name = game.Name;
@@ -48,6 +48,8 @@ public class FTDecompile : IFusionTool
         mfa.Description = "";
         mfa.Path = game.EditorFilename;
         mfa.Menu = game.Menu;
+        mfa.Stamp = new byte[0];
+
 
         //if (game.Fonts != null) mfa.Fonts = game.Fonts;
         // mfa.Sounds.Items.Clear();
@@ -176,6 +178,19 @@ public class FTDecompile : IFusionTool
         mfa.BuildPath = game.TargetFilename;
         mfa.CommandLine = "";
         mfa.Aboutbox = game.AboutText ?? "Decompiled with CTFAK 2.0";
+        
+        mfa.Controls = new MFAControls();
+        mfa.menuImages = new Dictionary<int, int>();
+        mfa.GlobalValues = new MFAValueList();
+        mfa.GlobalStrings = new MFAValueList();
+        mfa.GlobalEvents = new byte[0];
+        mfa.IconImages = new List<int>();
+        mfa.MfaBuild = 6;
+        mfa.Product = 2;
+        mfa.BuildVersion = 292;
+        mfa.LangId = 1033;
+        mfa.InitialLifes = 3;
+
         //TODO: Controls
 
         //Object Section
@@ -322,8 +337,7 @@ public class FTDecompile : IFusionTool
                         newLayer.Flags["Visible"] = true; //layer.Flags["Visible"];;
                         newLayer.Flags["NoBackground"] = layer.Flags["DoNotSaveBackground"];
                         newLayer.Flags["WrapHorizontally"] = layer.Flags["WrapHorizontally"];
-                        Console.WriteLine(layer.Flags);
-                        Console.WriteLine(newLayer.Flags.flag);
+                      
                         newLayer.XCoefficient = layer.XCoeff;
                         newLayer.YCoefficient = layer.YCoeff;
 
@@ -651,10 +665,10 @@ public class FTDecompile : IFusionTool
                         {
                             var bmp = game.Images.Items[((Quickbackdrop)item.Properties).Image].bitmap;
                             if (bmp.Width > bmp.Height)
-                                iconBmp = bmp.resizeImage(new Size(32,
+                                iconBmp = bmp.ResizeImage(new Size(32,
                                     (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
                             else
-                                iconBmp = bmp.resizeImage(
+                                iconBmp = bmp.ResizeImage(
                                     new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
                         }
                         catch
@@ -668,10 +682,10 @@ public class FTDecompile : IFusionTool
                         {
                             var bmp = game.Images.Items[((Backdrop)item.Properties).Image].bitmap;
                             if (bmp.Width > bmp.Height)
-                                iconBmp = bmp.resizeImage(new Size(32,
+                                iconBmp = bmp.ResizeImage(new Size(32,
                                     (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
                             else
-                                iconBmp = bmp.resizeImage(
+                                iconBmp = bmp.ResizeImage(
                                     new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
                         }
                         catch
@@ -688,10 +702,10 @@ public class FTDecompile : IFusionTool
                                     ((ObjectCommon)item.Properties).Animations.AnimationDict.First().Value.DirectionDict
                                     .First().Value.Frames.First()].bitmap;
                             if (bmp.Width > bmp.Height)
-                                iconBmp = bmp.resizeImage(new Size(32,
+                                iconBmp = bmp.ResizeImage(new Size(32,
                                     (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
                             else
-                                iconBmp = bmp.resizeImage(
+                                iconBmp = bmp.ResizeImage(
                                     new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
                         }
                         catch
@@ -717,10 +731,10 @@ public class FTDecompile : IFusionTool
                         {
                             var bmp = game.Images.Items[((ObjectCommon)item.Properties).Counters.Frames.First()].bitmap;
                             if (bmp.Width > bmp.Height)
-                                iconBmp = bmp.resizeImage(new Size(32,
+                                iconBmp = bmp.ResizeImage(new Size(32,
                                     (int)Math.Round((float)bmp.Height / bmp.Width * 32.0)));
                             else
-                                iconBmp = bmp.resizeImage(
+                                iconBmp = bmp.ResizeImage(
                                     new Size((int)Math.Round((float)bmp.Width / bmp.Height * 32.0), 32));
                         }
                         catch

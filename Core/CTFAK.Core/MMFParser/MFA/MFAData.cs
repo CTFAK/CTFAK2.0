@@ -26,12 +26,12 @@ public class MFAData
     public string BuildPath = "";
     public int BuildType;
     public int BuildVersion;
-    public MFAChunkList Chunks;
+    public MFAChunkList Chunks = new MFAChunkList();
     public string CommandLine;
     public string Company;
     public MFAControls Controls;
     public string Copyright;
-    public List<Tuple<string, int>> CustomQuals;
+    public List<Tuple<string, int>> CustomQuals = new List<Tuple<string, int>>();
     public string Description;
 
     public BitDict DisplayFlags = new(new[]
@@ -53,11 +53,11 @@ public class MFAData
         "MDI"
     });
 
-    public List<Tuple<int, string, string, int, string>> Extensions;
+    public List<Tuple<int, string, string, int, string>> Extensions = new List<Tuple<int, string, string, int, string>>();
 
     public FontBank Fonts = new();
     public int FrameRate;
-    public List<MFAFrame> Frames;
+    public List<MFAFrame> Frames = new List<MFAFrame>();
     public byte[] GlobalEvents;
     public MFAValueList GlobalStrings;
 

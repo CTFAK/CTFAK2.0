@@ -10,11 +10,13 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
         <RootNamespace>CTFAK</RootNamespace>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Ionic.Zlib" Version="1.9.1.5" />
-        <PackageReference Include="Joveler.Compression.ZLib" Version="4.1.0">
+        <PackageReference Include="Joveler.Compression.ZLib" Version="4.2.0">
             <IsTrimmable>false</IsTrimmable>
         </PackageReference>
         <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
@@ -66,7 +68,7 @@
         <EmbeddedResource Include="Resources\QandA.png" />
         <EmbeddedResource Include="Resources\Score.png" />
         <EmbeddedResource Include="Resources\String.png" />
-        <EmbeddedResource Include="Resources\Editbox.png" />
+        <EmbeddedResource Include="Resources\EditBox.png" />
         <EmbeddedResource Include="Resources\SubApp.png" />
         <EmbeddedResource Include="Resources\TreeControl.png" />
         <EmbeddedResource Include="Resources\WindowControl.png" />

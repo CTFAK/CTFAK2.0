@@ -17,7 +17,7 @@ public class ChunkList
     public class ChunkLoaderData
     {
         public MethodBase AfterHandler;
-        public int ChunkId;
+        public short ChunkId;
 
         public string ChunkName;
 
@@ -90,7 +90,7 @@ public class ChunkList
 #endif
     }
 
-    private int GetChunkId(ChunkLoader loader)
+    private short GetChunkId(ChunkLoader loader)
     {
         foreach (var loaderData in KnownLoaders)
         {
@@ -102,7 +102,16 @@ public class ChunkList
 
         return -1;
     }
-    public Chunk CreateChunk(ChunkLoader loader, int flag = 0, int id=-1)
+    public Chunk CreateChunk(short id, ChunkFlags flag = ChunkFlags.NotCompressed)
+    {
+        var newChk = new Chunk();
+        
+        newChk.Id = (short)id;
+
+        newChk.Flag = flag;
+        return newChk;
+    }
+    public Chunk CreateChunk(ChunkLoader loader, ChunkFlags flag = ChunkFlags.NotCompressed, short id=-1)
     {
         var newChk = new Chunk();
         if (id != -1)
@@ -110,6 +119,8 @@ public class ChunkList
             newChk.Id = (short)GetChunkId(loader);
         }
         else newChk.Id = (short)id;
+
+        newChk.Flag = flag;
         return newChk;
     }
 

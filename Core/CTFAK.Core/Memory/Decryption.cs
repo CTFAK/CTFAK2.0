@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using CTFAK.Utils;
 
 namespace CTFAK.Memory;
@@ -12,15 +14,17 @@ internal static class Decryption
     //public static byte MagicChar = 99;
     public static byte MagicChar = 54;
 
+    
     public static void MakeKey(string data1, string data2, string data3)
     {
+        
         // MakeKeyUnicode(data1,data2,data3);
         // return;
         IntPtr keyPtr;
         if (data1 == null) data1 = "";
         if (data2 == null) data2 = "";
         if (data3 == null) data3 = "";
-
+       
         keyPtr = Marshal.AllocHGlobal(256);
         var data1Ptr = Marshal.StringToHGlobalAnsi(data1);
         var data2Ptr = Marshal.StringToHGlobalAnsi(data2);

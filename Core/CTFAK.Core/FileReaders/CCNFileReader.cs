@@ -9,6 +9,7 @@ namespace CTFAK.FileReaders;
 
 public class CCNFileReader : IFileReader
 {
+    public int Priority => 5;
     public GameData Game;
     public string Name => "CCN";
 
@@ -22,11 +23,12 @@ public class CCNFileReader : IFileReader
         throw new NotImplementedException();
     }
 
-    public void LoadGame(string gamePath)
+    public bool LoadGame(string gamePath)
     {
         var reader = new ByteReader(gamePath, FileMode.Open);
         Game = new GameData();
         Game.Read(reader);
+        return true;
     }
 
     public Dictionary<int, Bitmap> GetIcons()

@@ -16,7 +16,7 @@ public delegate T2 SimpleMessage<T, T2>(T data);
 public class Core
 {
     public static IFileReader CurrentReader;
-    public static string Parameters;
+    public static string Parameters="";
 
     public static void Init()
     {

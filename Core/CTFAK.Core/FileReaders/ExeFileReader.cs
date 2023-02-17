@@ -10,11 +10,12 @@ namespace CTFAK.FileReaders;
 
 public class ExeFileReader : IFileReader
 {
+    public int Priority => 5;
     public GameData Game;
     public Dictionary<int, Bitmap> Icons = new();
-    public string Name => "Normal EXE";
+    public string Name => "EXE";
 
-    public void LoadGame(string gamePath)
+    public bool LoadGame(string gamePath)
     {
         Core.CurrentReader = this;
         Settings.gameType = Settings.GameType.NORMAL;
@@ -22,10 +23,10 @@ public class ExeFileReader : IFileReader
         var icos = icoExt.GetAllIcons();
         foreach (var icon in icos) Icons.Add(icon.Width, icon.ToBitmap());
 
-        if (!Icons.ContainsKey(16)) Icons.Add(16, Icons[32].resizeImage(new Size(16, 16)));
-        if (!Icons.ContainsKey(48)) Icons.Add(48, Icons[32].resizeImage(new Size(48, 48)));
-        if (!Icons.ContainsKey(128)) Icons.Add(128, Icons[32].resizeImage(new Size(128, 128)));
-        if (!Icons.ContainsKey(256)) Icons.Add(256, Icons[32].resizeImage(new Size(256, 256)));
+        if (!Icons.ContainsKey(16)) Icons.Add(16, Icons[32].ResizeImage(new Size(16, 16)));
+        if (!Icons.ContainsKey(48)) Icons.Add(48, Icons[32].ResizeImage(new Size(48, 48)));
+        if (!Icons.ContainsKey(128)) Icons.Add(128, Icons[32].ResizeImage(new Size(128, 128)));
+        if (!Icons.ContainsKey(256)) Icons.Add(256, Icons[32].ResizeImage(new Size(256, 256)));
 
         var reader = new ByteReader(gamePath, FileMode.Open);
         ReadHeader(reader);
@@ -56,6 +57,7 @@ public class ExeFileReader : IFileReader
         Game = new GameData();
         Game.Read(reader);
         if (!Settings.Old) Game.PackData = packData;
+        return true;
     }
 
     public int ReadHeader(ByteReader reader)
@@ -81,9 +83,7 @@ public class ExeFileReader : IFileReader
         return Icons;
     }
 
-    public void PatchMethods()
-    {
-    }
+
 
     public int CalculateEntryPoint(ByteReader exeReader)
     {

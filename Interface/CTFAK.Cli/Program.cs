@@ -67,10 +67,10 @@ public class Program
         }
         else if (Path.GetExtension(path) == ".apk")
         {
-            if (File.Exists(Path.GetTempPath() + "application.ccn"))
+            /*if (File.Exists(Path.GetTempPath() + "application.ccn"))
                 File.Delete(Path.GetTempPath() + "application.ccn");
             path = ApkFileReader.ExtractCcn(path);
-            gameParser = new CCNFileReader();
+            gameParser = new CCNFileReader();*/
         }
         else
         {
@@ -103,7 +103,6 @@ public class Program
         ASCIIArt.DrawArt();
         ASCIIArt.SetStatus("Reading game");
         Console.WriteLine($"Reading game with \"{gameParser.Name}\"");
-        gameParser.PatchMethods();
 
         gameParser.LoadGame(path);
         readStopwatch.Stop();

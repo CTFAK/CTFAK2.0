@@ -409,7 +409,7 @@ public class Condition : ChunkLoader
             Items.Add(item);
         }
 
-        Logger.Log(this);
+        //Logger.Log(this);
         //Console.ReadKey();
     }
 
@@ -474,7 +474,7 @@ public class Action : ChunkLoader
             item.Read(reader);
             Items.Add(item);
         }
-        Logger.Log(this);
+        //Logger.Log(this);
     }
 
     public override string ToString()

@@ -6,10 +6,10 @@ namespace CTFAK.MMFParser.CCN;
 
 public enum ChunkFlags
 {
-    NotCompressed = 0,
-    Compressed = 1,
-    Encrypted = 2,
-    CompressedAndEncrypted = 3
+    NotCompressed = 0, // MODE0
+    Compressed = 1, // MODE1
+    Encrypted = 2, // MODE2
+    CompressedAndEncrypted = 3 //MODE3
 }
 
 public class Chunk
@@ -62,6 +62,7 @@ public class Chunk
 
     public void Write(ByteWriter fileWriter, ByteWriter dataWriter)
     {
+        //TODO: Implement the CCN writer
     }
 }
 

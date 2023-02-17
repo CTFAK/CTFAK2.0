@@ -5,10 +5,12 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <OutputType>Library</OutputType>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj"/>
+        <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj" />
     </ItemGroup>
 
 

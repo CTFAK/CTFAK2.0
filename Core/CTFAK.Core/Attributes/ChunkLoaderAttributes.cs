@@ -6,10 +6,10 @@ namespace CTFAK.Attributes;
 [AttributeUsage(AttributeTargets.Class)]
 public class ChunkLoaderAttribute : Attribute
 {
-    public int ChunkId;
+    public short ChunkId;
     public string ChunkName;
 
-    public ChunkLoaderAttribute(int chunkId, string chunkName)
+    public ChunkLoaderAttribute(short chunkId, string chunkName)
     {
         this.ChunkId = chunkId;
         this.ChunkName = chunkName;

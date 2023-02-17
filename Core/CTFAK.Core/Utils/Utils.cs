@@ -27,14 +27,14 @@ public static class Utils
         return buf;
     }
 
-    public static Bitmap resizeImage(this Bitmap imgToResize, Size size)
+    public static Bitmap ResizeImage(this Bitmap imgToResize, Size size)
     {
         return new Bitmap(imgToResize, size);
     }
 
     public static string ReplaceFirst(this string text, string search, string replace)
     {
-        var pos = text.IndexOf(search);
+        var pos = text.IndexOf(search, StringComparison.Ordinal);
         if (pos < 0) return text;
 
         return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);

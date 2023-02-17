@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text.Json.Serialization;
+using System.Xml;
 using CTFAK.Memory;
 using CTFAK.MFA;
 using JFusion.ObjectTypes;
 using Newtonsoft.Json;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace JFusion;
 
@@ -18,7 +21,7 @@ public class JMFAFrame
     public JMFATransition fadeOut;
 
     public uint flags;
-    [JsonIgnore] public int handle;
+    [Newtonsoft.Json.JsonIgnore] public int handle;
     public int height;
 
     public int lastViewedX;
