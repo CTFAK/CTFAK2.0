@@ -162,6 +162,7 @@ public class ChunkList
             finally
             {
                 if (newChunk.Id == 8787) Settings.gameType |= Settings.GameType.TWOFIVEPLUS;
+                if (newChunk.Id == 8740 && newChunk.Flag == ChunkFlags.NotCompressed) Settings.gameType = Settings.GameType.ANDROID; // kinda dumb but kinda smart at the same time
 
                 if (KnownLoaders.TryGetValue(newChunk.Id, out var loaderData))
                 {

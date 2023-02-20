@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
+using CTFAK.Utils;
 
 namespace CTFAK.FileReaders;
 
@@ -18,12 +19,9 @@ public class CCNFileReader : IFileReader
         return Game;
     }
 
-    public int ReadHeader(ByteReader reader)
-    {
-        throw new NotImplementedException();
-    }
 
-    public bool LoadGame(string gamePath)
+
+    public virtual bool LoadGame(string gamePath)
     {
         var reader = new ByteReader(gamePath, FileMode.Open);
         Game = new GameData();
@@ -36,8 +34,6 @@ public class CCNFileReader : IFileReader
         return new Dictionary<int, Bitmap>();
     }
 
-    public void PatchMethods()
-    {
-        //Settings.gameType = Settings.GameType.ANDROID;
-    }
+ 
 }
+

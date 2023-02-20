@@ -73,7 +73,22 @@ public class FTDecompile : IFusionTool
         foreach (var key in mfa.Images.Items.Keys) mfa.Images.Items[key].IsMFA = true;
         mfa.GraphicMode = 4;
 
-
+        /*mfa.Icons.Items.Add(2,new Image()); // 16x16
+        mfa.Icons.Items.Add(5,new Image()); // 16x16
+        mfa.Icons.Items.Add(8,new Image()); // 16x16
+        
+        mfa.Icons.Items.Add(1,new Image()); // 32x32
+        mfa.Icons.Items.Add(4,new Image()); // 32x32
+        mfa.Icons.Items.Add(7,new Image()); // 32x32
+        
+        mfa.Icons.Items.Add(0,new Image()); // 48x48
+        mfa.Icons.Items.Add(3,new Image()); // 48x48
+        mfa.Icons.Items.Add(6,new Image()); // 48x48
+        
+        mfa.Icons.Items.Add(9,new Image()); // 128x128
+        
+        mfa.Icons.Items.Add(10,new Image()); // 256x256
+        
         foreach (var item in mfa.Icons.Items)
             try
             {
@@ -106,7 +121,7 @@ public class FTDecompile : IFusionTool
             {
                 Logger.LogWarning($"Requested icon is not found: {item.Key} - {item.Value.Width}");
             }
-
+*/
         var imageNull = new Image();
         imageNull.Handle = 14;
         imageNull.Transparent = 0x3aebca;

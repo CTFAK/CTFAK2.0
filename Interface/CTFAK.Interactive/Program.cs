@@ -59,6 +59,7 @@ public class Program
         pluginsWindow.Controls.Add(pluginText);
         pluginsWindow.Controls.Add(new Separator(1));
         var isAndroid = new Checkbox("Use Android");
+        var traceChunks = new Checkbox("Trace Chunks");
 
         foreach (var tool in toolList)
         {
@@ -83,6 +84,7 @@ public class Program
         pluginsWindow.Controls.Add(new Button("Back",(() => {Window.Show(inspectorWindow);})));
         
         mainWindow.Controls.Add(new HorizontalLayout());
+        
         mainWindow.Controls.Add(new Button("Load game",(() =>
         {
             string path = "";
@@ -110,8 +112,11 @@ public class Program
                 
                 fileOptionsWindow.Controls.Add(new Button($"Read as {reader.Name}",(() =>
                 {
+                    Core.CurrentReader = reader;
                     if (isAndroid.Activated)
-                        Core.Parameters += "-android";
+                        Core.Parameters += "-android ";
+                    if (traceChunks.Activated)
+                        Core.Parameters += "-trace_chunks ";
                     currentReader = reader;
                     readerStopwatch.Start();
                     currentReader.LoadGame(path);
@@ -147,6 +152,7 @@ public class Program
                 
             }
             fileOptionsWindow.Controls.Add(isAndroid);
+            fileOptionsWindow.Controls.Add(traceChunks);
             Window.Show(fileOptionsWindow);
                     
         })));

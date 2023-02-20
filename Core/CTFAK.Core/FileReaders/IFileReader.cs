@@ -11,7 +11,6 @@ public interface IFileReader
     string Name { get; }
 
     GameData GetGameData();
-    int ReadHeader(ByteReader reader);
     bool LoadGame(string gamePath);
     Dictionary<int, Bitmap> GetIcons();
 }

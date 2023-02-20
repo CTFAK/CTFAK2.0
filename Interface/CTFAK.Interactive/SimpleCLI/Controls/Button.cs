@@ -27,7 +27,7 @@ public class Button:Control
         Console.Write($"[{Text}]");
         Console.BackgroundColor = ConsoleColor.White;
         if(Window.horizontalLayout)
-            x += Text.Length+2;
+            x += Text.Length+3;
         else y += 1;
     }
 

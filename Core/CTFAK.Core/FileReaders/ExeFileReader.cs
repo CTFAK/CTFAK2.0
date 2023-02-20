@@ -13,12 +13,10 @@ public class ExeFileReader : IFileReader
     public int Priority => 5;
     public GameData Game;
     public Dictionary<int, Bitmap> Icons = new();
-    public string Name => "EXE";
+    public virtual string Name => "EXE";
 
-    public bool LoadGame(string gamePath)
+    public void loadIcons(string gamePath)
     {
-        Core.CurrentReader = this;
-        Settings.gameType = Settings.GameType.NORMAL;
         var icoExt = new IconExtractor(gamePath);
         var icos = icoExt.GetAllIcons();
         foreach (var icon in icos) Icons.Add(icon.Width, icon.ToBitmap());
@@ -28,8 +26,10 @@ public class ExeFileReader : IFileReader
         if (!Icons.ContainsKey(128)) Icons.Add(128, Icons[32].ResizeImage(new Size(128, 128)));
         if (!Icons.ContainsKey(256)) Icons.Add(256, Icons[32].ResizeImage(new Size(256, 256)));
 
-        var reader = new ByteReader(gamePath, FileMode.Open);
-        ReadHeader(reader);
+    }
+
+    public void LoadCCN(ByteReader reader)
+    {
         PackData packData = null;
         if (Settings.Old)
         {
@@ -57,10 +57,20 @@ public class ExeFileReader : IFileReader
         Game = new GameData();
         Game.Read(reader);
         if (!Settings.Old) Game.PackData = packData;
+    }
+    public virtual bool LoadGame(string gamePath)
+    {
+        Core.CurrentReader = this;
+        Settings.gameType = Settings.GameType.NORMAL;
+        loadIcons(gamePath);
+        
+        var reader = new ByteReader(gamePath, FileMode.Open);
+        ReadPEHeader(reader);
+        LoadCCN(reader);
         return true;
     }
 
-    public int ReadHeader(ByteReader reader)
+    public int ReadPEHeader(ByteReader reader)
     {
         var entryPoint = CalculateEntryPoint(reader);
         reader.Seek(0);
@@ -133,5 +143,20 @@ public class ExeFileReader : IFileReader
 
         exeReader.Seek(possition);
         return (int)exeReader.Tell();
+    }
+}
+
+public class UnpackedExeFileReader : ExeFileReader
+{
+    public override string Name => "EXE (Unpacked)";
+    public override bool LoadGame(string gamePath)
+    {
+        Core.CurrentReader = this;
+        Settings.gameType = Settings.GameType.NORMAL;
+        loadIcons(gamePath);
+        
+        var reader = new ByteReader(gamePath.Replace(".exe",".dat"), FileMode.Open);
+        LoadCCN(reader);
+        return true;
     }
 }
