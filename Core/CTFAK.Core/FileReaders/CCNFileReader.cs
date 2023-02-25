@@ -28,7 +28,6 @@ namespace CTFAK.EXE
 
             if (reader.PeekInt32() == 2004318071)
                 reader.Skip(32);
-            reader.ReadUInt32();
 
             game = new GameData();
             game.Read(reader);

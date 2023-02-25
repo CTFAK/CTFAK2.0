@@ -64,7 +64,6 @@ namespace CTFAK.CCN.Chunks
                 Logger.Log($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
             }
             return ChunkData;
-
         }
     }
     public abstract class ChunkLoader

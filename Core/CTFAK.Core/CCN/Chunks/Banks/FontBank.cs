@@ -32,7 +32,7 @@ namespace CTFAK.CCN.Chunks.Banks
             Items = new List<FontItem>();
             for (int i = 0; i < count; i++)
             {
-                if (Settings.android) continue;
+                if (Settings.Android) continue;
                 var item = new FontItem();
                 item.Compressed = Compressed;
                 item.Read(reader);
@@ -138,7 +138,7 @@ namespace CTFAK.CCN.Chunks.Banks
             _clipPrecision = reader.ReadByte();
             _quality = reader.ReadByte();
             _pitchAndFamily = reader.ReadByte();
-            _faceName = reader.ReadWideString(32);
+            _faceName = reader.ReadUniversal(32);
         }
 
         public override void Write(ByteWriter Writer)

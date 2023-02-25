@@ -1,0 +1,378 @@
+﻿using CTFAK.Memory;
+using CTFAK.Utils;
+using Ionic.Zlib;
+using K4os.Compression.LZ4;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+
+namespace CTFAK.CCN.Chunks.Banks
+{
+    public class ImageBank : ChunkLoader
+    {
+        public static event CTFAKCore.SaveHandler OnImageLoaded;
+        public Dictionary<int, Image> Items = new Dictionary<int, Image>();
+        public static int realGraphicMode = 4;
+        public override void Read(ByteReader reader)
+        {
+            if (CTFAKCore.parameters.Contains("-noimg")) return;
+            int count = 0;
+            if (Settings.Android)
+            {
+                var maxHandle = reader.ReadInt16();
+                count = reader.ReadInt16();
+            }
+            else
+            {
+                count = reader.ReadInt32();
+            }
+            for (int i = 0; i < count; i++)
+            {
+                var newImg = new Image();
+                newImg.Read(reader);
+                OnImageLoaded?.Invoke(i, count);
+                Items.Add(newImg.Handle, newImg);
+            }
+
+            if (Settings.Android)
+            {
+                foreach (var img in Items)
+                {
+                    var image = img.Value;
+                    image.FromBitmap(ImageHelper.DumpImage(image.Handle, image.imageData, image.width, image.height, image.graphicMode));
+                }
+            }
+
+            foreach (var task in Image.imageReadingTasks)
+            {
+                task.Wait();
+            }
+            Image.imageReadingTasks.Clear();
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Image : ChunkLoader
+    {
+        public Bitmap realBitmap;
+        
+        public Bitmap bitmap
+        {
+            get
+            {
+                if(realBitmap==null)
+                {
+                    realBitmap = new Bitmap(width, height);
+                    var bmpData = realBitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+                    int internalColorMode = -1;
+                    switch (graphicMode)
+                    {
+                        case 4:          
+                            internalColorMode = 0;
+                            break;
+                    }
+                    var dataPtr = Marshal.AllocHGlobal(imageData.Length);
+                    Marshal.Copy(imageData, 0, dataPtr, imageData.Length);
+                    NativeLib.TranslateToRGBA(bmpData.Scan0, width, height, Flags["Alpha"] ? 1 : 0, imageData.Length, dataPtr, transparent, internalColorMode);
+                    newImageData = null;
+                    realBitmap.UnlockBits(bmpData);
+                }
+                return realBitmap;
+            }
+        }
+
+        public void FromBitmap(Bitmap bmp)
+        {
+            width = bmp.Width;
+            height = bmp.Height;
+            if (!CTFAKCore.parameters.Contains("-noalpha"))
+                Flags["Alpha"] = true;
+            graphicMode = 4;
+
+            var bitmapData = bmp.LockBits(new Rectangle(0, 0,
+                    bmp.Width,
+                    bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int copyPad = ImageHelper.GetPadding(width, 4);
+            var length = bitmapData.Height * bitmapData.Stride + copyPad * 4;
+
+            byte[] bytes = new byte[length];
+            int stride = bitmapData.Stride;
+            // Copy bitmap to byte[]
+            Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
+            bmp.UnlockBits(bitmapData);
+
+            imageData = new byte[width * height * 6];
+            int position = 0;
+            int pad = ImageHelper.GetPadding(width, 3);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int newPos = (y * stride) + (x * 3);
+                    imageData[position] = bytes[newPos];
+                    imageData[position + 1] = bytes[newPos + 1];
+                    imageData[position + 2] = bytes[newPos + 2];
+                    position += 3;
+                }
+
+                position += 3 * pad;
+            }
+
+            try
+            {
+                var bitmapDataAlpha = bmp.LockBits(new Rectangle(0, 0,
+                        bmp.Width,
+                        bmp.Height),
+                    ImageLockMode.ReadOnly,
+                    PixelFormat.Format32bppArgb);
+                int copyPadAlpha = ImageHelper.GetPadding(width, 1);
+                var lengthAlpha = bitmapDataAlpha.Height * bitmapDataAlpha.Stride + copyPadAlpha * 4;
+
+                byte[] bytesAlpha = new byte[lengthAlpha];
+                int strideAlpha = bitmapDataAlpha.Stride;
+                // Copy bitmap to byte[]
+                Marshal.Copy(bitmapDataAlpha.Scan0, bytesAlpha, 0, lengthAlpha);
+                bmp.UnlockBits(bitmapDataAlpha);
+
+                int aPad = ImageHelper.GetPadding(width, 1, 4);
+                int alphaPos = position;
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        imageData[alphaPos] = bytesAlpha[(y * strideAlpha) + (x * 4) + 3];
+                        alphaPos += 1;
+                    }
+
+                    alphaPos += aPad;
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
+        public bool IsMFA;
+        public BitDict Flags = new BitDict(new string[]
+        {
+            "RLE",
+            "RLEW",
+            "RLET",
+            "LZX",
+            "Alpha",
+            "ACE",
+            "Mac"
+        });
+        public int Handle;
+        public int width;
+        public int height;
+        public byte graphicMode;
+        public int checksum;
+        public int references;
+        public byte[] imageData;
+        public short HotspotX;
+        public short HotspotY;
+        public short ActionX;
+        public short ActionY;
+        public int transparent;
+        public byte[] newImageData;
+        public int onepointfiveDecompressedSize;
+        public int onepointfiveStart;
+
+        public static List<Task> imageReadingTasks = new List<Task>();
+        public override void Read(ByteReader reader)
+        {
+            //tysm LAK
+            var start = reader.Tell();
+            int dataSize = 0;
+            if (Settings.Android)
+            {
+                Handle = reader.ReadInt16();
+
+                switch (Handle >> 16)
+                {
+                    case 0:
+                        graphicMode = 0;
+                        break;
+                    case 3:
+                        graphicMode = 2;
+                        break;
+                    case 5:
+                        graphicMode = 7;
+                        break;
+                }
+
+                if (Settings.Build >= 284 && !IsMFA)
+                    Handle--;
+                graphicMode = (byte)reader.ReadInt32();
+                width = reader.ReadInt16();
+                height = reader.ReadInt16();
+                HotspotX = reader.ReadInt16();
+                HotspotY = reader.ReadInt16();
+                ActionX = reader.ReadInt16();
+                ActionY = reader.ReadInt16();
+                dataSize = reader.ReadInt32();
+
+                if (reader.PeekByte() == 255)
+                    imageData = reader.ReadBytes(dataSize);
+                else
+                    imageData = Decompressor.DecompressBlock(reader, dataSize);
+
+                return;
+            }
+            else
+            {
+                Handle = reader.ReadInt32();
+                if (Settings.Build >= 284 && !IsMFA)
+                    Handle--;
+
+                if (!IsMFA)
+                {
+                    if (Settings.Old)
+                    {
+                        onepointfiveDecompressedSize = reader.ReadInt32();
+                        onepointfiveStart = (int)reader.Tell();
+                        newImageData = reader.ReadBytes();
+                    }
+                    else
+                    {
+                        onepointfiveDecompressedSize = reader.ReadInt32();
+                        var compSize = reader.ReadInt32();
+                        newImageData = reader.ReadBytes(compSize);
+                    }
+                }
+
+                Task mainRead = new Task(() =>
+                {
+                    ByteReader decompressedReader;
+                    if (!IsMFA)
+                    {
+                        if (Settings.Old)
+                        {
+                            decompressedReader = new ByteReader(Decompressor.DecompressOldBlock(newImageData, newImageData.Length, onepointfiveDecompressedSize, out var actualSize));
+                            reader.Seek(onepointfiveStart + actualSize);
+                        }
+
+                        else
+                            decompressedReader = new ByteReader(Decompressor.DecompressBlock(newImageData, newImageData.Length));
+
+                        newImageData = null;
+                    }
+                    else decompressedReader = reader;
+
+
+                    if (Settings.Old)
+                        checksum = decompressedReader.ReadInt16();
+                    else
+                        checksum = decompressedReader.ReadInt32();
+
+                    references = decompressedReader.ReadInt32();
+                    if (Settings.TwoFivePlus)
+                        decompressedReader.Skip(4);
+                    dataSize = decompressedReader.ReadInt32();
+                    if (IsMFA)
+                        decompressedReader = new ByteReader(decompressedReader.ReadBytes(dataSize + 20));
+                    width = decompressedReader.ReadInt16();
+                    height = decompressedReader.ReadInt16();
+                    graphicMode = decompressedReader.ReadByte();
+                    Flags.flag = decompressedReader.ReadByte();
+                    if (!Settings.Old)
+                        decompressedReader.ReadInt16();
+                    HotspotX = decompressedReader.ReadInt16();
+                    HotspotY = decompressedReader.ReadInt16();
+                    ActionX = decompressedReader.ReadInt16();
+                    ActionY = decompressedReader.ReadInt16();
+                    if (!Settings.Old)
+                        transparent = decompressedReader.ReadInt32();
+                    else
+                        transparent = 0;
+
+                    if (Settings.Android)
+                    {
+                        
+                    }
+                    else
+                    {
+                        if (Settings.TwoFivePlus)
+                        {
+                            var decompSizePlus = decompressedReader.ReadInt32();
+                            var rawImg = decompressedReader.ReadBytes(dataSize - 4);
+                            byte[] target = new byte[decompSizePlus];
+                            LZ4Codec.Decode(rawImg, target);
+                            imageData = target;
+                        }
+                        else if (Flags["LZX"])
+                        {
+                            int decompSize = decompressedReader.ReadInt32();
+                            imageData = Decompressor.DecompressBlock(decompressedReader,
+                                (int)(decompressedReader.Size() - decompressedReader.Tell()),
+                                decompSize);
+                        }
+                        else
+                            imageData = decompressedReader.ReadBytes(dataSize);
+                    }
+                    newImageData = null;
+                });
+                imageReadingTasks.Add(mainRead);
+                if (!IsMFA && !Settings.Old)
+                    mainRead.Start();
+                else mainRead.RunSynchronously();
+            }
+        }
+
+        public static List<Task> imageWritingTasks = new List<Task>();
+
+        public int WriteNew(ByteWriter writer)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var start = writer.Tell();
+
+            byte[] compressedImg = null;
+            Flags["LZX"] = true;
+
+            compressedImg = Decompressor.compress_block(imageData);
+
+            writer.WriteInt32(Handle);
+            writer.WriteInt32(checksum); //4
+            writer.WriteInt32(references); //8
+            writer.WriteUInt32((uint)compressedImg.Length + 4); //12
+            writer.WriteInt16((short)width); //14
+            writer.WriteInt16((short)height); //16
+            writer.WriteInt8(graphicMode); //17
+            writer.WriteInt8((byte)Flags.flag); //18
+            writer.WriteInt16(0); //20
+            writer.WriteInt16(HotspotX); //22
+            writer.WriteInt16(HotspotY); //24
+            writer.WriteInt16(ActionX); //26
+            writer.WriteInt16(ActionY); //28
+            writer.WriteInt32(transparent); //32
+            writer.WriteInt32(imageData.Length); //36
+            writer.WriteBytes(compressedImg);
+            //writer.WriteWriter(chunk);
+            // writer.WriteInt32(Handle-1);//FNAC3 FIX
+
+            var chunkSize = 36 + compressedImg.Length;
+            stopwatch.Stop();
+            //Console.WriteLine($"Image: {Handle}, decompressed/compressed ratio: {((float)compressedImg.Length)/imageData.Length}, time: {stopwatch.ElapsedMilliseconds}, level:{Decompressor.compressionLevel}");
+            //Console.ReadKey();
+            return (int)(chunkSize + 4 + start);
+        }
+        public override void Write(ByteWriter writer)
+        {
+            
+        }
+    }
+}

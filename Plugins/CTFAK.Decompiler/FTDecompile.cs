@@ -37,21 +37,16 @@ namespace CTFAK.Tools
         {
             var game = reader.getGameData();
             var mfa = new MFAData();
-            bool myAss = false;
+            Settings.GameType originalGameType = Settings.gameType;
+            Settings.gameType = Settings.GameType.NORMAL;
             Dictionary<int, CCN.Chunks.Banks.Image> imgs = game.Images.Items;
+
             if (CTFAKCore.parameters.Contains("-noimg"))
                 game.Images.Items.Clear();
-            Settings.gameType = Settings.GameType.NORMAL;
-            if (Settings.Old)
-            {
-                myAss = true;
-                Settings.gameType = Settings.GameType.NORMAL;
-            }
+
             mfa.Read(new ByteReader("template.mfa", FileMode.Open));
-            if (myAss)
-            {
-                Settings.gameType = Settings.GameType.MMF15;
-            }
+
+            Settings.gameType = originalGameType;
 
             mfa.Name = game.name;
             mfa.LangId = 0;//8192;
@@ -67,7 +62,7 @@ namespace CTFAK.Tools
                 {
                     mfa.Sounds.Items.Add(item);
                 }
-                if (CTFAKCore.parameters.Contains("-nosound"))
+                if (CTFAKCore.parameters.Contains("-nosounds"))
                     mfa.Sounds.Items.Clear();
             }
             mfa.Fonts.Items.Clear();
@@ -221,7 +216,8 @@ namespace CTFAK.Tools
                 if (item.ObjectType >= 32)
                 {
                     //Logger.Log(item.ObjectType + ", " + item.name);
-                    if (item.ObjectType == 36 && item.name == "iOS Plus Object" || item.ObjectType == 45 && item.name.Contains("KYSO"))
+                    if (item.name == "iOS Plus Object" || 
+                        item.name.Contains("KYSO"))
                         continue; //DIE YOU UNDEAD FLESH MAGGOT! 
                     newItem = TranslateObject(mfa, game, item, true);
                 }
@@ -260,11 +256,8 @@ namespace CTFAK.Tools
             Logger.Log($"Preparing to translate {game.frames.Count} frames");
             for (int a = 0; a < game.frames.Count; a++)
             {
-                if (CTFAKCore.parameters.Contains(a.ToString()))
-                {
-
-                }
-                else
+                string parameter = $"-ExcludeFrame{a}";
+                if (!CTFAKCore.parameters.Contains(parameter))
                 {
                     var frame = game.frames[a];
 
@@ -559,14 +552,10 @@ namespace CTFAK.Tools
                             }
                         }
                     }
-                    if (CTFAKCore.parameters.Contains(a.ToString()) == false)
+                    if (!CTFAKCore.parameters.Contains(parameter))
                     {
                         Logger.Log($"Translating frame {frame.name} - {a}");
                         mfa.Frames.Add(newFrame);
-                    }
-                    else
-                    {
-
                     }
                 }
             }
@@ -830,7 +819,8 @@ namespace CTFAK.Tools
 
                 try
                 {
-                    if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.android)
+                    //if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.Android && CTFAKCore.parameters.Contains("-badblend"))
+                    if (CTFAKCore.parameters.Contains("-badblend"))
                     {
                         shdrData.Blend = (byte)(255 - item.blend);
                         shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, 255 - item.rgbCoeff.B, 255 - item.rgbCoeff.G, 255 - item.rgbCoeff.R);
@@ -894,8 +884,8 @@ namespace CTFAK.Tools
 
                     newObject.Strings = new MFAValueList();//ConvertStrings(itemLoader.);
                     newObject.Values = new MFAValueList();//ConvertValue(itemLoader.Values
-                    newObject.AltFlags = new MFAObjectFlags();
                     newObject.Movements = new MFAMovements();
+                    newItem.FlagWriter = new MFAObjectFlags();
 
                     if (itemLoader.Values != null)
                     {
@@ -917,11 +907,11 @@ namespace CTFAK.Tools
                             var newFlag = new ObjectFlag();
                             newFlag.Name = $"Flag {j}";
                             newFlag.Value = ByteFlag.GetFlag((uint)itemLoader.Values.Flags, j);
-                            newObject.AltFlags.Items.Add(newFlag);
+                            newItem.FlagWriter.Items.Add(newFlag);
                         }
                         for (int j = 31; j >= 0; j--)
-                            if (newObject.AltFlags.Items[j].Value == false)
-                                newObject.AltFlags.Items.Remove(newObject.AltFlags.Items[j]);
+                            if (newItem.FlagWriter.Items[j].Value == false)
+                                newItem.FlagWriter.Items.Remove(newItem.FlagWriter.Items[j]);
                             else
                                 break;
                     }
@@ -986,7 +976,6 @@ namespace CTFAK.Tools
                             active.BackgroundColor = newObject.BackgroundColor;
                             active.Strings = newObject.Strings;
                             active.Values = newObject.Values;
-                            active.AltFlags = newObject.AltFlags;
                             active.Movements = newObject.Movements;
                             active.Behaviours = newObject.Behaviours;
                             active.Qualifiers = newObject.Qualifiers;
@@ -1053,7 +1042,6 @@ namespace CTFAK.Tools
                             newExt.BackgroundColor = newObject.BackgroundColor;
                             newExt.Strings = newObject.Strings;
                             newExt.Values = newObject.Values;
-                            newExt.AltFlags = newObject.AltFlags;
                             newExt.Movements = newObject.Movements;
                             newExt.Behaviours = newObject.Behaviours;
                             newExt.Qualifiers = newObject.Qualifiers;
@@ -1094,10 +1082,12 @@ namespace CTFAK.Tools
                             newText.BackgroundColor = newObject.BackgroundColor;
                             newText.Strings = newObject.Strings;
                             newText.Values = newObject.Values;
-                            newText.AltFlags = newObject.AltFlags;
                             newText.Movements = newObject.Movements;
                             newText.Behaviours = newObject.Behaviours;
                             newText.Qualifiers = newObject.Qualifiers;
+
+                            newItem.FlagWriter = new MFAObjectFlags();
+                            newItem.FlagWriter = newItem.FlagWriter;
 
                         }
                         if (text == null)
@@ -1142,7 +1132,6 @@ namespace CTFAK.Tools
                             lives.BackgroundColor = newObject.BackgroundColor;
                             lives.Strings = newObject.Strings;
                             lives.Values = newObject.Values;
-                            lives.AltFlags = newObject.AltFlags;
                             lives.Movements = newObject.Movements;
                             lives.Behaviours = newObject.Behaviours;
                             lives.Qualifiers = newObject.Qualifiers;
@@ -1167,7 +1156,6 @@ namespace CTFAK.Tools
                             newCount.BackgroundColor = newObject.BackgroundColor;
                             newCount.Strings = newObject.Strings;
                             newCount.Values = newObject.Values;
-                            newCount.AltFlags = newObject.AltFlags;
                             newCount.Movements = newObject.Movements;
                             newCount.Behaviours = newObject.Behaviours;
                             newCount.Qualifiers = newObject.Qualifiers;
@@ -1233,7 +1221,6 @@ namespace CTFAK.Tools
                         newSubApp.BackgroundColor = newObject.BackgroundColor;
                         newSubApp.Strings = newObject.Strings;
                         newSubApp.Values = newObject.Values;
-                        newSubApp.AltFlags = newObject.AltFlags;
                         newSubApp.Movements = newObject.Movements;
                         newSubApp.Behaviours = newObject.Behaviours;
                         newSubApp.Qualifiers = newObject.Qualifiers;

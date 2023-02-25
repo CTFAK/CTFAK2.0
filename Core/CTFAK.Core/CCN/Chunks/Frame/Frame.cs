@@ -24,8 +24,8 @@ namespace CTFAK.CCN.Chunks.Frame
         public short parentHandle;
         public override void Read(ByteReader reader)
         {
-            handle = (ushort)reader.ReadInt16();
-            objectInfo = (ushort)reader.ReadInt16();
+            handle = reader.ReadUInt16();
+            objectInfo = reader.ReadUInt16();
 
             if (Settings.Old)
             {
@@ -39,10 +39,9 @@ namespace CTFAK.CCN.Chunks.Frame
             }
             parentType = reader.ReadInt16();
             parentHandle = reader.ReadInt16();
-            if (Settings.Old) return;
+            if (Settings.Old || Settings.F3) return;
             layer = reader.ReadInt16();
             flags = reader.ReadInt16();
-
         }
 
         public override void Write(ByteWriter writer)
@@ -101,28 +100,26 @@ namespace CTFAK.CCN.Chunks.Frame
         public int InkEffectValue;
         public Color rgbCoeff;
         public byte blend;
+        public int randomSeed;
+        public int movementTimer;
 
         public override void Read(ByteReader reader)
         {
             while (true)
             {
+                if (reader.Tell() >= reader.Size()) break;
                 var newChunk = new Chunk();
                 var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
                 //Logger.Log("Reading Frame Chunk: " + newChunk.Id);
+                if (ChunkList.ChunkNames.TryGetValue(newChunk.Id, out string chunkName))
+                    Logger.Log($"Reading Chunk {newChunk.Id} ({chunkName})");
+                else
+                    Logger.Log($"Reading Chunk {newChunk.Id}");
                 if (newChunk.Id == 32639) break;
-                if (reader.Tell() >= reader.Size()) break;
                 switch (newChunk.Id)
                 {
-                    case 13109:
-                        var frameName = new StringChunk();
-                        frameName.Read(chunkReader);
-                        if (string.IsNullOrEmpty(frameName.value))
-                            name = "CORRUPTED FRAME";
-                        else
-                            name = frameName.value;
-                        break;
-                    case 13108:
+                    case 13108: //Header
                         if (Settings.Old)
                         {
                             width = chunkReader.ReadInt16();
@@ -137,9 +134,24 @@ namespace CTFAK.CCN.Chunks.Frame
                             background = chunkReader.ReadColor();
                             flags.flag = chunkReader.ReadUInt32();
                         }
-                        
                         break;
-                    case 13112:
+                    case 13109: //Name
+                        
+                        var frameName = new StringChunk();
+                        frameName.Read(chunkReader);
+                        if (string.IsNullOrEmpty(frameName.value))
+                            name = "CORRUPTED FRAME";
+                        else
+                            name = frameName.value;
+                        break;
+                    case 13110: //Password
+                        break;
+                    case 13111: //Frame Palette
+                        var pal = new FramePalette();
+                        pal.Read(chunkReader);
+                        palette = pal.Items;
+                        break;
+                    case 13112: //Object Instances
                         var count = chunkReader.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
@@ -147,39 +159,42 @@ namespace CTFAK.CCN.Chunks.Frame
                             objInst.Read(chunkReader);
                             objects.Add(objInst);
                         }
-                        
                         break;
-                    case 13117:
-                        if (CTFAKCore.parameters.Contains("-noevnt"))
-                            events = new Events();
-                        else
-                        {
-                            events = new Events();
-                            events.Read(chunkReader);
-                        }
-                        break;
-                    case 13121:
-                        layers = new Layers();
-                        layers.Read(chunkReader);
-                        break;
-                    case 13111:
-                        var pal = new FramePalette();
-                        pal.Read(chunkReader);
-                        palette = pal.Items;
-                        break;
-                    case 13115:
+                    case 13113:
+                    case 13115: //Fade In
                         fadeIn = new Transition();
                         fadeIn.Read(chunkReader);
                         break;
-                    case 13116:
+                    case 13114:
+                    case 13116: //Fade Out
                         fadeOut = new Transition();
                         fadeOut.Read(chunkReader);
                         break;
-                    case 13122:
+                    case 13117: //Events
+                        events = new Events();
+                        if (!CTFAKCore.parameters.Contains("-noevnt"))
+                            events.Read(chunkReader);
+                        break;
+                    case 13118: //Play Header
+                        break;
+                    case 13119: //Additional Items
+                        break;
+                    case 13120: //Additional Items Instances
+                        break;
+                    case 13121: //Layers
+                        layers = new Layers();
+                        layers.Read(chunkReader);
+                        break;
+                    case 13122: //Virtual Size
                         virtualRect = new VirtualRect();
                         virtualRect.Read(chunkReader);
                         break;
-                    case 13125: // Layer Effects
+                    case 13123: //Demo File Path
+                        break;
+                    case 13124: //Random Seed
+                        randomSeed = chunkReader.ReadInt16();
+                        break;
+                    case 13125: //Layer Effects
                         var start = chunkReader.Tell();
                         var end = start + chunkReader.Size();
                         if (start == end) break;
@@ -252,7 +267,16 @@ namespace CTFAK.CCN.Chunks.Frame
                             current++;
                         }
                         break;
-                    case 13129: // Frame Effects
+                    case 13126: //Options
+                        var frameAlpha = chunkReader.ReadInt32();
+                        var keyTimeOut = chunkReader.ReadInt32();
+                        break;
+                    case 13127: //Movement Timer Base
+                        movementTimer = chunkReader.ReadInt32();
+                        break;
+                    case 13128: //Mosaic Image Table
+                        break;
+                    case 13129: //Frame Effects
                         InkEffect = chunkReader.ReadInt32();
                         if (InkEffect != 1)
                         {
@@ -310,6 +334,12 @@ namespace CTFAK.CCN.Chunks.Frame
                         {
                             shaderData.hasShader = false;
                         }
+                        break;
+                    case 13130: //iPhone Settings
+                        var Joystick = chunkReader.ReadInt16();
+                        var iPhoneOptions = chunkReader.ReadInt16();
+                        break;
+                    case 13131: //Unknown
                         break;
                     default:
                         Logger.Log("No Reader for Frame Chunk " + newChunk.Id);
@@ -397,7 +427,7 @@ namespace CTFAK.CCN.Chunks.Frame
             NumberOfBackgrounds = reader.ReadInt32();
             BackgroudIndex = reader.ReadInt32();
             Name = reader.ReadUniversal();
-            if (Settings.android)
+            if (Settings.Android)
             {
                 XCoeff = 1;
                 YCoeff = 1;

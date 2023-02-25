@@ -17,7 +17,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
         public short[] Qualifiers = new short[8];
         public MFAValueList Values;
         public MFAValueList Strings;
-        public MFAObjectFlags AltFlags;
         public MFAMovements Movements;
         public Behaviours Behaviours;
 

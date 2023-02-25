@@ -41,11 +41,16 @@ namespace CTFAK.MFA.MFAObjectLoaders
         {
             base.Write(Writer);
             Writer.WriteInt32((int)Player);
-            Writer.WriteInt32(Images.Count);
-            foreach (int i in Images)
+            if (!CTFAKCore.parameters.Contains("-noimgs"))
             {
-                Writer.WriteInt32(i);
+                Writer.WriteInt32(Images.Count);
+                foreach (int i in Images)
+                {
+                    Writer.WriteInt32(i);
+                }
             }
+            else
+                Writer.WriteInt32(0);
             Writer.WriteInt32(DisplayType);
             Writer.WriteInt32(Flags);
             Writer.WriteInt32(Font);
