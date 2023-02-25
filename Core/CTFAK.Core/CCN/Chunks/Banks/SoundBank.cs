@@ -19,19 +19,14 @@ namespace CTFAK.CCN.Chunks.Banks
         public List<SoundItem> Items=new List<SoundItem>();
         public bool IsCompressed = true;
 
-
-
         public override void Read(ByteReader reader)
         {
-            //if (!Settings.DoMFA) reader.Seek(0);//Reset the reader to avoid bugs when dumping more than once
             Items = new List<SoundItem>();
             NumOfItems = reader.ReadInt32();
-            //if (!Settings.DumpSounds) return;
 
             for (int i = 0; i < NumOfItems; i++)
             {
-
-                if (Settings.android) continue;
+                if (Settings.Android) continue;
                 if (Settings.Old) continue;
                 
                 var item = new SoundItem();
@@ -42,40 +37,27 @@ namespace CTFAK.CCN.Chunks.Banks
 
                 Items.Add(item);
             }
-
         }
+
         public override void Write(ByteWriter writer)
         {
             writer.WriteInt32(Items.Count);
             foreach (var item in Items)
-            {
                 item.Write(writer);
-            }
         }
-
-
-
-
     }
 
     public class SoundBase : ChunkLoader
     {
-
-
         public override void Write(ByteWriter Writer)
         {
             throw new NotImplementedException();
         }
 
-
         public override void Read(ByteReader reader)
         {
 
         }
-
-
-
-
     }
 
     public class SoundItem : SoundBase
@@ -111,11 +93,10 @@ namespace CTFAK.CCN.Chunks.Banks
                 soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
             }
             else
-            {
                 soundData = new ByteReader(reader.ReadBytes(decompressedSize));
-            }
             Name = soundData.ReadWideString(nameLenght).Trim((char)0);
             Data = soundData.ReadBytes((int)soundData.Size());
+            //Logger.Log(Name + " || " + Handle);
         }
 
         public void AndroidRead(ByteReader soundData, string itemName)

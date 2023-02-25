@@ -75,7 +75,7 @@ To get started, open `CTFAK.Cli.exe` and drag in your Clickteam Fusion 2.5 exe, 
 
 In parameters, you can input anything listed in [Parameters](https://github.com/CTFAK/CTFAK2.0#parameters), but make sure to put a `-` before each one. If you don't want to input any parameters (which you normally shouldn't need to do) then you can leave it blank. After you've filled out your parameters, press enter.
 
-If you're using a ccn, dat, or bin file it will bring up a prompt asking you to select a file reader. If you're using a .ccn or a .bin, press `1` for CCN. Otherwise, if you're using a .dat, press `3` for Normal EXE.
+If you're using a ccn, dat, or bin file it will bring up a prompt asking you to select a file reader. In any case, press `1` for CCN.
 
 After these steps, it will start reading the application. If it closes or gives an error during this process, run `CTFAK.Cli.exe` in command prompt, repeat the process, and then send the error in our [Discord](https://www.discord.com/invite/wsH3KNtvvJ) or [open an issue](https://github.com/CTFAK/CTFAK2.0/issues). 
 
@@ -98,11 +98,16 @@ All parameters should start with `-`.
 | noicons | Prevents CTFAK 2.0 from writing any object icons. |
 | trace_chunks | Forces CTFAK 2.0 to write all chunks to `CHUNK_TRACE`. |
 | dumpnewchunks| Forces CTFAK 2.0 to write chunks without a reader to `UnkChunks`. You must create this folder yourself. |
+| f1.5 | Forces CTFAK 2.0 to read the input as MMF 1.5. |
+| f3 | Forces CTFAK 2.0 to read the input as CTF 3.0. |
+| android | Forces CTFAK 2.0 to read the input as android. |
+| excludeframe[id] | Forces CTFAK 2.0 to ignore the specified frame. ID indexes at 0.|
+| log | Causes CTFAK 2.0 to log thread information about the Sorted Image Dumper.|
+| badblend | Forces CTFAK 2.0 to revert to the old blend coeff fix.|
 
 # To-Do List
 |%| Task |Description
 |--|--|--|
-| 80% | Alterable Flags | The Alterable Flags on objects. |
 | 80% | Layer Effects | Shaders on layers. |
 | 90% | MFA2Pame | Converting an MFA into the same format as an exe for easy dumping. |
 | 60% | New Image Bank | Fixes certain 2.5+ games having broken images. |
@@ -128,4 +133,4 @@ All parameters should start with `-`.
 
 CTFAK 2.0 is licensed under [AGPL-3.0](https://github.com/CTFAK/CTFAK2.0/blob/master/LICENSE).
 
-Last Updated Feburary 24rd, 2023.
+Last Updated Feburary 24th, 2023.

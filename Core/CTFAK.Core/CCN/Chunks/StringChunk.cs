@@ -1,4 +1,5 @@
 ﻿using CTFAK.Memory;
+using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,22 @@ namespace CTFAK.CCN.Chunks
     }
     class AppName:StringChunk
     {
+        public override void Read(ByteReader reader)
+        {
+            var start = reader.Tell();
+            var str = reader.ReadAscii();
+            if (str.Length + 1 == reader.Size())
+            {
+                Settings.Unicode = false;
+                value = str;
+            }
+            else
+            {
+                reader.Seek(start);
+                value = reader.ReadWideString();
+                Settings.Unicode = true;
+            }
+        }
     }
     public class AppAuthor : StringChunk
     {

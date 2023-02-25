@@ -61,9 +61,7 @@ namespace CTFAK.MFA
         public override void Write(ByteWriter Writer)
         {
             foreach (MFAChunk chunk in Items)
-            {
                 chunk.Write(Writer);
-            }
             Writer.WriteInt8(0);
         }
 
@@ -145,9 +143,6 @@ namespace CTFAK.MFA
                 writer.WriteInt32((int)newWriter.Size());
                 writer.WriteWriter(newWriter);
             }
-
-
-
         }
     }
 

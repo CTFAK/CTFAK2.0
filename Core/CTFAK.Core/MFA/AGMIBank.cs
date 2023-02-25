@@ -9,6 +9,7 @@ using CTFAK.Memory;
 
 using Image = CTFAK.CCN.Chunks.Banks.Image;
 using CTFAK.Utils;
+using static CTFAK.CTFAKCore;
 
 namespace CTFAK.MMFParser.MFA.Loaders
 {
@@ -18,7 +19,8 @@ namespace CTFAK.MMFParser.MFA.Loaders
         private int PaletteVersion;
         private int PaletteEntries;
         public Dictionary<int, Image> Items = new Dictionary<int, Image>();
-        public List<Color> Palette=new Color[256].ToList();
+        public event SaveHandler OnImageLoaded;
+        public List<Color> Palette = new Color[256].ToList();
 
         public override void Read(ByteReader reader)
         {
@@ -38,9 +40,15 @@ namespace CTFAK.MMFParser.MFA.Loaders
                 var item = new Image();
                 item.IsMFA = true;
                 item.Read(reader);
+                OnImageLoaded?.Invoke(i, count);
                 if (!Items.ContainsKey(item.Handle))
                     Items.Add(item.Handle, item);
             }
+            foreach (var task in Image.imageReadingTasks)
+            {
+                task.Wait();
+            }
+            Image.imageReadingTasks.Clear();
         }
 
         private List<Task> imageWriteTasks = new List<Task>();
@@ -55,7 +63,6 @@ namespace CTFAK.MMFParser.MFA.Loaders
             writer.WriteInt32(Items.Count);
             foreach (var key in Items.Keys)
             {
-                
                 var newWriter = new ByteWriter(new MemoryStream());
                 var writeTask = new Task(() =>
                 {
@@ -75,10 +82,6 @@ namespace CTFAK.MMFParser.MFA.Loaders
             {
                 writer.WriteWriter(newWriter);
             }
-
-
-        
         }
-
     }
 }

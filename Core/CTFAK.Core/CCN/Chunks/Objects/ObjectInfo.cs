@@ -52,18 +52,14 @@ namespace CTFAK.CCN.Chunks.Objects
                 //Logger.Log("Object Chunk ID " + newChunk.Id);
                 switch (newChunk.Id)
                 {
-                    case 17477:
-                        name = chunkReader.ReadUniversal();
-                        break;
                     case 17476:
                         handle = chunkReader.ReadInt16();
                         ObjectType = chunkReader.ReadInt16();
                         Flags = chunkReader.ReadInt16();
                         chunkReader.Skip(2);
-                        InkEffect = chunkReader.ReadByte();
-                        if(InkEffect!=1)
+                        InkEffect = chunkReader.ReadInt32();
+                        if(InkEffect != 1)
                         {
-                            chunkReader.Skip(3);
                             var r = chunkReader.ReadByte();
                             var g = chunkReader.ReadByte();
                             var b = chunkReader.ReadByte();
@@ -71,17 +67,16 @@ namespace CTFAK.CCN.Chunks.Objects
                             blend = chunkReader.ReadByte();
                         }
                         else
-                        {
-                            var flag = chunkReader.ReadByte();
-                            chunkReader.Skip(2);
                             InkEffectValue = chunkReader.ReadByte();
-                        }
 
-                        if (Settings.Old)
+                        if (Settings.Old || Settings.gameType == Settings.GameType.MMF2)
                         {
                             rgbCoeff = Color.White;
                             blend = 255;
                         }
+                        break;
+                    case 17477:
+                        name = chunkReader.ReadUniversal();
                         break;
                     case 17478:        
                         if (ObjectType == 0) properties = new Quickbackdrop();

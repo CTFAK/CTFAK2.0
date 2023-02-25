@@ -26,7 +26,11 @@ namespace CTFAK.CCN.Chunks.Objects
                 }
                 //Logger.Log($"Reading AltVal {i}: {Items[i]}");
             }
-            Flags = reader.ReadInt32();
+            try
+            {
+                Flags = reader.ReadInt32();
+            }
+            catch {}
         }
 
         public override void Write(ByteWriter writer)

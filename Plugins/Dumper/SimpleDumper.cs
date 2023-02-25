@@ -32,7 +32,7 @@ namespace Dumper
 
             Logger.Log("Dumping packed data...");
             new PackedDumper().Execute(reader);
-            Logger.Log("packed data dumping done");
+            Logger.Log("Packed Data dumping done");
         }
     }
     public class ImageDumper : IFusionTool
@@ -68,6 +68,7 @@ namespace Dumper
             }
         }
     }
+
     public class SoundDumper : IFusionTool
     {
         public int[] Progress = new int[] { };

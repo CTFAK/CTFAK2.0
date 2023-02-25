@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using CTFAK.Memory;
 using CTFAK.Utils;
 
@@ -30,17 +31,12 @@ namespace CTFAK.CCN.Chunks.Objects
 
                     anim.Read(reader);
                     AnimationDict.Add(i, anim);
-
                 }
                 else
                 {
                     AnimationDict.Add(i, new Animation());
                 }
-
             }
-
-
-
         }
 
         public override void Write(ByteWriter writer)
