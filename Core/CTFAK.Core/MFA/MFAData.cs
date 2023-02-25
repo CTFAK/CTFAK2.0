@@ -141,9 +141,7 @@ namespace CTFAK.MFA
             Writer.WriteAscii(SoundBankId);
             Sounds.Write(Writer);
             Writer.WriteAscii(MusicBankId);
-            // music.Write();
-            Writer.WriteInt32(0); //someone is using musics lol?
-            //TODO: Do music
+            Music.Write(Writer);
             Writer.WriteAscii(ImageBankId);
             
             Icons.Write(Writer);

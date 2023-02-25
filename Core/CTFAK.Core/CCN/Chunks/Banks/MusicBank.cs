@@ -17,7 +17,9 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Write(ByteWriter Writer)
         {
-            throw new NotImplementedException();
+            Writer.WriteInt32(Items.Count);
+            foreach (var item in Items)
+                item.Write(Writer); // Music: Done!
         }
 
 
@@ -53,7 +55,19 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Write(ByteWriter Writer)
         {
-            throw new NotImplementedException();
+            Writer.WriteUInt32((uint)Handle); // Write handle.
+            Writer.WriteInt32(Checksum); // Write checksum (1)
+            Writer.WriteInt32(References);
+            Writer.WriteInt32(Data.Length + (Name.Length * 2));
+            Writer.WriteUInt32(_flags); // Flags? 
+            Writer.WriteInt32(0); // Reserved 4 bytes, 0x00000000 (?)
+            Writer.WriteInt32(Name.Length); // Write name length.
+            Writer.WriteUnicode(Name); // Write name.
+            Writer.WriteBytes(Data); // Write data.
+            
+            // -
+            // 
+            // -
         }
 
 
