@@ -77,12 +77,8 @@ namespace CTFAK.Memory
         {
             String str = "";
             if (length >= 0)
-            {
                 for (int i = 0; i < length; i++)
-                {
                     str += Convert.ToChar(ReadUInt16());
-                }
-            }
             else
             {
                 var b = ReadUInt16();
@@ -99,9 +95,7 @@ namespace CTFAK.Memory
         public string ReadUniversal(int len = -1)
         {
             if (Settings.Unicode)
-            {
                 return ReadWideString(len); 
-            }
             else
                 return ReadAscii(len);
         }

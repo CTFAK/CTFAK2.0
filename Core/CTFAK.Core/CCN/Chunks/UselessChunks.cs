@@ -77,7 +77,7 @@ namespace CTFAK.Core.CCN.Chunks
         public int BuildType;
         public int ScreenRatio;
         public int ScreenAngle;
-        public int Unknown;
+        public int MoreFlags;
 
         //Flags to Bools
         public bool KeepScreenRatio;
@@ -109,7 +109,7 @@ namespace CTFAK.Core.CCN.Chunks
 
             ScreenRatio = reader.ReadInt16();
             ScreenAngle = reader.ReadInt16();
-            Unknown = reader.ReadInt32();
+            MoreFlags = reader.ReadInt32();
 
             //Flags to Bools
             var KSR = 0;
@@ -144,6 +144,57 @@ namespace CTFAK.Core.CCN.Chunks
             DisplayBuildWarning = FlagDumb == 1 || FlagDumb > 1 && FlagDumb % 2 != 1;
 
             OptimizeImageRAM = FlagDumb >= 2;
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ImageShapes : ChunkLoader
+    {
+        public int Count;
+        public List<ImageShape> Shapes = new List<ImageShape>();
+
+        public override void Read(ByteReader reader)
+        {
+            Count = reader.ReadInt32();
+            for (int i = 0; i < Count; i++) 
+            {
+                var shape = new ImageShape();
+                shape.Read(reader);
+                Shapes.Add(shape);
+            }
+        }
+
+        public override void Write(ByteWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ImageShape : ChunkLoader
+    {
+        public int[] xArray;
+        public int[] yArray;
+        public short Image;
+        public int Count;
+
+        public override void Read(ByteReader reader)
+        {
+            Image = (short)reader.ReadInt32();
+            Count = reader.ReadInt32();
+            if (Count != 0)
+            {
+                xArray = new int[Count];
+                yArray = new int[Count];
+                for (int i = 0; i < Count; i++)
+                {
+                    xArray[i] = reader.ReadInt32();
+                    yArray[i] = reader.ReadInt32();
+                }
+            }
         }
 
         public override void Write(ByteWriter writer)

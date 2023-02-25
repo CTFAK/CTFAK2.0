@@ -2,6 +2,7 @@
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -94,20 +95,36 @@ namespace CTFAK.CCN.Chunks.Objects
         public Text Text;
         public Counter Counter;
         public short[] _qualifiers = new short[8];
+        public static int what = 0;
 
         public ObjectCommon(ObjectInfo parent) { this.Parent = parent; }
         public override void Read(ByteReader reader)
         {
             var currentPosition = reader.Tell();
-            if (Settings.Build >= 284&&Settings.gameType==Settings.GameType.NORMAL)
+            if (Settings.Build >= 284 && Settings.gameType==Settings.GameType.NORMAL)
             {
                 var size = reader.ReadInt32();
-                _animationsOffset = reader.ReadInt16();
-                _movementsOffset = reader.ReadInt16();
-                var version = reader.ReadUInt16();
+                //File.WriteAllBytes($"FNAFSLTest\\{Utils.Utils.ClearName(Parent.name + "-" + Parent.handle)}.chunk", reader.ReadBytes(size - 4));
+                //reader.Skip(-size + 4);
                 reader.Skip(2);
-                _extensionOffset = reader.ReadInt16();
-                _counterOffset = reader.ReadInt16();
+                var check = reader.ReadInt32();
+                reader.Seek(currentPosition + 4);
+                if (Settings.Build == 284 && check == 0)
+                {
+                    _counterOffset = reader.ReadInt16();
+                    var version = reader.ReadInt32();
+                    _movementsOffset = reader.ReadInt16();
+                    _extensionOffset = reader.ReadInt16();
+                    _animationsOffset = reader.ReadInt16();
+                }
+                else
+                {
+                    _animationsOffset = reader.ReadInt16();
+                    _movementsOffset = reader.ReadInt16();
+                    var version = reader.ReadInt32();
+                    _extensionOffset = reader.ReadInt16();
+                    _counterOffset = reader.ReadInt16();
+                }
                 Flags.flag = reader.ReadUInt16();
                 var penisFlags = reader.ReadInt16();
                 if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
@@ -132,7 +149,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL)
+            else if(Settings.gameType==Settings.GameType.NORMAL || Settings.gameType == Settings.GameType.MMF2)
             {
                 var size = reader.ReadInt32();
                 _movementsOffset = reader.ReadInt16();
@@ -164,7 +181,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-            else if (Settings.twofiveplus)
+            else if (Settings.TwoFivePlus)
             {
                 var size = reader.ReadInt32();
                 _animationsOffset = reader.ReadInt16();
@@ -200,11 +217,10 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-            else if (Settings.android)
+            else if (Settings.Android)
             {
                 if (Settings.Build >= 290)
                 {
-                    
                     var size = reader.ReadInt32();
                     //Console.WriteLine("MY ASS");
                     reader.Skip(-4);
@@ -265,10 +281,39 @@ namespace CTFAK.CCN.Chunks.Objects
                     _fadeinOffset = reader.ReadUInt32();
                     _fadeoutOffset = reader.ReadUInt32();
                 }
+                else if (Settings.Build == 288)
+                {
+                    var size = reader.ReadInt32();
+                    //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name + "-" + Parent.handle)}.chunk", reader.ReadBytes(size - 4));
+                    //reader.Skip(-size + 4);
+                    _movementsOffset = reader.ReadInt16();
+                    var version = reader.ReadInt16();
+                    reader.ReadInt16();
+                    _counterOffset = reader.ReadInt16();
+                    _systemObjectOffset = reader.ReadInt16();
+                    _extensionOffset = reader.ReadInt16();
+                    Flags.flag = reader.ReadUInt16();
+                    var penisFlags = reader.ReadInt16();
+                    if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        _qualifiers[i] = reader.ReadInt16();
+                    }
+                    _animationsOffset = reader.ReadInt16();
+                    _valuesOffset = reader.ReadInt16();
+                    _stringsOffset = reader.ReadInt16();
+                    NewFlags.flag = reader.ReadUInt32();
+                    Preferences.flag = reader.ReadUInt16();
+                    Identifier = reader.ReadAscii(4);
+                    BackColor = reader.ReadColor();
+                    _fadeinOffset = reader.ReadUInt32();
+                    _fadeoutOffset = reader.ReadUInt32();
+                }
                 else
                 {
                     var size = reader.ReadInt32();
-                    //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name)}.chunk",reader.ReadBytes(size-4));
+                    //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name + "-" + Parent.handle)}.chunk",reader.ReadBytes(size-4));
                     //reader.Skip(-size+4);
                     _movementsOffset = reader.ReadInt16();
                     _animationsOffset = reader.ReadInt16();

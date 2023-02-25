@@ -31,11 +31,11 @@ namespace CTFAK.MFA
 
         public BinaryFiles binaryFiles;
 
-        public FontBank Fonts;
-        public SoundBank Sounds;
-        public MusicBank Music;
-        public AGMIBank Icons;
-        public AGMIBank Images;
+        public FontBank Fonts = new();
+        public SoundBank Sounds = new();
+        public MusicBank Music = new();
+        public AGMIBank Icons = new();
+        public AGMIBank Images = new();
 
 
         public string Author;
@@ -275,29 +275,24 @@ namespace CTFAK.MFA
 
             Logger.Log("Reading Fonts");
             if (reader.ReadAscii(4) != FontBankId) throw new Exception("Invalid Font Bank");
-            Fonts = new FontBank();
             Fonts.Compressed = false;
             Fonts.Read(reader);
 
             Logger.Log("Reading Sounds");
             if (reader.ReadAscii(4) != SoundBankId) throw new Exception("Invalid Sound Bank");
-            Sounds = new SoundBank();
             Sounds.IsCompressed = false;
             Sounds.Read(reader);
 
             Logger.Log("Reading Music");
             if (reader.ReadAscii(4) != MusicBankId) throw new Exception("Invalid Music Bank");
-            Music = new MusicBank();
             Music.Read(reader);
 
             Logger.Log("Reading Icons");
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Icon Bank: ");
-            Icons = new AGMIBank();
             Icons.Read(reader);
 
             Logger.Log("Reading Images");
             if (reader.ReadAscii(4) != "AGMI") throw new Exception("Invalid Image Bank");
-            Images = new AGMIBank();
             Images.Read(reader);
             var nam = reader.AutoReadUnicode();
             Debug.Assert(Name == nam);

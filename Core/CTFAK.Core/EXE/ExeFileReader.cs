@@ -81,7 +81,6 @@ namespace CTFAK.FileReaders
 
 
             var firstShort = reader.PeekUInt16();
-
             if (firstShort == 0x7777) Settings.gameType = Settings.GameType.NORMAL;
             else/* if (firstShort == 0x222c)*/ Settings.gameType = Settings.GameType.MMF15;
             if(Settings.Old)Logger.Log($"1.5 game detected. First short: {firstShort.ToString("X")}");

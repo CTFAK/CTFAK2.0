@@ -21,7 +21,7 @@ namespace CTFAK.CCN.Chunks.Banks
         {
             if (CTFAKCore.parameters.Contains("-noimg")) return;
 
-            if (Settings.android)
+            if (Settings.Android)
             {
                 var maxHandle = reader.ReadInt16();
                 var count = reader.ReadInt16();
@@ -148,7 +148,7 @@ namespace CTFAK.CCN.Chunks.Banks
                     //realBitmap.Save($"Images\\{Handle}.png");
                     //Logger.Log("Trying again");
 
-                    if (Settings.twofiveplus)
+                    if (Settings.TwoFivePlus)
                         ImageBank.realGraphicMode = 4;
                 }
                 if (CTFAKCore.parameters.Contains("-srcexp"))
@@ -274,7 +274,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public static List<Task> imageReadingTasks = new List<Task>();
         public override void Read(ByteReader reader)
         {
-            if (Settings.twofiveplus&&!IsMFA)
+            if (Settings.TwoFivePlus &&!IsMFA)
             {
                 Handle = reader.ReadInt32();
                 Handle -= 1;
@@ -310,7 +310,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 Flags = newImg.Flags;
 
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.android)
+            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.Android)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
@@ -364,7 +364,7 @@ namespace CTFAK.CCN.Chunks.Banks
                 else imageReadingTask.Start();
                 //imageReader = IsMFA ? reader :Decompressor.DecompressAsReader(reader, out var a);
             }
-            else if (Settings.android)
+            else if (Settings.Android)
             {
                 Handle = reader.ReadInt16();
                 var unk = (uint)reader.ReadInt32();

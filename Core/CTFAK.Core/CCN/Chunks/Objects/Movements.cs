@@ -26,9 +26,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 Items.Add(mov);
                 reader.Seek(currentPos + 16);
                 currentPos = reader.Tell();
-
             }
-
         }
 
         public override void Write(ByteWriter Writer)
@@ -111,7 +109,8 @@ namespace CTFAK.CCN.Chunks.Objects
                 Player = reader.ReadUInt16();
                 Type = reader.ReadUInt16();
                 MovingAtStart = reader.ReadByte();
-                reader.Skip(3);
+                var Moving = reader.ReadByte();
+                reader.Skip(2);
                 DirectionAtStart = reader.ReadInt32();
                 switch (Type)
                 {

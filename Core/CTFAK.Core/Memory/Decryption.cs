@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CTFAK.Memory
 {
-    static class Decryption
+    public static class Decryption
     {
         public static byte[] _decryptionKey;
         //public static byte MagicChar = 99;

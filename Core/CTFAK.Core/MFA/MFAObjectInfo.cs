@@ -25,6 +25,7 @@ namespace CTFAK.MFA
         public int IconHandle;
         public MFAChunkList Chunks;
         public ChunkLoader Loader;
+        public MFAObjectFlags FlagWriter;
 
         public override void Write(ByteWriter Writer)
         {
@@ -40,11 +41,11 @@ namespace CTFAK.MFA
             Writer.WriteInt32(1);
             Writer.WriteInt32(IconHandle);
 
+            if (FlagWriter != null)
+                FlagWriter.Write(Writer);
+
             Chunks.Write(Writer);
             Loader.Write(Writer);
-
-
-
         }
 
 
@@ -76,7 +77,6 @@ namespace CTFAK.MFA
             if (ObjectType >= 32)//extension base
             {
                 Loader = new MFAExtensionObject();
-
             }
             else if (ObjectType == 0)
             {
@@ -86,17 +86,17 @@ namespace CTFAK.MFA
             {
                 Loader = new MFABackdrop();
             }
-            else if (ObjectType == 7)
-            {
-                Loader = new MFACounter();
-            }
             else if (ObjectType == 2)
             {
                 Loader = new MFAActive();
             }
-            else if(ObjectType==3)
+            else if(ObjectType == 3)
             {
                 Loader = new MFAText();
+            }
+            else if (ObjectType == 7)
+            {
+                Loader = new MFACounter();
             }
             else throw new NotImplementedException("Unsupported object: " + ObjectType);
             Loader.Read(reader);

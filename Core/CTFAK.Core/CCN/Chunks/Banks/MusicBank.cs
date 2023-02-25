@@ -12,8 +12,7 @@ namespace CTFAK.CCN.Chunks.Banks
     public class MusicBank : ChunkLoader
     {
         public int NumOfItems = 0;
-        public int References = 0;
-        public List<MusicFile> Items=new List<MusicFile>();
+        public List<MusicFile> Items = new List<MusicFile>();
 
         public override void Write(ByteWriter Writer)
         {
@@ -25,27 +24,24 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Read(ByteReader reader)
         {
-
-            Items = new List<MusicFile>();
-            // if (!Settings.DoMFA)return;
             NumOfItems = reader.ReadInt32();
+            if (Settings.Android) return;
             for (int i = 0; i < NumOfItems; i++)
             {
-                if (Settings.android) continue;
                 var item = new MusicFile();
                 item.Read(reader);
                 Items.Add(item);
             }
         }
 
-
-
-
+        public override void Write(ByteWriter Writer)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class MusicFile : ChunkLoader
     {
-
         public int Checksum;
         public int References;
         public string Name;
@@ -75,12 +71,8 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Read(ByteReader reader)
         {
-            var compressed = true;
             Handle = reader.ReadInt32();
-            if (compressed)
-            {
-                reader = Decompressor.DecompressAsReader(reader, out int decompressed);
-            }
+            reader = Decompressor.DecompressAsReader(reader, out int decompressed);
 
             Checksum = reader.ReadInt32();
             References = reader.ReadInt32();
@@ -90,7 +82,6 @@ namespace CTFAK.CCN.Chunks.Banks
             var nameLen = reader.ReadInt32();
             Name = reader.ReadWideString(nameLen);
             Data = reader.ReadBytes((int)(size - nameLen));
-
         }
 
         public void Save(string filename)
@@ -98,8 +89,9 @@ namespace CTFAK.CCN.Chunks.Banks
             File.WriteAllBytes(filename, Data);
         }
 
-
-
-
+        public override void Write(ByteWriter Writer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

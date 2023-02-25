@@ -59,14 +59,13 @@ namespace CTFAK.CCN
         public FrameHandles frameHandles;
         public Extensions extensions;
 
-        public PackData packData;
-        public Shaders shaders;
+        public PackData packData = new PackData();
+        public Shaders shaders = new Shaders();
         public GlobalStrings globalStrings;
         public GlobalValues globalValues;
         public ExtData extData;
         public BinaryFiles binaryFiles = new();
         public TrueTypeFonts ttfs;
-
 
         public void Read(ByteReader reader)
         {
@@ -75,19 +74,21 @@ namespace CTFAK.CCN
             //Checking for header
             if (magic == "PAMU") Settings.Unicode = true;//PAMU
             else if (magic == "PAME") Settings.Unicode = false;//PAME
-            else if (magic == "CRUF")
-            {
-                Settings.isSwitch = true;
-                Settings.Unicode = true;
-            }
+            else if (magic == "CRUF") Settings.gameType |= Settings.GameType.F3;
             else Logger.Log("Couldn't found any known headers: "+magic, true, ConsoleColor.Red);//Header not found
+            if (CTFAKCore.parameters.Contains("-f1.5"))
+                Settings.gameType |= Settings.GameType.MMF15;
+            if (CTFAKCore.parameters.Contains("-android"))
+                Settings.gameType |= Settings.GameType.ANDROID;
+            if (CTFAKCore.parameters.Contains("-f3"))
+                Settings.gameType |= Settings.GameType.F3;
             Logger.Log("Game Header: "+magic);
             runtimeVersion = (short)reader.ReadUInt16();
             runtimeSubversion = (short)reader.ReadUInt16();
             productVersion = reader.ReadInt32();
             productBuild = reader.ReadInt32();
             Settings.Build = productBuild;
-            Logger.Log("Fusion Build: "+productBuild);
+            Logger.Log("Fusion Build: " + productBuild);
             string gameExeName = Path.GetFileName(CTFAKCore.path);
             if (CTFAKCore.parameters.Contains("-trace_chunks"))
                 Directory.CreateDirectory($"CHUNK_TRACE\\{gameExeName}");
@@ -210,6 +211,10 @@ namespace CTFAK.CCN
                         ExtHeader = new ExtendedHeader();
                         ExtHeader.Read(chunkReader);
                         break;
+                    //case 8774: No clue, App Code Page
+                    //case 8775: No clue, Frame Offset
+                    //case 8776: No clue, Ad Mob ID
+                    //case 8779: No clue, Android Menu
                     case 8787: //2.5+ object headers:
                         while (true)
                         {
@@ -270,12 +275,14 @@ namespace CTFAK.CCN
                                 
                             var shaderHandle = chunkReader.ReadInt32();
                             var numberOfParams = chunkReader.ReadInt32();
-                            var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
+                            if (shaders == null) break;
+                            var shdr = shaders.ShaderList[shaderHandle];
                             obj.shaderData.name = shdr.Name;
                             obj.shaderData.ShaderHandle = shaderHandle;
                                 
                             for (int i = 0; i < numberOfParams; i++)
                             {
+                                if (shdr.Parameters.Count < i + 1) break;
                                 var param = shdr.Parameters[i];
                                 object paramValue;
                                 switch (param.Type)
@@ -338,6 +345,10 @@ namespace CTFAK.CCN
                         OnFrameLoaded?.Invoke(frames.Count,header.NumberOfFrames);
                         frames.Add(frame);
                         break;
+                    case 17664:
+                        var ImageShapes = new ImageShapes();
+                        ImageShapes.Read(chunkReader);
+                        break;
                     case 26214:
                         Images = new ImageBank();
                         Images.Read(chunkReader);
@@ -349,9 +360,16 @@ namespace CTFAK.CCN
                         break;
                     case 26216:
                         Sounds = new SoundBank();
-                        Sounds.Read(chunkReader);
                         if (Settings.gameType == Settings.GameType.ANDROID && !CTFAKCore.parameters.Contains("-nosounds"))
+                        {
                             Sounds = ApkFileReader.androidSoundBank;
+                            var AndroidSounds = new AndroidSoundBank();
+                            AndroidSounds.Read(chunkReader);
+                            for (int i = 0; i < Sounds.Items.Count; i++)
+                                Sounds.Items[i].Name = AndroidSounds.Items[Sounds.Items[i].Handle].Name;
+                        }
+                        else
+                            Sounds.Read(chunkReader);
                         break;
                     case 26217: // old 21217 (invalid)
                         Music = new MusicBank();

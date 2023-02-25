@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ionic.Zlib;
+using System.Drawing;
 
 namespace CTFAK.EXE
 {
@@ -18,7 +19,7 @@ namespace CTFAK.EXE
         public uint FormatVersion;
         public void Read(ByteReader reader)
         {
-            Logger.Log("Reading PackData",false);
+            Logger.Log("Reading PackData", false);
             long start = reader.Tell();
             _header = reader.ReadBytes(8);
 
@@ -30,14 +31,15 @@ namespace CTFAK.EXE
             var uheader = reader.ReadAscii(4);
             if (uheader == "PAMU")
             {
-                Logger.Log("Found PAMU header",false);
+                Logger.Log("Found PAMU header", false);
                 Settings.gameType = Settings.GameType.NORMAL;
                 Settings.Unicode = true;
             }
             else if (uheader == "PAME")
             {
-                Logger.Log("Found PAME header",false);
-                Settings.gameType = Settings.GameType.MMF2;
+                Logger.Log("Found PAME header", false);
+                if (Settings.gameType != Settings.GameType.MMF15)
+                    Settings.gameType = Settings.GameType.MMF2;
                 Settings.Unicode = false;
             }
             reader.Seek(start + 16);
@@ -49,8 +51,7 @@ namespace CTFAK.EXE
             check = reader.ReadInt32();
             Debug.Assert(check == 0);
 
-            uint count = reader.ReadUInt32();
-
+            uint count = reader.ReadUInt32();;
 
             long offset = reader.Tell();
             for (int i = 0; i < count; i++)
@@ -65,7 +66,6 @@ namespace CTFAK.EXE
 
             var newHeader = reader.ReadAscii(4);
             bool hasBingo = newHeader != "PAME" && newHeader != "PAMU";
-
             reader.Seek(offset);
             for (int i = 0; i < count; i++)
             {
@@ -73,10 +73,8 @@ namespace CTFAK.EXE
                 item.HasBingo = hasBingo;
                 item.Read(reader);
                 Items.Add(item);
-
             }
-
-            }
+        }
     }
     public class PackFile
     {
@@ -84,26 +82,23 @@ namespace CTFAK.EXE
         int _bingo = 0;
         public byte[] Data;
         public bool HasBingo;
+        public int size;
         public void Read(ByteReader exeReader)
         {
-            Logger.Log("Found new packfile",false);
-            UInt16 len = exeReader.ReadUInt16();
-            PackFilename = exeReader.ReadWideString(len);
+            ushort len = exeReader.ReadUInt16();
+            PackFilename = exeReader.ReadUniversal(len);
             _bingo = exeReader.ReadInt32();
-            Data = exeReader.ReadBytes(exeReader.ReadInt32());
-            Logger.Log($"New packfile data: Name - {PackFilename}; Data size - {Data.Length}",false);
+            size = exeReader.ReadInt32();
+            Data = exeReader.ReadBytes(size);
+            Logger.Log($"New packfile: {PackFilename}", false);
             try
             {
                 //File.WriteAllBytes($"ExtDump\\{PackFilename}", ZlibStream.UncompressBuffer(Data));
-
             }
             catch
             {
                 //File.WriteAllBytes($"ExtDump\\{PackFilename}", Data);
-
             }
-
-            //Dump();
         }
     }
 }
