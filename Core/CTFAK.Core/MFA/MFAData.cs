@@ -141,7 +141,7 @@ namespace CTFAK.MFA
             Writer.WriteAscii(SoundBankId);
             Sounds.Write(Writer);
             Writer.WriteAscii(MusicBankId);
-            if (Music != null) Music.Write(Writer); // Don't ask me why. I don't know, not all Fusion games have Music chunk.
+            Music.Write(Writer); 
             Writer.WriteAscii(ImageBankId);
             
             Icons.Write(Writer);
