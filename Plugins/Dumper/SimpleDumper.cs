@@ -73,10 +73,42 @@ namespace Dumper
         public int[] Progress = new int[] { };
         int[] IFusionTool.Progress => Progress;
         public string Name => "Sound Dumper";
+        public static string[] MODSignatures = { "2CHN","M.K.","6CHN","8CHN","10CH","12CH","14CH","16CH",
+                                                 "18CH","20CH","22CH","24CH","26CH","28CH","30CH","32CH",
+                                                 "M!K!", "FLT4", "FLT4", "OCTA" };
         public static string getExtension(byte[] data)
         {
-            if (data[0] == 0xff || data[0] == 0x49) return ".mp3";
+            if (data.Length < 0x4) return ".bin"; // < 0x4 bytes? Not an audio format!
 
+            // Common formats
+            if (data[0] == 'R' && data[1] == 'I' && data[2] == 'F' && data[3] == 'F') // WAVE PCM
+                return ".wav"; // Only one of supported formats has the RIFF chunk. No need to check the "WAVE" flag.
+            if (data[0] == 'O' && data[1] == 'g' && data[2] == 'g' && data[3] == 'S') // OGG VORBIS
+                return ".ogg";
+            if (data[0] == 'F' && data[1] == 'O' && data[2] == 'R' && data[3] == 'M') // AIFF 
+                return ".aiff";
+            if (data[0] == 'I' && data[1] == 'D' && data[2] == '3') // MP3
+                return ".mp3";
+
+            if (data.Length < 0x2C) return ".bin"; // Probably not an audio file...
+
+            // Module formats (.MOD, .XM, .S3M etc)
+            if (data[0] == 'I' && data[1] == 'M' && data[2] == 'P' && data[3] == 'M') // Impulse tracker module files (.it)
+                return ".it";
+            var str = System.Text.Encoding.Default.GetString(data, 0, 17);
+            if (str == "Extended Module: ") // EXTENDED MODULE (FastTracker II)
+                return ".xm";
+            str = System.Text.Encoding.Default.GetString(data, 0x438, 4);
+            foreach (var s in MODSignatures) // AMIGA MOD FILES (ProTracker/NoiseTracker/FastTracker II/etc...)
+            {
+                if (s == str) return ".mod";
+            }
+
+            if (data[0x2C] == 'S' && data[0x2D] == 'C' && data[0x2E] == 'R' && data[0x2F] == 'M') // ScreamTracker III module file. (.s3m)
+                return ".s3m";
+
+            // Because of Clickteam stole the MOD replayer from open-source OpenMPT library, there's more file formats that can be supported by modflt.sft.
+            // 
             return ".wav";
         }
 

@@ -14,6 +14,14 @@ namespace CTFAK.CCN.Chunks.Banks
         public int NumOfItems = 0;
         public List<MusicFile> Items = new List<MusicFile>();
 
+        public override void Write(ByteWriter Writer)
+        {
+            Writer.WriteInt32(Items.Count);
+            foreach (var item in Items)
+                item.Write(Writer); // Music: Done!
+        }
+
+
         public override void Read(ByteReader reader)
         {
             NumOfItems = reader.ReadInt32();
@@ -26,10 +34,6 @@ namespace CTFAK.CCN.Chunks.Banks
             }
         }
 
-        public override void Write(ByteWriter Writer)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class MusicFile : ChunkLoader
@@ -40,6 +44,26 @@ namespace CTFAK.CCN.Chunks.Banks
         private uint _flags;
         public byte[] Data;
         public int Handle;
+
+        public override void Write(ByteWriter Writer)
+        {
+            Writer.WriteUInt32((uint)Handle); // Write handle.
+            Writer.WriteInt32(Checksum); // Write checksum (1)
+            Writer.WriteInt32(References);
+            Writer.WriteInt32(Data.Length + (Name.Length * 2));
+            Writer.WriteUInt32(_flags); // Flags? 
+            Writer.WriteInt32(0); // Reserved 4 bytes, 0x00000000 (?)
+            Writer.WriteInt32(Name.Length); // Write name length.
+            Writer.WriteUnicode(Name); // Write name.
+            Writer.WriteBytes(Data); // Write data.
+            
+            // -
+            // 
+            // -
+        }
+
+
+
 
         public override void Read(ByteReader reader)
         {
@@ -61,9 +85,5 @@ namespace CTFAK.CCN.Chunks.Banks
             File.WriteAllBytes(filename, Data);
         }
 
-        public override void Write(ByteWriter Writer)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
