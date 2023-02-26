@@ -371,7 +371,8 @@ namespace CTFAK.CCN
                         else
                             Sounds.Read(chunkReader);
                         break;
-                    case 26217: // old 21217 (invalid)
+                    case 26217: 
+                    case 21217:
                         Music = new MusicBank();
                         Music.Read(chunkReader);
                         break;
