@@ -10,7 +10,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
     public class MFALives : ObjectLoader
     {
         public uint Player;
-        public List<int> Images;
+        public List<int> Images = new();
         public int Flags;
         public int DisplayType;
         public int Font;

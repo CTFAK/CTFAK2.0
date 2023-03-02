@@ -232,8 +232,6 @@ namespace Dumper
 
                                 objectsdone++;
                                 Progress = new int[2] { objectsdone, (int)maxdone };
-
-                                throw exc;
                             }
                         }
                     });
