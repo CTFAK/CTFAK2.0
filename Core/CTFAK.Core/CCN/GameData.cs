@@ -360,7 +360,9 @@ namespace CTFAK.CCN
                         break;
                     case 26216:
                         Sounds = new SoundBank();
-                        if (Settings.gameType == Settings.GameType.ANDROID && !CTFAKCore.parameters.Contains("-nosounds"))
+
+                        if (CTFAKCore.parameters.Contains("-nosounds")) break;
+                        if (Settings.gameType == Settings.GameType.ANDROID)
                         {
                             Sounds = ApkFileReader.androidSoundBank;
                             var AndroidSounds = new AndroidSoundBank();
