@@ -202,7 +202,8 @@ namespace CTFAK.CCN.Chunks.Frame
                         int current = 0;
                         while (true)
                         {
-                            if (chunkReader.Tell() == end) break;
+                            if (chunkReader.Tell() == end ||
+                                layers.Items.Count <= current) break;
                             var layer = layers.Items[current];
                             layer.InkEffect = chunkReader.ReadInt32();
                             if (layer.InkEffect != 1)

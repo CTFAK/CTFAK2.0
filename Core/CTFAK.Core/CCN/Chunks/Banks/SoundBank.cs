@@ -75,7 +75,6 @@ namespace CTFAK.CCN.Chunks.Banks
         public override void Read(ByteReader reader)
         {
             base.Read(reader);
-
             var start = reader.Tell();
 
             Handle = reader.ReadUInt32();
@@ -86,15 +85,17 @@ namespace CTFAK.CCN.Chunks.Banks
             Flags = reader.ReadUInt32();
             var res = reader.ReadInt32();
             var nameLenght = reader.ReadInt32();
-            ByteReader soundData;
-            if (IsCompressed)
+            ByteReader soundData = new(new byte[0]);
+            if (IsCompressed && Flags != 33)
             {
                 Size = reader.ReadInt32();
                 soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
             }
             else
                 soundData = new ByteReader(reader.ReadBytes(decompressedSize));
+
             Name = soundData.ReadWideString(nameLenght).Trim((char)0);
+            if (Flags == 33) soundData.Seek(0);
             Data = soundData.ReadBytes((int)soundData.Size());
             //Logger.Log(Name + " || " + Handle);
         }
