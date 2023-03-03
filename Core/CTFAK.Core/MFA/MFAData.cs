@@ -122,6 +122,11 @@ namespace CTFAK.MFA
 
         public void Write(ByteWriter Writer)
         {
+            if (Fonts == null) Fonts = new();
+            if (Sounds == null) Sounds = new();
+            if (Music == null) Music = new();
+            if (Icons == null) Icons = new();
+            if (Images == null) Images = new();
 
             Writer.WriteAscii("MFU2");
             

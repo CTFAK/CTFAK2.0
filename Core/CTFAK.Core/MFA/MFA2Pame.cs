@@ -73,14 +73,17 @@ namespace CTFAK.Core.MFA
             game.header = MFAHeader;
 
             Logger.Log("Converting Fonts");
-            game.Fonts = mfa.Fonts;
+            if (mfa.Fonts != null)
+                game.Fonts = mfa.Fonts;
             Logger.Log("Converting Sounds");
-            game.Sounds = mfa.Sounds;
+            if (mfa.Sounds != null)
+                game.Sounds = mfa.Sounds;
             Logger.Log("Converting Music");
-            game.Music = mfa.Music;
+            if (mfa.Music != null)
+                game.Music = mfa.Music;
             Logger.Log("Converting Images");
-            game.Images = new ImageBank();
-            game.Images.Items = mfa.Images.Items;
+            if (mfa.Images != null)
+                game.Images.Items = mfa.Images.Items;
 
             Logger.Log("Converting Frames");
             var MFAFrames = new List<Frame>();

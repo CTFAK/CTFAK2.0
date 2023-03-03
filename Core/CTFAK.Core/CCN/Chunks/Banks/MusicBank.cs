@@ -47,19 +47,15 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Write(ByteWriter Writer)
         {
-            Writer.WriteUInt32((uint)Handle); // Write handle.
-            Writer.WriteInt32(Checksum); // Write checksum (1)
+            Writer.WriteUInt32((uint)Handle);
+            Writer.WriteInt32(Checksum);
             Writer.WriteInt32(References);
             Writer.WriteInt32(Data.Length + (Name.Length * 2));
-            Writer.WriteUInt32(_flags); // Flags? 
-            Writer.WriteInt32(0); // Reserved 4 bytes, 0x00000000 (?)
-            Writer.WriteInt32(Name.Length); // Write name length.
-            Writer.WriteUnicode(Name); // Write name.
-            Writer.WriteBytes(Data); // Write data.
-            
-            // -
-            // 
-            // -
+            Writer.WriteUInt32(_flags);
+            Writer.WriteInt32(0);
+            Writer.WriteInt32(Name.Length);
+            Writer.WriteUnicode(Name);
+            Writer.WriteBytes(Data);
         }
 
 

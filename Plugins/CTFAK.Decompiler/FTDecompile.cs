@@ -75,7 +75,8 @@ namespace CTFAK.Tools
                 }
             }
 
-            if (game.Music != null) mfa.Music = game.Music; 
+            if (game.Music != null)
+                mfa.Music = game.Music; 
             mfa.Images.Items = imgs;
             mfa.GraphicMode = 4;
 
