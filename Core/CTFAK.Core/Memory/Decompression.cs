@@ -2,20 +2,31 @@
 #define USE_IONIC
 #endif
 using System.IO;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using CTFAK.Utils;
 using Joveler.Compression.ZLib;
+using K4os.Compression.LZ4.Internal;
 
 namespace CTFAK.Memory;
 
 public static class Decompressor
 {
+    public static ByteWriter Compress(byte[] buffer)
+    {
+        var writer = new ByteWriter(new MemoryStream());
+        var compressed = CompressBlock(buffer);
+        writer.WriteInt32(buffer.Length);
+        writer.WriteInt32(compressed.Length);
+        writer.WriteBytes(compressed);
+        return writer;
+    }
     public static byte[] Decompress(ByteReader exeReader, out int decompressed)
     {
         var decompSize = exeReader.ReadInt32();
         var compSize = exeReader.ReadInt32();
         decompressed = decompSize;
-        return DecompressBlock(exeReader, compSize, decompSize);
+        return DecompressBlock(exeReader, compSize);
     }
 
     public static ByteReader DecompressAsReader(ByteReader exeReader, out int decompressed)
@@ -23,7 +34,7 @@ public static class Decompressor
         return new ByteReader(Decompress(exeReader, out decompressed));
     }
 
-    public static byte[] DecompressBlock(byte[] data, int size, int decompSize)
+    public static byte[] DecompressBlock(byte[] data)
     {
 #if USE_IONIC
             return ZlibStream.UncompressBuffer(data);
@@ -41,41 +52,6 @@ public static class Decompressor
 #endif
     }
 
-    public static byte[] DecompressBlock(byte[] data, int size)
-    {
-#if USE_IONIC
-            return ZlibStream.UncompressBuffer(data);
-#else
-        var decompOpts = new ZLibDecompressOptions();
-
-        using (var fsComp = new MemoryStream(data))
-        using (var fsDecomp = new MemoryStream())
-        using (var zs = new ZLibStream(fsComp, decompOpts))
-        {
-            zs.CopyTo(fsDecomp);
-            var newData = fsDecomp.ToArray();
-            return newData;
-        }
-#endif
-    }
-
-    public static byte[] DecompressBlock(ByteReader reader, int size, int decompSize)
-    {
-#if USE_IONIC
-            return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
-#else
-        var decompOpts = new ZLibDecompressOptions();
-
-        using (var fsComp = new MemoryStream(reader.ReadBytes(size)))
-        using (var fsDecomp = new MemoryStream())
-        using (var zs = new ZLibStream(fsComp, decompOpts))
-        {
-            zs.CopyTo(fsDecomp);
-            var newData = fsDecomp.ToArray();
-            return newData;
-        }
-#endif
-    }
 
     public static byte[] DecompressBlock(ByteReader reader, int size)
     {
@@ -94,6 +70,7 @@ public static class Decompressor
         }
 #endif
     }
+    
 
     public static byte[] DecompressOld(ByteReader reader)
     {
@@ -120,7 +97,7 @@ public static class Decompressor
         return data;
     }
 
-    public static byte[] compress_block(byte[] data)
+    public static byte[] CompressBlock(byte[] data)
     {
         var compOpts = new ZLibCompressOptions();
         //compOpts.Level = ZLibCompLevel.Default;

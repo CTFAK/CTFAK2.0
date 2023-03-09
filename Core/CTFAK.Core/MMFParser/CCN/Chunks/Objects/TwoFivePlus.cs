@@ -149,7 +149,7 @@ public class TwoFivePlusShaders : ChunkLoader
 
             var shaderHandle = reader.ReadInt32();
             var numberOfParams = reader.ReadInt32();
-            var shdr = Core.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
+            var shdr = CTFAKCore.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
             obj.ShaderData.Name = shdr.Name;
             obj.ShaderData.ShaderHandle = shaderHandle;
 

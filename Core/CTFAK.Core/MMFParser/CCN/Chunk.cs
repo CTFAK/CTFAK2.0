@@ -16,31 +16,30 @@ public class Chunk
 {
     public ChunkFlags Flag;
     public short Id;
-    public int Size;
 
     public byte[] Read(ByteReader reader)
     {
         Id = reader.ReadInt16();
 
         Flag = (ChunkFlags)reader.ReadInt16();
-        Size = reader.ReadInt32();
-        var rawData = reader.ReadBytes(Size);
+        var fileSize = reader.ReadInt32();
+        var rawData = reader.ReadBytes(fileSize);
         var dataReader = new ByteReader(rawData);
         byte[] chunkData = null;
         switch (Flag)
         {
             case ChunkFlags.Encrypted:
-                chunkData = Decryption.TransformChunk(dataReader.ReadBytes(Size), Size);
+                chunkData = Decryption.TransformChunk(dataReader.ReadBytes(fileSize));
                 break;
             case ChunkFlags.CompressedAndEncrypted:
-                chunkData = Decryption.DecodeMode3(dataReader.ReadBytes(Size), Size, Id, out _ /* We don't care about decompressed size */);
+                chunkData = Decryption.DecodeMode3(dataReader.ReadBytes(fileSize), Id, out _ /* We don't care about decompressed size */);
                 break;
             case ChunkFlags.Compressed:
                 if (Settings.Old)
                 {
                     var start = dataReader.Tell();
                     chunkData = Decompressor.DecompressOld(dataReader);
-                    dataReader.Seek(start + Size);
+                    dataReader.Seek(start + fileSize);
                 }
                 else
                 {
@@ -49,7 +48,7 @@ public class Chunk
 
                 break;
             case ChunkFlags.NotCompressed:
-                chunkData = dataReader.ReadBytes(Size);
+                chunkData = dataReader.ReadBytes(fileSize);
                 break;
             default:
                 throw new InvalidDataException("Unsupported chunk flag");
@@ -62,7 +61,28 @@ public class Chunk
 
     public void Write(ByteWriter fileWriter, ByteWriter dataWriter)
     {
-        //TODO: Implement the CCN writer
+        
+        fileWriter.WriteInt16(Id);
+        fileWriter.WriteInt16((short)Flag);
+        ByteWriter newWriter = null;
+        switch (Flag)
+        {
+            case ChunkFlags.NotCompressed:
+                newWriter = dataWriter;
+                break;
+            case ChunkFlags.Encrypted:
+                newWriter = new ByteWriter(new MemoryStream(Decryption.TransformChunk(dataWriter.ToArray())));
+                break;
+            case ChunkFlags.Compressed:
+                newWriter = Decompressor.Compress(dataWriter.ToArray());
+                break;
+            case ChunkFlags.CompressedAndEncrypted:
+                // TODO Implement
+                break;
+
+        }
+        fileWriter.WriteWriter(newWriter);
+
     }
 }
 

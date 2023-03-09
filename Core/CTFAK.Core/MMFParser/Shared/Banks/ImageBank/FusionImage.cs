@@ -5,70 +5,27 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using CTFAK.Attributes;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 using CTFAK.Utils;
 using K4os.Compression.LZ4;
 
-namespace CTFAK.MMFParser.Shared.Banks;
+namespace CTFAK.Shared.Banks.ImageBank;
 
-[ChunkLoader(26214, "ImageBank")]
-public class ImageBank : ChunkLoader
+public class FusionImage : ChunkLoader
 {
-    public static int realGraphicMode = 4;
-    public Dictionary<int, Image> Items = new();
-    public static event SaveHandler OnImageLoaded;
-
-    public override void Read(ByteReader reader)
-    {
-        if (Core.Parameters.Contains("-noimg")) return;
-
-        var count = 0;
-        if (Settings.Android)
-        {
-            var maxHandle = reader.ReadInt16();
-            count = reader.ReadInt16();
-        }
-        else
-        {
-            count = reader.ReadInt32();
-        }
-
-        for (var i = 0; i < count; i++)
-        {
-            var newImg = new Image();
-            newImg.Read(reader);
-            OnImageLoaded?.Invoke(i, count);
-            Items.Add(newImg.Handle, newImg);
-        }
-
-        if (Settings.Android)
-            foreach (var img in Items)
-            {
-                var image = img.Value;
-                image.FromBitmap(ImageHelper.DumpImage(image.Handle, image.imageData, image.Width, image.Height,
-                    image.GraphicMode));
-            }
-
-
-        foreach (var task in Image.imageReadingTasks) task.Wait();
-        Image.imageReadingTasks.Clear();
-    }
-
-    public override void Write(ByteWriter writer)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class Image : ChunkLoader
-{
-    public static List<Task> imageReadingTasks = new();
-
-    public static List<Task> imageWritingTasks = new();
+    public int Handle;
+    
+    public int Width;
+    public int Height;
+    
     public short ActionX;
     public short ActionY;
+    public short HotspotX;
+    public short HotspotY;
+    
+    public byte[] imageData;
+    
     public int Checksum;
 
     public BitDict Flags = new(new[]
@@ -84,11 +41,10 @@ public class Image : ChunkLoader
 
     public byte GraphicMode;
 
-    public int Handle;
-    public int Height;
-    public short HotspotX;
-    public short HotspotY;
-    public byte[] imageData;
+    
+    
+    
+    
 
 
     public bool IsMFA;
@@ -99,7 +55,7 @@ public class Image : ChunkLoader
     public Bitmap realBitmap;
     public int references;
     public int Transparent;
-    public int Width;
+    
 
 #pragma warning disable CA1416
     public unsafe Bitmap bitmap
@@ -144,7 +100,7 @@ public class Image : ChunkLoader
     {
         Width = bmp.Width;
         Height = bmp.Height;
-        if (!Core.Parameters.Contains("-noalpha"))
+        if (!CTFAKCore.Parameters.Contains("-noalpha"))
             Flags["Alpha"] = true;
         GraphicMode = 4;
 
@@ -216,8 +172,7 @@ public class Image : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
-        //tysm LAK
-        //Yuni asked my to add this back
+        
         var start = reader.Tell();
         var dataSize = 0;
         if (Settings.Android)
@@ -272,7 +227,7 @@ public class Image : ChunkLoader
             }
             else
             {
-                onepointfiveDecompressedSize = reader.ReadInt32();
+                var decompressedSize = reader.ReadInt32();
                 var compSize = reader.ReadInt32();
                 newImageData = reader.ReadBytes(compSize);
             }
@@ -293,7 +248,7 @@ public class Image : ChunkLoader
                 else
                 {
                     decompressedReader =
-                        new ByteReader(Decompressor.DecompressBlock(newImageData, newImageData.Length));
+                        new ByteReader(Decompressor.DecompressBlock(newImageData));
                 }
 
                 newImageData = null;
@@ -348,8 +303,7 @@ public class Image : ChunkLoader
                 {
                     var decompSize = decompressedReader.ReadInt32();
                     imageData = Decompressor.DecompressBlock(decompressedReader,
-                        (int)(decompressedReader.Size() - decompressedReader.Tell()),
-                        decompSize);
+                        (int)(decompressedReader.Size() - decompressedReader.Tell()));
                 }
                 else
                 {
@@ -359,8 +313,8 @@ public class Image : ChunkLoader
 
             newImageData = null;
         });
-        imageReadingTasks.Add(mainRead);
-        if (!IsMFA && !Settings.Old)
+        ImageBank.imageReadingTasks.Add(mainRead);
+        if (!IsMFA && !Settings.Old&&!Settings.TwoFivePlus)
             mainRead.Start();
         else mainRead.RunSynchronously();
     }
@@ -374,7 +328,7 @@ public class Image : ChunkLoader
         byte[] compressedImg = null;
         Flags["LZX"] = true;
 
-        compressedImg = Decompressor.compress_block(imageData);
+        compressedImg = Decompressor.CompressBlock(imageData);
 
         writer.WriteInt32(Handle);
         writer.WriteInt32(Checksum); //4

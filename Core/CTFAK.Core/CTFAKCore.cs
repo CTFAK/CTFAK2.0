@@ -13,7 +13,7 @@ public delegate void SimpleMessage<T>(T data);
 
 public delegate T2 SimpleMessage<T, T2>(T data);
 
-public class Core
+public class CTFAKCore
 {
     public static IFileReader CurrentReader;
     public static string Parameters="";

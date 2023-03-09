@@ -73,7 +73,7 @@ public class FontItem : ChunkLoader
         compressedWriter.WriteInt32(References);
         compressedWriter.WriteInt32(0);
         Value.Write(compressedWriter);
-        if (Compressed) Writer.WriteBytes(Decompressor.compress_block(compressedWriter.GetBuffer()));
+        if (Compressed) Writer.WriteBytes(Decompressor.CompressBlock(compressedWriter.GetBuffer()));
         else Writer.WriteWriter(compressedWriter);
     }
 }

@@ -60,7 +60,7 @@ public class ExeFileReader : IFileReader
     }
     public virtual bool LoadGame(string gamePath)
     {
-        Core.CurrentReader = this;
+        CTFAKCore.CurrentReader = this;
         Settings.gameType = Settings.GameType.NORMAL;
         loadIcons(gamePath);
         
@@ -151,7 +151,7 @@ public class UnpackedExeFileReader : ExeFileReader
     public override string Name => "EXE (Unpacked)";
     public override bool LoadGame(string gamePath)
     {
-        Core.CurrentReader = this;
+        CTFAKCore.CurrentReader = this;
         Settings.gameType = Settings.GameType.NORMAL;
         loadIcons(gamePath);
         

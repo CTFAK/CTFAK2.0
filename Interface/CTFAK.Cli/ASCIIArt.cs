@@ -45,7 +45,7 @@ public static class ASCIIArt
     static ASCIIArt()
     {
         var description = Assembly
-            .GetAssembly(typeof(Core))
+            .GetAssembly(typeof(CTFAKCore))
             .GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false)
             .OfType<AssemblyFileVersionAttribute>()
             .FirstOrDefault()?

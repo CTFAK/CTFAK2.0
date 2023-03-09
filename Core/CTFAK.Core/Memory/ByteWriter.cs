@@ -147,4 +147,9 @@ public class ByteWriter : BinaryWriter
         Array.Resize(ref data, (int)toWrite.Tell());
         WriteBytes(data);
     }
+
+    public byte[] ToArray()
+    {
+        return (BaseStream as MemoryStream).ToArray();
+    }
 }

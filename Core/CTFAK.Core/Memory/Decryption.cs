@@ -59,7 +59,7 @@ internal static class Decryption
     }
 
 
-    public static byte[] DecodeMode3(byte[] chunkData, int chunkSize, int chunkId, out int decompressed)
+    public static byte[] DecodeMode3(byte[] chunkData, int chunkId, out int decompressed)
     {
         var reader = new ByteReader(chunkData);
         var decompressedSize = reader.ReadUInt32();
@@ -68,40 +68,40 @@ internal static class Decryption
 
         if ((chunkId & 1) == 1 && Settings.Build > 284)
             rawData[0] ^= (byte)((byte)(chunkId & 0xFF) ^ (byte)(chunkId >> 0x8));
-        rawData = TransformChunk(rawData, chunkSize);
+        rawData = TransformChunk(rawData);
 
         using (var data = new ByteReader(rawData))
         {
             var compressedSize = data.ReadUInt32();
             decompressed = (int)decompressedSize;
-            return Decompressor.DecompressBlock(data, (int)compressedSize, (int)decompressedSize);
+            return Decompressor.DecompressBlock(data, (int)compressedSize);
         }
     }
 
-    public static byte[] EncryptAndCompressMode3(byte[] chunkData, int chunkId)
+    public static byte[] EncodeMode3(byte[] chunkData, int chunkId)
     {
-        var compressedData = Decompressor.compress_block(chunkData);
+        var compressedData = Decompressor.CompressBlock(chunkData);
         var decryptedWriter = new ByteWriter(new MemoryStream());
         decryptedWriter.WriteInt32(compressedData.Length);
 
         decryptedWriter.WriteBytes(compressedData);
-        var encryptedData = TransformChunk(decryptedWriter.GetBuffer(), (int)decryptedWriter.Size());
+        var encryptedData = TransformChunk(decryptedWriter.GetBuffer());
         var anotherWriter = new ByteWriter(new MemoryStream());
         anotherWriter.WriteInt32(encryptedData.Length - 12);
         anotherWriter.WriteBytes(encryptedData);
         return anotherWriter.GetBuffer();
     }
 
-    public static unsafe byte[] TransformChunk(byte[] chunkData, int chunkSize)
+    public static unsafe byte[] TransformChunk(byte[] chunkData)
     {
         fixed (byte* inputChunkPtr = chunkData)
         {
             fixed (byte* keyPtr = _decryptionKey)
             {
                 var outputChunkPtr =
-                    NativeLib.decode_chunk(new IntPtr(inputChunkPtr), chunkSize, MagicChar, new IntPtr(keyPtr));
-                var decodedChunk = new byte[chunkSize];
-                Marshal.Copy(outputChunkPtr, decodedChunk, 0, chunkSize);
+                    NativeLib.decode_chunk(new IntPtr(inputChunkPtr), chunkData.Length, MagicChar, new IntPtr(keyPtr));
+                var decodedChunk = new byte[chunkData.Length];
+                Marshal.Copy(outputChunkPtr, decodedChunk, 0, chunkData.Length);
                 Marshal.FreeHGlobal(outputChunkPtr);
                 return decodedChunk;
             }

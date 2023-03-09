@@ -90,7 +90,7 @@ public class SoundItem : SoundBase
         if (IsCompressed)
         {
             Size = reader.ReadInt32();
-            soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
+            soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size));
         }
         else
         {

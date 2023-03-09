@@ -1,4 +1,4 @@
-﻿namespace CTFAK.MMFParser.CCN;
+﻿namespace CTFAK.MMFParser;
 
 public class Constants
 {

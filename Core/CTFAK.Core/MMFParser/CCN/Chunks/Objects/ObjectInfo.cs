@@ -95,7 +95,7 @@ public class ObjectInfo : ChunkLoader
                     ShaderData.HasShader = true;
                     var shaderHandle = chunkReader.ReadInt32();
                     var numberOfParams = chunkReader.ReadInt32();
-                    var shdr = Core.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
+                    var shdr = CTFAKCore.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
                     ShaderData.Name = shdr.Name;
                     ShaderData.ShaderHandle = shaderHandle;
 

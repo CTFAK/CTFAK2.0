@@ -401,7 +401,7 @@ public class Condition : ChunkLoader
         NumberOfParameters = reader.ReadByte();
         DefType = reader.ReadByte();
         Identifier = reader.ReadUInt16();
-        if (Core.Parameters.Contains("-noevnt")) return;
+        if (CTFAKCore.Parameters.Contains("-noevnt")) return;
         for (var i = 0; i < NumberOfParameters; i++)
         {
             var item = new Parameter();

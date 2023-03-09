@@ -27,7 +27,7 @@ public class Program
     public static IFileReader currentReader;
     public static void Main(string[] args)
     {
-        Core.Init();
+        CTFAKCore.Init();
         var mainWindow = new Window();
         var inspectorWindow = new Window();
         var fileOptionsWindow = new Window();
@@ -60,6 +60,7 @@ public class Program
         pluginsWindow.Controls.Add(new Separator(1));
         var isAndroid = new Checkbox("Use Android");
         var traceChunks = new Checkbox("Trace Chunks");
+        var noicons = new Checkbox("No Icons");
 
         foreach (var tool in toolList)
         {
@@ -112,11 +113,14 @@ public class Program
                 
                 fileOptionsWindow.Controls.Add(new Button($"Read as {reader.Name}",(() =>
                 {
-                    Core.CurrentReader = reader;
+                    CTFAKCore.CurrentReader = reader;
                     if (isAndroid.Activated)
-                        Core.Parameters += "-android ";
+                        CTFAKCore.Parameters += "-android ";
                     if (traceChunks.Activated)
-                        Core.Parameters += "-trace_chunks ";
+                        CTFAKCore.Parameters += "-trace_chunks ";
+                    if (noicons.Activated)
+                        CTFAKCore.Parameters += "-noicons ";
+                    
                     currentReader = reader;
                     readerStopwatch.Start();
                     currentReader.LoadGame(path);
@@ -153,6 +157,7 @@ public class Program
             }
             fileOptionsWindow.Controls.Add(isAndroid);
             fileOptionsWindow.Controls.Add(traceChunks);
+            fileOptionsWindow.Controls.Add(noicons);
             Window.Show(fileOptionsWindow);
                     
         })));

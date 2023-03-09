@@ -23,7 +23,7 @@ public class Program
 
     public static void Main(string[] args)
     {
-        Core.Init();
+        CTFAKCore.Init();
 
         SELECT_MODE:
         Console.ForegroundColor = ConsoleColor.DarkMagenta;

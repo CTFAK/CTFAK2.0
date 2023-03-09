@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CTFAK.EXE;
 using CTFAK.FileReaders;
 using CTFAK.Memory;
@@ -6,6 +7,7 @@ using CTFAK.MMFParser.CCN.Chunks;
 using CTFAK.MMFParser.CCN.Chunks.Frame;
 using CTFAK.MMFParser.CCN.Chunks.Objects;
 using CTFAK.MMFParser.Shared.Banks;
+using CTFAK.Shared.Banks.ImageBank;
 using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.CCN;
@@ -64,9 +66,10 @@ public class GameData
             Settings.gameType |= Settings.GameType.F3;
         else Logger.LogWarning("Couldn't found any known headers: " + magic); //Header not found
 
-        if (Core.Parameters.Contains("-android"))
+        if (CTFAKCore.Parameters.Contains("-android"))
             Settings.gameType |= Settings.GameType.ANDROID;
-        if (Core.Parameters.Contains("-f3"))
+        
+        if (CTFAKCore.Parameters.Contains("-f3"))
         {
             Logger.Log("Forcing F3 mode");
             Settings.gameType |= Settings.GameType.F3;
@@ -185,7 +188,7 @@ public class GameData
                     break;
                 case 26216: //SoundBank
                     Sounds = loader as SoundBank;
-                    if (Settings.gameType == Settings.GameType.ANDROID && !Core.Parameters.Contains("-nosounds"))
+                    if (Settings.gameType == Settings.GameType.ANDROID && !CTFAKCore.Parameters.Contains("-nosounds"))
                         Sounds = ApkFileReader.AndroidSoundBank;
                     break;
                 case 8790: //TwoFivePlusProperties
@@ -196,7 +199,8 @@ public class GameData
         chunkList.Read(reader);
         // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
         // it's safe to just read again
-        chunkList.Read(reader);
+        //chunkList.Read(reader);
+        Console.ReadLine();
     }
 
     public void Write(ByteWriter writer)

@@ -70,7 +70,7 @@ internal class SortedImageDumper : IFusionTool
                         }
                         catch
                         {
-                            if (Core.Parameters.Contains("-log"))
+                            if (CTFAKCore.Parameters.Contains("-log"))
                                 Logger.Log($"Failed to save \"{oi.Name}\", retrying {5 - retry} more time(s).");
                             retry++;
                         }
@@ -90,7 +90,7 @@ internal class SortedImageDumper : IFusionTool
                         }
                         catch
                         {
-                            if (Core.Parameters.Contains("-log"))
+                            if (CTFAKCore.Parameters.Contains("-log"))
                                 Logger.Log($"Failed to save \"{oi.Name}\", retrying {5 - retry} more time(s).");
                             retry++;
                         }
@@ -141,7 +141,7 @@ internal class SortedImageDumper : IFusionTool
                                         }
                                         catch
                                         {
-                                            if (Core.Parameters.Contains("-log"))
+                                            if (CTFAKCore.Parameters.Contains("-log"))
                                                 Logger.Log(
                                                     $"Failed to save \"{oi.Name}\", retrying {5 - retry} more time(s).");
                                             retry++;
@@ -174,7 +174,7 @@ internal class SortedImageDumper : IFusionTool
                                 }
                                 catch
                                 {
-                                    if (Core.Parameters.Contains("-log"))
+                                    if (CTFAKCore.Parameters.Contains("-log"))
                                         Logger.Log($"Failed to save \"{oi.Name}\", retrying {5 - retry} more time(s).");
                                     retry++;
                                 }

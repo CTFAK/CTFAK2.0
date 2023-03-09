@@ -212,6 +212,7 @@ DllExport void ReadSixteen(char* result, int width, int height, int alpha, int s
         }
     }
 }
+    
 
 DllExport void TranslateToRGBMasked(char* result, int width, int height, int alpha, int size, char* imageData,
                                     int transparentColor, int colorMode)

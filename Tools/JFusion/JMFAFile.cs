@@ -5,8 +5,8 @@ using System.IO;
 using CTFAK.MFA;
 using CTFAK.MMFParser.MFA;
 using CTFAK.MMFParser.Shared.Banks;
+using CTFAK.Shared.Banks.ImageBank;
 using Newtonsoft.Json;
-using Image = CTFAK.MMFParser.Shared.Banks.Image;
 
 namespace JFusion;
 
@@ -136,7 +136,7 @@ public class JMFAFile
         mfa.Stamp = new byte[0];
         foreach (var jmfaIcon in icons)
         {
-            var newIcon = new Image();
+            var newIcon = new FusionImage();
             newIcon.FromBitmap(jmfaIcon.bmp);
             newIcon.Handle = jmfaIcon.Handle;
             newIcon.ActionX = jmfaIcon.ActionX;
@@ -149,7 +149,7 @@ public class JMFAFile
 
         foreach (var jMfAImage in images)
         {
-            var image = new Image();
+            var image = new FusionImage();
             image.FromBitmap(jMfAImage.bmp);
             image.Handle = jMfAImage.Handle;
             image.ActionX = jMfAImage.ActionX;

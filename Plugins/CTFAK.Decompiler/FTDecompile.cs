@@ -8,6 +8,7 @@ using CTFAK.FileReaders;
 using CTFAK.Memory;
 using CTFAK.MFA;
 using CTFAK.MFA.MFAObjectLoaders;
+using CTFAK.MMFParser;
 using CTFAK.MMFParser.CCN;
 using CTFAK.MMFParser.CCN.Chunks;
 using CTFAK.MMFParser.CCN.Chunks.Frame;
@@ -16,8 +17,8 @@ using CTFAK.MMFParser.MFA;
 using CTFAK.MMFParser.Shared.Banks;
 using CTFAK.MMFParser.Shared.Events;
 using CTFAK.Properties;
+using CTFAK.Shared.Banks.ImageBank;
 using CTFAK.Utils;
-using Image = CTFAK.MMFParser.Shared.Banks.Image;
 
 namespace CTFAK.Tools;
 
@@ -37,7 +38,7 @@ public class FTDecompile : IFusionTool
         var originalGameType = Settings.gameType;
         Settings.gameType = Settings.GameType.NORMAL;
         var imgs = game.Images.Items;
-        if (Core.Parameters.Contains("-noimg"))
+        if (CTFAKCore.Parameters.Contains("-noimg"))
             game.Images.Items.Clear();
 
         //mfa.Read(new ByteReader("template.mfa", FileMode.Open));
@@ -56,7 +57,7 @@ public class FTDecompile : IFusionTool
         if (game.Sounds != null && game.Sounds.Items != null)
         {
             foreach (var item in game.Sounds.Items) mfa.Sounds.Items.Add(item);
-            if (Core.Parameters.Contains("-nosound"))
+            if (CTFAKCore.Parameters.Contains("-nosound"))
                 mfa.Sounds.Items.Clear();
         }
 
@@ -122,7 +123,7 @@ public class FTDecompile : IFusionTool
                 Logger.LogWarning($"Requested icon is not found: {item.Key} - {item.Value.Width}");
             }
 */
-        var imageNull = new Image();
+        var imageNull = new FusionImage();
         imageNull.Handle = 14;
         imageNull.Transparent = 0x3aebca;
         imageNull.FromBitmap(Resources.EmptyIcon);
@@ -254,7 +255,7 @@ public class FTDecompile : IFusionTool
 
         Logger.Log($"Prepating to translate {game.Frames.Count} frames");
         for (var a = 0; a < game.Frames.Count; a++)
-            if (Core.Parameters.Contains(a.ToString()))
+            if (CTFAKCore.Parameters.Contains(a.ToString()))
             {
             }
             else
@@ -301,7 +302,7 @@ public class FTDecompile : IFusionTool
                 if (frame.ShaderData.HasShader)
                 {
                     var shdrData = newFrame.Chunks.GetOrCreateChunk<ShaderSettings>();
-                    if (frame.InkEffect != 1 && !Core.Parameters.Contains("-notrans"))
+                    if (frame.InkEffect != 1 && !CTFAKCore.Parameters.Contains("-notrans"))
                     {
                         shdrData.Blend = frame.Blend;
                         shdrData.RGBCoeff = Color.FromArgb(frame.RgbCoeff.A, frame.RgbCoeff.R, frame.RgbCoeff.G,
@@ -414,7 +415,7 @@ public class FTDecompile : IFusionTool
                     newFrame.Events.Version = 1028;
                     //if(false)
                     if (frame.Events != null)
-                        if (!Core.Parameters.Contains("-noevnt"))
+                        if (!CTFAKCore.Parameters.Contains("-noevnt"))
                         {
                             foreach (var item in newFrame.Items)
                             {
@@ -512,7 +513,7 @@ public class FTDecompile : IFusionTool
                             }
                         }
                 }
-                if (Core.Parameters.Contains(a.ToString()) == false)
+                if (CTFAKCore.Parameters.Contains(a.ToString()) == false)
                 {
                     Logger.Log($"Translating frame {frame.Name} - {a}");
                     mfa.Frames.Add(newFrame);
@@ -771,7 +772,7 @@ public class FTDecompile : IFusionTool
             }
 
             //Logger.Log($"Generating Icon: {item.name} - {item.ObjectType}");
-            if (Core.Parameters.Contains("-noicons"))
+            if (CTFAKCore.Parameters.Contains("-noicons"))
             {
                 noicon = false;
                 iconBmp = Resources.Active;
@@ -780,7 +781,7 @@ public class FTDecompile : IFusionTool
             if (!noicon)
             {
                 lastAllocatedHandleImg++;
-                var newIconImage = new Image();
+                var newIconImage = new FusionImage();
                 newIconImage.Handle = lastAllocatedHandleImg;
                 newIconImage.FromBitmap(iconBmp);
                 mfa.Icons.Items.Add(lastAllocatedHandleImg, newIconImage);
@@ -852,7 +853,7 @@ public class FTDecompile : IFusionTool
                 backdrop.Color1 = backdropLoader.Shape.Color1;
                 backdrop.Color2 = backdropLoader.Shape.Color2;
                 backdrop.Flags = backdropLoader.Shape.GradFlags;
-                if (!Core.Parameters.Contains("-noimg"))
+                if (!CTFAKCore.Parameters.Contains("-noimg"))
                     backdrop.Image = backdropLoader.Shape.Image;
                 newItem.Loader = backdrop;
             }
@@ -862,7 +863,7 @@ public class FTDecompile : IFusionTool
                 var backdrop = new MFABackdrop();
                 backdrop.ObstacleType = (uint)backdropLoader.ObstacleType;
                 backdrop.CollisionType = (uint)backdropLoader.CollisionType;
-                if (!Core.Parameters.Contains("-noimg"))
+                if (!CTFAKCore.Parameters.Contains("-noimg"))
                     backdrop.Handle = backdropLoader.Image;
                 newItem.Loader = backdrop;
             }
@@ -965,7 +966,7 @@ public class FTDecompile : IFusionTool
                         var animHeader = itemLoader.Animations;
                         for (var j = 0; j < animHeader.AnimationDict.Count; j++)
                         {
-                            if (Core.Parameters.Contains("-noimg"))
+                            if (CTFAKCore.Parameters.Contains("-noimg"))
                                 break;
                             var origAnim = animHeader.AnimationDict.ToArray()[j];
                             var newAnimation = new MFAAnimation();
@@ -988,7 +989,7 @@ public class FTDecompile : IFusionTool
                                         newDirection.Index = n;
                                         newDirection.Repeat = direction.Repeat;
                                         newDirection.BackTo = direction.BackTo;
-                                        if (Core.Parameters.Contains("-noimg"))
+                                        if (CTFAKCore.Parameters.Contains("-noimg"))
                                             newDirection.Frames = new List<int>();
                                         else
                                             newDirection.Frames = direction.Frames;
@@ -1108,7 +1109,7 @@ public class FTDecompile : IFusionTool
                         lives.Qualifiers = newObject.Qualifiers;
                     }
                     lives.Player = counter?.Player ?? 0;
-                    if (!Core.Parameters.Contains("-noimg"))
+                    if (!CTFAKCore.Parameters.Contains("-noimg"))
                         lives.Images = counter?.Frames ?? new List<int> { 0 };
                     lives.DisplayType = counter?.DisplayType ?? 0;
                     lives.Flags = counter?.Flags ?? 0;
@@ -1161,7 +1162,7 @@ public class FTDecompile : IFusionTool
                         newCount.CountType = counter.Inverse ? 1 : 0;
                         newCount.Width = (int)counter.Width;
                         newCount.Height = (int)counter.Height;
-                        if (Core.Parameters.Contains("-noimg"))
+                        if (CTFAKCore.Parameters.Contains("-noimg"))
                             newCount.Images = new List<int>();
                         else
                             newCount.Images = counter.Frames;

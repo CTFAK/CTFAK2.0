@@ -16,7 +16,7 @@ public class Program
 
     public static void Main(string[] args)
     {
-        Core.Init();
+        CTFAKCore.Init();
         /*Settings.Build = 294;
         Settings.gameType = Settings.GameType.NORMAL;
         var newMFA = new MFAData();
@@ -55,7 +55,7 @@ public class Program
 
         Console.Write("Parameters: ");
         var loadParams = Console.ReadLine();
-        Core.Parameters = loadParams;
+        CTFAKCore.Parameters = loadParams;
 
         var types = Assembly.GetAssembly(typeof(ExeFileReader)).GetTypes();
 

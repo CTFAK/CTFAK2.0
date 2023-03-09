@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CTFAK.FileReaders;
+using CTFAK.MMFParser;
 using CTFAK.MMFParser.CCN;
 using CTFAK.MMFParser.CCN.Chunks.Frame;
 using CTFAK.MMFParser.CCN.Chunks.Objects;

@@ -155,7 +155,7 @@ public class Frame : ChunkLoader
 
                     break;
                 case 13117:
-                    if (Core.Parameters.Contains("-noevnt"))
+                    if (CTFAKCore.Parameters.Contains("-noevnt"))
                     {
                         Events = new Events();
                     }
@@ -217,7 +217,7 @@ public class Frame : ChunkLoader
                         {
                             var shaderHandle = chunkReader.ReadInt32();
                             var numberOfParams = chunkReader.ReadInt32();
-                            var shdr = Core.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
+                            var shdr = CTFAKCore.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
                             layer.ShaderData.Name = shdr.Name;
                             layer.ShaderData.ShaderHandle = shaderHandle;
 
@@ -285,7 +285,7 @@ public class Frame : ChunkLoader
                     {
                         var shaderHandle = chunkReader.ReadInt32();
                         var numberOfParams = chunkReader.ReadInt32();
-                        var shdr = Core.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
+                        var shdr = CTFAKCore.CurrentReader.GetGameData().Shaders.ShaderList[shaderHandle];
                         ShaderData.Name = shdr.Name;
                         ShaderData.ShaderHandle = shaderHandle;
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
-using Image = CTFAK.MMFParser.Shared.Banks.Image;
+using CTFAK.Shared.Banks.ImageBank;
 
 namespace CTFAK.MMFParser.MFA;
 
@@ -15,7 +15,7 @@ public class AGMIBank : ChunkLoader
 
     private readonly List<Task> _imageWriteTasks = new();
     private int _graphicMode;
-    public Dictionary<int, Image> Items = new();
+    public Dictionary<int, FusionImage> Items = new();
     public List<Color> Palette = new Color[256].ToList();
     private int _paletteEntries;
     private int _paletteVersion;
@@ -33,7 +33,7 @@ public class AGMIBank : ChunkLoader
 
         for (var i = 0; i < count; i++)
         {
-            var item = new Image();
+            var item = new FusionImage();
             item.IsMFA = true;
             item.Read(reader);
             OnImageLoaded?.Invoke(i, count);
@@ -41,8 +41,8 @@ public class AGMIBank : ChunkLoader
                 Items.Add(item.Handle, item);
         }
 
-        foreach (var task in Image.imageReadingTasks) task.Wait();
-        Image.imageReadingTasks.Clear();
+        foreach (var task in ImageBank.imageReadingTasks) task.Wait();
+        ImageBank.imageReadingTasks.Clear();
     }
 
     public override void Write(ByteWriter writer)
