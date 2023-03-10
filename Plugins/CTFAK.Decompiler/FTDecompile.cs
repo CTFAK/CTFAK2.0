@@ -132,71 +132,77 @@ namespace CTFAK.Tools
             var graphicSettings = mfa.GraphicFlags;
             var flags = game.header.Flags;
             var newFlags = game.header.NewFlags;
+            var otherFlags = game.header.OtherFlags;
+            var extendedFlags = game.ExtHeader.Flags;
+            var extendedNewFlags = game.ExtHeader.NewFlags;
+            var compressionFlags = game.ExtHeader.CompressionFlags;
+            var viewFlags = game.ExtHeader.ViewFlags;
             mfa.Extensions.Clear();
 
-            displaySettings["MaximizedOnBoot"] = flags["Maximize"];
-            displaySettings["ResizeDisplay"] = flags["MDI"];
-            displaySettings["FullscreenAtStart"] = flags["FullscreenAtStart"];
-            displaySettings["AllowFullscreen"] = flags["FullscreenSwitch"];
-            // displaySettings["Heading"] = !flags["NoHeading"];
-            // displaySettings["HeadingWhenMaximized"] = true;
+            displaySettings["MaximizedOnBoot"] = flags["MaximizedOnBoot"];
+            displaySettings["ResizeDisplay"] = !flags["ResizeDisplay"];
+            displaySettings["FullscreenAtStart"] = flags["MaximizedOnBoot"];
+            displaySettings["AllowFullscreen"] = !flags["SwitchToFromFullscreen"];
+            displaySettings["Heading"] = flags["NoHeading"];
+            displaySettings["HeadingWhenMaximized"] = flags["HeadingMaximized"];
             displaySettings["MenuBar"] = flags["MenuBar"];
-            displaySettings["MenuOnBoot"] = !flags["MenuHidden"];
+            displaySettings["MenuOnBoot"] = flags["DontDisplayMenu"];
             displaySettings["NoMinimize"] = newFlags["NoMinimizeBox"];
             displaySettings["NoMaximize"] = newFlags["NoMaximizeBox"];
             displaySettings["NoThickFrame"] = newFlags["NoThickFrame"];
-            // displaySettings["NoCenter"] = flags["MDI"];
+            displaySettings["NoCenter"] = newFlags["DoNotCenterFrame"];
             displaySettings["DisableClose"] = newFlags["DisableClose"];
             displaySettings["HiddenAtStart"] = newFlags["HiddenAtStart"];
             displaySettings["MDI"] = newFlags["MDI"];
 
+            graphicSettings["MultiSamples"] = flags["MultiSamples"];
+            graphicSettings["MachineIndependentSpeed"] = !flags["MachineIndependentSpeed"];
+            graphicSettings["SamplesOverFrames"] = newFlags["SamplesOverFrames"];
+            graphicSettings["PlaySamplesWhenUnfocused"] = newFlags["PlaySamplesWhenUnfocused"];
+            graphicSettings["IgnoreInputOnScreensaver"] = newFlags["IgnoreInputOnScreensaver"];
+            graphicSettings["VisualThemes"] = !newFlags["VisualThemes"];
+            graphicSettings["VSync"] = newFlags["VSync"];
+            graphicSettings["RunWhenMinimized"] = newFlags["RunWhenMinimized"];
+            graphicSettings["RunWhenResizing"] = newFlags["RunWhileResizing"];
+            graphicSettings["EnableDebuggerShortcuts"] = otherFlags["DebuggerShortcuts"];
+            graphicSettings["NoDebugger"] = !otherFlags["ShowDebugger"];
+            graphicSettings["NoSubappSharing"] = !otherFlags["DontShareSubData"];
+            graphicSettings["Direct3D9"] = otherFlags["Direct3D9or11"] && !otherFlags["Direct3D8or11"];
+            graphicSettings["Direct3D8"] = otherFlags["Direct3D8or11"] && !otherFlags["Direct3D9or11"];
+            graphicSettings["DisableIME"] = extendedFlags["DisableIME"];
+            graphicSettings["ReduceCPUUsage"] = extendedFlags["ReduceCPUUsage"];
+            graphicSettings["Direct3D11"] = otherFlags["Direct3D8or11"] && otherFlags["Direct3D9or11"];
+            graphicSettings["PremultipliedAlpha"] = extendedFlags["PremultipliedAlpha"];
+
+            //mfa.DisplayFlags = displaySettings;
+            //mfa.GraphicFlags = graphicSettings;
+            
             try
             {
-                int i = 0;
                 foreach (var globalValue in game.globalValues.Items)
                 {
-                    string ch = "A";
-                    if (i >= 676)
-                        ch = ((char)('A' + (((i - (i % 676)) / 676) - 1))).ToString() + ((char)('A' + ((i % 676 - (i % 676 % 26)) / 26))).ToString() + ((char)('A' + (i % 676 % 26))).ToString();
-                    else if (i >= 26)
-                        ch = ((char)('A' + (((i - (i % 26)) / 26)-1))).ToString() + ((char)('A' + (i % 26))).ToString();
-                    else
-                        ch = ((char)('A' + i)).ToString();
-
                     mfa.GlobalValues.Items.Add(new ValueItem()
                     {
                         Value = globalValue,
-                        Name = $"Global Value " + ch
                     });
-                    i++;
                 }
 
-                i = 0;
                 foreach (var globalString in game.globalStrings.Items)
                 {
-                    string ch = "A";
-                    if (i >= 676)
-                        ch = ((char)('A' + (((i - (i % 676)) / 676) - 1))).ToString() + ((char)('A' + ((i % 676 - (i % 676 % 26)) / 26))).ToString() + ((char)('A' + (i % 676 % 26))).ToString();
-                    else if (i >= 26)
-                        ch = ((char)('A' + (((i - (i % 26)) / 26)-1))).ToString() + ((char)('A' + (i % 26))).ToString();
-                    else
-                        ch = ((char)('A' + i)).ToString();
-
                     mfa.GlobalStrings.Items.Add(new ValueItem()
                     {
                         Value = globalString,
-                        Name = $"Global String " + ch
                     });
-                    i++;
                 }
             }
             catch { }
-            //mfa.GraphicFlags = graphicSettings;
-            //mfa.DisplayFlags = displaySettings;
             mfa.WindowX = game.header.WindowWidth;
             mfa.WindowY = game.header.WindowHeight;
-            mfa.BorderColor = game.header.BorderColor;
-            mfa.HelpFile = "";
+            /*mfa.BorderColor = Color.FromArgb(game.header.BorderColor.A,
+                                       255 - game.header.BorderColor.R,
+                                       255 - game.header.BorderColor.G,
+                                       255 - game.header.BorderColor.B);
+            */mfa.HelpFile = "";
             mfa.InitialScore = game.header.InitialScore;
             mfa.InitialLifes = game.header.InitialLives;
             mfa.FrameRate = game.header.FrameRate;
@@ -892,21 +898,15 @@ namespace CTFAK.Tools
                     {
                         for (int j = 0; j < itemLoader.Values.Items.Count; j++)
                         {
-                            string ch = "A";
-                            if (j >= 26)
-                                ch = ((char)('A' + (((j - (j % 26)) / 26) - 1))).ToString() + ((char)('A' + (j % 26))).ToString();
-                            else
-                                ch = ((char)('A' + j)).ToString();
-
                             var newVal = new ValueItem();
-                            newVal.Name = $"Alterable Value {ch}";
+                            newVal.Name = $"";
                             newVal.Value = itemLoader.Values.Items[j];
                             newObject.Values.Items.Add(newVal);
                         }
                         for (int j = 0; j < 32; j++)
                         {
                             var newFlag = new ObjectFlag();
-                            newFlag.Name = $"Flag {j}";
+                            newFlag.Name = $"";
                             newFlag.Value = ByteFlag.GetFlag((uint)itemLoader.Values.Flags, j);
                             newItem.FlagWriter.Items.Add(newFlag);
                         }
@@ -921,14 +921,8 @@ namespace CTFAK.Tools
                     {
                         for (int j = 0; j < itemLoader.Strings.Items.Count; j++)
                         {
-                            string ch = "A";
-                            if (j >= 26)
-                                ch = ((char)('A' + (((j - (j % 26)) / 26) - 1))).ToString() + ((char)('A' + (j % 26))).ToString();
-                            else
-                                ch = ((char)('A' + j)).ToString();
-
                             var newStr = new ValueItem();
-                            newStr.Name = $"Alterable String {ch}";
+                            newStr.Name = $"";
                             newStr.Value = itemLoader.Strings.Items[j];
                             newObject.Strings.Items.Add(newStr);
                         }

@@ -19,19 +19,19 @@ namespace CTFAK.CCN.Chunks
         public int NumberOfFrames;
         public BitDict Flags = new BitDict(new string[]
         {
-            "BorderMax",
+            "HeadingMaximized",
             "NoHeading",
-            "Panic",
-            "SpeedIndependent",
-            "Stretch",
+            "FitInsideBars",
+            "MachineIndependentSpeed",
+            "ResizeDisplay",
             "MusicOn",
             "SoundOn",
-            "MenuHidden",
+            "DontDisplayMenu",
             "MenuBar",
-            "Maximize",
+            "MaximizedOnBoot",
             "MultiSamples",
-            "FullscreenAtStart",
-            "FullscreenSwitch",
+            "ChangeResolutionMode",
+            "SwitchToFromFullscreen",
             "Protected",
             "Copyright",
             "OneFile"
@@ -41,25 +41,44 @@ namespace CTFAK.CCN.Chunks
             "SamplesOverFrames",
             "RelocFiles",
             "RunFrame",
-            "SamplesWhenNotFocused",
+            "PlaySamplesWhenUnfocused",
             "NoMinimizeBox",
             "NoMaximizeBox",
             "NoThickFrame",
             "DoNotCenterFrame",
-            "ScreensaverAutostop",
+            "IgnoreInputOnScreensaver",
             "DisableClose",
             "HiddenAtStart",
-            "XPVisualThemes",
+            "VisualThemes",
             "VSync",
             "RunWhenMinimized",
             "MDI",
             "RunWhileResizing"
         });
 
+        public BitDict OtherFlags = new BitDict(new string[]
+        {
+            "DebuggerShortcuts",
+            "Unknown1",
+            "Unknown2",
+            "DontShareSubData",
+            "Unknown3",
+            "Unknown4",
+            "Unknown5",
+            "ShowDebugger",
+            "Unknown6",
+            "Unknown7",
+            "Unknown8",
+            "Unknown9",
+            "Unknown10",
+            "Unknown11",
+            "Direct3D9or11",
+            "Direct3D8or11"
+        });
+
         public Color BorderColor;
         public int FrameRate;
         public short GraphicsMode;
-        public short Otherflags;
         public Controls Controls;
         public int WindowsMenuIndex;
         public override void Read(ByteReader reader)
@@ -67,10 +86,9 @@ namespace CTFAK.CCN.Chunks
             var start = reader.Tell();
             if(!Settings.Old) Size = reader.ReadInt32();
             Flags.flag = (uint)reader.ReadInt16();
-
             NewFlags.flag = (uint)reader.ReadInt16();
             GraphicsMode = reader.ReadInt16();
-            Otherflags = reader.ReadInt16();
+            OtherFlags.flag = (uint)reader.ReadInt16();
             WindowWidth = reader.ReadInt16();
             WindowHeight = reader.ReadInt16();
             InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);

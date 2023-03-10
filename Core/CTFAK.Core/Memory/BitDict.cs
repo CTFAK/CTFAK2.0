@@ -15,7 +15,7 @@ namespace CTFAK.Memory
     }
     public class BitDict
     {
-        private String[] Keys;
+        public String[] Keys;
         public UInt32 flag { get; set; }
 
         public BitDict(String[] keys) => Keys = keys;

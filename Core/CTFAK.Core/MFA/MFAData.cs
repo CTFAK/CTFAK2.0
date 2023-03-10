@@ -68,25 +68,63 @@ namespace CTFAK.MFA
             "NoCenter",
             "DisableClose",
             "HiddenAtStart",
-            "MDI"
+            "MDI",
+            "Unknown1",
+            "Unknown2",
+            "Unknown3",
+            "Unknown4",
+            "Unknown5",
+            "Unknown6",
+            "Unknown7",
+            "Unknown8",
+            "Unknown9",
+            "Unknown10",
+            "Unknown11",
+            "Unknown12",
+            "Unknown13",
+            "Unknown14",
+            "Unknown15",
+            "Unknown16",
+            "Unknown17",
+            "Unknown18",
+            "Unknown19",
+            "Unknown20"
         });
 
         public BitDict GraphicFlags = new BitDict(new string[]
         {
             "MultiSamples",
-            "SpeedIndependent",
-            "SoundsOverFrames",
+            "MachineIndependentSpeed",
+            "SamplesOverFrames",
             "PlaySamplesWhenUnfocused",
             "IgnoreInputOnScreensaver",
             "DirectX",
             "VRAM",
-            "EnableVisualThemes",
+            "VisualThemes",
             "VSync",
             "RunWhenMinimized",
             "RunWhenResizing",
             "EnableDebuggerShortcuts",
             "NoDebugger",
-            "NoSubappSharing"
+            "NoSubappSharing",
+            "Direct3D9",
+            "Direct3D8",
+            "Unknown1",
+            "Unknown2",
+            "Unknown3",
+            "IncludePreloaderFlash",
+            "DontGenerateHTMLFlash",
+            "Unknown4",
+            "DisableIME",
+            "ReduceCPUUsage",
+            "Unknown5",
+            "UseHighPerformanceGPU",
+            "Profiling",
+            "DontProfileAtStart",
+            "Direct3D11",
+            "PremultipliedAlpha",
+            "DontOptimizeEvents",
+            "RecordSlowLoops",
         });
 
         public string HelpFile;
@@ -313,7 +351,12 @@ namespace CTFAK.MFA
             WindowY = reader.ReadInt32();
             BorderColor = reader.ReadColor();
             DisplayFlags.flag = reader.ReadUInt32();
+
+            foreach (var flag in DisplayFlags.Keys)
+                Logger.Log(flag + ": " + (DisplayFlags.GetFlag(flag) ? "true" : "false"));
+
             GraphicFlags.flag = reader.ReadUInt32();
+
             HelpFile = reader.AutoReadUnicode();
             unknown_string = reader.AutoReadUnicode();
 

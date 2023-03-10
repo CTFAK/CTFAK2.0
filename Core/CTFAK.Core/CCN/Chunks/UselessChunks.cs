@@ -67,83 +67,81 @@ namespace CTFAK.Core.CCN.Chunks
 
     public class ExtendedHeader : ChunkLoader
     {
-        // The flags can add up (cringe)
-        public byte FlagScreen; // 1 = Keep Screen Ratio, 4 = Anti Alias, 32 = Right to Left Reading, 128 = Right to Left Layout
-        public byte FlagOptimizeStr; // 0 = On, 64 = Off
-        public byte FlagCompression; // 4 = Default, 64 = Premultiplied Alpha, 128 = Optimize Play Sample
-        public byte FlagCompression2; // 1, Maximum Compression, 2 = Compress Sounds, 4 = Include External Files, 20 = Default
-        public byte FlagDumb; // 1 = Don't display build warning, // 2 = Optimize image size in RAM
+        public BitDict Flags = new BitDict(new string[]
+        {
+            "KeepScreenRatio",
+            "Unknown1",
+            "AntiAliasingWhenResizing",
+            "Unknown2",
+            "Unknown3",
+            "RightToLeftReading",
+            "Unknown4",
+            "RightToLeftLayout",
+            "Unknown5",
+            "Unknown6",
+            "Unknown7",
+            "Unknown8",
+            "Unknown9",
+            "Unknown10",
+            "Unknown11",
+            "Unknown12",
+            "Unknown13",
+            "Unknown14",
+            "Unknown15",
+            "Unknown16",
+            "Unknown17",
+            "Unknown18",
+            "DontOptimizeStrings",
+            "Unknown19",
+            "Unknown20",
+            "Unknown21",
+            "DontIgnoreDestroy",
+            "DisableIME",
+            "ReduceCPUUsage",
+            "Unknown22",
+            "PremultipliedAlpha",
+            "OptimizePlaySample"
+        });
+
+        public BitDict CompressionFlags = new BitDict(new string[]
+        {
+            "CompressionLevelMax",
+            "CompressSounds",
+            "IncludeExternalFiles",
+            "NoAutoImageFilters",
+            "NoAutoSoundFilters",
+            "Unknown3",
+            "Unknown4",
+            "Unknown5",
+            "DontDisplayBuildWarning",
+            "OptimizeImageSize",
+        });
+
+        public BitDict ViewFlags = new BitDict(new string[]
+        {
+            "Unknown1"
+        });
+
+        public BitDict NewFlags = new BitDict(new string[]
+        {
+            "Unknown1"
+        });
 
         public int BuildType;
         public int ScreenRatio;
         public int ScreenAngle;
-        public int MoreFlags;
-
-        //Flags to Bools
-        public bool KeepScreenRatio;
-        public bool AntiAlias;
-        public bool ReadRighttoLeft;
-        public bool LayoutRighttoLeft;
-        public bool OptimizeStrings;
-        public bool PremultipliedAlpha;
-        public bool OptimizePlaySample;
-        public bool MaximumCompression;
-        public bool CompressSound;
-        public bool IncludeExternalFiles;
-        public bool DisplayBuildWarning;
-        public bool OptimizeImageRAM;
 
         public override void Read(ByteReader reader)
         {
-            FlagScreen = reader.ReadByte();
-            reader.ReadByte(); // Unknown Flag
-            FlagOptimizeStr = reader.ReadByte();
-            FlagCompression = reader.ReadByte();
-
+            Flags.flag = (uint)reader.ReadInt32();
             BuildType = reader.ReadInt32();
-
-            FlagCompression2 = reader.ReadByte();
-            FlagDumb = reader.ReadByte();
-            reader.ReadByte(); // Unknown Flag
-            reader.ReadByte(); // Unknown Flag
-
+            CompressionFlags.flag = (uint)reader.ReadInt32();
             ScreenRatio = reader.ReadInt16();
             ScreenAngle = reader.ReadInt16();
-            MoreFlags = reader.ReadInt32();
-
-            //Flags to Bools
-            var KSR = 0;
-            if (FlagScreen == 1 || FlagScreen > 1 && FlagScreen % 4 != 1)
-                KSR = 1;
-            KeepScreenRatio = KSR == 1;
-
-            var AA = 0;
-            if (FlagScreen == 4 + KSR || FlagScreen > 32 && (FlagScreen - KSR) % 32 != 1)
-                AA = 4;
-            AntiAlias = AA == 4;
-
-            ReadRighttoLeft = FlagScreen == 32 + KSR + AA || FlagScreen >= 128 + 32 + KSR + AA;
-
-            ReadRighttoLeft = FlagScreen >= 128;
-
-            OptimizeStrings = FlagOptimizeStr != 64;
-
-            PremultipliedAlpha = FlagCompression - 4 == 64 || FlagCompression - 4 > 128;
-
-            OptimizePlaySample = FlagCompression - 4 >= 128;
-
-            var MC = 0;
-            if (FlagCompression2 - 20 == 1 || FlagCompression2 - 20 > 1 && FlagCompression2 - 20 % 2 != 1)
-                MC = 1;
-            MaximumCompression = MC == 1;
-
-            CompressSound = FlagCompression2 - 20 == 2 + MC || FlagCompression2 - 20 >= 4 + 2 + MC;
-
-            IncludeExternalFiles = FlagCompression2 - 20 >= 4;
-
-            DisplayBuildWarning = FlagDumb == 1 || FlagDumb > 1 && FlagDumb % 2 != 1;
-
-            OptimizeImageRAM = FlagDumb >= 2;
+            ViewFlags.flag = (uint)reader.ReadInt16();
+            NewFlags.flag = (uint)reader.ReadInt16();/*
+            foreach (var flag in CompressionFlags.Keys)
+                Logger.Log(flag + ": " + (CompressionFlags.GetFlag(flag) ? "true" : "false"));*/
         }
 
         public override void Write(ByteWriter writer)

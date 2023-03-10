@@ -6,6 +6,8 @@ namespace CTFAK.Utils
 {
     public static class Logger
     {
+        public delegate void EventLogger(string log, ConsoleColor color);
+        public static event EventLogger OnLogged;
         static StreamWriter _writer;
         static Logger()
         {
@@ -32,6 +34,7 @@ namespace CTFAK.Utils
                 Console.ForegroundColor = color;
                 Console.WriteLine(actualText);
                 Console.ForegroundColor = ConsoleColor.White;
+                OnLogged?.Invoke(actualText, color);
             }
 
 
