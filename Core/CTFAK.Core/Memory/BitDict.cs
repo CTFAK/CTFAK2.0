@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CTFAK.Utils;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,36 +17,30 @@ namespace CTFAK.Memory
     }
     public class BitDict
     {
-        public String[] Keys;
-        public UInt32 flag { get; set; }
+        public string[] Keys;
+        public uint flag { get; set; }
 
-        public BitDict(String[] keys) => Keys = keys;
-        public bool this[String key]
+        public BitDict(string[] keys) => Keys = keys;
+        public bool this[string key]
         {
             get => GetFlag(key);
             set => SetFlag(key, value);
         }
 
-        public bool GetFlag(String key)
+        public bool GetFlag(string key)
         {
-            Int32 pos = Array.IndexOf(Keys, key);
+            int pos = Array.IndexOf(Keys, key);
             if (pos >= 0)
-            {
-                return (flag & ((UInt32)Math.Pow(2, pos))) != 0;
-            }
+                return (flag & ((uint)Math.Pow(2, pos))) != 0;
             return false;
         }
 
-        public void SetFlag(String key, bool value)
+        public void SetFlag(string key, bool value)
         {
             if (value)
-            {
                 flag |= (uint)Math.Pow(2, Array.IndexOf(Keys, key));
-            }
             else
-            {
-                flag &= (uint)Math.Pow(~2, Array.IndexOf(Keys, key));
-            }
+                flag &= ~(uint)Math.Pow(2, Array.IndexOf(Keys, key));
         }
 
 
@@ -56,7 +52,7 @@ namespace CTFAK.Memory
 
         public override string ToString()
         {
-            Dictionary<String, bool> actualKeys = new Dictionary<string, bool>();
+            Dictionary<string, bool> actualKeys = new Dictionary<string, bool>();
             foreach (var key in Keys)
             {
                 actualKeys[key] = this[key];

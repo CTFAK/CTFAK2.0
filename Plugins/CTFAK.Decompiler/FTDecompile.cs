@@ -121,62 +121,52 @@ namespace CTFAK.Tools
             imageNull.transparent = 0x3aebca;
             imageNull.FromBitmap((Bitmap)Resources.EmptyIcon);
             mfa.Icons.Items.Add(14, imageNull);
-            // game.Images.Images.Clea r();
+            // game.Images.Images.Clear();
 
             mfa.Author = game.author;
             mfa.Copyright = game.copyright;
             mfa.Company = "";
             mfa.Version = "";
             mfa.binaryFiles = game.binaryFiles;
-            var displaySettings = mfa.DisplayFlags;
-            var graphicSettings = mfa.GraphicFlags;
-            var flags = game.header.Flags;
-            var newFlags = game.header.NewFlags;
-            var otherFlags = game.header.OtherFlags;
-            var extendedFlags = game.ExtHeader.Flags;
-            var extendedNewFlags = game.ExtHeader.NewFlags;
-            var compressionFlags = game.ExtHeader.CompressionFlags;
-            var viewFlags = game.ExtHeader.ViewFlags;
             mfa.Extensions.Clear();
 
-            displaySettings["MaximizedOnBoot"] = flags["MaximizedOnBoot"];
-            displaySettings["ResizeDisplay"] = !flags["ResizeDisplay"];
-            displaySettings["FullscreenAtStart"] = flags["MaximizedOnBoot"];
-            displaySettings["AllowFullscreen"] = !flags["SwitchToFromFullscreen"];
-            displaySettings["Heading"] = flags["NoHeading"];
-            displaySettings["HeadingWhenMaximized"] = flags["HeadingMaximized"];
-            displaySettings["MenuBar"] = flags["MenuBar"];
-            displaySettings["MenuOnBoot"] = flags["DontDisplayMenu"];
-            displaySettings["NoMinimize"] = newFlags["NoMinimizeBox"];
-            displaySettings["NoMaximize"] = newFlags["NoMaximizeBox"];
-            displaySettings["NoThickFrame"] = newFlags["NoThickFrame"];
-            displaySettings["NoCenter"] = newFlags["DoNotCenterFrame"];
-            displaySettings["DisableClose"] = newFlags["DisableClose"];
-            displaySettings["HiddenAtStart"] = newFlags["HiddenAtStart"];
-            displaySettings["MDI"] = newFlags["MDI"];
+            mfa.DisplayFlags.flag = 0;
+            mfa.DisplayFlags["MaximizedOnBoot"] = game.header.Flags["MaximizedOnBoot"];
+            mfa.DisplayFlags["ResizeDisplay"] = game.header.Flags["ResizeDisplay"];
+            mfa.DisplayFlags["FullscreenAtStart"] = game.header.Flags["MaximizedOnBoot"];
+            mfa.DisplayFlags["AllowFullscreen"] = game.header.Flags["SwitchToFromFullscreen"];
+            mfa.DisplayFlags["Heading"] = !game.header.Flags["NoHeading"];
+            mfa.DisplayFlags["HeadingWhenMaximized"] = game.header.Flags["HeadingMaximized"];
+            mfa.DisplayFlags["MenuBar"] = game.header.Flags["MenuBar"];
+            mfa.DisplayFlags["MenuOnBoot"] = !game.header.Flags["DontDisplayMenu"];
+            mfa.DisplayFlags["NoMinimize"] = game.header.NewFlags["NoMinimizeBox"];
+            mfa.DisplayFlags["NoMaximize"] = game.header.NewFlags["NoMaximizeBox"];
+            mfa.DisplayFlags["NoThickFrame"] = game.header.NewFlags["NoThickFrame"];
+            mfa.DisplayFlags["NoCenter"] = game.header.NewFlags["DoNotCenterFrame"];
+            mfa.DisplayFlags["DisableClose"] = game.header.NewFlags["DisableClose"];
+            mfa.DisplayFlags["HiddenAtStart"] = game.header.NewFlags["HiddenAtStart"];
+            mfa.DisplayFlags["MDI"] = game.header.NewFlags["MDI"];
 
-            graphicSettings["MultiSamples"] = flags["MultiSamples"];
-            graphicSettings["MachineIndependentSpeed"] = !flags["MachineIndependentSpeed"];
-            graphicSettings["SamplesOverFrames"] = newFlags["SamplesOverFrames"];
-            graphicSettings["PlaySamplesWhenUnfocused"] = newFlags["PlaySamplesWhenUnfocused"];
-            graphicSettings["IgnoreInputOnScreensaver"] = newFlags["IgnoreInputOnScreensaver"];
-            graphicSettings["VisualThemes"] = !newFlags["VisualThemes"];
-            graphicSettings["VSync"] = newFlags["VSync"];
-            graphicSettings["RunWhenMinimized"] = newFlags["RunWhenMinimized"];
-            graphicSettings["RunWhenResizing"] = newFlags["RunWhileResizing"];
-            graphicSettings["EnableDebuggerShortcuts"] = otherFlags["DebuggerShortcuts"];
-            graphicSettings["NoDebugger"] = !otherFlags["ShowDebugger"];
-            graphicSettings["NoSubappSharing"] = !otherFlags["DontShareSubData"];
-            graphicSettings["Direct3D9"] = otherFlags["Direct3D9or11"] && !otherFlags["Direct3D8or11"];
-            graphicSettings["Direct3D8"] = otherFlags["Direct3D8or11"] && !otherFlags["Direct3D9or11"];
-            graphicSettings["DisableIME"] = extendedFlags["DisableIME"];
-            graphicSettings["ReduceCPUUsage"] = extendedFlags["ReduceCPUUsage"];
-            graphicSettings["Direct3D11"] = otherFlags["Direct3D8or11"] && otherFlags["Direct3D9or11"];
-            graphicSettings["PremultipliedAlpha"] = extendedFlags["PremultipliedAlpha"];
+            mfa.GraphicFlags.flag = 0;
+            mfa.GraphicFlags["MultiSamples"] = game.header.Flags["MultiSamples"];
+            mfa.GraphicFlags["MachineIndependentSpeed"] = game.header.Flags["MachineIndependentSpeed"];
+            mfa.GraphicFlags["SamplesOverFrames"] = game.header.NewFlags["SamplesOverFrames"];
+            mfa.GraphicFlags["PlaySamplesWhenUnfocused"] = game.header.NewFlags["PlaySamplesWhenUnfocused"];
+            mfa.GraphicFlags["IgnoreInputOnScreensaver"] = game.header.NewFlags["IgnoreInputOnScreensaver"];
+            mfa.GraphicFlags["VisualThemes"] = game.header.NewFlags["VisualThemes"];
+            mfa.GraphicFlags["VSync"] = game.header.NewFlags["VSync"];
+            mfa.GraphicFlags["RunWhenMinimized"] = game.header.NewFlags["RunWhenMinimized"];
+            mfa.GraphicFlags["RunWhenResizing"] = game.header.NewFlags["RunWhileResizing"];
+            mfa.GraphicFlags["EnableDebuggerShortcuts"] = game.header.OtherFlags["DebuggerShortcuts"];
+            mfa.GraphicFlags["NoDebugger"] = !game.header.OtherFlags["ShowDebugger"];
+            mfa.GraphicFlags["NoSubappSharing"] = game.header.OtherFlags["DontShareSubData"];
+            mfa.GraphicFlags["Direct3D9"] = game.header.OtherFlags["Direct3D9or11"] && !game.header.OtherFlags["Direct3D8or11"];
+            mfa.GraphicFlags["Direct3D8"] = game.header.OtherFlags["Direct3D8or11"] && !game.header.OtherFlags["Direct3D9or11"];
+            mfa.GraphicFlags["DisableIME"] = game.ExtHeader.Flags["DisableIME"];
+            mfa.GraphicFlags["ReduceCPUUsage"] = game.ExtHeader.Flags["ReduceCPUUsage"];
+            mfa.GraphicFlags["Direct3D11"] = game.header.OtherFlags["Direct3D8or11"] && game.header.OtherFlags["Direct3D9or11"];
+            mfa.GraphicFlags["PremultipliedAlpha"] = game.ExtHeader.Flags["PremultipliedAlpha"];
 
-            //mfa.DisplayFlags = displaySettings;
-            //mfa.GraphicFlags = graphicSettings;
-            
             try
             {
                 foreach (var globalValue in game.globalValues.Items)
@@ -198,11 +188,8 @@ namespace CTFAK.Tools
             catch { }
             mfa.WindowX = game.header.WindowWidth;
             mfa.WindowY = game.header.WindowHeight;
-            /*mfa.BorderColor = Color.FromArgb(game.header.BorderColor.A,
-                                       255 - game.header.BorderColor.R,
-                                       255 - game.header.BorderColor.G,
-                                       255 - game.header.BorderColor.B);
-            */mfa.HelpFile = "";
+            mfa.BorderColor = game.header.BorderColor;
+            mfa.HelpFile = "";
             mfa.InitialScore = game.header.InitialScore;
             mfa.InitialLifes = game.header.InitialLives;
             mfa.FrameRate = game.header.FrameRate;
@@ -827,7 +814,7 @@ namespace CTFAK.Tools
                 try
                 {
                     //if (ImageBank.realGraphicMode < 4 && Settings.Build < 289 && !Settings.Android && CTFAKCore.parameters.Contains("-badblend"))
-                    if (CTFAKCore.parameters.Contains("-badblend"))
+                    if (!game.header.OtherFlags["Direct3D8or11"] && !game.header.OtherFlags["Direct3D9or11"])
                     {
                         shdrData.Blend = (byte)(255 - item.blend);
                         shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, 255 - item.rgbCoeff.B, 255 - item.rgbCoeff.G, 255 - item.rgbCoeff.R);

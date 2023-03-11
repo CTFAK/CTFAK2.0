@@ -201,9 +201,9 @@ namespace CTFAK.MFA
             Writer.AutoWriteUnicode(Version);
             Writer.WriteInt32(WindowX);
             Writer.WriteInt32(WindowY);
-            Writer.WriteColor(Color.FromArgb(0, 255, 255, 255));
-            Writer.WriteInt32((int)DisplayFlags.flag);
-            Writer.WriteInt32((int)GraphicFlags.flag);
+            Writer.WriteColor(BorderColor);
+            Writer.WriteUInt32(DisplayFlags.flag);
+            Writer.WriteUInt32(GraphicFlags.flag);
             Writer.AutoWriteUnicode(HelpFile);
             Writer.AutoWriteUnicode(unknown_string);
             Writer.WriteUInt32((uint)InitialScore);
@@ -351,10 +351,6 @@ namespace CTFAK.MFA
             WindowY = reader.ReadInt32();
             BorderColor = reader.ReadColor();
             DisplayFlags.flag = reader.ReadUInt32();
-
-            foreach (var flag in DisplayFlags.Keys)
-                Logger.Log(flag + ": " + (DisplayFlags.GetFlag(flag) ? "true" : "false"));
-
             GraphicFlags.flag = reader.ReadUInt32();
 
             HelpFile = reader.AutoReadUnicode();
