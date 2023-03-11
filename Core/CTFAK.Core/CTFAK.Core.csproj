@@ -80,6 +80,11 @@
     <ItemGroup>
         <Folder Include="MMFParser\Shared" />
     </ItemGroup>
+    <ItemGroup>
+        <None Include="$(ProjectDir)x64\**"
+              CopyToOutputDirectory="PreserveNewest"
+              LinkBase="x64\" />
+    </ItemGroup>
 
 
 </Project>
