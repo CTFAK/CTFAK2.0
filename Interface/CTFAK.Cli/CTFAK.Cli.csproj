@@ -20,8 +20,6 @@
         <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj">
             <IsTrimmable>false</IsTrimmable>
         </ProjectReference>
-        <ProjectReference Include="..\..\Plugins\CTFAK.Decompiler\CTFAK.Decompiler.csproj" />
-        <ProjectReference Include="..\..\Plugins\Dumper\Dumper.csproj" />
     </ItemGroup>
 
 </Project>
