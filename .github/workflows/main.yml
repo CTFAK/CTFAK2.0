@@ -64,7 +64,7 @@ jobs:
       - name: Upload Interactive console tool
         uses: actions/upload-artifact@v2
         with:
-          name: CTFAK.Cli
+          name: CTFAK.Interactive
           path: D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows
     
       
