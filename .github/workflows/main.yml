@@ -12,8 +12,22 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Setup .NET
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '3.1.x'
-      - run: dotnet build Core/CTFAK.Core
+          dotnet-version: |
+            6
+            7
+        
+      - name: Build CTFAK.Core
+      - run: dotnet build Core/CTFAK.Core -f net6.0-windows
+      
+      - name: Build CTFAK.Cli
+      - run: dotnet build Interface/CTFAK.Cli -f net6.0-windows
+      
+      - name: Build CTFAK.Interactive
+      - run: dotnet build Interface/CTFAK.Interactive -f net7.0-windows
+      
+      
+      
