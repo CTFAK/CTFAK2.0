@@ -471,20 +471,14 @@ public class FTDecompile : IFusionTool
                                             action.ObjectInfo = quailifer.Key;
                                         foreach (var param in action.Items)
                                         {
-                                            var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
-                                            if (objInfoFld == null) continue;
-                                            try
+                                            if (param.Loader is ExpressionParameter expr)
                                             {
-                                                if ((int)objInfoFld?.GetValue(param?.Loader) ==
-                                                    quailifer.Value?.ObjectInfo)
-                                                    newFrame.Events.Items.Remove(eventGroup);
+                                                foreach (var actualExpr in expr.Items)
+                                                {
+                                                    if (quailifer.Value.ObjectInfo == actualExpr.ObjectInfo) 
+                                                        actualExpr.ObjectInfo = quailifer.Key;
+                                                }
                                             }
-                                            catch
-                                            {
-                                            }
-
-                                            param.Loader?.GetType().GetField("ObjectInfo")
-                                                .SetValue(param.Loader, Convert.ToUInt16(quailifer.Key));
                                         }
                                     }
                                 }
@@ -496,17 +490,13 @@ public class FTDecompile : IFusionTool
                                         cond.ObjectInfo = quailifer.Key;
                                     foreach (var param in cond.Items)
                                     {
-                                        var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
-                                        if (objInfoFld == null) continue;
-                                        try
+                                        if (param.Loader is ExpressionParameter expr)
                                         {
-                                            if ((int)objInfoFld?.GetValue(param?.Loader) ==
-                                                quailifer.Value?.ObjectInfo)
-                                                param.Loader?.GetType().GetField("ObjectInfo")
-                                                    .SetValue(param.Loader, quailifer.Key);
-                                        }
-                                        catch
-                                        {
+                                            foreach (var actualExpr in expr.Items)
+                                            {
+                                                if (quailifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                    actualExpr.ObjectInfo = quailifer.Key;
+                                            }
                                         }
                                     }
                                 }

@@ -173,19 +173,20 @@ public class EventGroup : ChunkLoader
             }
             else if (item.Num == -25)
             {
+                
                 if (item.Items.Count > 0)
                 {
                     if (item.Items[0].Loader is MultipleVariables multivar)
                     {
+                        Logger.Log(multivar.flags);
                         //To the no-lifer who decided that it was a good idea to do that kind of shit:
                         //All that bit logic bullshit is probably slower than the normal way of value comparsion
                         //And if it was done to prevent decompilers from working with it - you have failed
                         //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
 
                         //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
-
-                        if (multivar.flags == 0)
-                        {
+                        //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
+                        
                             var cnt = 0;
                             var mask = 1;
                             while (true)
@@ -209,9 +210,7 @@ public class EventGroup : ChunkLoader
                                 Events.IdentifierCounter++;
                             }
                             //Alterable Flags
-                        }
-                        else
-                        {
+                     
                             //Alterable Values
 
                             for (var j = 0; j < multivar.values.Length; j++)
@@ -237,7 +236,7 @@ public class EventGroup : ChunkLoader
                                 Conditions.Add(newCondition);
                                 Events.IdentifierCounter++;
                             }
-                        }
+                        
                     }
                     else
                     {
@@ -409,7 +408,7 @@ public class Condition : ChunkLoader
             Items.Add(item);
         }
 
-        //Logger.Log(this);
+        Logger.Log(this);
         //Console.ReadKey();
     }
 
@@ -474,7 +473,7 @@ public class Action : ChunkLoader
             item.Read(reader);
             Items.Add(item);
         }
-        //Logger.Log(this);
+        Logger.Log(this);
     }
 
     public override string ToString()

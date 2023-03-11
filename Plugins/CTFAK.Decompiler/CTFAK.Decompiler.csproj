@@ -13,9 +13,7 @@
         <ProjectReference Include="..\..\Core\CTFAK.Core\CTFAK.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.5.22301.12" />
-    </ItemGroup>
+
 
 
 </Project>
