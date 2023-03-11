@@ -21,8 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFAK.Cli", "Interface\CTFA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{61C79189-AAB1-44FD-9AA9-6043E08705DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFusion", "Tools\JFusion\JFusion.csproj", "{B60D8DA2-5928-4B6E-8EB4-93B709458075}"
-EndProject
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPreprocessor", "Plugins\EventPreprocessor\EventPreprocessor.csproj", "{726F0096-4572-4AEE-9811-83928C8801D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFAK.Interactive", "Interface\CTFAK.Interactive\CTFAK.Interactive.csproj", "{022386A1-BAA5-49EA-B52F-04773A17EFEB}"

@@ -10,7 +10,6 @@
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishReadyToRun>true</PublishReadyToRun>!-->
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <PublishAOT>true</PublishAOT>
         <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
         <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
 
