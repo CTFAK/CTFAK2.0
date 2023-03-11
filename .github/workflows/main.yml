@@ -13,17 +13,62 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: |
             6
             7
       
-      - run: dotnet build Core/CTFAK.Core -f net6.0-windows
+      - name: Build Core
+        run: dotnet build Core/CTFAK.Core -f net6.0-windows -c Debug
+        
+      - name: Build Dumper
+        run: dotnet build Plugins/CTFAK.Decompiler -f net6.0-windows -c Debug
+      - name: Build Dumper
+        run: dotnet build Plugins/Dumper -f net6.0-windows -c Debug
+        
+      - name: Build CTFAK.Cli     
+        run: |
+          dotnet build Interface/CTFAK.Cli -f net6.0-windows -c Debug
+          mkdir D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
+          
+          
+      - name: Build CTFAK.Interactive
+        run: |
+          dotnet build Interface/CTFAK.Interactive -f net7.0-windows -c Debug
+          mkdir D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
+          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
+          
       
-      - run: dotnet build Interface/CTFAK.Cli -f net6.0-windows
+        
+      - name: Upload Core library
+        uses: actions/upload-artifact@v2
+        with:
+          name: CTFAK.Core
+          path: D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Debug\net6.0-windows
+          
+      - name: Upload CLI tool
+        uses: actions/upload-artifact@v2
+        with:
+          name: CTFAK.Cli
+          path: D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows
+          
+      - name: Upload Interactive console tool
+        uses: actions/upload-artifact@v2
+        with:
+          name: CTFAK.Cli
+          path: D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows
+    
       
-      - run: dotnet build Interface/CTFAK.Interactive -f net7.0-windows
+      
       
      
       
