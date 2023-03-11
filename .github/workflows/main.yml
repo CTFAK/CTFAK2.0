@@ -12,20 +12,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Restore Nuget
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Compile (release)
     - uses: actions/checkout@v3
     - uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0'
+        dotnet-version: '6'
     - run: dotnet build Core\CTFAK.Core
         
     - name: Copy built files
