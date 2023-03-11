@@ -199,8 +199,7 @@ public class GameData
         chunkList.Read(reader);
         // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
         // it's safe to just read again
-        //chunkList.Read(reader);
-        Console.ReadLine();
+        //chunkList.Read(reader); // turns out it's not
     }
 
     public void Write(ByteWriter writer)
