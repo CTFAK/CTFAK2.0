@@ -196,6 +196,7 @@ public class EventGroup : ChunkLoader
                                 if ((mask & multivar.flagMasks) == 0)
                                 {
                                     mask <<= 1;
+                                    cnt++;
                                     continue;
                                 }
                                     
