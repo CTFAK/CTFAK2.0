@@ -124,6 +124,7 @@ public class EventGroup : ChunkLoader
         NumberOfConditions = reader.ReadByte();
         NumberOfActions = reader.ReadByte();
         Flags = reader.ReadUInt16();
+        Logger.Log("Loading EventGroup");
         if (Settings.Old || Settings.CBM)
         {
             IsRestricted = reader.ReadInt16(); //For MFA
@@ -186,13 +187,18 @@ public class EventGroup : ChunkLoader
 
                         //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
                         //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
-                        
+                        //12.03.2023 Turns out my fix didn't really work, so I'm back here again
                             var cnt = 0;
                             var mask = 1;
                             while (true)
                             {
+                                if (mask == 0) break;
                                 if ((mask & multivar.flagMasks) == 0)
-                                    break;
+                                {
+                                    mask <<= 1;
+                                    continue;
+                                }
+                                    
                                 var newCondition = new Condition();
                                 newCondition.DefType = item.DefType;
                                 newCondition.Identifier = item.Identifier + cnt;
