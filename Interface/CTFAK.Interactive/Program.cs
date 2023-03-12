@@ -27,10 +27,10 @@ public class Program
                     a => a.GetType() == typeof(AssemblyInformationalVersionAttribute)) as
                 AssemblyInformationalVersionAttribute;
             var versionText = attr.InformationalVersion.Split("+")[1];
-            var time = int.Parse(versionText);
+            var time = long.Parse(versionText);
             using (var wc = new WebClient())
             {
-                var data = int.Parse(wc.DownloadString("https://kostyaslair.com/ctfak/latestbuildid"));
+                var data = long.Parse(wc.DownloadString("https://kostyaslair.com/ctfak/latestbuildid"));
                 if (data != time)
                 {
                     dateErrorLabel =
