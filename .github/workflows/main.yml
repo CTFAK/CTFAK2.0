@@ -27,7 +27,7 @@ jobs:
         
       - name: Build CTFAK.Cli     
         run: |
-          dotnet publish Interface/CTFAK.Cli -f net7.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained false
+          dotnet publish Interface/CTFAK.Cli -f net6.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained false
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/win-x64/publish/Plugins
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/win-x64/publish/Plugins
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/win-x64/publish/Plugins
