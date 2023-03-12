@@ -502,7 +502,6 @@ public class FTDecompile : IFusionTool
                                             {
                                                 if (quailifer.Value.ObjectInfo == -pos.ObjectInfoParent)
                                                 {
-                                                    Logger.Log("gay");
                                                     pos.ObjectInfoParent = quailifer.Key;
                                                 }
                                             }
@@ -543,7 +542,7 @@ public class FTDecompile : IFusionTool
                                         }
                                         else if (param.Loader is Position pos)
                                         {
-                                            if (quailifer.Value.ObjectInfo == pos.ObjectInfoParent)
+                                            if (quailifer.Value.ObjectInfo == -pos.ObjectInfoParent)
                                             {
                                                 pos.ObjectInfoParent = quailifer.Key;
                                             }
