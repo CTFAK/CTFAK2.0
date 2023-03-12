@@ -1,4 +1,6 @@
-﻿using CTFAK.Memory;
+﻿using CTFAK.CCN.Chunks.Banks;
+using CTFAK.Memory;
+using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.Shared.Events;
 
@@ -12,7 +14,11 @@ internal class Sample : ParameterCommon
     {
         Handle = reader.ReadInt16();
         Flags = reader.ReadUInt16();
-        Name = reader.ReadUniversal();
+        Name = reader.ReadUniversal(); 
+
+        if (Settings.Android && Settings.Build < 289 &&
+            !AndroidSoundBank.oldAndroidNames.ContainsKey(Handle))
+            AndroidSoundBank.oldAndroidNames.Add(Handle, Name);
     }
 
     public override void Write(ByteWriter Writer)

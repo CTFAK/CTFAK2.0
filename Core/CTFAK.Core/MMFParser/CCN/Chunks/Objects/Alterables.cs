@@ -7,6 +7,7 @@ namespace CTFAK.MMFParser.CCN.Chunks.Objects;
 public class AlterableValues : ChunkLoader
 {
     public List<int> Items = new();
+    public int Flags = 0;
 
     public override void Read(ByteReader reader)
     {
@@ -20,7 +21,11 @@ public class AlterableValues : ChunkLoader
             {
                 break;
             }
-        //Logger.Log($"Reading AltVal {i}: {Items[i]}");
+        try
+        {
+            Flags = reader.ReadInt32();
+        }
+        catch {}
     }
 
     public override void Write(ByteWriter writer)

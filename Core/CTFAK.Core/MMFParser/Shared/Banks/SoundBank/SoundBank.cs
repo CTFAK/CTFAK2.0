@@ -86,19 +86,17 @@ public class SoundItem : SoundBase
         var res = reader.ReadInt32();
         var nameLenght = reader.ReadInt32();
 
-        ByteReader soundData;
-        if (IsCompressed)
+        ByteReader soundData = new(new byte[0]);
+        if (IsCompressed && Flags != 33)
         {
             Size = reader.ReadInt32();
             soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size));
         }
         else
-        {
             soundData = new ByteReader(reader.ReadBytes(decompressedSize));
-        }
 
-        Name = soundData.ReadWideString(nameLenght);
-        Name = Name.Replace(" ", "");
+        Name = soundData.ReadWideString(nameLenght).Replace(" ", "");
+        if (Flags == 33) soundData.Seek(0);
         Data = soundData.ReadBytes((int)soundData.Size());
     }
 

@@ -16,7 +16,7 @@ public static class ByteFlag
 
 public class BitDict
 {
-    private readonly string[] Keys;
+    public readonly string[] Keys;
 
     public BitDict(string[] keys)
     {
@@ -43,7 +43,7 @@ public class BitDict
         if (value)
             flag |= (uint)Math.Pow(2, Array.IndexOf(Keys, key));
         else
-            flag &= (uint)Math.Pow(~2, Array.IndexOf(Keys, key));
+            flag &= ~(uint)Math.Pow(2, Array.IndexOf(Keys, key));
     }
 
     public static string ToDebugString<TKey, TValue>(IDictionary<TKey, TValue> dictionary)

@@ -20,6 +20,7 @@ public class MFAObjectInfo : ChunkLoader
     public string Name;
     public int ObjectType;
     public int Transparent;
+    public MFAObjectFlags FlagWriter;
 
     public override void Write(ByteWriter Writer)
     {
@@ -34,6 +35,9 @@ public class MFAObjectInfo : ChunkLoader
         Writer.WriteInt32(Flags);
         Writer.WriteInt32(1);
         Writer.WriteInt32(IconHandle);
+
+        if (FlagWriter != null)
+            FlagWriter.Write(Writer);
 
         Chunks.Write(Writer);
         Loader.Write(Writer);

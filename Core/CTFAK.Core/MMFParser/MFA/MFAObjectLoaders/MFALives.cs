@@ -9,7 +9,7 @@ public class MFALives : ObjectLoader
     public int Flags;
     public int Font;
     public int Height;
-    public List<int> Images;
+    public List<int> Images = new();
     public uint Player;
     public int Width;
 
@@ -32,8 +32,16 @@ public class MFALives : ObjectLoader
     {
         base.Write(Writer);
         Writer.WriteInt32((int)Player);
-        Writer.WriteInt32(Images.Count);
-        foreach (var i in Images) Writer.WriteInt32(i);
+        if (!CTFAKCore.Parameters.Contains("-noimgs"))
+        {
+            Writer.WriteInt32(Images.Count);
+            foreach (int i in Images)
+            {
+                Writer.WriteInt32(i);
+            }
+        }
+        else
+            Writer.WriteInt32(0);
         Writer.WriteInt32(DisplayType);
         Writer.WriteInt32(Flags);
         Writer.WriteInt32(Font);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using CTFAK.Attributes;
 using CTFAK.Memory;
@@ -129,5 +130,77 @@ public class LogFont : ChunkLoader
         Writer.WriteInt8(_quality);
         Writer.WriteInt8(_pitchAndFamily);
         Writer.WriteUnicode(_faceName);
+    }
+}
+
+[ChunkLoader(8793, "TrueTypeFontMetas")]
+public class TrueTypeMeta : ChunkLoader
+{
+    public List<TTM> TTFMetas = new List<TTM>();
+
+    public override void Read(ByteReader reader)
+    {
+        var end = reader.Tell() + reader.Size();
+        while (reader.Tell() < end)
+        {
+            var newTTM = new TTM();
+            newTTM.Read(reader);
+            TTFMetas.Add(newTTM);
+        }
+    }
+
+    public class TTM
+    {
+        string FontName;
+        int FontSize;
+        int FontStyle;
+        bool Bold;
+        bool Italic;
+        bool Underline;
+        bool Strikeout;
+        int ScriptType;
+
+        public void Read(ByteReader reader)
+        {
+            FontSize = reader.ReadInt32();
+            FontSize = -(FontSize + 6);
+            reader.ReadInt32(); //Idk Yet
+            reader.ReadInt32(); //Idk Yet
+            reader.ReadInt32(); //Idk Yet
+            FontStyle = reader.ReadByte();
+            Bold = reader.ReadByte() > 01;
+            reader.ReadInt16(); //Idk Yet
+            Italic = reader.ReadByte() != 00;
+            Underline = reader.ReadByte() != 00;
+            Strikeout = reader.ReadByte() != 00;
+            ScriptType = reader.ReadByte();
+            if (ScriptType > 0)
+                ScriptType = 179 - ScriptType;
+            FontName = reader.ReadWideString(32).TrimEnd((char)0);
+            reader.ReadInt32(); //Idk Yet
+        }
+    }
+
+    public override void Write(ByteWriter writer)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+[ChunkLoader(8793, "TrueTypeFonts")]
+public class TrueTypeFonts : ChunkLoader
+{
+    public List<byte[]> Fonts = new();
+
+    public override void Read(ByteReader reader)
+    {
+        var end = reader.Tell() + reader.Size();
+        while (reader.Tell() < end)
+            Fonts.Add(Decompressor.Decompress(reader, out int decomp));
+    }
+
+    public override void Write(ByteWriter writer)
+    {
+        throw new NotImplementedException();
     }
 }

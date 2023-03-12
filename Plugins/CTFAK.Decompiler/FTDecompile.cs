@@ -134,55 +134,65 @@ public class FTDecompile : IFusionTool
         mfa.Copyright = game.Copyright;
         mfa.Company = "";
         mfa.Version = "";
-        //mfa.binaryFiles = game.BinaryFiles;
-        var displaySettings = mfa.DisplayFlags;
-        var graphicSettings = mfa.GraphicFlags;
-        var flags = game.Header.Flags;
-        var newFlags = game.Header.NewFlags;
+        mfa.binaryFiles = game.BinaryFiles;
         mfa.Extensions.Clear();
 
-        displaySettings["MaximizedOnBoot"] = flags["Maximize"];
-        displaySettings["ResizeDisplay"] = flags["MDI"];
-        displaySettings["FullscreenAtStart"] = flags["FullscreenAtStart"];
-        displaySettings["AllowFullscreen"] = flags["FullscreenSwitch"];
-        // displaySettings["Heading"] = !flags["NoHeading"];
-        // displaySettings["HeadingWhenMaximized"] = true;
-        displaySettings["MenuBar"] = flags["MenuBar"];
-        displaySettings["MenuOnBoot"] = !flags["MenuHidden"];
-        displaySettings["NoMinimize"] = newFlags["NoMinimizeBox"];
-        displaySettings["NoMaximize"] = newFlags["NoMaximizeBox"];
-        displaySettings["NoThickFrame"] = newFlags["NoThickFrame"];
-        // displaySettings["NoCenter"] = flags["MDI"];
-        displaySettings["DisableClose"] = newFlags["DisableClose"];
-        displaySettings["HiddenAtStart"] = newFlags["HiddenAtStart"];
-        displaySettings["MDI"] = newFlags["MDI"];
+        mfa.DisplayFlags.flag = 0;
+        mfa.DisplayFlags["MaximizedOnBoot"] = game.Header.Flags["MaximizedOnBoot"];
+        mfa.DisplayFlags["ResizeDisplay"] = game.Header.Flags["ResizeDisplay"];
+        mfa.DisplayFlags["FullscreenAtStart"] = game.Header.Flags["MaximizedOnBoot"];
+        mfa.DisplayFlags["AllowFullscreen"] = game.Header.Flags["SwitchToFromFullscreen"];
+        mfa.DisplayFlags["Heading"] = !game.Header.Flags["NoHeading"];
+        mfa.DisplayFlags["HeadingWhenMaximized"] = game.Header.Flags["HeadingMaximized"];
+        mfa.DisplayFlags["MenuBar"] = game.Header.Flags["MenuBar"];
+        mfa.DisplayFlags["MenuOnBoot"] = !game.Header.Flags["DontDisplayMenu"];
+        mfa.DisplayFlags["NoMinimize"] = game.Header.NewFlags["NoMinimizeBox"];
+        mfa.DisplayFlags["NoMaximize"] = game.Header.NewFlags["NoMaximizeBox"];
+        mfa.DisplayFlags["NoThickFrame"] = game.Header.NewFlags["NoThickFrame"];
+        mfa.DisplayFlags["NoCenter"] = game.Header.NewFlags["DoNotCenterFrame"];
+        mfa.DisplayFlags["DisableClose"] = game.Header.NewFlags["DisableClose"];
+        mfa.DisplayFlags["HiddenAtStart"] = game.Header.NewFlags["HiddenAtStart"];
+        mfa.DisplayFlags["MDI"] = game.Header.NewFlags["MDI"];
 
-        /*for (int i = 0; i < game.globalValues.Items.Count; i++)
+        mfa.GraphicFlags.flag = 0;
+        mfa.GraphicFlags["MultiSamples"] = game.Header.Flags["MultiSamples"];
+        mfa.GraphicFlags["MachineIndependentSpeed"] = game.Header.Flags["MachineIndependentSpeed"];
+        mfa.GraphicFlags["SamplesOverFrames"] = game.Header.NewFlags["SamplesOverFrames"];
+        mfa.GraphicFlags["PlaySamplesWhenUnfocused"] = game.Header.NewFlags["PlaySamplesWhenUnfocused"];
+        mfa.GraphicFlags["IgnoreInputOnScreensaver"] = game.Header.NewFlags["IgnoreInputOnScreensaver"];
+        mfa.GraphicFlags["VisualThemes"] = game.Header.NewFlags["VisualThemes"];
+        mfa.GraphicFlags["VSync"] = game.Header.NewFlags["VSync"];
+        mfa.GraphicFlags["RunWhenMinimized"] = game.Header.NewFlags["RunWhenMinimized"];
+        mfa.GraphicFlags["RunWhenResizing"] = game.Header.NewFlags["RunWhileResizing"];
+        mfa.GraphicFlags["EnableDebuggerShortcuts"] = game.Header.OtherFlags["DebuggerShortcuts"];
+        mfa.GraphicFlags["NoDebugger"] = !game.Header.OtherFlags["ShowDebugger"];
+        mfa.GraphicFlags["NoSubappSharing"] = game.Header.OtherFlags["DontShareSubData"];
+        mfa.GraphicFlags["Direct3D9"] = game.Header.OtherFlags["Direct3D9or11"] && !game.Header.OtherFlags["Direct3D8or11"];
+        mfa.GraphicFlags["Direct3D8"] = game.Header.OtherFlags["Direct3D8or11"] && !game.Header.OtherFlags["Direct3D9or11"];
+        mfa.GraphicFlags["DisableIME"] = game.ExtHeader.Flags["DisableIME"];
+        mfa.GraphicFlags["ReduceCPUUsage"] = game.ExtHeader.Flags["ReduceCPUUsage"];
+        mfa.GraphicFlags["Direct3D11"] = game.Header.OtherFlags["Direct3D8or11"] && game.Header.OtherFlags["Direct3D9or11"];
+        mfa.GraphicFlags["PremultipliedAlpha"] = game.ExtHeader.Flags["PremultipliedAlpha"];
+
+        try
         {
-            var globalValue = game.globalValues.Items[i];
-
-
-            mfa.GlobalValues.Items.Add(new ValueItem(null)
+            foreach (var globalValue in game.GlobalValues.Items)
             {
-                Value = (globalValue is float) ? (float)globalValue:(int)globalValue,
-                Name = $"Global Value "+i
+                mfa.GlobalValues.Items.Add(new ValueItem()
+                {
+                    Value = globalValue,
+                });
+            }
 
-            });
+            foreach (var globalString in game.GlobalStrings.Items)
+            {
+                mfa.GlobalStrings.Items.Add(new ValueItem()
+                {
+                    Value = globalString,
+                });
+            }
         }
-        for (int i = 0; i < game.globalStrings.Items.Count; i++)
-        {
-            var globalString = game.globalStrings.Items[i];
-
-
-            mfa.GlobalStrings.Items.Add(new ValueItem(null)
-            {
-                Value = globalString,
-                Name = $"Global Value "+i
-
-            });
-        }*/
-        //mfa.GraphicFlags = graphicSettings;
-        //mfa.DisplayFlags = displaySettings;
+        catch { }
         mfa.WindowX = game.Header.WindowWidth;
         mfa.WindowY = game.Header.WindowHeight;
         mfa.BorderColor = game.Header.BorderColor;
@@ -201,7 +211,8 @@ public class FTDecompile : IFusionTool
         mfa.GlobalStrings = new MFAValueList();
         mfa.GlobalEvents = new byte[0];
         mfa.IconImages = new List<int>();
-        mfa.MfaBuild = 6;
+        mfa.MfaVersion = 3;
+        mfa.MfaSubversion = 3;
         mfa.Product = 2;
         mfa.BuildVersion = 292;
         mfa.LangId = 1033;
@@ -219,8 +230,8 @@ public class FTDecompile : IFusionTool
             if (item.ObjectType >= 32)
             {
                 //Logger.Log(item.ObjectType + ", " + item.name);
-                if ((item.ObjectType == 36 && item.Name == "iOS Plus Object") ||
-                    (item.ObjectType == 45 && item.Name.Contains("KYSO")))
+                if ((item.Name == "iOS Plus Object" ||
+                    item.Name.Contains("KYSO")) && Settings.Android)
                     continue; //DIE YOU UNDEAD FLESH MAGGOT! 
 
                 newItem = TranslateObject(mfa, game, item, true);
@@ -800,7 +811,16 @@ public class FTDecompile : IFusionTool
 
             var shdrData = newItem.Chunks.GetOrCreateChunk<ShaderSettings>();
             shdrData.Blend = item.Blend;
-            shdrData.RGBCoeff = Color.FromArgb(item.RgbCoeff.A, item.RgbCoeff.B, item.RgbCoeff.G, item.RgbCoeff.R);
+            shdrData.RGBCoeff = Color.FromArgb(item.RgbCoeff.A, item.RgbCoeff.R, item.RgbCoeff.G, item.RgbCoeff.B);
+            try
+            {
+                if (!game.Header.OtherFlags["Direct3D8or11"] && !game.Header.OtherFlags["Direct3D9or11"])
+                {
+                    shdrData.Blend = (byte)(255 - item.Blend);
+                    shdrData.RGBCoeff = Color.FromArgb(item.RgbCoeff.A, 255 - item.RgbCoeff.R, 255 - item.RgbCoeff.G, 255 - item.RgbCoeff.B);
+                }
+            }
+            catch { }
             if (item.ShaderData.HasShader)
             {
                 var newShader = new ShaderSettings.MFAShader();
@@ -815,37 +835,6 @@ public class FTDecompile : IFusionTool
                 }
 
                 shdrData.Shaders.Add(newShader);
-            }
-
-
-            try
-            {
-                for (var i = 0; i < game.GlobalValues.Items.Count; i++)
-                {
-                    var globalValue = game.GlobalValues.Items[i];
-
-
-                    mfa.GlobalValues.Items.Add(new ValueItem
-                    {
-                        Value = globalValue,
-                        Name = "Global Value " + i
-                    });
-                }
-
-                for (var i = 0; i < game.GlobalStrings.Items.Count; i++)
-                {
-                    var globalString = game.GlobalStrings.Items[i];
-
-
-                    mfa.GlobalStrings.Items.Add(new ValueItem
-                    {
-                        Value = globalString,
-                        Name = "Global String " + i
-                    });
-                }
-            }
-            catch
-            {
             }
 
             if (item.ObjectType == (int)Constants.ObjectType.QuickBackdrop)
@@ -890,33 +879,36 @@ public class FTDecompile : IFusionTool
                 newObject.Strings = new MFAValueList(); //ConvertStrings(itemLoader.);
                 newObject.Values = new MFAValueList(); //ConvertValue(itemLoader.Values);
                 newObject.Movements = new MFAMovements();
+                newItem.FlagWriter = new MFAObjectFlags();
 
                 if (itemLoader.Values != null)
+                {
                     for (var j = 0; j < itemLoader.Values.Items.Count; j++)
                     {
-                        var ch = "A";
-                        if (j >= 26)
-                            ch = (char)('A' + ((j - j % 26) / 26 - 1)) + ((char)('A' + j % 26)).ToString();
-                        else
-                            ch = ((char)('A' + j)).ToString();
-
                         var newVal = new ValueItem();
-                        newVal.Name = $"Alterable Value {ch}";
+                        newVal.Name = "";
                         newVal.Value = itemLoader.Values.Items[j];
                         newObject.Values.Items.Add(newVal);
                     }
+                    for (int j = 0; j < 32; j++)
+                    {
+                        var newFlag = new ObjectFlag();
+                        newFlag.Name = "";
+                        newFlag.Value = ByteFlag.GetFlag((uint)itemLoader.Values.Flags, j);
+                        newItem.FlagWriter.Items.Add(newFlag);
+                    }
+                    for (int j = 31; j >= 0; j--)
+                        if (newItem.FlagWriter.Items[j].Value == false)
+                            newItem.FlagWriter.Items.Remove(newItem.FlagWriter.Items[j]);
+                        else
+                            break;
+                }
 
                 if (itemLoader.Strings != null)
                     for (var j = 0; j < itemLoader.Strings.Items.Count; j++)
                     {
-                        var ch = "A";
-                        if (j >= 26)
-                            ch = (char)('A' + ((j - j % 26) / 26 - 1)) + ((char)('A' + j % 26)).ToString();
-                        else
-                            ch = ((char)('A' + j)).ToString();
-
                         var newStr = new ValueItem();
-                        newStr.Name = $"Alterable String {ch}";
+                        newStr.Name = "";
                         newStr.Value = itemLoader.Strings.Items[j];
                         newObject.Strings.Items.Add(newStr);
                     }

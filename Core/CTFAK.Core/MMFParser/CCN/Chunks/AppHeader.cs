@@ -13,58 +13,75 @@ public class AppHeader : ChunkLoader
 {
     public Color BorderColor;
     public Controls Controls;
+    public int FrameRate;
+    public short GraphicsMode;
+    public int InitialLives;
+    public int InitialScore;
+    public int NumberOfFrames;
+    public int Size;
+    public int WindowHeight;
+    public int WindowsMenuIndex;
+    public int WindowWidth;
 
-    public BitDict Flags = new(new[]
+    public BitDict Flags = new BitDict(new string[]
     {
-        "BorderMax",
+        "HeadingMaximized",
         "NoHeading",
-        "Panic",
-        "SpeedIndependent",
-        "Stretch",
+        "FitInsideBars",
+        "MachineIndependentSpeed",
+        "ResizeDisplay",
         "MusicOn",
         "SoundOn",
-        "MenuHidden",
+        "DontDisplayMenu",
         "MenuBar",
-        "Maximize",
+        "MaximizedOnBoot",
         "MultiSamples",
-        "FullscreenAtStart",
-        "FullscreenSwitch",
+        "ChangeResolutionMode",
+        "SwitchToFromFullscreen",
         "Protected",
         "Copyright",
         "OneFile"
     });
 
-    public int FrameRate;
-    public short GraphicsMode;
-    public int InitialLives;
-    public int InitialScore;
-
-    public BitDict NewFlags = new(new[]
+    public BitDict NewFlags = new BitDict(new string[]
     {
         "SamplesOverFrames",
         "RelocFiles",
         "RunFrame",
-        "SamplesWhenNotFocused",
+        "PlaySamplesWhenUnfocused",
         "NoMinimizeBox",
         "NoMaximizeBox",
         "NoThickFrame",
         "DoNotCenterFrame",
-        "ScreensaverAutostop",
+        "IgnoreInputOnScreensaver",
         "DisableClose",
         "HiddenAtStart",
-        "XPVisualThemes",
+        "VisualThemes",
         "VSync",
         "RunWhenMinimized",
         "MDI",
         "RunWhileResizing"
     });
 
-    public int NumberOfFrames;
-    public short Otherflags;
-    public int Size;
-    public int WindowHeight;
-    public int WindowsMenuIndex;
-    public int WindowWidth;
+    public BitDict OtherFlags = new BitDict(new string[]
+    {
+        "DebuggerShortcuts",
+        "Unknown1",
+        "Unknown2",
+        "DontShareSubData",
+        "Unknown3",
+        "Unknown4",
+        "Unknown5",
+        "ShowDebugger",
+        "Unknown6",
+        "Unknown7",
+        "Unknown8",
+        "Unknown9",
+        "Unknown10",
+        "Unknown11",
+        "Direct3D9or11",
+        "Direct3D8or11"
+    });
 
 
     public override void Read(ByteReader reader)
@@ -73,7 +90,7 @@ public class AppHeader : ChunkLoader
         Flags.flag = (uint)reader.ReadInt16();
         NewFlags.flag = (uint)reader.ReadInt16();
         GraphicsMode = reader.ReadInt16();
-        Otherflags = reader.ReadInt16();
+        OtherFlags.flag = (uint)reader.ReadInt16();
         WindowWidth = reader.ReadInt16();
         WindowHeight = reader.ReadInt16();
         InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);

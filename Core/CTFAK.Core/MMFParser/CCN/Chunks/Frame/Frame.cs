@@ -195,7 +195,8 @@ public class Frame : ChunkLoader
                     var current = 0;
                     while (true)
                     {
-                        if (chunkReader.Tell() == end) break;
+                        if (chunkReader.Tell() == end ||
+                            Layers.Items.Count <= current) break;
                         var layer = Layers.Items[current];
                         layer.InkEffect = chunkReader.ReadByte();
                         chunkReader.Skip(3);

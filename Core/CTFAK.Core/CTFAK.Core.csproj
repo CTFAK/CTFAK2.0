@@ -76,14 +76,8 @@
         <EmbeddedResource Include="Resources\Perspective.png" />
         <EmbeddedResource Include="Resources\DateAndTime.png" />
     </ItemGroup>
-
     <ItemGroup>
-        <Folder Include="MMFParser\Shared" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="$(ProjectDir)x64\**"
-              CopyToOutputDirectory="PreserveNewest"
-              LinkBase="x64\" />
+        <None Include="$(ProjectDir)x64\**" CopyToOutputDirectory="PreserveNewest" LinkBase="x64\" />
     </ItemGroup>
 
 

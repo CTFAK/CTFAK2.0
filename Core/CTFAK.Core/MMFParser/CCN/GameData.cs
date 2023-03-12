@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using CTFAK.CCN.Chunks.Banks;
+using CTFAK.Core.CCN.Chunks;
 using CTFAK.EXE;
 using CTFAK.FileReaders;
 using CTFAK.Memory;
@@ -14,11 +17,11 @@ namespace CTFAK.MMFParser.CCN;
 
 public class GameData
 {
-    private int _productBuild;
-    private int _productVersion;
-    private short _runtimeSubversion;
+    public short runtimeVersion;
+    public short runtimeSubversion;
+    public int productVersion;
+    public int productBuild;
 
-    private short _runtimeVersion;
     public string AboutText;
     public string Author = "";
     public BinaryFiles BinaryFiles;
@@ -39,12 +42,16 @@ public class GameData
     public GlobalValues GlobalValues;
 
     public AppHeader Header;
+    public ExtendedHeader ExtHeader;
     public ImageBank Images = new();
 
     public AppMenu Menu;
     public MusicBank Music;
+    public ImageShapes ImageShapes;
 
     public string Name;
+    public Bitmap Icon32x;
+    public bool ExeOnly;
 
     public PackData PackData;
     public Shaders Shaders;
@@ -75,13 +82,13 @@ public class GameData
             Settings.gameType |= Settings.GameType.F3;
         }
 
-        _runtimeVersion = (short)reader.ReadUInt16();
-        _runtimeSubversion = (short)reader.ReadUInt16();
-        _productVersion = reader.ReadInt32();
-        _productBuild = reader.ReadInt32();
-        Settings.Build = _productBuild;
+        runtimeVersion = (short)reader.ReadUInt16();
+        runtimeSubversion = (short)reader.ReadUInt16();
+        productVersion = reader.ReadInt32();
+        productBuild = reader.ReadInt32();
+        Settings.Build = productBuild;
 
-        Logger.Log("Fusion Build: " + _productBuild);
+        Logger.Log("Fusion Build: " + productBuild);
 
         var chunkList = new ChunkList();
         chunkList.OnHandleChunk += (id, loader) =>
@@ -143,6 +150,8 @@ public class GameData
                     Extensions = loader as Extensions;
                     break;
                 case 8757: //AppIcon
+                    var Icon = loader as AppIcon;
+                    Icon32x = Icon.Icon;
                     break;
                 case 8758: //DemoVersion
                     break;
@@ -168,8 +177,15 @@ public class GameData
                 case 8767: //FrameItems2
                     FrameItems = (loader as FrameItems2)?.Items;
                     break;
+                case 8768: //ExeOnly
+                    var exeOnly = loader as ExeOnly;
+                    ExeOnly = exeOnly.exeOnly;
+                    break;
                 case 8771:
                     Shaders = loader as Shaders;
+                    break;
+                case 8773: //ExtendedHeader
+                    ExtHeader = loader as ExtendedHeader;
                     break;
                 case 8792: //FontBank
                     Fonts = loader as FontBank;
@@ -180,6 +196,9 @@ public class GameData
                 case 13107: //Frame
                     Frames.Add(loader as Frame);
                     break;
+                case 17664: //ImageShapes
+                    ImageShapes = loader as ImageShapes;
+                    break;
                 case 26214: //ImageBank
                     Images = loader as ImageBank;
                     break;
@@ -187,9 +206,16 @@ public class GameData
                     Fonts = loader as FontBank;
                     break;
                 case 26216: //SoundBank
-                    Sounds = loader as SoundBank;
-                    if (Settings.gameType == Settings.GameType.ANDROID && !CTFAKCore.Parameters.Contains("-nosounds"))
+                    if (CTFAKCore.Parameters.Contains("-nosounds")) break;
+                    if (Settings.gameType == Settings.GameType.ANDROID)
+                    {
                         Sounds = ApkFileReader.AndroidSoundBank;
+                        var AndroidSounds = loader as AndroidSoundBank;
+                        for (int i = 0; i < Sounds.Items.Count; i++)
+                            Sounds.Items[i].Name = AndroidSounds.Items[Sounds.Items[i].Handle].Name;
+                    }
+                    else
+                        Sounds = loader as SoundBank;
                     break;
                 case 8790: //TwoFivePlusProperties
                     FrameItems = TwoFilePlusContainer.Instance.ObjectsContainer;

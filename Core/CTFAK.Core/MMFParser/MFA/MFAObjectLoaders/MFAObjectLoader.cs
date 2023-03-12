@@ -15,6 +15,7 @@ public class ObjectLoader : ChunkLoader
     public short[] Qualifiers = new short[8];
     public MFAValueList Strings;
     public MFAValueList Values;
+    public MFAObjectFlags AltFlags;
 
     public override void Write(ByteWriter Writer)
     {

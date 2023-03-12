@@ -50,7 +50,63 @@ public class MFAData
         "NoCenter",
         "DisableClose",
         "HiddenAtStart",
-        "MDI"
+        "MDI",
+        "Unknown1",
+        "Unknown2",
+        "Unknown3",
+        "Unknown4",
+        "Unknown5",
+        "Unknown6",
+        "Unknown7",
+        "Unknown8",
+        "Unknown9",
+        "Unknown10",
+        "Unknown11",
+        "Unknown12",
+        "Unknown13",
+        "Unknown14",
+        "Unknown15",
+        "Unknown16",
+        "Unknown17",
+        "Unknown18",
+        "Unknown19",
+        "Unknown20"
+    });
+
+    public BitDict GraphicFlags = new BitDict(new string[]
+    {
+        "MultiSamples",
+        "MachineIndependentSpeed",
+        "SamplesOverFrames",
+        "PlaySamplesWhenUnfocused",
+        "IgnoreInputOnScreensaver",
+        "DirectX",
+        "VRAM",
+        "VisualThemes",
+        "VSync",
+        "RunWhenMinimized",
+        "RunWhenResizing",
+        "EnableDebuggerShortcuts",
+        "NoDebugger",
+        "NoSubappSharing",
+        "Direct3D9",
+        "Direct3D8",
+        "Unknown1",
+        "Unknown2",
+        "Unknown3",
+        "IncludePreloaderFlash",
+        "DontGenerateHTMLFlash",
+        "Unknown4",
+        "DisableIME",
+        "ReduceCPUUsage",
+        "Unknown5",
+        "UseHighPerformanceGPU",
+        "Profiling",
+        "DontProfileAtStart",
+        "Direct3D11",
+        "PremultipliedAlpha",
+        "DontOptimizeEvents",
+        "RecordSlowLoops",
     });
 
     public List<Tuple<int, string, string, int, string>> Extensions = new List<Tuple<int, string, string, int, string>>();
@@ -62,24 +118,6 @@ public class MFAData
     public MFAValueList GlobalStrings;
 
     public MFAValueList GlobalValues;
-
-    public BitDict GraphicFlags = new(new[]
-    {
-        "MultiSamples",
-        "SpeedIndependent",
-        "SoundsOverFrames",
-        "PlaySamplesWhenUnfocused",
-        "IgnoreInputOnScreensaver",
-        "DirectX",
-        "VRAM",
-        "EnableVisualThemes",
-        "VSync",
-        "RunWhenMinimized",
-        "RunWhenResizing",
-        "EnableDebuggerShortcuts",
-        "NoDebugger",
-        "NoSubappSharing"
-    });
 
     public int GraphicMode;
 
@@ -95,7 +133,8 @@ public class MFAData
     public Dictionary<int, int> menuImages;
     public uint MenuSize;
 
-    public int MfaBuild;
+    public short MfaVersion;
+    public short MfaSubversion;
     public MusicBank Music = new();
 
     public string Name;
@@ -116,7 +155,8 @@ public class MFAData
     public void Write(ByteWriter Writer)
     {
         Writer.WriteAscii("MFU2");
-        Writer.WriteInt32(MfaBuild);
+        Writer.WriteInt16(MfaVersion);
+        Writer.WriteInt16(MfaSubversion);
         Writer.WriteInt32(Product);
         Writer.WriteInt32(BuildVersion);
         Writer.WriteInt32(LangId);
@@ -152,9 +192,9 @@ public class MFAData
         Writer.AutoWriteUnicode(Version);
         Writer.WriteInt32(WindowX);
         Writer.WriteInt32(WindowY);
-        Writer.WriteColor(Color.FromArgb(0, 255, 255, 255));
-        Writer.WriteInt32((int)DisplayFlags.flag);
-        Writer.WriteInt32((int)GraphicFlags.flag);
+        Writer.WriteColor(BorderColor);
+        Writer.WriteUInt32(DisplayFlags.flag);
+        Writer.WriteUInt32(GraphicFlags.flag);
         Writer.AutoWriteUnicode(HelpFile);
         Writer.AutoWriteUnicode(unknown_string);
         Writer.WriteUInt32((uint)InitialScore);
@@ -244,7 +284,8 @@ public class MFAData
     {
         Settings.isMFA = true;
         reader.ReadAscii(4);
-        MfaBuild = reader.ReadInt32();
+        MfaVersion = reader.ReadInt16();
+        MfaSubversion = reader.ReadInt16();
         Product = reader.ReadInt32();
         BuildVersion = reader.ReadInt32();
         //reader.ReadInt32();//unknown
