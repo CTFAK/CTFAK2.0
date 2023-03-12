@@ -30,18 +30,15 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
                 if (Loader == null) throw new NotImplementedException("Broken expression: " + Num);
                 Loader.Write(newWriter);
             }
-            else if ((int) ObjectType >= 2 || (int) ObjectType == -7)
+            else if (ObjectType >= 2 || ObjectType == -7)
             {
                 newWriter.WriteInt16((short) ObjectInfo);
                 newWriter.WriteInt16((short) ObjectInfoList);
                 if (Num == 16 || Num == 19) Loader.Write(newWriter);
             }
-            Writer.WriteInt16((short) ((newWriter.Size() + 6)));
+            Writer.WriteInt16((short)(newWriter.Size() + 6));
             Writer.WriteWriter(newWriter);
-
         }
-
-
 
         public override void Read(ByteReader reader)
         {
@@ -55,41 +52,29 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
             var size = reader.ReadInt16();
             if (ObjectType == (int)Constants.ObjectType.System)
             {
-                if(Num==0) Loader=new LongExp();
-                else if(Num==3) Loader= new StringExp();
+                if (Num == 0) Loader = new LongExp();
+                else if (Num == 3) Loader = new StringExp();
                 else if (Num == 23) Loader = new DoubleExp();
                 else if (Num == 24) Loader = new GlobalCommon();
                 else if (Num == 50) Loader = new GlobalCommon();
-                else if((int)ObjectType>=2|| (int)ObjectType==-7)
+                else if(ObjectType >= 2 || ObjectType == -7)
                 {
                     ObjectInfo = reader.ReadUInt16();
                     ObjectInfoList = reader.ReadInt16();
-                    if (Num == 16 || Num == 19)
-                    {
-                        Loader = new ExtensionExp();
-                    }
-                    else
-                    {
-                        _unk = reader.ReadInt32();
-                    }
+                    if (Num == 16 || Num == 19) Loader = new ExtensionExp();
+                    else _unk = reader.ReadInt32();
                 }
             }
-            else if((int)ObjectType>=2|| (int)ObjectType==-7)
+            else if(ObjectType>=2 || ObjectType==-7)
             {
                 ObjectInfo = reader.ReadUInt16();
                 ObjectInfoList = reader.ReadInt16();
-                if (Num == 16 || Num == 19)
-                {
-                    Loader = new ExtensionExp();
-                }
+                if (Num == 16 || Num == 19) Loader = new ExtensionExp();
             }
             Loader?.Read(reader);
             // Unk1 = reader.ReadInt32();
             // Unk2 = reader.ReadUInt16();
-            reader.Seek(currentPosition+size);
-
-            if (ObjectInfo >= 32768)
-                ObjectInfo -= 32767;
+            reader.Seek(currentPosition + size);
         }
 
         public override string ToString()

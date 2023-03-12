@@ -18,7 +18,7 @@ namespace CTFAK
                         .OfType<AssemblyFileVersionAttribute>()
                         .FirstOrDefault()?
                         .Version ?? "";
-            version = $"CTFAK {description}";
+            version = $"CTFAK 2.2";
             
 
         }
@@ -65,7 +65,6 @@ namespace CTFAK
             }
             Console.WriteLine(version);
             Console.ForegroundColor = ConsoleColor.White;
-
         }
         public static void DrawArt2()
         {

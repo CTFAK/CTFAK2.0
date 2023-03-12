@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using CTFAK.Core.Properties;
 using CTFAK.CCN.Chunks.Banks;
+using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
 
 namespace CTFAK.Tools
 {
@@ -474,7 +475,7 @@ namespace CTFAK.Tools
                                 newFrame.Events.Items = frame.events.Items;
 
                                 Dictionary<int, Quailifer> qualifiers = new Dictionary<int, Quailifer>();
-                                foreach (Quailifer quailifer in frame.events.QualifiersList.Values)
+                                foreach (Quailifer qualifer in frame.events.QualifiersList)
                                 {
                                     int newHandle = 0;
                                     while (true)
@@ -483,13 +484,13 @@ namespace CTFAK.Tools
                                             !qualifiers.Keys.Any(item => item == newHandle)) break;
                                         newHandle++;
                                     }
-                                    qualifiers.Add(newHandle, quailifer);
+                                    qualifiers.Add(newHandle, qualifer);
                                     var qualItem = new EventObject();
                                     qualItem.Handle = (uint)newHandle;
-                                    qualItem.SystemQualifier = (ushort)quailifer.Qualifier;
+                                    qualItem.SystemQualifier = (ushort)qualifer.Qualifier;
                                     qualItem.Name = "";
                                     qualItem.TypeName = "";
-                                    qualItem.ItemType = (ushort)quailifer.Type;
+                                    qualItem.ItemType = (ushort)qualifer.Type;
                                     qualItem.ObjectType = 3;
                                     newFrame.Events.Objects.Add(qualItem);
                                 }
@@ -500,45 +501,51 @@ namespace CTFAK.Tools
                                     {
                                         if (action.ObjectType == -5 && action.Num == 0)
                                             continue;
-                                        foreach (var quailifer in qualifiers)
+                                        foreach (var qualifer in qualifiers)
                                         {
-                                            if (quailifer.Value.ObjectInfo == action.ObjectInfo)
-                                                action.ObjectInfo = quailifer.Key;
+                                            if (qualifer.Value.ObjectInfo == action.ObjectInfo &&
+                                                qualifer.Value.Type == action.ObjectType)
+                                                action.ObjectInfo = qualifer.Key;
                                             foreach (var param in action.Items)
                                             {
-                                                var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
-                                                if (objInfoFld == null) continue;
-                                                try
+                                                if (param.Loader is ExpressionParameter expr)
                                                 {
-                                                    if ((int)objInfoFld?.GetValue(param?.Loader) ==
-                                                        quailifer.Value?.ObjectInfo)
-                                                        newFrame.Events.Items.Remove(eventGroup);
+                                                    foreach (var actualExpr in expr.Items)
+                                                    {
+                                                        if (qualifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                            actualExpr.ObjectInfo = qualifer.Key;
+                                                    }
                                                 }
-                                                catch { }
-                                                param.Loader?.GetType().GetField("ObjectInfo")
-                                                    .SetValue(param.Loader, Convert.ToUInt16(quailifer.Key));
+                                                else if (param.Loader is ParamObject obj)
+                                                {
+                                                    if (qualifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                        obj.ObjectInfo = qualifer.Key;
+                                                }
                                             }
                                         }
-
                                     }
                                     foreach (Condition cond in eventGroup.Conditions)
                                     {
-                                        foreach (var quailifer in qualifiers)
+                                        foreach (var qualifer in qualifiers)
                                         {
-                                            if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
-                                                cond.ObjectInfo = quailifer.Key;
+                                            if (qualifer.Value.ObjectInfo == cond.ObjectInfo &&
+                                                qualifer.Value.Type == cond.ObjectType)
+                                                cond.ObjectInfo = qualifer.Key;
                                             foreach (var param in cond.Items)
                                             {
-                                                var objInfoFld = param?.Loader?.GetType()?.GetField("ObjectInfo");
-                                                if (objInfoFld == null) continue;
-                                                try
+                                                if (param.Loader is ExpressionParameter expr)
                                                 {
-                                                    if ((int)objInfoFld?.GetValue(param?.Loader) ==
-                                                        quailifer.Value?.ObjectInfo)
-                                                        param.Loader?.GetType().GetField("ObjectInfo")
-                                                            .SetValue(param.Loader, quailifer.Key);
+                                                    foreach (var actualExpr in expr.Items)
+                                                    {
+                                                        if (qualifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                            actualExpr.ObjectInfo = qualifer.Key;
+                                                    }
                                                 }
-                                                catch { }
+                                                else if (param.Loader is ParamObject obj)
+                                                {
+                                                    if (qualifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                        obj.ObjectInfo = qualifer.Key;
+                                                }
                                             }
                                         }
                                     }
@@ -597,7 +604,7 @@ namespace CTFAK.Tools
                 Bitmap iconBmp = null;
                 if (newItem.ObjectType >= 32)
                 {
-                    Extension ext = null;
+                    CTFAK.CCN.Chunks.Extension ext = null;
 
                     foreach (var testExt in game.extensions.Items)
                     {
@@ -809,7 +816,7 @@ namespace CTFAK.Tools
                 var shdrData = newItem.Chunks.GetOrCreateChunk<ShaderSettings>();
                 if (item.InkEffect != 1 && !CTFAKCore.parameters.Contains("-notrans"))
                 shdrData.Blend = item.blend;
-                shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, item.rgbCoeff.B, item.rgbCoeff.G, item.rgbCoeff.R);
+                shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, item.rgbCoeff.R, item.rgbCoeff.G, item.rgbCoeff.B);
 
                 try
                 {
@@ -817,7 +824,7 @@ namespace CTFAK.Tools
                     if (!game.header.OtherFlags["Direct3D8or11"] && !game.header.OtherFlags["Direct3D9or11"])
                     {
                         shdrData.Blend = (byte)(255 - item.blend);
-                        shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, 255 - item.rgbCoeff.B, 255 - item.rgbCoeff.G, 255 - item.rgbCoeff.R);
+                        shdrData.RGBCoeff = Color.FromArgb(item.rgbCoeff.A, 255 - item.rgbCoeff.R, 255 - item.rgbCoeff.G, 255 - item.rgbCoeff.B);
                     }
                 }
                 catch {}
@@ -1031,7 +1038,7 @@ namespace CTFAK.Tools
                         // if (Settings.GameType != GameType.OnePointFive)
                         {
                             Extensions exts = game.extensions;
-                            Extension ext = null;
+                            CTFAK.CCN.Chunks.Extension ext = null;
                             foreach (var testExt in exts.Items)
                             {
                                 if (testExt.Handle == (int)item.ObjectType - 32) ext = testExt;

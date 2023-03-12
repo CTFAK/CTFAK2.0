@@ -10,7 +10,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         public bool global;
         public bool isDouble;
         public double value;
-        private int index;
+        public int index;
         public int op;
 
 
