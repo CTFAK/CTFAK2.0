@@ -7,6 +7,8 @@
         <Nullable>enable</Nullable>
         <AssemblyName>CTFAK</AssemblyName>
         <ApplicationIcon>CTFAK2.ico</ApplicationIcon>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>
 
     <ItemGroup>
