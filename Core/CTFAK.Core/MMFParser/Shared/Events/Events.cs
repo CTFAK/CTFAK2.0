@@ -172,22 +172,26 @@ public class EventGroup : ChunkLoader
             {
                 //this is the most retarded thing i have ever seen and it breaks mfa reading. fuck that one moron who added that
             }
-            else if (item.Num == -25)
+
+            else if (item.Num == -25||item.Num==-41)
             {
-                
+
                 if (item.Items.Count > 0)
                 {
-                    if (item.Items[0].Loader is MultipleVariables multivar)
+                    bool isNormal;
+                    foreach (var param in item.Items)
                     {
-                        Logger.Log(multivar.flags);
-                        //To the no-lifer who decided that it was a good idea to do that kind of shit:
-                        //All that bit logic bullshit is probably slower than the normal way of value comparsion
-                        //And if it was done to prevent decompilers from working with it - you have failed
-                        //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
+                        if (param.Loader is MultipleVariables multivar)
+                        {
+                            Logger.Log(multivar.flags);
+                            //To the no-lifer who decided that it was a good idea to do that kind of shit:
+                            //All that bit logic bullshit is probably slower than the normal way of value comparsion
+                            //And if it was done to prevent decompilers from working with it - you have failed
+                            //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
 
-                        //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
-                        //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
-                        //12.03.2023 Turns out my fix didn't really work, so I'm back here again
+                            //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
+                            //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
+                            //12.03.2023 Turns out my fix didn't really work, so I'm back here again
                             var cnt = 0;
                             var mask = 1;
                             while (true)
@@ -199,7 +203,7 @@ public class EventGroup : ChunkLoader
                                     cnt++;
                                     continue;
                                 }
-                                    
+
                                 var newCondition = new Condition();
                                 newCondition.DefType = item.DefType;
                                 newCondition.Identifier = item.Identifier + cnt;
@@ -217,7 +221,7 @@ public class EventGroup : ChunkLoader
                                 Events.IdentifierCounter++;
                             }
                             //Alterable Flags
-                     
+
                             //Alterable Values
 
                             for (var j = 0; j < multivar.values.Length; j++)
@@ -243,12 +247,14 @@ public class EventGroup : ChunkLoader
                                 Conditions.Add(newCondition);
                                 Events.IdentifierCounter++;
                             }
-                        
+
+                        }
+                        else
+                        {
+                            Conditions.Add(item);
+                        }
                     }
-                    else
-                    {
-                        Conditions.Add(item);
-                    }
+
                 }
                 else
                 {
@@ -435,8 +441,8 @@ public class Condition : ChunkLoader
             item.Read(reader);
             Items.Add(item);
         }
-
-        //Logger.Log(this);
+        if(CTFAKCore.Parameters.Contains("-debug"))
+            Logger.Log(this);
         //Console.ReadKey();
     }
 
@@ -501,7 +507,8 @@ public class Action : ChunkLoader
             item.Read(reader);
             Items.Add(item);
         }
-        //Logger.Log(this);
+        if(CTFAKCore.Parameters.Contains("-debug"))
+            Logger.Log(this);
     }
 
     public override string ToString()

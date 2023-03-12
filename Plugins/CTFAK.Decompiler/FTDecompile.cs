@@ -291,7 +291,7 @@ public class FTDecompile : IFusionTool
                 newFrame.Password = "";
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
-                if (frame.Palette == null) continue;
+                // if (frame.Palette == null) continue; // this shouldn't be here. i have no idea how it got here
                 newFrame.Palette = frame.Palette ?? new List<Color>();
                 newFrame.StampHandle = 13;
                 newFrame.ActiveLayer = 0;
@@ -353,7 +353,7 @@ public class FTDecompile : IFusionTool
                         newLayer.Flags["Visible"] = true; //layer.Flags["Visible"];;
                         newLayer.Flags["NoBackground"] = layer.Flags["DoNotSaveBackground"];
                         newLayer.Flags["WrapHorizontally"] = layer.Flags["WrapHorizontally"];
-                      
+
                         newLayer.XCoefficient = layer.XCoeff;
                         newLayer.YCoefficient = layer.YCoeff;
 
@@ -444,6 +444,7 @@ public class FTDecompile : IFusionTool
                                         !qualifiers.Keys.Any(item => item == newHandle)) break;
                                     newHandle++;
                                 }
+
                                 //newHandle = quailifer.ObjectInfo;
                                 qualifiers.Add(newHandle, quailifer);
                                 var qualItem = new EventObject();
@@ -455,7 +456,7 @@ public class FTDecompile : IFusionTool
                                 qualItem.ObjectType = 3;
                                 newFrame.Events.Objects.Add(qualItem);
                             }
-                            
+
                             for (var eg = 0;
                                  eg < newFrame.Events.Items.Count;
                                  eg++) //foreach (EventGroup eventGroup in newFrame.Events.Items)
@@ -467,10 +468,14 @@ public class FTDecompile : IFusionTool
                                         continue;
                                     foreach (var quailifer in qualifiers)
                                     {
-                                        
+
                                         if (quailifer.Value.ObjectInfo == action.ObjectInfo &&
                                             quailifer.Value.Type == action.ObjectType)
+                                        {
                                             action.ObjectInfo = quailifer.Key;
+                                            action.ObjectType = quailifer.Value.Type;
+                                        }
+
                                         foreach (var param in action.Items)
                                         {
                                             if (param.Loader is ExpressionParameter expr)
@@ -478,13 +483,28 @@ public class FTDecompile : IFusionTool
                                                 foreach (var actualExpr in expr.Items)
                                                 {
                                                     if (quailifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                    {
                                                         actualExpr.ObjectInfo = quailifer.Key;
+                                                        actualExpr.ObjectType = quailifer.Value.Type;
+                                                    }
+
                                                 }
                                             }
                                             else if (param.Loader is ParamObject obj)
                                             {
                                                 if (quailifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                {
                                                     obj.ObjectInfo = quailifer.Key;
+                                                    obj.ObjectType = quailifer.Value.Type;
+                                                }
+                                            }
+                                            else if (param.Loader is Position pos)
+                                            {
+                                                if (quailifer.Value.ObjectInfo == -pos.ObjectInfoParent)
+                                                {
+                                                    Logger.Log("gay");
+                                                    pos.ObjectInfoParent = quailifer.Key;
+                                                }
                                             }
                                         }
                                     }
@@ -495,7 +515,11 @@ public class FTDecompile : IFusionTool
                                 {
                                     if (quailifer.Value.ObjectInfo == cond.ObjectInfo &&
                                         quailifer.Value.Type == cond.ObjectType)
+                                    {
                                         cond.ObjectInfo = quailifer.Key;
+                                        cond.ObjectType = quailifer.Value.Type;
+                                    }
+
                                     foreach (var param in cond.Items)
                                     {
                                         if (param.Loader is ExpressionParameter expr)
@@ -503,13 +527,26 @@ public class FTDecompile : IFusionTool
                                             foreach (var actualExpr in expr.Items)
                                             {
                                                 if (quailifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                {
                                                     actualExpr.ObjectInfo = quailifer.Key;
+                                                    actualExpr.ObjectType = quailifer.Value.Type;
+                                                }
                                             }
                                         }
                                         else if (param.Loader is ParamObject obj)
                                         {
                                             if (quailifer.Value.ObjectInfo == obj.ObjectInfo)
+                                            {
                                                 obj.ObjectInfo = quailifer.Key;
+                                                obj.ObjectType = quailifer.Value.Type;
+                                            }
+                                        }
+                                        else if (param.Loader is Position pos)
+                                        {
+                                            if (quailifer.Value.ObjectInfo == pos.ObjectInfoParent)
+                                            {
+                                                pos.ObjectInfoParent = quailifer.Key;
+                                            }
                                         }
                                     }
                                 }

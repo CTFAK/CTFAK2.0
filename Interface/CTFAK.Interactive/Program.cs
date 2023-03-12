@@ -148,9 +148,11 @@ public class Program
             foreach (var reader in readers)
             {
                 
-                fileOptionsWindow.Controls.Add(new Button($"Read as {reader.Name}",(() =>
+                fileOptionsWindow.Controls.Add(new Button($"Read as {reader.Name}",((key) =>
                 {
                     CTFAKCore.CurrentReader = reader;
+                    if (key == ConsoleKey.D)
+                        CTFAKCore.Parameters += "-debug";
                     if (isAndroid.Activated)
                         CTFAKCore.Parameters += "-android ";
                     if (traceChunks.Activated)

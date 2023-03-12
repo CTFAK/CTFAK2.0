@@ -17,7 +17,7 @@ public class Control
         
     }
 
-    public virtual void OnActivated()
+    public virtual void OnActivated(ConsoleKey key)
     {
         
     }

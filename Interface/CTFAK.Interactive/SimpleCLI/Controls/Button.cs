@@ -5,14 +5,22 @@ namespace SimpleCLI.Controls;
 public class Button:Control
 {
     public string Text;
-    public Action Activated;
+    public Action<ConsoleKey> Activated;
+    public bool activateWithAny;
 
     public Button(string txt,Action act)
     {
         Text = txt;
-        Activated = act;
+        Activated = (key)=>{act.Invoke();};
+        activateWithAny = false;
     }
-
+    public Button(string txt,Action<ConsoleKey> act)
+    {
+        Text = txt;
+        Activated = act;
+        activateWithAny = true;
+    }
+    
     public override bool IsSelectable => true;
 
     public override void Draw(ref int x, ref int y)
@@ -31,8 +39,11 @@ public class Button:Control
         else y += 1;
     }
 
-    public override void OnActivated()
+    public override void OnActivated(ConsoleKey key)
     {
-        Activated.Invoke();
+        if (activateWithAny)
+            Activated.Invoke(key);
+        else if (key == ConsoleKey.Enter) 
+            Activated.Invoke(key);
     }
 }

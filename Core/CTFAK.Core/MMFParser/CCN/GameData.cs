@@ -226,6 +226,8 @@ public class GameData
         // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
         // it's safe to just read again
         //chunkList.Read(reader); // turns out it's not
+        if (CTFAKCore.Parameters.Contains("-debug"))
+            Console.ReadLine();
     }
 
     public void Write(ByteWriter writer)

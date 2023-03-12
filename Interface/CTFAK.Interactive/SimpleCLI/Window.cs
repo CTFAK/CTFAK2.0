@@ -128,8 +128,10 @@ public class Window
                         SelectedControl.OnSelected();
                     }
                     break;
-                case ConsoleKey.Enter:
-                    SelectedControl?.OnActivated();
+                default:
+                    if (SelectedControl == null)
+                        break;
+                    SelectedControl.OnActivated(keyResult.Key);
                     break;
                     
             }

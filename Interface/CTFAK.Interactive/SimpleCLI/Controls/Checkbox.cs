@@ -29,7 +29,7 @@ public class Checkbox:Control
         else y += 1;
     }
 
-    public override void OnActivated()
+    public override void OnActivated(ConsoleKey key)
     {
         Activated = !Activated;
     }
