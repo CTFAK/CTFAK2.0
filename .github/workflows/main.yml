@@ -35,10 +35,11 @@ jobs:
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/win-x64/publish/Plugins/CTFAK.Decompiler.pdb
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/win-x64/publish/Plugins/CTFAK.Decompiler.pdb
           cp -R /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Core/CTFAK.Core/x64 /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/win-x64/publish/
-          
+         
+      - name: Prepare timing data
+        run: date +%s > /opt/lampp/htdocs/ctfak/latestbuildid
       - name: Build CTFAK.Interactive
         run: |
-          date +%s > /opt/lampp/htdocs/ctfak/latestbuildid
           dotnet publish Interface/CTFAK.Interactive -f net7.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained false -p:SourceRevisionId=`cat /opt/lampp/htdocs/ctfak/latestbuildid`
           mkdir /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/Dumper.dll
@@ -51,7 +52,21 @@ jobs:
           chmod 777 CTFAK.Interactive_Latest.zip
           cp CTFAK.Interactive_Latest.zip /opt/lampp/htdocs/ctfak/CTFAK.Interactive_Latest.zip
           rm CTFAK.Interactive_Latest.zip
-      
+          
+      - name: Build CTFAK.Interactive (Self-contained)
+        run: |
+          dotnet publish Interface/CTFAK.Interactive -f net7.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained true -p:SourceRevisionId=`cat /opt/lampp/htdocs/ctfak/latestbuildid`
+          mkdir /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins
+          cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/Dumper.dll
+          cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/Dumper.pdb
+          cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/CTFAK.Decompiler.dll
+          cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/CTFAK.Decompiler.pdb
+          cp -R /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Core/CTFAK.Core/x64 /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/
+          cd /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/
+          zip -r CTFAK.Interactive_Latest_SelfContained.zip *
+          chmod 777 CTFAK.Interactive_Latest_SelfContained.zip
+          cp CTFAK.Interactive_Latest_SelfContained.zip /opt/lampp/htdocs/ctfak/CTFAK.Interactive_Latest_SelfContained.zip
+          rm CTFAK.Interactive_Latest_SelfContained.zip
         
       - name: Upload Core library
         uses: actions/upload-artifact@v2
