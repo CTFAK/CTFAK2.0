@@ -498,6 +498,11 @@ public class FTDecompile : IFusionTool
                                                     actualExpr.ObjectInfo = quailifer.Key;
                                             }
                                         }
+                                        else if (param.Loader is ParamObject obj)
+                                        {
+                                            if (quailifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                obj.ObjectInfo = quailifer.Key;
+                                        }
                                     }
                                 }
                             }
