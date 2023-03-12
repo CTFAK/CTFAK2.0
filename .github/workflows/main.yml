@@ -38,7 +38,8 @@ jobs:
           
       - name: Build CTFAK.Interactive
         run: |
-          dotnet publish Interface/CTFAK.Interactive -f net7.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained false
+          date +%s > /opt/lampp/htdocs/ctfak/latestbuildid
+          dotnet publish Interface/CTFAK.Interactive -f net7.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained false -p:SourceRevisionId=`cat /opt/lampp/htdocs/ctfak/latestbuildid`
           mkdir /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/Dumper.dll
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/Dumper.pdb
