@@ -52,8 +52,7 @@ jobs:
           chmod 777 CTFAK.Interactive_Latest.zip
           cp CTFAK.Interactive_Latest.zip /opt/lampp/htdocs/ctfak/CTFAK.Interactive_Latest.zip
           rm CTFAK.Interactive_Latest.zip
-          cd ..
-          rm -R publish
+ 
           
       - name: Upload CTFAK.Interactive
         uses: actions/upload-artifact@v2
@@ -63,6 +62,7 @@ jobs:
     
       - name: Build CTFAK.Interactive (Self-contained)
         run: |
+          rm -r /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/
           dotnet publish Interface/CTFAK.Interactive -f net7.0-windows -c Debug -r win-x64 -p:PublishSingleFile=true --self-contained true -p:SourceRevisionId=`cat /opt/lampp/htdocs/ctfak/latestbuildid`
           mkdir /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins
           cp /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/win-x64/publish/Plugins/Dumper.dll
