@@ -493,7 +493,6 @@ public class FTDecompile : IFusionTool
                                 foreach (var cond in eventGroup.Conditions)
                                 foreach (var quailifer in qualifiers)
                                 {
-                                    Logger.Log($"Object with OI: {cond.ObjectInfo}");
                                     if (quailifer.Value.ObjectInfo == cond.ObjectInfo &&
                                         quailifer.Value.Type == cond.ObjectType)
                                         cond.ObjectInfo = quailifer.Key;
@@ -530,8 +529,13 @@ public class FTDecompile : IFusionTool
         var rgx = new Regex("[^a-zA-Z0-9 -]");
         outPath = rgx.Replace(outPath, "").Trim(' ');
         Directory.CreateDirectory($"Dumps\\{outPath}");
+        string mfaName = Path.GetFileNameWithoutExtension(game.EditorFilename);
+        if (string.IsNullOrEmpty(mfaName))
+        {
+            mfaName = Path.GetFileNameWithoutExtension(game.TargetFilename);
+        }
         mfa.Write(new ByteWriter(new FileStream(
-            $"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.EditorFilename)}.mfa", FileMode.Create)));
+            $"Dumps\\{outPath}\\{mfaName}.mfa", FileMode.Create)));
         Console.ReadLine();
 
         static MFATransition ConvertTransition(Transition gameTrans)
