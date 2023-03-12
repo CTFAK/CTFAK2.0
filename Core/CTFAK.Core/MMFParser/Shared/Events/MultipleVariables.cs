@@ -6,7 +6,7 @@ namespace CTFAK.MMFParser.Shared.Events;
 public class Multivar : ChunkLoader
 {
     public bool global;
-    private int index;
+    public int index;
     public bool isDouble;
     public int op;
     public double value;

@@ -234,7 +234,7 @@ public class EventGroup : ChunkLoader
                                 //Alterable Values
                                 newCondition.Num = -27;
                                 var newParam = new AlterableValue();
-                                newParam.Value = (short)j;
+                                newParam.Value = (short)val.index;
                                 newCondition.Items.Add(new Parameter { Code = 50, Loader = newParam });
                                 var exp = new ExpressionParameter { Comparsion = (short)val.op };
                                 exp.Items.Add(new Expression
