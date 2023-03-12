@@ -28,21 +28,21 @@ jobs:
       - name: Build CTFAK.Cli     
         run: |
           dotnet build Interface/CTFAK.Cli -f net6.0-windows -c Debug
-          mkdir D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows\Plugins
+          mkdir /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows/Plugins
           
           
       - name: Build CTFAK.Interactive
         run: |
           dotnet build Interface/CTFAK.Interactive -f net7.0-windows -c Debug
-          mkdir D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\Dumper\bin\Debug\net6.0-windows\Dumper.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.dll D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
-          copy D:\a\CTFAK2.0\CTFAK2.0\Plugins\CTFAK.Decompiler\bin\Debug\net6.0-windows\CTFAK.Decompiler.pdb D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows\Plugins
+          mkdir /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/Dumper/bin/Debug/net6.0-windows/Dumper.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.dll /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/Plugins
+          copy /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Plugins/CTFAK.Decompiler/bin/Debug/net6.0-windows/CTFAK.Decompiler.pdb /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows/Plugins
           
       
         
@@ -50,24 +50,18 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: CTFAK.Core
-          path: D:\a\CTFAK2.0\CTFAK2.0\Core\CTFAK.Core\bin\Debug\net6.0-windows
+          path: /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Core/CTFAK.Core/bin/Debug/net6.0-windows
           
       - name: Upload CLI tool
         uses: actions/upload-artifact@v2
         with:
           name: CTFAK.Cli
-          path: D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Cli\bin\Debug\net6.0-windows
+          path: /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Cli/bin/Debug/net6.0-windows
           
       - name: Upload Interactive console tool
         uses: actions/upload-artifact@v2
         with:
           name: CTFAK.Interactive
-          path: D:\a\CTFAK2.0\CTFAK2.0\Interface\CTFAK.Interactive\bin\Debug\net7.0-windows
+          path: /home/kostya/actions-runner/_work/CTFAK2.0/CTFAK2.0/Interface/CTFAK.Interactive/bin/Debug/net7.0-windows
     
-      
-      
-      
-     
-      
-      
       
