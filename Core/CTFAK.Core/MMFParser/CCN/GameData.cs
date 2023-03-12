@@ -24,7 +24,7 @@ public class GameData
 
     public string AboutText;
     public string Author = "";
-    public BinaryFiles BinaryFiles;
+    public BinaryFiles BinaryFiles = new BinaryFiles();
     public string Copyright;
     public string Doc;
 
@@ -226,7 +226,6 @@ public class GameData
         // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
         // it's safe to just read again
         //chunkList.Read(reader); // turns out it's not
-        Console.ReadLine();
     }
 
     public void Write(ByteWriter writer)

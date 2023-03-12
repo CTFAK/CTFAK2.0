@@ -547,7 +547,6 @@ public class FTDecompile : IFusionTool
         }
         mfa.Write(new ByteWriter(new FileStream(
             $"Dumps\\{outPath}\\{mfaName}.mfa", FileMode.Create)));
-        Console.ReadLine();
 
         static MFATransition ConvertTransition(Transition gameTrans)
         {

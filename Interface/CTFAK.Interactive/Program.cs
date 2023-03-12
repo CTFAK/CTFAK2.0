@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using CTFAK;
 using CTFAK.FileReaders;
@@ -16,11 +17,45 @@ public class Program
         @"|  \__  | |  | |   | |-|||   \   /   /___| \_/|" + "\n" +
         @"\____/  \_/  \_/   \_/ \|\_|\_\  \____/\/\____/";
 
+    public static Label dateErrorLabel;
+    public static void ValidateBuildTime()
+    {
+        try
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var attr = assembly.GetCustomAttributes().First(
+                    a => a.GetType() == typeof(AssemblyInformationalVersionAttribute)) as
+                AssemblyInformationalVersionAttribute;
+            var versionText = attr.InformationalVersion.Split("+")[1];
+            var time = int.Parse(versionText);
+            using (var wc = new WebClient())
+            {
+                var data = int.Parse(wc.DownloadString("https://kostyaslair.com/ctfak/latestbuildid"));
+                if (data != time)
+                {
+                    dateErrorLabel =
+                        new Label(
+                            $"Warning: You are not using the latest released build of CTFAK. Latest ID: {data}. Your ID: {time}\nSupport will not be provided. Please update\n",
+                            ConsoleColor.Red);
+                }
+            }
+        }
+        catch
+        {
+            Logger.LogWarning("Error while accessing the version API. Running anyways...");
+        }
+
+
+    }
     public static void AddHeader(Window wnd)
     {
         wnd.Controls.Add(new Label(art,ConsoleColor.DarkYellow));
         wnd.Controls.Add(new Label("by 1987kostya and Yunivers",ConsoleColor.DarkMagenta));
         wnd.Controls.Add(new Separator(1));
+        if (dateErrorLabel != null)
+        {
+            wnd.Controls.Add(dateErrorLabel);
+        }
 
     }
 
@@ -28,6 +63,7 @@ public class Program
     public static void Main(string[] args)
     {
         CTFAKCore.Init();
+        ValidateBuildTime();
         var mainWindow = new Window();
         var inspectorWindow = new Window();
         var fileOptionsWindow = new Window();
