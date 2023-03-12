@@ -268,6 +268,27 @@ public class EventGroup : ChunkLoader
             if (item.Num == 43 && item.ObjectType == -1)
             {
             }
+            else if (item.Num == 2 && item.Items.Count == 2)
+            {
+                var xAct = new Action();
+                xAct.DefType = item.DefType;
+                xAct.ObjectInfo = item.ObjectInfo;
+                xAct.Flags = item.Flags;
+                xAct.OtherFlags = item.OtherFlags;
+                xAct.ObjectType = item.ObjectType;
+                xAct.Num = 2;
+                xAct.Items.Add(item.Items[0]);
+                var yAct = new Action();
+                yAct.DefType = item.DefType;
+                yAct.ObjectInfo = item.ObjectInfo;
+                yAct.Flags = item.Flags;
+                yAct.OtherFlags = item.OtherFlags;
+                yAct.ObjectType = item.ObjectType;
+                yAct.Num = 3;
+                yAct.Items.Add(item.Items[1]);
+                Actions.Add(xAct);
+                Actions.Add(yAct);
+            }
             else
             {
                 Actions.Add(item);
