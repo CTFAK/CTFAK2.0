@@ -435,7 +435,7 @@ public class FTDecompile : IFusionTool
                             newFrame.Events.Items = frame.Events.Items;
 
                             var qualifiers = new Dictionary<int, Quailifer>();
-                            foreach (var quailifer in frame.Events.QualifiersList.Values)
+                            foreach (var quailifer in frame.Events.QualifiersList)
                             {
                                 var newHandle = 0;
                                 while (true)
@@ -444,7 +444,7 @@ public class FTDecompile : IFusionTool
                                         !qualifiers.Keys.Any(item => item == newHandle)) break;
                                     newHandle++;
                                 }
-
+                                //newHandle = quailifer.ObjectInfo;
                                 qualifiers.Add(newHandle, quailifer);
                                 var qualItem = new EventObject();
                                 qualItem.Handle = (uint)newHandle;
@@ -455,7 +455,7 @@ public class FTDecompile : IFusionTool
                                 qualItem.ObjectType = 3;
                                 newFrame.Events.Objects.Add(qualItem);
                             }
-
+                            
                             for (var eg = 0;
                                  eg < newFrame.Events.Items.Count;
                                  eg++) //foreach (EventGroup eventGroup in newFrame.Events.Items)
@@ -467,7 +467,9 @@ public class FTDecompile : IFusionTool
                                         continue;
                                     foreach (var quailifer in qualifiers)
                                     {
-                                        if (quailifer.Value.ObjectInfo == action.ObjectInfo)
+                                        
+                                        if (quailifer.Value.ObjectInfo == action.ObjectInfo &&
+                                            quailifer.Value.Type == action.ObjectType)
                                             action.ObjectInfo = quailifer.Key;
                                         foreach (var param in action.Items)
                                         {
@@ -475,9 +477,14 @@ public class FTDecompile : IFusionTool
                                             {
                                                 foreach (var actualExpr in expr.Items)
                                                 {
-                                                    if (quailifer.Value.ObjectInfo == actualExpr.ObjectInfo) 
+                                                    if (quailifer.Value.ObjectInfo == actualExpr.ObjectInfo)
                                                         actualExpr.ObjectInfo = quailifer.Key;
                                                 }
+                                            }
+                                            else if (param.Loader is ParamObject obj)
+                                            {
+                                                if (quailifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                    obj.ObjectInfo = quailifer.Key;
                                             }
                                         }
                                     }
@@ -486,7 +493,9 @@ public class FTDecompile : IFusionTool
                                 foreach (var cond in eventGroup.Conditions)
                                 foreach (var quailifer in qualifiers)
                                 {
-                                    if (quailifer.Value.ObjectInfo == cond.ObjectInfo)
+                                    Logger.Log($"Object with OI: {cond.ObjectInfo}");
+                                    if (quailifer.Value.ObjectInfo == cond.ObjectInfo &&
+                                        quailifer.Value.Type == cond.ObjectType)
                                         cond.ObjectInfo = quailifer.Key;
                                     foreach (var param in cond.Items)
                                     {
@@ -523,6 +532,7 @@ public class FTDecompile : IFusionTool
         Directory.CreateDirectory($"Dumps\\{outPath}");
         mfa.Write(new ByteWriter(new FileStream(
             $"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.EditorFilename)}.mfa", FileMode.Create)));
+        Console.ReadLine();
 
         static MFATransition ConvertTransition(Transition gameTrans)
         {

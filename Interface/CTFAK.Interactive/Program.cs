@@ -61,6 +61,7 @@ public class Program
         var isAndroid = new Checkbox("Use Android");
         var traceChunks = new Checkbox("Trace Chunks");
         var noicons = new Checkbox("No Icons");
+        var noimgs = new Checkbox("No Images");
 
         foreach (var tool in toolList)
         {
@@ -120,6 +121,9 @@ public class Program
                         CTFAKCore.Parameters += "-trace_chunks ";
                     if (noicons.Activated)
                         CTFAKCore.Parameters += "-noicons ";
+                    if (noimgs.Activated)
+                        CTFAKCore.Parameters += "-noimg ";
+                    
                     
                     currentReader = reader;
                     readerStopwatch.Start();
@@ -158,6 +162,7 @@ public class Program
             fileOptionsWindow.Controls.Add(isAndroid);
             fileOptionsWindow.Controls.Add(traceChunks);
             fileOptionsWindow.Controls.Add(noicons);
+            fileOptionsWindow.Controls.Add(noimgs);
             Window.Show(fileOptionsWindow);
                     
         })));

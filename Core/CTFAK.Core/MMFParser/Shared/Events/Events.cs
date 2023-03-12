@@ -21,7 +21,7 @@ public class Events : ChunkLoader
     public int MaxObjects;
     public List<int> NumberOfConditions = new();
     public int NumberOfPlayers;
-    public Dictionary<int, Quailifer> QualifiersList = new();
+    public List<Quailifer> QualifiersList = new();
 
     public override void Write(ByteWriter Writer)
     {
@@ -45,11 +45,12 @@ public class Events : ChunkLoader
                 var qualifierCount = reader.ReadInt16(); //should be 0, so i dont care
                 for (var i = 0; i < qualifierCount; i++)
                 {
+                    
                     var newQualifier = new Quailifer();
                     newQualifier.Read(reader);
-                    if (!QualifiersList.ContainsKey(newQualifier.ObjectInfo))
-                        QualifiersList.Add(newQualifier.ObjectInfo, newQualifier);
+                    QualifiersList.Add(newQualifier);
                 }
+                Logger.Log($"Planned count: {qualifierCount}. Real count: {QualifiersList.Count}");
             }
             else if (identifier == EventCount)
             {
@@ -444,7 +445,7 @@ public class Condition : ChunkLoader
         //return Preprocessor.ProcessCondition(this);
         //return $"Condition {(Constants.ObjectType)ObjectType}=={Names.ConditionNames[ObjectType][Num]}{(Items.Count > 0 ? "-"+Items[0].ToString() : " ")}";
         return
-            $"Condition {(Constants.ObjectType)ObjectType}=={Num}{(Items.Count > 0 ? "-" + Items[0].Loader : " ")} Params: {Items.Count}";
+            $"Condition {(Constants.ObjectType)ObjectType}=={Num}{(Items.Count > 0 ? "-" + Items[0].Loader : " ")} Params: {Items.Count}. Object: ({ObjectInfo})-({ObjectType})";
     }
 }
 
