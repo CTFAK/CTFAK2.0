@@ -148,7 +148,7 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 if (Settings.Build >= 284)
                 {
-                    if (isMFA)
+                    if (isMFA || Settings.Android && Settings.Build == 287)
                     {
                         IsRestricted = reader.ReadInt16(); //For MFA
                         RestrictCpt = reader.ReadInt16();
@@ -183,77 +183,82 @@ namespace CTFAK.CCN.Chunks.Frame
                 {
                     //this is the most retarded thing i have ever seen and it breaks mfa reading. fuck that one moron who added that
                 }
-                else if (item.Num == -25)
+                else if (item.Num == -25 || item.Num == -41)
                 {
                     if (item.Items.Count > 0)
                     {
-                        if (item.Items[0].Loader is MultipleVariables multivar)
+                        bool isNormal;
+                        foreach (var param in item.Items)
                         {
-                            //To the no-lifer who decided that it was a good idea to do that kind of shit:
-                            //All that bit logic bullshit is probably slower than the normal way of value comparsion
-                            //And if it was done to prevent decompilers from working with it - you have failed
-                            //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
-
-                            //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
-                            //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
-                            //12.03.2023 Turns out my fix didn't really work, so I'm back here again
-
-                            int cnt = 0;
-                            int mask = 1;
-                            while (true)
+                            if (param.Loader is MultipleVariables multivar)
                             {
-                                if (mask == 0) break;
-                                if ((mask & multivar.flagMasks) == 0)
+                                //To the no-lifer who decided that it was a good idea to do that kind of shit:
+                                //All that bit logic bullshit is probably slower than the normal way of value comparsion
+                                //And if it was done to prevent decompilers from working with it - you have failed
+                                //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
+
+                                //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
+                                //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
+                                //12.03.2023 Turns out my fix didn't really work, so I'm back here again
+
+                                int cnt = 0;
+                                int mask = 1;
+                                while (true)
                                 {
+                                    if (mask == 0) break;
+                                    if ((mask & multivar.flagMasks) == 0)
+                                    {
+                                        mask <<= 1;
+                                        cnt++;
+                                        continue;
+                                    }
+                                    var newCondition = new Condition();
+                                    newCondition.DefType = item.DefType;
+                                    newCondition.Identifier = item.Identifier + cnt;
+                                    newCondition.ObjectInfo = item.ObjectInfo;
+                                    newCondition.Flags = item.Flags;
+                                    newCondition.OtherFlags = item.OtherFlags;
+                                    newCondition.ObjectType = item.ObjectType;
+
+                                    //Alterable Flags
+                                    newCondition.Num = ((mask & multivar.flagValues) == 0) ? -24 : -25;
+                                    var exp = new ExpressionParameter() { Comparsion = 0 };
+                                    exp.Items.Add(new Expression()
+                                    { Loader = new LongExp() { Value = cnt }, ObjectType = -1 });
+                                    newCondition.Items.Add(new Parameter() { Code = 22, Loader = exp });
+                                    Conditions.Add(newCondition);
                                     mask <<= 1;
-                                    continue;
+                                    cnt++;
+                                    Events.IdentifierCounter++;
                                 }
-                                var newCondition = new Condition();
-                                newCondition.DefType = item.DefType;
-                                newCondition.Identifier = item.Identifier + cnt;
-                                newCondition.ObjectInfo = item.ObjectInfo;
-                                newCondition.Flags = item.Flags;
-                                newCondition.OtherFlags = item.OtherFlags;
-                                newCondition.ObjectType = item.ObjectType;
 
-                                //Alterable Flags
-                                newCondition.Num = ((mask & multivar.flagValues) == 0) ? -24 : -25;
-                                var exp = new ExpressionParameter() { Comparsion = 0 };
-                                exp.Items.Add(new Expression()
-                                { Loader = new LongExp() { Value = cnt }, ObjectType = -1 });
-                                newCondition.Items.Add(new Parameter() { Code = 22, Loader = exp });
-                                Conditions.Add(newCondition);
-                                mask <<= 1;
-                                cnt++;
-                                Events.IdentifierCounter++;
+                                for (int j = 0; j < multivar.values.Length; j++)
+                                {
+                                    var val = multivar.values[j];
+                                    var newCondition = new Condition();
+                                    newCondition.DefType = item.DefType;
+                                    newCondition.Identifier = item.Identifier + j;
+                                    newCondition.ObjectInfo = item.ObjectInfo;
+                                    newCondition.Flags = item.Flags;
+                                    newCondition.OtherFlags = item.OtherFlags;
+                                    newCondition.ObjectType = item.ObjectType;
+
+                                    //Alterable Values
+                                    newCondition.Num = -27;
+                                    var newParam = new AlterableValue();
+                                    newParam.Value = (short)val.index;
+                                    newCondition.Items.Add(new Parameter() { Code = 50, Loader = newParam });
+                                    var exp = new ExpressionParameter() { Comparsion = (short)val.op };
+                                    exp.Items.Add(new Expression()
+                                    { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
+                                    newCondition.Items.Add(new Parameter() { Code = 23, Loader = exp });
+                                    Conditions.Add(newCondition);
+                                    Events.IdentifierCounter++;
+                                }
                             }
-
-                            for (int j = 0; j < multivar.values.Length; j++)
-                            {
-                                var val = multivar.values[j];
-                                var newCondition = new Condition();
-                                newCondition.DefType = item.DefType;
-                                newCondition.Identifier = item.Identifier + j;
-                                newCondition.ObjectInfo = item.ObjectInfo;
-                                newCondition.Flags = item.Flags;
-                                newCondition.OtherFlags = item.OtherFlags;
-                                newCondition.ObjectType = item.ObjectType;
-
-                                //Alterable Values
-                                newCondition.Num = -27;
-                                var newParam = new AlterableValue();
-                                newParam.Value = (short)val.index;
-                                newCondition.Items.Add(new Parameter() { Code = 50, Loader = newParam });
-                                var exp = new ExpressionParameter() { Comparsion = (short)val.op };
-                                exp.Items.Add(new Expression()
-                                { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
-                                newCondition.Items.Add(new Parameter() { Code = 23, Loader = exp });
-                                Conditions.Add(newCondition);
-                                Events.IdentifierCounter++;
-                            }
+                            else
+                                Conditions.Add(item);
                         }
-                        else
-                            Conditions.Add(item);
                     }
                     else
                         Conditions.Add(item);

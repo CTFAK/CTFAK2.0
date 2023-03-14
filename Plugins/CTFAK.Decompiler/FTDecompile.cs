@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using CTFAK.Core.Properties;
 using CTFAK.CCN.Chunks.Banks;
 using CTFAK.MMFParser.EXE.Loaders.Events.Parameters;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CTFAK.Tools
 {
@@ -285,7 +286,7 @@ namespace CTFAK.Tools
                     newFrame.Password = "";
                     newFrame.LastViewedX = 320;
                     newFrame.LastViewedY = 240;
-                    if (frame.palette == null) continue;
+                    //if (frame.palette == null) continue;
                     newFrame.Palette = frame.palette ?? new List<Color>();
                     newFrame.StampHandle = 13;
                     newFrame.ActiveLayer = 0;
@@ -505,7 +506,10 @@ namespace CTFAK.Tools
                                         {
                                             if (qualifer.Value.ObjectInfo == action.ObjectInfo &&
                                                 qualifer.Value.Type == action.ObjectType)
+                                            {
                                                 action.ObjectInfo = qualifer.Key;
+                                                action.ObjectType = qualifer.Value.Type;
+                                            }
                                             foreach (var param in action.Items)
                                             {
                                                 if (param.Loader is ExpressionParameter expr)
@@ -513,13 +517,26 @@ namespace CTFAK.Tools
                                                     foreach (var actualExpr in expr.Items)
                                                     {
                                                         if (qualifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                        {
                                                             actualExpr.ObjectInfo = qualifer.Key;
+                                                            actualExpr.ObjectType = qualifer.Value.Type;
+                                                        }
                                                     }
                                                 }
                                                 else if (param.Loader is ParamObject obj)
                                                 {
                                                     if (qualifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                    { 
                                                         obj.ObjectInfo = qualifer.Key;
+                                                        obj.ObjectType = qualifer.Value.Type;
+                                                    }
+                                                }
+                                                else if (param.Loader is Position pos)
+                                                {
+                                                    if (qualifer.Value.ObjectInfo == -pos.ObjectInfoParent)
+                                                    {
+                                                        pos.ObjectInfoParent = qualifer.Key;
+                                                    }
                                                 }
                                             }
                                         }
@@ -530,7 +547,10 @@ namespace CTFAK.Tools
                                         {
                                             if (qualifer.Value.ObjectInfo == cond.ObjectInfo &&
                                                 qualifer.Value.Type == cond.ObjectType)
+                                            {
                                                 cond.ObjectInfo = qualifer.Key;
+                                                cond.ObjectType = qualifer.Value.Type;
+                                            }
                                             foreach (var param in cond.Items)
                                             {
                                                 if (param.Loader is ExpressionParameter expr)
@@ -538,13 +558,26 @@ namespace CTFAK.Tools
                                                     foreach (var actualExpr in expr.Items)
                                                     {
                                                         if (qualifer.Value.ObjectInfo == actualExpr.ObjectInfo)
+                                                        {
                                                             actualExpr.ObjectInfo = qualifer.Key;
+                                                            actualExpr.ObjectType = qualifer.Value.Type;
+                                                        }
                                                     }
                                                 }
                                                 else if (param.Loader is ParamObject obj)
                                                 {
                                                     if (qualifer.Value.ObjectInfo == obj.ObjectInfo)
+                                                    {
                                                         obj.ObjectInfo = qualifer.Key;
+                                                        obj.ObjectType = qualifer.Value.Type;
+                                                    }
+                                                }
+                                                else if (param.Loader is Position pos)
+                                                {
+                                                    if (qualifer.Value.ObjectInfo == -pos.ObjectInfoParent)
+                                                    {
+                                                        pos.ObjectInfoParent = qualifer.Key;
+                                                    }
                                                 }
                                             }
                                         }

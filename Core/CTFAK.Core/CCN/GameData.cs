@@ -374,8 +374,8 @@ namespace CTFAK.CCN
                             Sounds.Read(chunkReader);
                         break;
                     case 26217: // old 21217 (invalid)
-                        Music = new MusicBank();
-                        Music.Read(chunkReader);
+                        /*Music = new MusicBank();
+                        Music.Read(chunkReader);*/ //Actually go fuck yourself Log0
                         break;
                     default:
                         Logger.Log("No Reader for Chunk " + newChunk.Id);

@@ -63,7 +63,7 @@ namespace CTFAK.CCN.Chunks.Banks
             Length = reader.ReadInt32();
             Frequency = reader.ReadInt32();
 
-            if (Settings.Build >= 289 && (Flags & 0x100) != 0)
+            if (Settings.Build >= 287 && (Flags & 0x100) != 0)
                 Name = reader.ReadWideString(reader.ReadInt16());
             else
                 Name = AndroidSoundBank.oldAndroidNames[Handle];

@@ -184,7 +184,8 @@ namespace CTFAK.MFA
             Writer.WriteAscii(SoundBankId);
             Sounds.Write(Writer);
             Writer.WriteAscii(MusicBankId);
-            Music.Write(Writer); 
+            Writer.WriteInt32(0);
+            //Music.Write(Writer); Fuck you Log0
             Writer.WriteAscii(ImageBankId);
             
             Icons.Write(Writer);
