@@ -37,5 +37,4 @@ bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key,
 
 void FinishDecode(DecodeBuffer* decodeBuffer, vector<uint8_t>& chunk_buffer);
 
-void DecodeChunk(vector<uint8_t>& chunk_buffer, const vector<uint8_t>& magic_key, const __m128_temp* xmmword,
-                 char magic_char);
+void DecodeChunk(vector<uint8_t>& chunk_buffer, const vector<uint8_t>& magic_key,char magic_char);

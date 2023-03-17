@@ -1,8 +1,11 @@
 #include "encryption.h"
-
+__m128_temp _xmmword;
 bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key, char magic_char,
                    const __m128_temp* xmmword)
 {
+    
+    
+    
     //std::cout << "Decoding with magic key " << magic_char << std::endl;
     __m128_temp* bufferPtr = &decodeBuffer->buffer[0]; // edx@1
     __m128i offset = _mm_load_si128((const __m128i*)xmmword); // xmm1@1
@@ -64,12 +67,15 @@ void FinishDecode(DecodeBuffer* decodeBuffer, vector<uint8_t>& chunk_buffer)
     }
 }
 
-void DecodeChunk(vector<uint8_t>& chunk_buffer, const vector<uint8_t>& magic_key, const __m128_temp* xmmword,
-                 char magic_char)
+void DecodeChunk(vector<uint8_t>& chunk_buffer, const vector<uint8_t>& magic_key, char magic_char)
 {
     DecodeBuffer decodeBuffer;
+    _xmmword.m128i_u32[0] = 0x0;
+    _xmmword.m128i_u32[1] = 0x1;
+    _xmmword.m128i_u32[2] = 0x2;
+    _xmmword.m128i_u32[3] = 0x3;
     //cout << "decoding" << endl;
-    if (DecodeWithKey(&decodeBuffer, magic_key, magic_char, xmmword))
+    if (DecodeWithKey(&decodeBuffer, magic_key, magic_char, &_xmmword))
     {
         //cout << "decoded" << endl;
         FinishDecode(&decodeBuffer, chunk_buffer);

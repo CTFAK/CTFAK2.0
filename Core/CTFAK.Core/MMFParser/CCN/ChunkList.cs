@@ -155,14 +155,15 @@ public class ChunkList
                 chunkData = newChunk.Read(reader);
                 if (newChunk.Id == 32639) break;
             }
-            catch
+            catch(Exception ex)
             {
-                continue;
+                Logger.Log($"Error while read chunk {newChunk.Id} from file. \n{ex.Message}");
+
             }
             finally
             {
                 if (newChunk.Id == 8787) Settings.gameType |= Settings.GameType.TWOFIVEPLUS;
-                if (newChunk.Id == 8740 && newChunk.Flag == ChunkFlags.NotCompressed) Settings.gameType = Settings.GameType.ANDROID; // kinda dumb but kinda smart at the same time
+                if (newChunk.Id == 8740 && newChunk.Flag == ChunkFlags.NotCompressed&&!Settings.Old) Settings.gameType = Settings.GameType.ANDROID; // kinda dumb but kinda smart at the same time
 
                 if (KnownLoaders.TryGetValue(newChunk.Id, out var loaderData))
                 {
@@ -175,8 +176,8 @@ public class ChunkList
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning(
-                            $"Error while reading chunk {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
+                        Logger.LogWarning($"Error while reading chunk {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
+                        Logger.LogWarning($"Chunk data. Id: {newChunk.Id}. Flag: {newChunk.Flag}. Data size: {chunkData.Length}");
                     }
 
                     try

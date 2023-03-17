@@ -50,12 +50,17 @@ public class Chunk
             case ChunkFlags.NotCompressed:
                 chunkData = dataReader.ReadBytes(fileSize);
                 break;
-            default:
-                throw new InvalidDataException("Unsupported chunk flag");
         }
 
-        if (chunkData == null) Logger.Log($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
-
+        if (chunkData == null)
+        {
+            Logger.LogWarning($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
+        }
+        if (chunkData.Length == 0&& Id!=32639)
+        {
+            Logger.LogWarning($"Chunk data is empty for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
+        }
+    
         return chunkData;
     }
 

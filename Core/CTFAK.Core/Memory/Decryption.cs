@@ -14,10 +14,34 @@ internal static class Decryption
     //public static byte MagicChar = 99;
     public static byte MagicChar = 54;
 
-    
+    public static byte[] MakeKeyCombined(string data)
+    {
+        byte[] dataBytes = Encoding.ASCII.GetBytes(data);
+        int dataLen = dataBytes.Length;
+        Array.Resize(ref dataBytes, 256);
+        
+        byte lastKeyByte = MagicChar;
+        byte v34 = MagicChar;
+
+        for (int i = 0; i <= dataLen; i++)
+        {
+            v34 = (byte)((v34 << 7) + (v34 >> 1));
+            dataBytes[i] ^= v34;
+            lastKeyByte += (byte)(dataBytes[i] * ((v34 & 1) + 2));
+        }
+        
+        dataBytes[dataLen + 1] = lastKeyByte;
+        return dataBytes;
+    }
+
     public static void MakeKey(string data1, string data2, string data3)
     {
-        
+
+        _decryptionKey = MakeKeyCombined(data1 + data2 + data3);
+    }
+
+    public static void MakeKeyNative(string data1, string data2, string data3)
+    {
         // MakeKeyUnicode(data1,data2,data3);
         // return;
         IntPtr keyPtr;
@@ -37,25 +61,6 @@ internal static class Decryption
         _decryptionKey = key;
         //Logger.Log($"First 16-Bytes of key: {_decryptionKey.GetHex(16)}", true, ConsoleColor.Yellow);
         //File.WriteAllBytes($"{Settings.DumpPath}\\key.bin", _decryptionKey);
-    }
-
-    public static void MakeKeyUnicode(string data1, string data2, string data3)
-    {
-        IntPtr data1ptr;
-        IntPtr data2ptr;
-        IntPtr data3ptr;
-        IntPtr keyPtr;
-        data1ptr = Marshal.StringToHGlobalUni(data1);
-        data2ptr = Marshal.StringToHGlobalUni(data2);
-        data3ptr = Marshal.StringToHGlobalUni(data3);
-        keyPtr = NativeLib.make_key_w(data1ptr, data2ptr, data3ptr, MagicChar);
-        var key = new byte[256];
-        Marshal.Copy(keyPtr, key, 0, 256);
-        _decryptionKey = key;
-        Marshal.FreeHGlobal(data1ptr);
-        Marshal.FreeHGlobal(data2ptr);
-        Marshal.FreeHGlobal(data3ptr);
-        //Logger.Log($"First 16-Bytes of key: {_decryptionKey.GetHex(16)}", true, ConsoleColor.Yellow);
     }
 
 

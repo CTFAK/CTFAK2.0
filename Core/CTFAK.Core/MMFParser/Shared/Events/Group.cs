@@ -47,10 +47,7 @@ public class Group : ParameterCommon
         Id = reader.ReadUInt16();
         Name = reader.ReadWideString();
         if (Settings.Build >= 293) Name = "Group " + Id;
-        //Name = "InvalidGroup_" + Id;
         Unk1 = reader.ReadBytes(190 - Name.Length * 2);
-        //Password = reader.ReadInt32();
-        //reader.ReadInt16();
     }
 
     public override void Write(ByteWriter Writer)
