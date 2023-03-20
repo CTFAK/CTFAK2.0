@@ -1,4 +1,6 @@
 #include "encryption.h"
+#include <emmintrin.h>
+
 __m128_temp _xmmword;
 bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key, char magic_char,
                    const __m128_temp* xmmword)
@@ -34,8 +36,7 @@ bool DecodeWithKey(DecodeBuffer* decodeBuffer, const vector<uint8_t>& magic_key,
         {
             if (v15)
                 rtn = magic_char_2 == magic_key[magic_key_pos + 1];
-            if (!rtn) cout << static_cast<char>(magic_char_2) << " " << static_cast<char>(magic_char_3) << " " <<
-                static_cast<char>(magic_key[magic_key_pos + 1]) << endl;
+
             magic_char_3 = (magic_char >> 1) + (magic_char << 7);
             magic_key_pos = 0;
             v15 = false;

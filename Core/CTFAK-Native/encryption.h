@@ -4,13 +4,6 @@
 using std::shared_ptr;
 #include <vector>
 using std::vector;
-#include <iostream>
-using std::cout;
-using std::endl;
-//#include <assert.h>
-#include <stdint.h>
-#include <iostream>
-#include <emmintrin.h>
 #include <memory>
 
 using __m128_temp = union __m128_temp
