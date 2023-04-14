@@ -4,7 +4,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class GlobalValue : Short
+    public class GlobalValue : Short
     {
 
 

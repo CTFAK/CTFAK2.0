@@ -4,7 +4,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Time : ParameterCommon
+    public class Time : ParameterCommon
     {
         public int Timer;
         public int Loops;

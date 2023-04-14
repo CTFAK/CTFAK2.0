@@ -3,7 +3,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Int : ParameterCommon
+    public class IntParam : ParameterCommon
     {
         public int Value;
 

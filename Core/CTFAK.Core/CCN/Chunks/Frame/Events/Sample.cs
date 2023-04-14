@@ -4,7 +4,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Sample : ParameterCommon
+    public class Sample : ParameterCommon
     {
         public int Handle;
         public string Name;
