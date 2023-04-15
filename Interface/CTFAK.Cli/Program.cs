@@ -13,6 +13,7 @@ using CTFAK.Utils;
 public class Program
 {
     public static IFileReader gameParser;
+    public static string builddate = "4/15/23";
 
     public static void Main(string[] args)
     {
@@ -27,16 +28,14 @@ public class Program
         Console.ResetColor();
         Thread.Sleep(700);
         Console.Clear();
-        string builddate = "4/15/23";
 
 
 
 
         ASCIIArt.DrawArt();
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("by 1987kostya and Yunivers\n");
+        Console.WriteLine("by 1987kostya and Yunivers");
         Console.WriteLine($"Running {builddate} build.\n");
-        Logger.Log($"Running {builddate} build.", false);
 
     ASK_FOR_PATH:
         ASCIIArt.SetStatus("Waiting for file");

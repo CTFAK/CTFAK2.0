@@ -24,7 +24,7 @@ namespace CTFAK.CCN
     {
         public static event CTFAKCore.SaveHandler OnChunkLoaded;
         public static event CTFAKCore.SaveHandler OnFrameLoaded;
-
+        public static string builddate = "4/15/23";
 
         public short runtimeVersion;
         public short runtimeSubversion;
@@ -69,6 +69,7 @@ namespace CTFAK.CCN
 
         public void Read(ByteReader reader)
         {
+            Logger.Log($"Running {builddate} build.", false);
             Console.WriteLine(reader.Tell());
             string magic = reader.ReadAscii(4); //Reading header
             //Checking for header
