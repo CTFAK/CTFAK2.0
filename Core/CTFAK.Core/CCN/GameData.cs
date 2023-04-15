@@ -74,14 +74,14 @@ namespace CTFAK.CCN
             //Checking for header
             if (magic == "PAMU") Settings.Unicode = true;//PAMU
             else if (magic == "PAME") Settings.Unicode = false;//PAME
-            else if (magic == "CRUF") Settings.gameType |= Settings.GameType.F3;
+            else if (magic == "CRUF") Settings.gameType = Settings.GameType.F3;
             else Logger.Log("Couldn't found any known headers: "+magic, true, ConsoleColor.Red);//Header not found
             if (CTFAKCore.parameters.Contains("-f1.5"))
-                Settings.gameType |= Settings.GameType.MMF15;
+                Settings.gameType = Settings.GameType.MMF15;
             if (CTFAKCore.parameters.Contains("-android"))
-                Settings.gameType |= Settings.GameType.ANDROID;
+                Settings.gameType = Settings.GameType.ANDROID;
             if (CTFAKCore.parameters.Contains("-f3"))
-                Settings.gameType |= Settings.GameType.F3;
+                Settings.gameType = Settings.GameType.F3;
             Logger.Log("Game Header: "+magic);
             runtimeVersion = (short)reader.ReadUInt16();
             runtimeSubversion = (short)reader.ReadUInt16();
@@ -101,7 +101,7 @@ namespace CTFAK.CCN
                 var newChunk = new Chunk();
                 var chunkData = newChunk.Read(reader);
                 if (newChunk.Id == 32639) break;
-                if (newChunk.Id == 8787) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
+                if (newChunk.Id == 8787 && !Settings.F3) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
                 var chunkReader = new ByteReader(chunkData);
                 chunkIndex++;
                 string chunkName = "";
@@ -250,7 +250,7 @@ namespace CTFAK.CCN
                         int ncurrent = 0;
                         while (chunkReader.Tell() < nend)
                         {
-                            frameitems[ncurrent].name = chunkReader.ReadUniversal();
+                            frameitems[ncurrent].name = chunkReader.ReadYuniversal();
                             ncurrent++;
                         }
                         break;

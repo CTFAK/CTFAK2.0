@@ -98,7 +98,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 FontHandle = reader.ReadUInt16();
                 Color = reader.ReadColor();
                 Flags.flag = reader.ReadUInt16();
-                Value = reader.ReadUniversal();
+                Value = reader.ReadYuniversal();
 
             }
             else
@@ -106,7 +106,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 FontHandle = reader.ReadUInt16();
                 Flags.flag = reader.ReadUInt16();
                 Color = reader.ReadColor();
-                Value = reader.ReadUniversal(); 
+                Value = reader.ReadYuniversal(); 
             }
             
 

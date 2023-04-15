@@ -4,7 +4,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Sample : ParameterCommon
+    public class Sample : ParameterCommon
     {
         public int Handle;
         public string Name;
@@ -14,7 +14,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
         {
             Handle = reader.ReadInt16();
             Flags = reader.ReadUInt16();
-            Name = reader.ReadUniversal();
+            Name = reader.ReadYuniversal();
 
             if (Settings.Android && Settings.Build < 289 &&
                 !AndroidSoundBank.oldAndroidNames.ContainsKey(Handle))

@@ -77,17 +77,26 @@ namespace CTFAK.CCN.Chunks.Frame
         public Events events;
         public BitDict flags = new BitDict(new string[]
         {
-            "XCoefficient",
-            "YCoefficient",
-            "DoNotSaveBackground",
-            "Wrap",
-            "Visible",
-            "WrapHorizontally",
-            "WrapVertically","","","","","","","","","",
-            "Redraw",
-            "ToHide",
-            "ToShow"
-
+            "DisplayTitle",
+            "GrabDesktop",
+            "KeepDisplay",
+            "Unk1",
+            "Unk2",
+            "HandleCollision",
+            "Unk3",
+            "Unk4",
+            "ResizeAtStart",
+            "Unk5",
+            "Unk6",
+            "Unk7",
+            "Unk8",
+            "Unk9",
+            "Unk10",
+            "TimeMovements",
+            "Unk11",
+            "Unk12",
+            "DontInclude",
+            "DontEraseBG"
         });
         public List<ObjectInstance> objects = new();
         public Layers layers;
@@ -101,7 +110,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public Color rgbCoeff;
         public byte blend;
         public int randomSeed;
-        public int movementTimer;
+        public int movementTimer = 60;
 
         public override void Read(ByteReader reader)
         {
@@ -427,7 +436,8 @@ namespace CTFAK.CCN.Chunks.Frame
             YCoeff = reader.ReadSingle();
             NumberOfBackgrounds = reader.ReadInt32();
             BackgroudIndex = reader.ReadInt32();
-            Name = reader.ReadUniversal();
+            if (Settings.F3) reader.Skip(6);
+            Name = reader.ReadYuniversal();
             if (Settings.Android)
             {
                 XCoeff = 1;

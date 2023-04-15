@@ -27,7 +27,7 @@ public class Program
         Console.ResetColor();
         Thread.Sleep(700);
         Console.Clear();
-            
+        string builddate = "4/15/23";
 
 
 
@@ -35,8 +35,10 @@ public class Program
         ASCIIArt.DrawArt();
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("by 1987kostya and Yunivers\n");
+        Console.WriteLine($"Running {builddate} build.\n");
+        Logger.Log($"Running {builddate} build.", false);
 
-        ASK_FOR_PATH:
+    ASK_FOR_PATH:
         ASCIIArt.SetStatus("Waiting for file");
         Console.ResetColor();
         string path = string.Empty;
@@ -106,9 +108,8 @@ public class Program
         ASCIIArt.SetStatus("Reading game");
         Console.WriteLine($"Reading game with \"{gameParser.Name}\"");
         gameParser.PatchMethods();
-            
-
         gameParser.LoadGame(path);
+        IFileReader game = gameParser.Copy();
         readStopwatch.Stop();
 
         //Console.Clear();
@@ -136,7 +137,7 @@ public class Program
         Console.WriteLine($"Game Name: "+gameParser.getGameData().name);
         Console.WriteLine($"Author: "+gameParser.getGameData().author);
         Console.WriteLine($"Number of frames: "+gameParser.getGameData().frames.Count);
-        Console.WriteLine($"Fusion Build: "+Settings.Build);
+        Console.WriteLine($"Fusion Build: "+ gameParser.getGameData().productBuild);
         Console.WriteLine("");
         ASCIIArt.SetStatus("Selecting tool");
         Console.WriteLine($"{availableTools.Count} tool(s) available\n\nSelect tool: ");
@@ -155,7 +156,8 @@ public class Program
         ASCIIArt.SetStatus($"Executing {selectedTool.Name}");
         try
         {
-            selectedTool.Execute(gameParser);
+            Settings.Build = gameParser.getGameData().productBuild;
+            selectedTool.Execute(game);
         }
         catch(Exception ex)
         {

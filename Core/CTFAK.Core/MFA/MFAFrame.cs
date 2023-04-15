@@ -33,7 +33,12 @@ namespace CTFAK.MFA
             "ScreenSaverSetup",
             "TimerBasedMovements",
             "MochiAds",
-            "NoGlobalEvents"
+            "NoGlobalEvents",
+            "Unk1",
+            "DontInclude",
+            "DontEraseBG",
+            "Unk2",
+            "ForceLoadOnCallIgnore"
         });
 
         public string Password;

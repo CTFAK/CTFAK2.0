@@ -3,7 +3,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Every : ParameterCommon
+    public class Every : ParameterCommon
     {
         public int Delay;
         public int Compteur;

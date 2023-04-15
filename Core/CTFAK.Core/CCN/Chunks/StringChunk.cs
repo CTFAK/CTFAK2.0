@@ -13,7 +13,7 @@ namespace CTFAK.CCN.Chunks
         public string value="";
         public override void Read(ByteReader reader)
         {
-            value = reader.ReadUniversal();
+            value = reader.ReadYuniversal();
             if (value == null) value = "";
         }
 

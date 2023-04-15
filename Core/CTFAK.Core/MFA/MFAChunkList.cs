@@ -65,9 +65,6 @@ namespace CTFAK.MFA
             Writer.WriteInt8(0);
         }
 
-
-
-
         public override void Read(ByteReader reader)
         {
             var start = reader.Tell();
@@ -77,16 +74,11 @@ namespace CTFAK.MFA
                 newChunk.Read();
                 if (newChunk.Id == 0) break;
                 else Items.Add(newChunk);
-
-
-
             }
 
             var size = reader.Tell() - start;
             reader.Seek(start);
             Saved = reader.ReadBytes((int)size);
-
-
         }
     }
 
@@ -109,11 +101,15 @@ namespace CTFAK.MFA
             if (Id == 0) return;
             var size = Reader.ReadInt32();
             Data = Reader.ReadBytes(size);
+            //File.WriteAllBytes($"FrameChunk{Id}.bin", Data);
             var dataReader = new ByteReader(Data);
             switch (Id)
             {
                 case 33:
                     Loader = new FrameVirtualRect();
+                    break;
+                case 39:
+                    Loader = new FrameMovementTimer();
                     break;
                 case 45:
                     Loader = new ShaderSettings();
@@ -293,12 +289,24 @@ namespace CTFAK.MFA
             Writer.WriteInt32(Bottom);
         }
     }
+
+    public class FrameMovementTimer : MFAChunkLoader
+    {
+        public int Timer;
+
+        public override void Read(ByteReader reader)
+        {
+            Timer = reader.ReadInt32();
+        }
+
+        public override void Write(ByteWriter Writer)
+        {
+            Writer.WriteInt32(Timer);
+        }
+    }
+
     public abstract class MFAChunkLoader
     {
-
-
-
-
         public abstract void Read(ByteReader reader);
         public abstract void Write(ByteWriter Writer);
     }

@@ -14,7 +14,7 @@ namespace CTFAK.CCN.Chunks
 
         public override void Read(ByteReader reader)
         {
-            name = reader.ReadUniversal(reader.ReadInt16());
+            name = reader.ReadYuniversal(reader.ReadInt16());
             data = reader.ReadBytes(reader.ReadInt32());
         }
 

@@ -111,7 +111,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
 
         public override void Read(ByteReader reader)
         {
-            Value = reader.ReadUniversal();
+            Value = reader.ReadYuniversal();
         }
 
         public override void Write(ByteWriter Writer)

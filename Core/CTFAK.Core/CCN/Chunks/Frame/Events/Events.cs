@@ -563,7 +563,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 code == 61)
                 item = new Short();
             if (code == 5 || code == 25 || code == 29 || code == 34 || code == 48 || code == 56)
-                item = new Int();
+                item = new IntParam();
             if (code == 6 || code == 7 || code == 35 || code == 36)
                 item = new Sample();
             if (code == 9 || code == 21)
@@ -604,13 +604,13 @@ namespace CTFAK.CCN.Chunks.Frame
             if (code == 47 || code == 51)
                 item = new TwoShorts();
             if (code == 67)
-                item = new Int();
+                item = new IntParam();
             if (code == 68)
                 item = new MultipleVariables();
             if (code == 69)
                 item = new ChildEvent();
             if (code == 70)
-                item = new Int();
+                item = new IntParam();
 
             return item;
         }

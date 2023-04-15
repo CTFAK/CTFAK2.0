@@ -92,7 +92,7 @@ namespace CTFAK.Memory
             return str;
         }
 
-        public string ReadUniversal(int len = -1)
+        public string ReadYuniversal(int len = -1)
         {
             if (Settings.Unicode)
                 return ReadWideString(len); 

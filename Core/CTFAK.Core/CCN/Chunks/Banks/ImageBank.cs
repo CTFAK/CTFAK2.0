@@ -37,13 +37,11 @@ namespace CTFAK.CCN.Chunks.Banks
                 var count = reader.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
-                    
                     var newImg = new Image();
                     newImg.Read(reader);
                     OnImageLoaded?.Invoke(i,count);
                     Items.Add(newImg.Handle, newImg);
                 }
-                
             }
 
             foreach (var task in Image.imageReadingTasks)
@@ -274,7 +272,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public static List<Task> imageReadingTasks = new List<Task>();
         public override void Read(ByteReader reader)
         {
-            if (Settings.TwoFivePlus &&!IsMFA)
+            if (Settings.TwoFivePlus && !IsMFA)
             {
                 Handle = reader.ReadInt32();
                 Handle -= 1;
@@ -296,21 +294,23 @@ namespace CTFAK.CCN.Chunks.Banks
                 transparent = reader.ReadInt32();
                 var decompressedSize = reader.ReadInt32();
                 var rawImg = reader.ReadBytes(dataSize - 4);
-                if (!CTFAKCore.parameters.Contains("-noalpha"))
-                    Flags["Alpha"] = true;
+                if (CTFAKCore.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 byte[] target = new byte[decompressedSize];
                 LZ4Codec.Decode(rawImg, target);
                 imageData = target;
-                graphicMode = 16;
-                var bmp = bitmap;
-                var newImg = new Image();
-                newImg.FromBitmap(bmp);
-                imageData = newImg.imageData;
-                graphicMode = 4;
-                Flags = newImg.Flags;
-
+                if (!CTFAKCore.parameters.Contains("-altimgs"))
+                {
+                    graphicMode = 16;
+                    var bmp = bitmap;
+                    var newImg = new Image();
+                    newImg.FromBitmap(bmp);
+                    imageData = newImg.imageData;
+                    graphicMode = 4;
+                    Flags = newImg.Flags;
+                }
             }
-            else if(Settings.gameType==Settings.GameType.NORMAL&&!Settings.Android)
+            else if(Settings.gameType==Settings.GameType.NORMAL && !Settings.Android)
             {
                 Handle = reader.ReadInt32();
                 if (!IsMFA && Settings.Build >= 284) Handle -= 1;
@@ -393,8 +393,8 @@ namespace CTFAK.CCN.Chunks.Banks
                 }
                 var newImage = ImageHelper.DumpImage(Handle, imageData, width, height, unk);
                 imageData = newImage.imageData;
-                if (!CTFAKCore.parameters.Contains("-noalpha"))
-                    Flags["Alpha"] = true;
+                if (CTFAKCore.parameters.Contains("-noalpha"))
+                    Flags["Alpha"] = false;
                 graphicMode = 4;
                 
             }

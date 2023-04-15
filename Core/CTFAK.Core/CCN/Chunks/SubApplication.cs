@@ -19,7 +19,7 @@ namespace CTFAK.CCN.Chunks.Objects
             odVersion = reader.ReadInt16();
             odNStartFrame = reader.ReadInt16();
             odOptions = reader.ReadInt32();
-            //odName = reader.ReadUniversal();
+            //odName = reader.ReadYuniversal();
         }
 
         public override void Write(ByteWriter Writer)

@@ -152,6 +152,14 @@ namespace CTFAK.FileReaders
         public void PatchMethods()
         {
         }
+
+        public IFileReader Copy()
+        {
+            ExeFileReader reader = new ExeFileReader();
+            reader.game = game;
+            reader.icons = icons;
+            return reader;
+        }
     }
 }
 

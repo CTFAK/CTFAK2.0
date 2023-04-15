@@ -40,6 +40,7 @@ namespace CTFAK.Tools
             var game = reader.getGameData();
             var mfa = new MFAData();
             Settings.GameType originalGameType = Settings.gameType;
+            int orginalBuild = game.productBuild;
             Settings.gameType = Settings.GameType.NORMAL;
             Dictionary<int, CCN.Chunks.Banks.Image> imgs = game.Images.Items;
 
@@ -257,7 +258,7 @@ namespace CTFAK.Tools
                 {
                     var frame = game.frames[a];
 
-                    if (frame.name == "") continue;
+                    if (frame.flags["DontInclude"]) continue;
                     //if(frame.Palette==null|| frame.Events==null|| frame.Objects==null) continue;
                     var newFrame = new MFAFrame();
                     newFrame.Chunks = new MFAChunkList();//MFA.MFA.emptyFrameChunks;
@@ -271,17 +272,16 @@ namespace CTFAK.Tools
                     newFrame.Background = frame.background;
                     newFrame.FadeIn = frame.fadeIn != null ? ConvertTransition(frame.fadeIn) : null;
                     newFrame.FadeOut = frame.fadeOut != null ? ConvertTransition(frame.fadeOut) : null;
-                    var mfaFlags = newFrame.Flags;
-                    var originalFlags = frame.flags;
 
-                    mfaFlags["GrabDesktop"] = originalFlags["GrabDesktop"];
-                    mfaFlags["KeepDisplay"] = originalFlags["KeepDisplay"];
-                    mfaFlags["BackgroundCollisions"] = originalFlags["TotalCollisionMask"];
-                    mfaFlags["ResizeToScreen"] = originalFlags["ResizeAtStart"];
-                    mfaFlags["ForceLoadOnCall"] = originalFlags["ForceLoadOnCall"];
-                    mfaFlags["NoDisplaySurface"] = false;
-                    mfaFlags["TimerBasedMovements"] = originalFlags["TimedMovements"];
-                    newFrame.Flags = mfaFlags;
+                    newFrame.Flags.flag = 0;
+                    newFrame.Flags["GrabDesktop"] = frame.flags["GrabDesktop"];
+                    newFrame.Flags["KeepDisplay"] = frame.flags["KeepDisplay"];
+                    newFrame.Flags["DisplayFrameTitle"] = frame.flags["DisplayTitle"];
+                    newFrame.Flags["BackgroundCollisions"] = frame.flags["HandleCollision"];
+                    newFrame.Flags["ResizeToScreen"] = frame.flags["ResizeAtStart"];
+                    newFrame.Flags["TimerBasedMovements"] = frame.flags["TimeMovements"];
+                    newFrame.Flags["DontEraseBG"] = frame.flags["DontEraseBG"];
+
                     newFrame.MaxObjects = frame.events?.MaxObjects ?? 10000;
                     newFrame.Password = "";
                     newFrame.LastViewedX = 320;
@@ -294,6 +294,7 @@ namespace CTFAK.Tools
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Top = frame.virtualRect?.top ?? 0;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Right = frame.virtualRect?.right ?? frame.width;
                     newFrame.Chunks.GetOrCreateChunk<FrameVirtualRect>().Bottom = frame.virtualRect?.bottom ?? frame.height;
+                    //newFrame.Chunks.GetOrCreateChunk<FrameMovementTimer>().Timer = frame.movementTimer;
                     /*var EffectHeader = newFrame.Chunks.NewChunk<ShaderSettings>(); // Frame and Layer Effect Headers
                     EffectHeader.Blend = 255;
                     EffectHeader.RGBCoeff = Color.FromArgb(0, 255, 255, 255);
@@ -600,6 +601,8 @@ namespace CTFAK.Tools
             outPath = rgx.Replace(outPath, "").Trim(' ');
             Directory.CreateDirectory($"Dumps\\{outPath}");
             mfa.Write(new ByteWriter(new FileStream($"Dumps\\{outPath}\\{Path.GetFileNameWithoutExtension(game.editorFilename)}.mfa", FileMode.Create)));
+            Settings.gameType = originalGameType;
+            game.productBuild = orginalBuild;
 
             static MFATransition ConvertTransition(Transition gameTrans)
             {

@@ -18,6 +18,7 @@ namespace CTFAK.FileReaders
         void LoadGame(string gamePath);
         Dictionary<int, Bitmap> getIcons();
         void PatchMethods();
+        IFileReader Copy();
 
     }
 }

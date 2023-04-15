@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using CTFAK.CCN;
 using CTFAK.Core.MFA;
 using CTFAK.FileReaders;
@@ -42,6 +43,14 @@ namespace CTFAK.EXE
         public void PatchMethods()
         {
             Settings.gameType = Settings.GameType.NORMAL;
+        }
+
+        public IFileReader Copy()
+        {
+            MFAFileReader reader = new MFAFileReader();
+            reader.game = game;
+            reader.mfa = mfa;
+            return reader;
         }
     }
 }

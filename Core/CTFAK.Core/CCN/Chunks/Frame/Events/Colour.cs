@@ -4,7 +4,7 @@ using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
-    class Colour : ParameterCommon
+    public class Colour : ParameterCommon
     {
         public Color Value;
 

@@ -76,7 +76,7 @@ namespace CTFAK.CCN.Chunks.Objects
                         }
                         break;
                     case 17477:
-                        name = chunkReader.ReadUniversal();
+                        name = chunkReader.ReadYuniversal();
                         break;
                     case 17478:        
                         if (ObjectType == 0) properties = new Quickbackdrop();
@@ -87,40 +87,47 @@ namespace CTFAK.CCN.Chunks.Objects
                         break;
                     case 17480:
                         shaderData.hasShader = true;
-                        var shaderHandle = chunkReader.ReadInt32();
-                        var numberOfParams = chunkReader.ReadInt32();
-                        var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
-                        shaderData.name = shdr.Name;
-                        shaderData.ShaderHandle = shaderHandle;
-
-                        for (int i = 0; i < numberOfParams; i++)
+                        try
                         {
-                            var param = shdr.Parameters[i];
-                            object paramValue;
-                            switch (param.Type)
+                            var shaderHandle = chunkReader.ReadInt32();
+                            var numberOfParams = chunkReader.ReadInt32();
+                            var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
+                            shaderData.name = shdr.Name;
+                            shaderData.ShaderHandle = shaderHandle;
+
+                            for (int i = 0; i < numberOfParams; i++)
                             {
-                                case 0:
-                                    paramValue = chunkReader.ReadInt32();
-                                    break;
-                                case 1:
-                                    paramValue = chunkReader.ReadSingle();
-                                    break;
-                                case 2:
-                                    paramValue = chunkReader.ReadInt32();
-                                    break;
-                                case 3:
-                                    paramValue = chunkReader.ReadInt32(); //Image Handle
-                                    break;
-                                default:
-                                    paramValue = "unknownType";
-                                    break;
+                                var param = shdr.Parameters[i];
+                                object paramValue;
+                                switch (param.Type)
+                                {
+                                    case 0:
+                                        paramValue = chunkReader.ReadInt32();
+                                        break;
+                                    case 1:
+                                        paramValue = chunkReader.ReadSingle();
+                                        break;
+                                    case 2:
+                                        paramValue = chunkReader.ReadInt32();
+                                        break;
+                                    case 3:
+                                        paramValue = chunkReader.ReadInt32(); //Image Handle
+                                        break;
+                                    default:
+                                        paramValue = "unknownType";
+                                        break;
+                                }
+                                shaderData.parameters.Add(new ShaderParameter()
+                                {
+                                    Name = param.Name,
+                                    ValueType = param.Type,
+                                    Value = paramValue
+                                });
                             }
-                            shaderData.parameters.Add(new ShaderParameter()
-                            {
-                                Name = param.Name,
-                                ValueType = param.Type,
-                                Value = paramValue
-                            });
+                        }
+                        catch
+                        {
+                            shaderData.hasShader = false;
                         }
                         break;
                     default:

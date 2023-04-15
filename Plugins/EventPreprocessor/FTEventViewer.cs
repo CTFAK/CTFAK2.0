@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using CTFAK.CCN;
 using CTFAK.CCN.Chunks.Frame;
 using CTFAK.CCN.Chunks.Objects;
@@ -38,9 +39,10 @@ namespace EventPreprocessor
             Console.WriteLine();
             
             var game = reader.getGameData();
-            
-            
-            
+
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            var outPath = rgx.Replace(game.name, "").Trim(' ');
+
             conditionHandlers.Add(-3,AppHandler.appConditionHandlers);
             conditionHandlers.Add(2,ActiveHandler.activeConditionHandlers);
             conditionHandlers.Add(-1,SystemHandler.systemConditionHandlers);
@@ -98,8 +100,8 @@ namespace EventPreprocessor
                 foreach (var frameToProcess in game.frames)
                 {
                     
-                    Directory.CreateDirectory($"Dumps\\{game.name}\\Events");
-                    streamWriter = new StreamWriter($"Dumps\\{game.name}\\Events\\{frameToProcess.name}.log",false);
+                    Directory.CreateDirectory($"Dumps\\{outPath}\\Events");
+                    streamWriter = new StreamWriter($"Dumps\\{outPath}\\Events\\{frameToProcess.name}.log",false);
                     ProcessFrame(frameToProcess);
                 }
             }
@@ -107,8 +109,8 @@ namespace EventPreprocessor
             {
                 var selectedFrame = game.frames[selectedIndex - 1];
                 Console.WriteLine("Selected frame: "+selectedFrame.name);
-                Directory.CreateDirectory($"Dumps\\{game.name}\\Events");
-                streamWriter = new StreamWriter($"Dumps\\{game.name}\\Events\\{selectedFrame.name}.log",false);
+                Directory.CreateDirectory($"Dumps\\{outPath}\\Events");
+                streamWriter = new StreamWriter($"Dumps\\{outPath}\\Events\\{selectedFrame.name}.log",false);
                 ProcessFrame(selectedFrame);
             }
             

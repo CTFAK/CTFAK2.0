@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using CTFAK.CCN;
 using CTFAK.CCN.Chunks.Banks;
 using CTFAK.FileReaders;
@@ -40,7 +41,14 @@ namespace CTFAK.EXE
 
         public void PatchMethods()
         {
-            Settings.gameType = Settings.GameType.ANDROID;
+            //Settings.gameType = Settings.GameType.ANDROID;
+        }
+
+        public IFileReader Copy()
+        {
+            CCNFileReader reader = new CCNFileReader();
+            reader.game = game;
+            return reader;
         }
     }
 }
