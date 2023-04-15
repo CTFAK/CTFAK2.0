@@ -29,7 +29,8 @@ public class Chunk
         switch (Flag)
         {
             case ChunkFlags.Encrypted:
-                chunkData = Decryption.TransformChunk(dataReader.ReadBytes(fileSize));
+                chunkData = dataReader.ReadBytes(fileSize);
+                Decryption.TransformChunk(chunkData);
                 break;
             case ChunkFlags.CompressedAndEncrypted:
                 chunkData = Decryption.DecodeMode3(dataReader.ReadBytes(fileSize), Id, out _ /* We don't care about decompressed size */);
@@ -56,7 +57,7 @@ public class Chunk
         {
             Logger.LogWarning($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
         }
-        if (chunkData.Length == 0&& Id!=32639)
+        if (chunkData?.Length == 0 && Id!=32639)
         {
             Logger.LogWarning($"Chunk data is empty for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
         }
@@ -76,7 +77,7 @@ public class Chunk
                 newWriter = dataWriter;
                 break;
             case ChunkFlags.Encrypted:
-                newWriter = new ByteWriter(new MemoryStream(Decryption.TransformChunk(dataWriter.ToArray())));
+                //newWriter = new ByteWriter(new MemoryStream(Decryption.TransformChunk(dataWriter.ToArray())));
                 break;
             case ChunkFlags.Compressed:
                 newWriter = Decompressor.Compress(dataWriter.ToArray());

@@ -50,7 +50,6 @@ public class Events : ChunkLoader
                     newQualifier.Read(reader);
                     QualifiersList.Add(newQualifier);
                 }
-                Logger.Log($"Planned count: {qualifierCount}. Real count: {QualifiersList.Count}");
             }
             else if (identifier == EventCount)
             {

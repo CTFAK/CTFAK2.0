@@ -130,6 +130,8 @@ public class ObjectInfo : ChunkLoader
             }
         }
 
+        if(CTFAKCore.Parameters.Contains("-debug"))
+            Logger.Log($"Found object: {Name} - {(Constants.ObjectType)ObjectType}");
         if (string.IsNullOrEmpty(Name))
             Name = $"{(Constants.ObjectType)ObjectType} {Handle}";
     }
