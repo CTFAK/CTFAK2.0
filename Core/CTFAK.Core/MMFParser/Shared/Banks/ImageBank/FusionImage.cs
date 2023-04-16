@@ -34,6 +34,7 @@ namespace CTFAK.Shared.Banks.ImageBank;
 
 
 
+
 public class FusionImage : ChunkLoader
 {
     public int Handle;
@@ -76,7 +77,7 @@ public class FusionImage : ChunkLoader
     public int onepointfiveStart;
     public Bitmap realBitmap;
     public int references;
-    public int Transparent;
+    public Color Transparent;
     
 
 #pragma warning disable CA1416
@@ -114,7 +115,7 @@ public class FusionImage : ChunkLoader
                         else
                         {
                             colorArray =
-                                ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                                ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent);
                         }
 
                         break;
@@ -122,10 +123,10 @@ public class FusionImage : ChunkLoader
                         //TODO: Implement the JPEG parser;
                         break;
                     case 6:
-                        colorArray = ImageTranslator.Normal15BitToRGBA(imageData, Width, Height, false);
+                        colorArray = ImageTranslator.Normal15BitToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent);
                         break;
                     case 7:
-                        colorArray = ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, false);
+                        colorArray = ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent);
                         break;
                     case 8:
                         colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
@@ -325,9 +326,9 @@ public class FusionImage : ChunkLoader
             ActionX = decompressedReader.ReadInt16();
             ActionY = decompressedReader.ReadInt16();
             if (!Settings.Old)
-                Transparent = decompressedReader.ReadInt32();
+                Transparent = decompressedReader.ReadColor();
             else
-                Transparent = 0; //ig?
+                Transparent = Color.Black; //ig?
 
 
             if (Settings.Android)
@@ -389,7 +390,7 @@ public class FusionImage : ChunkLoader
         writer.WriteInt16(HotspotY); //24
         writer.WriteInt16(ActionX); //26
         writer.WriteInt16(ActionY); //28
-        writer.WriteInt32(Transparent); //32
+        writer.WriteColor(Transparent); //32
         writer.WriteInt32(imageData.Length); //36
         writer.WriteBytes(compressedImg);
         //writer.WriteWriter(chunk);

@@ -34,7 +34,7 @@ public class
         HotspotY = reader.ReadInt16();
         ActionX = reader.ReadInt16();
         ActionY = reader.ReadInt16();
-        Transparent = reader.ReadInt32();
+        Transparent = reader.ReadColor();
         var decompSizePlus = reader.ReadInt32();
         var rawImg = reader.ReadBytes(dataSize - 4);
         var target = new byte[decompSizePlus];

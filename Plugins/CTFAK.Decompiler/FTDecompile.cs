@@ -124,7 +124,7 @@ public class FTDecompile : IFusionTool
             }
         var imageNull = new FusionImage();
         imageNull.Handle = 14;
-        imageNull.Transparent = 0x3aebca;
+        imageNull.Transparent = Color.Brown;
         imageNull.FromBitmap(Resources.EmptyIcon);
         mfa.Icons.Items.Add(14, imageNull);
         // game.Images.Images.Clea r();

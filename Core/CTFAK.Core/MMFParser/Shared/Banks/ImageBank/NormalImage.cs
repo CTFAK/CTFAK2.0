@@ -35,7 +35,7 @@ public class NormalImage:FusionImage
             HotspotY = decompressedReader.ReadInt16();
             ActionX = decompressedReader.ReadInt16();
             ActionY = decompressedReader.ReadInt16();
-            Transparent = decompressedReader.ReadInt32();
+            Transparent = decompressedReader.ReadColor();
             if (Flags["LZX"])
             {
                 var decompSize = decompressedReader.ReadInt32();
