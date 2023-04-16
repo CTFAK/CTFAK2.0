@@ -46,10 +46,7 @@ public class NormalImage:FusionImage
             {
                 imageData = decompressedReader.ReadBytes(dataSize);
             }
-
-            ImageTranslator.TestMultiTranslation(Handle,imageData, Width, Height, Flags["Alpha"]);
-
-
+            
 
         });
         //task.Start();

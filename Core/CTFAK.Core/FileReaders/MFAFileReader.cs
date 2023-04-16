@@ -19,12 +19,7 @@ namespace CTFAK.EXE
         {
             return Game;
         }
-
-        public int ReadHeader(ByteReader reader)
-        {
-            throw new System.NotImplementedException();
-        }
-
+        
         public virtual bool LoadGame(string gamePath)
         {
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);

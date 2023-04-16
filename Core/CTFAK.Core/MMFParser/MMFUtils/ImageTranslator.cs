@@ -99,7 +99,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-    private static byte[] Normal15BitToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] Normal15BitToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         byte[] colorArray = new byte[width * height * 4];
         int stride = width * 4;
@@ -144,11 +144,11 @@ public static class ImageTranslator
         return colorArray;
 
     }
-    private static byte[] Normal8BitToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] Normal8BitToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         return null;
     }
-    private static byte[] AndroidMode0ToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] AndroidMode0ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -170,7 +170,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-    private static byte[] AndroidMode1ToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] AndroidMode1ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -207,7 +207,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-    private static byte[] AndroidMode2ToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] AndroidMode2ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -244,7 +244,7 @@ public static class ImageTranslator
         }
         return colorArray;
     }
-    private static byte[] AndroidMode3ToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] AndroidMode3ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -266,7 +266,7 @@ public static class ImageTranslator
         }
         return colorArray;
     }
-    private static byte[] AndroidMode4ToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] AndroidMode4ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -300,7 +300,7 @@ public static class ImageTranslator
         }
         return colorArray;
     }
-    private static byte[] AndroidMode5ToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] AndroidMode5ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         return null;
     }
@@ -328,7 +328,7 @@ public static class ImageTranslator
     }
     public static byte[] RGBAToRGBMasked(byte[] imageData, int width, int height, bool alpha)
     {
-        byte[] colorArray = new byte[width * height * 4];
+        byte[] colorArray = new byte[width * height * 6];
         int stride = width * 4;
         int pad = GetPadding(width, 3);
         int position = 0;
@@ -336,51 +336,36 @@ public static class ImageTranslator
         {
             for (int x = 0; x < width; x++)
             {
-                colorArray[position + 0] = imageData[(y * stride) + (x * 4) ];
-                colorArray[position + 1] = imageData[(y * stride) + (x * 4)  + 1];
-                colorArray[position + 2] = imageData[(y * stride) + (x * 4)  + 2];
+                colorArray[position + 0] = imageData[(y * stride) + (x * 4)];
+                colorArray[position + 1] = imageData[(y * stride) + (x * 4) + 1];
+                colorArray[position + 2] = imageData[(y * stride) + (x * 4) + 2];
+                colorArray[position + 3] = 255;
                 position += 3;
             }
 
             position += pad * 3;
         }
-
+        
         if (alpha)
         {
-            int aPad = GetPadding(width, 1);
+            int aPad = GetPadding(width, 1,4);
 
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    colorArray[position + 3] = imageData[(y * stride) + (x * 4) ];
+                    colorArray[position] = imageData[(y * stride) + (x * 4) + 3];
                     position += 1;
                 }
 
                 position += aPad;
             }
         }
-
+        Array.Resize(ref colorArray,position);
         return colorArray;
+
+
     }
 
-    public static void TestMultiTranslation(int handle, byte[] imageData,int width, int height, bool alpha)
-    {
-        var translatedImage = ImageTranslator.Normal24BitMaskedToRGBA(imageData, width, height, alpha);
-        translatedImage = ImageTranslator.RGBAToRGBMasked(translatedImage, width, height, alpha);
-        translatedImage = ImageTranslator.Normal24BitMaskedToRGBA(translatedImage, width, height, alpha);
-        var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-
-        var bmpData = bmp.LockBits(new Rectangle(0, 0,
-                bmp.Width,
-                bmp.Height),
-            ImageLockMode.WriteOnly,
-            bmp.PixelFormat);
-
-        var pNative = bmpData.Scan0;
-        Marshal.Copy(translatedImage, 0, pNative, translatedImage.Length);
-
-        bmp.UnlockBits(bmpData);
-        bmp.Save($"IMGS\\{handle}.png");
-    }
+ 
 }

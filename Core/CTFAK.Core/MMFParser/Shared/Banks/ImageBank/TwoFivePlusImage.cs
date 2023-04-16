@@ -40,8 +40,8 @@ public class
         var target = new byte[decompSizePlus];
         LZ4Codec.Decode(rawImg, target);
         imageData = target;
-        
-        
+        //PrepareForMfa();
+
 
     }
 }

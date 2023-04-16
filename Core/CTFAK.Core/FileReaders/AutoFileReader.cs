@@ -16,11 +16,6 @@ public class AutoFileReader:IFileReader
         return RealReader.GetGameData();
     }
 
-    public int ReadHeader(ByteReader reader)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public bool LoadGame(string gamePath)
     {
         switch (Path.GetExtension(gamePath))

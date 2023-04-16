@@ -20,12 +20,6 @@ public class ApkFileReader: IFileReader
     {
         return Ccn.Game;
     }
-
-    public int ReadHeader(ByteReader reader)
-    {
-        return 0;
-    }
-
     public bool LoadGame(string gamePath)
     {
         Settings.gameType = Settings.GameType.ANDROID;

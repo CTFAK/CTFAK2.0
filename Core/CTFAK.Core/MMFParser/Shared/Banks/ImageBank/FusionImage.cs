@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
+using CTFAK.MMFParser.Translation;
 using CTFAK.Utils;
 using K4os.Compression.LZ4;
 
@@ -90,24 +91,47 @@ public class FusionImage : ChunkLoader
                     ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 
-                var internalColorMode = -1;
-                /*
-                 * Internal color mode values
-                 * 0 - 24+8 color mode (16-mil no 2.5+)
-                 * TODO: implement other types 
-                 */
+                byte[] colorArray=null;
                 switch (GraphicMode)
                 {
+                    case 0:
+                        colorArray = ImageTranslator.AndroidMode0ToRGBA(imageData, Width, Height, false);
+                        break;
+                    case 1:
+                        colorArray = ImageTranslator.AndroidMode1ToRGBA(imageData, Width, Height, false);
+                        break;
+                    case 2:
+                        colorArray = ImageTranslator.AndroidMode2ToRGBA(imageData, Width, Height, false);
+                        break;
+                    case 3:
+                        colorArray = ImageTranslator.AndroidMode3ToRGBA(imageData, Width, Height, false);
+                        break;
                     case 4:
-                        internalColorMode = 0;
+                        if (Settings.Android)
+                        {
+                            colorArray = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, false);
+                        }
+                        else
+                        {
+                            colorArray =
+                                ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                        }
+
+                        break;
+                    case 5:
+                        //TODO: Implement the JPEG parser;
+                        break;
+                    case 6:
+                        colorArray = ImageTranslator.Normal15BitToRGBA(imageData, Width, Height, false);
+                        break;
+                    case 7:
+                        colorArray = ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, false);
+                        break;
+                    case 8:
+                        colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
                         break;
                 }
-
-                fixed (byte* dataPtr = imageData)
-                {
-                    NativeLib.TranslateToRGBA(bmpData.Scan0, Width, Height, Flags["Alpha"] ? 1 : 0, imageData.Length,
-                        new IntPtr(dataPtr), Transparent, internalColorMode);
-                }
+                Marshal.Copy(colorArray,0,bmpData.Scan0,colorArray.Length);
 
                 realBitmap.UnlockBits(bmpData);
             }
@@ -342,6 +366,7 @@ public class FusionImage : ChunkLoader
 
     public int WriteNew(ByteWriter writer)
     {
+        PrepareForMfa();
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var start = writer.Tell();
@@ -379,5 +404,15 @@ public class FusionImage : ChunkLoader
 
     public override void Write(ByteWriter writer)
     {
+    }
+
+    public void PrepareForMfa()
+    {
+        if (GraphicMode == 8)
+        {
+            imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
+            imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+            GraphicMode = 4;
+        }
     }
 }
