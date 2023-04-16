@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 namespace CTFAK.CCN.Chunks.Banks
 {
-    [ChunkLoader(26216, "SoundBank")]
+    //this might fuck up normal games, ill rewrite it in future, dw
+    //[ChunkLoader(26216, "SoundBank")]
     public class AndroidSoundBank : ChunkLoader
     {
         public static event SaveHandler OnSoundLoaded;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace CTFAK.Utils;
@@ -17,7 +18,7 @@ public static class ImageHelper
         return (int)Math.Ceiling(pad / (float)pointSize);
     }
 
-    public static Bitmap DumpImage(int Handle, byte[] imageData, int width, int height, uint unk)
+    public static Bitmap DumpImage(byte[] imageData, int width, int height, uint unk)
     {
         var colorArray = new byte[width * height * 4];
         var stride = width * 4;
@@ -167,6 +168,7 @@ public static class ImageHelper
         }
         else if (unk == 5)
         {
+            return (Bitmap)Bitmap.FromStream(new MemoryStream(imageData));
             //File.WriteAllBytes($"{AppName}\\{Handle}-{unk}.jpg", imageData);
         }
         else

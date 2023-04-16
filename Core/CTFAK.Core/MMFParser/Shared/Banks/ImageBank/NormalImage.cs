@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CTFAK.Memory;
+using CTFAK.MMFParser.Translation;
 using CTFAK.Utils;
 
 namespace CTFAK.Shared.Banks.ImageBank;
@@ -42,9 +46,14 @@ public class NormalImage:FusionImage
             {
                 imageData = decompressedReader.ReadBytes(dataSize);
             }
-            
+
+            ImageTranslator.TestMultiTranslation(Handle,imageData, Width, Height, Flags["Alpha"]);
+
+
+
         });
-        task.Start();
+        //task.Start();
+        task.RunSynchronously();
         ImageBank.imageReadingTasks.Add(task);
     }
 }

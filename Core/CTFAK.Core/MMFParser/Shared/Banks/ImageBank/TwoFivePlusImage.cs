@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using CTFAK.Memory;
+using CTFAK.MMFParser.Translation;
 using CTFAK.Utils;
 using K4os.Compression.LZ4;
 
@@ -8,7 +12,8 @@ namespace CTFAK.Shared.Banks.ImageBank;
 
 
 // 2.5+ DX11 Images use GraphicMode 8, which is RGBA (no mask), and, surprisingly, is supported by non-2.5+ versions of Fusion
-public class TwoFivePlusImage:FusionImage
+public class 
+    TwoFivePlusImage:FusionImage
 {
     public override void Read(ByteReader reader)
     {
@@ -35,6 +40,7 @@ public class TwoFivePlusImage:FusionImage
         var target = new byte[decompSizePlus];
         LZ4Codec.Decode(rawImg, target);
         imageData = target;
+        
         
 
     }

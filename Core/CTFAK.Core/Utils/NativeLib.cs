@@ -18,18 +18,6 @@ public static class NativeLib
 //        private const string _dllPath = "x86\\Decrypter-x86.dll";
 //#endif
 
-    [DllImport(DllPath, EntryPoint = "decode_chunk", CharSet = CharSet.Auto)]
-    public static extern IntPtr decode_chunk(IntPtr chunkData, int chunkSize, byte magicChar, IntPtr wrapperKey);
-
-    [DllImport(DllPath, EntryPoint = "make_key", CharSet = CharSet.Auto)]
-    public static extern IntPtr make_key(IntPtr cTitle, IntPtr cCopyright, IntPtr cProject, byte magicChar);
-
-    [DllImport(DllPath, EntryPoint = "make_key_w", CharSet = CharSet.Unicode)]
-    public static extern IntPtr make_key_w(IntPtr cTitle, IntPtr cCopyright, IntPtr cProject, byte magicChar);
-
-    [DllImport(DllPath, EntryPoint = "make_key_combined", CharSet = CharSet.Auto)]
-    public static extern IntPtr make_key_combined(IntPtr data, byte magicChar);
-
 
     [DllImport(DllPath, EntryPoint = "decompressOld", CharSet = CharSet.Auto)]
     public static extern int decompressOld(IntPtr source, int source_size, IntPtr output, int output_size);

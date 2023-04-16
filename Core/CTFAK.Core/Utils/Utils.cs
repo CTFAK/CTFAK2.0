@@ -14,11 +14,7 @@ public static class Utils
         return str;
     }
 
-    public static string ReadUniversal(this ByteReader reader, int len = -1)
-    {
-        if (Settings.Unicode) return reader.ReadWideString(len);
-        return reader.ReadAscii(len);
-    }
+
 
     public static byte[] GetBuffer(this ByteWriter writer)
     {
