@@ -7,11 +7,10 @@ using CTFAK.Utils;
 
 namespace CTFAK.Memory;
 
-public static unsafe class Decryption
+public static class Decryption
 {
     public static byte[] _decryptionKey;
 
-    //public static byte MagicChar = 99;
     public static byte MagicChar = 54;
 
     public static byte[] KeyString(string str)
@@ -63,10 +62,8 @@ public static unsafe class Decryption
         bytes.AddRange(KeyString(data2 ?? ""));
         bytes.AddRange(KeyString(data3 ?? ""));
         _decryptionKey = MakeKeyCombined(bytes.ToArray());
-        fixed (byte* keyPtr = _decryptionKey)
-        {
-            InitDecryptionTable(keyPtr, Decryption.MagicChar);
-        }
+        InitDecryptionTable(_decryptionKey, Decryption.MagicChar);
+        
     }
 
 
@@ -91,20 +88,21 @@ public static unsafe class Decryption
         }
     }
 
-    private static byte* decodeBuffer;
-    private static int* intBuffer => (int*)decodeBuffer;
+    //private static byte* decodeBuffer;
+    private static byte[] decodeBuffer = new byte[256];
     public static bool valid;
 
     // Thx LAK
     // It's 0:40, I might revisit this part again when I don't feel as crappy
     // I might even just redo it with a single byte array with 256 elements
+    // Revisiting this day after, I literally did just that. Wasn't hard at all
     // But hey, at least this works ;)
-    public static bool InitDecryptionTable(byte* magic_key, byte magic_char)
+    public static bool InitDecryptionTable(byte[] magic_key, byte magic_char)
     {
-        decodeBuffer = (byte*)Marshal.AllocHGlobal(1024);
+        //decodeBuffer = (byte*)Marshal.AllocHGlobal(256);
         for (int i = 0; i < 256; i++)
         {
-            intBuffer[i] = i;
+            decodeBuffer[i] = (byte)i;
         }
 
         Func<byte, byte> rotate = (byte value) => (byte)((value << 7) | (value >> 1));
@@ -115,7 +113,7 @@ public static unsafe class Decryption
         bool never_reset_key = true;
 
         byte i2 = 0;
-        byte* key = (byte*)magic_key;
+        byte key = 0;
         for (uint i = 0; i < 256; ++i, ++key)
         {
 
@@ -124,55 +122,50 @@ public static unsafe class Decryption
             if (never_reset_key)
             {
                 accum += ((hash & 1) == 0) ? (byte)2 : (byte)3;
-                accum *= *key;
+                accum *= magic_key[key];
             }
 
-            if (hash == *key)
+            if (hash == magic_key[key])
             {
-                if (never_reset_key && !(accum == *(key + 1)))
+                /*if (never_reset_key && !(accum == magic_key[key+1]))
                 {
                     // Ignoring this, because it's not being triggered by the same input data in c++
                     
                     //Console.WriteLine("Failed To Generate Decode Table");
                     //return false;
-                }
+                }*/
 
                 hash = rotate((byte)magic_char);
-                key = (byte*)magic_key;
+                key = 0;
 
                 never_reset_key = false;
             }
 
-            i2 += (byte)((hash ^ *key) + intBuffer[i]);
+            i2 += (byte)((hash ^ magic_key[key]) + decodeBuffer[i]);
 
-            (intBuffer[i2], intBuffer[i]) = (intBuffer[i], intBuffer[i2]);
+            (decodeBuffer[i2], decodeBuffer[i]) = (decodeBuffer[i], decodeBuffer[i2]);
         }
         valid = true;
         return true;
+        
     }
 
     public static bool TransformChunk(byte[] chunk)
     {
         if (!valid) return false;
-        byte* tempBuf = (byte*)Marshal.AllocHGlobal(1024).ToPointer();
-        int* tempIntBuf = (int*)tempBuf;
-
-        for (int j = 0; j < 1024; j++)
-        {
-            tempBuf[j] = decodeBuffer[j];
-        }
+        byte[] tempBuf = new byte[256];
+        Array.Copy(decodeBuffer,tempBuf,256);
 
         byte i = 0;
         byte i2 = 0;
         for (int j = 0; j < chunk.Length; j++)
         {
             ++i;
-            i2 += (byte)tempIntBuf[i];
-            (tempIntBuf[i2], tempIntBuf[i]) = (tempIntBuf[i], tempIntBuf[i2]);
-            var xor = tempBuf[4 * (byte)(tempIntBuf[i] + tempIntBuf[i2])];
+            i2 += (byte)tempBuf[i];
+            (tempBuf[i2], tempBuf[i]) = (tempBuf[i], tempBuf[i2]);
+            var xor = tempBuf[(byte)(tempBuf[i] + tempBuf[i2])];
             chunk[j] ^= xor;
         }
-        Marshal.FreeHGlobal(new IntPtr(tempBuf));
         return true;
     }
 }
