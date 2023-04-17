@@ -277,6 +277,7 @@ namespace CTFAK.CCN
                             var shaderHandle = chunkReader.ReadInt32();
                             var numberOfParams = chunkReader.ReadInt32();
                             if (shaders == null) break;
+                            if (!shaders.ShaderList.ContainsKey(shaderHandle)) continue;
                             var shdr = shaders.ShaderList[shaderHandle];
                             obj.shaderData.name = shdr.Name;
                             obj.shaderData.ShaderHandle = shaderHandle;
