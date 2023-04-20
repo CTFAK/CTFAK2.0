@@ -558,7 +558,7 @@ public class FTDecompile : IFusionTool
                 }
             }
 
-        Settings.gameType = Settings.GameType.NORMAL;
+        //Settings.gameType = Settings.GameType.NORMAL;
 
         var outPath = reader.GetGameData().Name ?? "Unknown Game";
         var rgx = new Regex("[^a-zA-Z0-9 -]");

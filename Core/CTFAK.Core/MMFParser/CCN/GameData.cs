@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using CTFAK.CCN.Chunks;
 using CTFAK.CCN.Chunks.Banks;
-using CTFAK.Core.CCN.Chunks;
 using CTFAK.EXE;
 using CTFAK.FileReaders;
 using CTFAK.Memory;

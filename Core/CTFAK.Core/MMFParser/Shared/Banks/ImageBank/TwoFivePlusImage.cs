@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using CTFAK.Memory;
 using CTFAK.MMFParser.Translation;
 using CTFAK.Utils;
@@ -37,9 +38,16 @@ public class
         Transparent = reader.ReadColor();
         var decompSizePlus = reader.ReadInt32();
         var rawImg = reader.ReadBytes(dataSize - 4);
-        var target = new byte[decompSizePlus];
-        LZ4Codec.Decode(rawImg, target);
-        imageData = target;
+        var task = new Task(() =>
+        {
+            var target = new byte[decompSizePlus];
+            LZ4Codec.Decode(rawImg, target);
+            imageData = target;
+        });
+        task.RunSynchronously();
+        ImageBank.imageReadingTasks.Add(task);
+        PrepareForMfa();
+
         //PrepareForMfa();
 
 

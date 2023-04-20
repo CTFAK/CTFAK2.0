@@ -38,8 +38,8 @@ public class Extension : ChunkLoader
     public string Ext;
     public short Handle;
     public int MagicNumber;
-    public string Name;
-    public string SubType;
+    public string Name="";
+    public string SubType="";
     public int VersionLs;
     public int VersionMs;
 

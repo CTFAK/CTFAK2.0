@@ -24,7 +24,10 @@ public class AndroidImage:FusionImage
             imageData = reader.ReadBytes(dataSize);
         else
             imageData = Decompressor.DecompressBlock(reader, dataSize);
-
-        ImageHelper.DumpImage(imageData,Width,Height,GraphicMode).Save($"IMGS\\{Handle} - {GraphicMode}.png");
+        /*if (imageData == null)
+        {
+            Logger.LogWarning("Image data is null for mode "+GraphicMode);
+            Console.ReadKey();
+        }*/
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using CTFAK.Shared.Banks.ImageBank;
 
 namespace CTFAK.MMFParser.Translation;
 
@@ -168,7 +170,9 @@ public static class ImageTranslator
     }
     public static byte[] Normal8BitToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
-        return null;
+        var newImg = new FusionImage();
+        newImg.FromBitmap((Bitmap)Bitmap.FromStream(new MemoryStream(imageData)));
+        return newImg.imageData;
     }
     public static byte[] AndroidMode0ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
@@ -324,7 +328,9 @@ public static class ImageTranslator
     }
     public static byte[] AndroidMode5ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
-        return null;
+        var img = new FusionImage();
+        img.FromBitmap((Bitmap)Bitmap.FromStream(new MemoryStream(imageData)));
+        return Normal24BitMaskedToRGBA(img.imageData,width,height,true,Color.Black);
     }
     public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
@@ -350,7 +356,7 @@ public static class ImageTranslator
     }
     public static byte[] RGBAToRGBMasked(byte[] imageData, int width, int height, bool alpha)
     {
-        byte[] colorArray = new byte[width * height * 6];
+        byte[] colorArray = new byte[width * height * 8];
         int stride = width * 4;
         int pad = GetPadding(width, 3);
         int position = 0;

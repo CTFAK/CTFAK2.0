@@ -1,11 +1,11 @@
-﻿using CTFAK.Attributes;
-using CTFAK.Memory;
-using CTFAK.MMFParser.CCN;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using CTFAK.Attributes;
+using CTFAK.Memory;
+using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.Core.CCN.Chunks
+namespace CTFAK.MMFParser.CCN.Chunks
 {
     [ChunkLoader(8757, "AppIcon")]
     public class AppIcon : ChunkLoader

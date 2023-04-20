@@ -38,17 +38,17 @@ namespace CTFAK.Shared.Banks.ImageBank;
 public class FusionImage : ChunkLoader
 {
     public int Handle;
-    
+
     public int Width;
     public int Height;
-    
+
     public short ActionX;
     public short ActionY;
     public short HotspotX;
     public short HotspotY;
-    
+
     public byte[] imageData;
-    
+
     public int Checksum;
 
     public BitDict Flags = new(new[]
@@ -63,13 +63,6 @@ public class FusionImage : ChunkLoader
     });
 
     public byte GraphicMode;
-
-    
-    
-    
-    
-
-
     public bool IsMFA;
     public byte[] newImageData;
 
@@ -78,21 +71,18 @@ public class FusionImage : ChunkLoader
     public Bitmap realBitmap;
     public int references;
     public Color Transparent;
-    
 
-#pragma warning disable CA1416
-    public unsafe Bitmap bitmap
+    public Bitmap bitmap
     {
         get
         {
             if (realBitmap == null)
             {
                 realBitmap = new Bitmap(Width, Height);
-                var bmpData = realBitmap.LockBits(new Rectangle(0, 0, Width, Height),
-                    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                var bmpData = realBitmap.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly,
+                    PixelFormat.Format32bppArgb);
 
-
-                byte[] colorArray=null;
+                byte[] colorArray = null;
                 switch (GraphicMode)
                 {
                     case 0:
@@ -108,31 +98,34 @@ public class FusionImage : ChunkLoader
                         colorArray = ImageTranslator.AndroidMode3ToRGBA(imageData, Width, Height, false);
                         break;
                     case 4:
-                        if (Settings.Android)
-                        {
-                            colorArray = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, false);
-                        }
-                        else
-                        {
-                            colorArray =
-                                ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent);
-                        }
-
+                        //if (Settings.Android)
+                        //    colorArray = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, false);
+                        //else
+                            colorArray = ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height,
+                                Flags["Alpha"], Transparent);
                         break;
                     case 5:
-                        //TODO: Implement the JPEG parser;
+                        colorArray = ImageTranslator.AndroidMode5ToRGBA(imageData, Width, Height, Flags["Alpha"]);
                         break;
                     case 6:
-                        colorArray = ImageTranslator.Normal15BitToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent);
+                        colorArray =
+                            ImageTranslator.Normal15BitToRGBA(imageData, Width, Height, Flags["Alpha"], Transparent);
                         break;
                     case 7:
-                        colorArray = ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent);
+                        colorArray =
+                            ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, Flags["Alpha"], Transparent);
                         break;
                     case 8:
                         colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
                         break;
                 }
-                Marshal.Copy(colorArray,0,bmpData.Scan0,colorArray.Length);
+
+                if (colorArray == null)
+                {
+                    Logger.LogWarning("colorArray is null for image mode " + GraphicMode);
+                }
+
+                Marshal.Copy(colorArray, 0, bmpData.Scan0, colorArray.Length);
 
                 realBitmap.UnlockBits(bmpData);
             }
@@ -140,7 +133,7 @@ public class FusionImage : ChunkLoader
             return realBitmap;
         }
     }
-#pragma warning restore CA1416
+
 
     public void FromBitmap(Bitmap bmp)
     {
@@ -218,7 +211,7 @@ public class FusionImage : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
-        
+
         var start = reader.Tell();
         var dataSize = 0;
         if (Settings.Android)
@@ -360,7 +353,7 @@ public class FusionImage : ChunkLoader
             newImageData = null;
         });
         ImageBank.imageReadingTasks.Add(mainRead);
-        if (!IsMFA && !Settings.Old&&!Settings.TwoFivePlus)
+        if (!IsMFA && !Settings.Old && !Settings.TwoFivePlus)
             mainRead.Start();
         else mainRead.RunSynchronously();
     }
@@ -368,8 +361,6 @@ public class FusionImage : ChunkLoader
     public int WriteNew(ByteWriter writer)
     {
         PrepareForMfa();
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
         var start = writer.Tell();
 
         byte[] compressedImg = null;
@@ -397,9 +388,7 @@ public class FusionImage : ChunkLoader
         // writer.WriteInt32(Handle-1);//FNAC3 FIX
 
         var chunkSize = 36 + compressedImg.Length;
-        stopwatch.Stop();
-        //Console.WriteLine($"Image: {Handle}, decompressed/compressed ratio: {((float)compressedImg.Length)/imageData.Length}, time: {stopwatch.ElapsedMilliseconds}, level:{Decompressor.compressionLevel}");
-        //Console.ReadKey();
+
         return (int)(chunkSize + 4 + start);
     }
 
@@ -409,11 +398,50 @@ public class FusionImage : ChunkLoader
 
     public void PrepareForMfa()
     {
-        if (GraphicMode == 8)
+        switch (GraphicMode)
         {
-            imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
-            imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
-            GraphicMode = 4;
+            case 0:
+                imageData = ImageTranslator.AndroidMode0ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                GraphicMode = 4;
+                break;
+            case 1:
+                imageData = ImageTranslator.AndroidMode1ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                GraphicMode = 4;
+                break;
+            case 2:
+                imageData = ImageTranslator.AndroidMode2ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                GraphicMode = 4;
+                break;
+            case 3:
+                imageData = ImageTranslator.AndroidMode3ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                GraphicMode = 4;
+                break;
+            case 4:
+                if (Settings.Android)
+                {
+                    imageData = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                    imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                    GraphicMode = 4;
+                }
+
+                break;
+            case 5:
+                imageData = ImageTranslator.AndroidMode5ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                GraphicMode = 4;
+                break;
+            case 8:
+                imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                GraphicMode = 4;
+                break;
+                
         }
+
+        
     }
 }
