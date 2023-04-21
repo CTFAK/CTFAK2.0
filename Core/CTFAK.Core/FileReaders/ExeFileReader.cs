@@ -67,6 +67,7 @@ public class ExeFileReader : IFileReader
         var reader = new ByteReader(gamePath, FileMode.Open);
         ReadPEHeader(reader);
         LoadCCN(reader);
+        reader.Close();
         return true;
     }
 

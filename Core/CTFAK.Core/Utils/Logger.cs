@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using EasyNetLog;
 
@@ -7,7 +8,7 @@ namespace CTFAK.Utils;
 public static class Logger
 {
     private static readonly EasyNetLogger logger;
-
+    public static List<string> errors = new List<string>();
     static Logger()
     {
         logger = new EasyNetLogger(
@@ -18,7 +19,11 @@ public static class Logger
 
     public static event LoggerHandler OnLogged;
 
-
+    public static void LogError(object msg)
+    {
+        logger.Log($"<color=red>{msg.ToString() ?? "null"}</color>");
+        errors.Add(msg.ToString() ?? "null");
+    }
     public static void LogWarning(object msg)
     {
         logger.Log($"<color=yellow>{msg.ToString() ?? "null"}</color>");

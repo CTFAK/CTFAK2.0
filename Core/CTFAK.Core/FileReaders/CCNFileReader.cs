@@ -26,6 +26,7 @@ public class CCNFileReader : IFileReader
         var reader = new ByteReader(gamePath, FileMode.Open);
         Game = new GameData();
         Game.Read(reader);
+        reader.Close();
         return true;
     }
 

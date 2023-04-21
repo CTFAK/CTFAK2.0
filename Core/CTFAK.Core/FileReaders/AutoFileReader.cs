@@ -30,6 +30,8 @@ public class AutoFileReader:IFileReader
             case ".apk":
                 RealReader = new ApkFileReader();
                 break;
+            default:
+                return false;
         }
 
         if (RealReader != null)

@@ -341,7 +341,7 @@ public static class ImageTranslator
         img.FromBitmap((Bitmap)Bitmap.FromStream(new MemoryStream(imageData)));
         return Normal24BitMaskedToRGBA(img.imageData,width,height,true,Color.Black);
     }
-    public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha)
+    public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha,Color transparent,bool rgba)
     {
         byte[] colorArray = new byte[width * height * 4];
         int stride = width * 4;
@@ -351,14 +351,40 @@ public static class ImageTranslator
         {
             for (int x = 0; x < width; x++)
             {
-                colorArray[(y * stride) + (x * 4) + 0] = imageData[position];
-                colorArray[(y * stride) + (x * 4) + 1] = imageData[position + 1];
-                colorArray[(y * stride) + (x * 4) + 2] = imageData[position + 2];
-                colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
+                int newPos = (y * stride) + (x * 4);
+                colorArray[newPos + 0] = imageData[position];
+                colorArray[newPos + 1] = imageData[position + 1];
+                colorArray[newPos + 2] = imageData[position + 2];
+                colorArray[newPos + 3] = 255;
+                if (alpha)
+                {
+                    colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
+                }
+                else
+                {
+                    if (colorArray[newPos + 2] == transparent.R && colorArray[newPos + 1] == transparent.G &&
+                        colorArray[newPos + 0] == transparent.B)
+                        colorArray[newPos + 3] = 0;
+                }
                 position += 4;
             }
 
             position += pad * 4;
+            
+        }
+        if (alpha&&!rgba)
+        {
+            int aPad = GetPadding(width, 1, 4);
+            int aStride = width * 4;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    colorArray[(y * aStride) + (x * 4) + 3] = imageData[position];
+                    position += 1;
+                }
+                position += aPad;
+            }
         }
 
         return colorArray;

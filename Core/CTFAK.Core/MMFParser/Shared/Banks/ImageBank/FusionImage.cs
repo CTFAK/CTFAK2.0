@@ -59,7 +59,8 @@ public class FusionImage : ChunkLoader
         "LZX",
         "Alpha",
         "ACE",
-        "Mac"
+        "Mac",
+        "RGBA"
     });
 
     public byte GraphicMode;
@@ -116,10 +117,10 @@ public class FusionImage : ChunkLoader
                             ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, Flags["Alpha"], Transparent);
                         break;
                     case 8:
-                        colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                        colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,Flags["RGBA"]);
                         break;
                 }
-                Logger.Log($"Loading image {Handle} with mode {GraphicMode}");
+                //Logger.Log($"Loading image {Handle} with mode {GraphicMode}");
                 if (colorArray == null)
                 {
                     Logger.LogWarning("colorArray is null for image mode " + GraphicMode);
@@ -442,7 +443,7 @@ public class FusionImage : ChunkLoader
                 GraphicMode = 4;
                 break;
             case 8:
-                imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,Flags["RGBA"]);
                 imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
                 GraphicMode = 4;
                 break;

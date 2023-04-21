@@ -46,8 +46,8 @@ public class
         });
         task.RunSynchronously();
         ImageBank.imageReadingTasks.Add(task);
-        PrepareForMfa();
 
+        
         //PrepareForMfa();
 
 

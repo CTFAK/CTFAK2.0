@@ -60,22 +60,25 @@ public class Program
     }
 
     public static IFileReader currentReader;
+
+    public static void ExecuteTool(IFusionTool tool)
+    {
+        try
+        {
+            tool.Execute(currentReader);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning("Error while executing "+tool.Name);
+            Logger.LogWarning(ex);
+            Logger.LogWarning("Press any key to continue...");
+            Console.ReadKey();
+        }
+    }
     public static void Main(string[] args)
     {
         CTFAKCore.Init();
         ValidateBuildTime();
-        var mainWindow = new Window();
-        var inspectorWindow = new Window();
-        var fileOptionsWindow = new Window();
-        var pluginsWindow = new Window();
-        AddHeader(mainWindow);
-        AddHeader(fileOptionsWindow);
-        AddHeader(inspectorWindow);
-        AddHeader(pluginsWindow);
-
-        
-        
-        
         var types = Assembly.GetAssembly(typeof(ExeFileReader)).GetTypes();
 
         var toolList = new List<IFusionTool>();
@@ -89,6 +92,78 @@ public class Program
                 if (pluginType.GetInterface(typeof(IFusionTool).FullName) != null)
                     toolList.Add((IFusionTool)Activator.CreateInstance(pluginType));
         }
+        
+        if (args.Length > 0)
+        {
+            var sw = new StreamWriter(new FileStream("debug.log",FileMode.Create));
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            List<string> pluginNames = new List<string>();
+            for (int i = 1; i < args.Length; i++)
+            {
+                pluginNames.Add(args[i]);
+            }
+            var initialPath = args[0];
+            if (File.Exists(initialPath))
+            {
+                currentReader = new AutoFileReader();
+                currentReader.LoadGame(initialPath);
+                foreach (var name in pluginNames)
+                {
+                    var plugin = toolList.FirstOrDefault(a => a.GetType().Name == name);
+                    if (plugin != null)
+                    {
+                        ExecuteTool(plugin);
+                    }
+                }
+                sw.WriteLine($"=====GAME: {currentReader.GetGameData().Name}======");
+                foreach (var err in Logger.errors)
+                {
+                    sw.WriteLine(err);
+                }
+            }
+            else if (Directory.Exists(initialPath))
+            {
+                var games = Directory.GetFiles(initialPath);
+                foreach (var path in games)
+                {
+                    Logger.errors.Clear();
+                    currentReader = new AutoFileReader();
+                    currentReader.LoadGame(path);
+                    foreach (var name in pluginNames)
+                    {
+                        var plugin = toolList.FirstOrDefault(a => a.GetType().Name == name);
+                        if (plugin != null)
+                        {
+                            ExecuteTool(plugin);
+                        }
+                    }
+                    sw.WriteLine($"=====GAME: {currentReader.GetGameData().Name}======");
+                    foreach (var err in Logger.errors)
+                    {
+                        sw.WriteLine(err);
+                    }
+                    
+                }
+            }
+            stopWatch.Stop();
+            sw.WriteLine($"Total time: {stopWatch.Elapsed.TotalSeconds}");
+            sw.Flush();
+            sw.Close();
+        }
+        var mainWindow = new Window();
+        var inspectorWindow = new Window();
+        var fileOptionsWindow = new Window();
+        var pluginsWindow = new Window();
+        AddHeader(mainWindow);
+        AddHeader(fileOptionsWindow);
+        AddHeader(inspectorWindow);
+        AddHeader(pluginsWindow);
+
+        
+        
+        
+        
 
         var pluginText = new Label("Select a plugin");
         var pluginStopwatch = new Stopwatch();
@@ -104,17 +179,7 @@ public class Program
             pluginsWindow.Controls.Add(new Button($"{tool.Name}",() =>
             {
                 pluginStopwatch.Start();
-                try
-                {
-                    tool.Execute(currentReader);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogWarning("Error while executing "+tool.Name);
-                    Logger.LogWarning(ex);
-                    Logger.LogWarning("Press any key to continue...");
-                    Console.ReadKey();
-                }
+                ExecuteTool(tool);
                 pluginStopwatch.Stop();
                 pluginText.Text = $"Execution of {tool.Name} finished in {pluginStopwatch.Elapsed.TotalSeconds} seconds";
             }));

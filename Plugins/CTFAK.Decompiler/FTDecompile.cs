@@ -330,7 +330,8 @@ public class FTDecompile : IFusionTool
                 }
 
                 //LayerInfo
-                if (Settings.Old)
+                var layerCount = frame.Layers?.Items.Count;
+                if (layerCount==0)
                 {
                     var tempLayer = new MFALayer();
 
@@ -342,8 +343,8 @@ public class FTDecompile : IFusionTool
                 }
                 else
                 {
-                    var count = frame.Layers.Items.Count;
-                    for (var i = 0; i < count; i++)
+                    
+                    for (var i = 0; i < layerCount; i++)
                     {
                         var layer = frame.Layers.Items[i];
                         var newLayer = new MFALayer();
@@ -571,7 +572,6 @@ public class FTDecompile : IFusionTool
         }
         mfa.Write(new ByteWriter(new FileStream(
             $"Dumps\\{outPath}\\{mfaName}.mfa", FileMode.Create)));
-        Console.ReadLine();
 
         static MFATransition ConvertTransition(Transition gameTrans)
         {
