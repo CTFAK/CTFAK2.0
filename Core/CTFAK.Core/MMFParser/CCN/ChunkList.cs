@@ -178,6 +178,8 @@ public class ChunkList
                     {
                         Logger.LogWarning($"Error while reading chunk {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
                         Logger.LogWarning($"Chunk data. Id: {newChunk.Id}. Flag: {newChunk.Flag}. Data size: {chunkData.Length}");
+                        Console.WriteLine("Press enter to continue...");
+                        Console.ReadLine();
                     }
 
                     try
@@ -188,16 +190,6 @@ public class ChunkList
                     {
                         Logger.LogWarning(
                             $"Error while handling chunk loading {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
-                    }
-
-                    try
-                    {
-                        OnHandleChunk?.Invoke(newChunk.Id, newInstance);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogWarning(
-                            $"Error while doing chunk handling {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
                     }
                 }
                 else

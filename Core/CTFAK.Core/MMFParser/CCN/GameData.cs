@@ -91,10 +91,7 @@ public class GameData
         Logger.Log("Fusion Build: " + productBuild);
 
         var chunkList = new ChunkList();
-        chunkList.OnHandleChunk += (id, loader) =>
-        {
-            chunkList.HandleChunk(id, loader, this);
-        }; // This doesn't work and I honestly don't care
+
         chunkList.OnChunkLoaded += (id, loader) =>
         {
             switch (id)
@@ -226,6 +223,10 @@ public class GameData
         // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
         // it's safe to just read again
         //chunkList.Read(reader); // turns out it's not
+        if (reader.Tell() < reader.Size())
+        {
+            chunkList.Read(reader); // turns out i actually gotta check some stuff
+        }
         if (CTFAKCore.Parameters.Contains("-debug"))
             Console.ReadLine();
     }

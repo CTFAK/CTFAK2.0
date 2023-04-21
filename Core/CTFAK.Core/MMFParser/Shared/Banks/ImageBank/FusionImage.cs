@@ -98,11 +98,11 @@ public class FusionImage : ChunkLoader
                         colorArray = ImageTranslator.AndroidMode3ToRGBA(imageData, Width, Height, false);
                         break;
                     case 4:
-                        //if (Settings.Android)
-                        //    colorArray = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, false);
-                        //else
+                        if (Settings.Android) //comment this out of if android breaks
+                            colorArray = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, false); //comment this out of if android breaks
+                        else //comment this out of if android breaks
                             colorArray = ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height,
-                                Flags["Alpha"], Transparent);
+                                Flags["Alpha"], Transparent,Settings.F3);
                         break;
                     case 5:
                         colorArray = ImageTranslator.AndroidMode5ToRGBA(imageData, Width, Height, Flags["Alpha"]);
@@ -119,11 +119,12 @@ public class FusionImage : ChunkLoader
                         colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"]);
                         break;
                 }
-
+                Logger.Log($"Loading image {Handle} with mode {GraphicMode}");
                 if (colorArray == null)
                 {
                     Logger.LogWarning("colorArray is null for image mode " + GraphicMode);
                 }
+                
 
                 Marshal.Copy(colorArray, 0, bmpData.Scan0, colorArray.Length);
 
@@ -424,6 +425,12 @@ public class FusionImage : ChunkLoader
                 if (Settings.Android)
                 {
                     imageData = ImageTranslator.AndroidMode4ToRGBA(imageData, Width, Height, Flags["Alpha"]);
+                    imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
+                    GraphicMode = 4;
+                }
+                else if (Settings.F3)
+                {
+                    imageData = ImageTranslator.Normal24BitMaskedToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,true);
                     imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
                     GraphicMode = 4;
                 }

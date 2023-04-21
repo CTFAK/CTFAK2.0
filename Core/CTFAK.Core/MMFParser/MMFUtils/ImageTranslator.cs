@@ -20,7 +20,7 @@ public static class ImageTranslator
         return (int)Math.Ceiling(pad / (float)pointSize);
     }
     
-    public static byte[] Normal24BitMaskedToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent)
+    public static byte[] Normal24BitMaskedToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent,bool flipRgb = false)
     {
         byte[] colorArray = new byte[width * height * 4];
         int stride = width * 4;
@@ -31,9 +31,18 @@ public static class ImageTranslator
             for (int x = 0; x < width; x++)
             {
                 int newPos = (y * stride) + (x * 4);
-                colorArray[newPos + 0] = imageData[position];
-                colorArray[newPos + 1] = imageData[position + 1];
-                colorArray[newPos + 2] = imageData[position + 2];
+                if (flipRgb)
+                {
+                    colorArray[newPos + 0] = imageData[position + 2];
+                    colorArray[newPos + 1] = imageData[position + 1];
+                    colorArray[newPos + 2] = imageData[position];
+                }
+                else
+                {
+                    colorArray[newPos + 0] = imageData[position];
+                    colorArray[newPos + 1] = imageData[position + 1];
+                    colorArray[newPos + 2] = imageData[position + 2];
+                }
                 colorArray[newPos + 3] = 255;
                 if (!alpha)
                 {

@@ -23,6 +23,7 @@ public class AutoFileReader:IFileReader
             case ".exe":
                 RealReader = new ExeFileReader();
                 break;
+            case ".dat":
             case ".ccn":
                 RealReader = new CCNFileReader();
                 break;
