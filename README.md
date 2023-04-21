@@ -9,6 +9,7 @@ By Kostya and Yunivers
 | [Compilation](https://github.com/CTFAK/CTFAK2.0#compilation) | How to compile CTFAK 2.0 manually. |
 | [Usage](https://github.com/CTFAK/CTFAK2.0#usage) | How to use CTFAK 2.0. |
 | [Parameters](https://github.com/CTFAK/CTFAK2.0#parameters) | All CTFAK 2.0 parameters. |
+| [Command Arguments](https://github.com/CTFAK/CTFAK2.0#command-arguments) | All CTFAK 2.0 command arguments. |
 | [To-Do List](https://github.com/CTFAK/CTFAK2.0#to-do-list) | What needs to be done to mark CTFAK 2.0 as complete. |
 | [Full Credits](https://github.com/CTFAK/CTFAK2.0#full-credits) | Everyone who helped make CTFAK 2.0 a reality. |
 
@@ -21,22 +22,16 @@ CTFAK 2.0 is currently split between 2 branches; the [master](https://github.com
 
 The `master` branch is maintained by Yunivers and is deemed more stable than the `2.3` branch. It uses .NET 6.0 and is automatically compiled for use by GitHub Actions.
 
-The `2.3` branch is maintained by Kostya and is more ahead than `master` in some ways, but behind in others. It uses .NET 7.0 and must be manually compiled for use by the user.
+The `2.3` branch is maintained by Kostya and is more ahead than `master` in some ways, but behind in others. It uses .NET 6.0 for CLI and .NET 7.0 for Interactive and is also automatically compiled for use by GitHub Actions.
+
+However this README will only be referring to the 'master' branch, also known as CTFAK 2.2.
 
 # Installation
 ## Dependencies
 CTFAK 2.0 requires [.NET 6.0's Runtime, Core Runtime, and Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
 After running the x64 installers for all 3 runtimes, you may proceed with the installation.
-## Installing a release
-
-Releases tend to be extremely out of date, but classified as stable.
-
-To install a release, you should go to [Releases](https://github.com/CTFAK/CTFAK2.0/releases) and downloaded the latest .rar file listed. From there you should use [WinRAR](https://www.rarlab.com/download.htm) to extract the contents of the .rar into an empty folder.
-
-## Installing an artifact
-
-Artifacts tend to be less stable but are the most up-to-date.
+## Installing a precompiled artifact
 
 To install an artifact, you must be logged into a Github account, then you must make your way over to [Actions](https://github.com/CTFAK/CTFAK2.0/actions?query=branch%3Amaster), and from there select the latest workflow marked with the word `master`. On that page, if you scroll down you should find `Artifacts`, from there just click on `CTFAK` and it will start downloading.
 
@@ -93,6 +88,7 @@ All parameters should start with `-`.
 | noevnt | Prevents CTFAK 2.0 from reading any events. |
 | nosounds | Prevents CTFAK 2.0 from reading any sounds. |
 | noalpha | Prevents CTFAK 2.0 from reading any alpha on images. |
+| onlyimages | Prevents CTFAK 2.0 from reading any unneeded data other than images. |
 | srcexp | Forces CTFAK 2.0 to read a Source Explorer output. The unsorted output should be in a newly made `ImageBank` folder within your CTFAK 2.0 folder. |
 | notrans | Prevents CTFAK 2.0 from applying Alpha, Color, or Shaders to objects. |
 | noicons | Prevents CTFAK 2.0 from writing any object icons. |
@@ -101,19 +97,31 @@ All parameters should start with `-`.
 | f1.5 | Forces CTFAK 2.0 to read the input as MMF 1.5. |
 | f3 | Forces CTFAK 2.0 to read the input as CTF 3.0. |
 | android | Forces CTFAK 2.0 to read the input as android. |
-| excludeframe[id] | Forces CTFAK 2.0 to ignore the specified frame. ID indexes at 0.|
-| log | Causes CTFAK 2.0 to log thread information about the Sorted Image Dumper.|
-| badblend | Forces CTFAK 2.0 to revert to the old blend coeff fix.|
+| excludeframe[id] | Forces CTFAK 2.0 to ignore the specified frame. ID indexes at 0. |
+| log | Causes CTFAK 2.0 to log thread information about the Sorted Image Dumper. |
+| badblend | Forces CTFAK 2.0 to revert to the old blend coeff fix. |
+| altimgs | Forces CTFAK 2.0 to read 2.5+ images in a weird way. Breaks images for 99% of games. |
+
+# Command Arguments
+These are command arguments for batch files or running CTFAK through cmd.
+All arguments should start with `-` and should be followed up by data wrapped in quotations if data is reqiured for said argument.
+|Argument| Description |
+|--|--|
+| path | Automatically starts reading the inputted file path. |
+| ____ | Leaving the arguments blank allows you to do the same thing as '-path'. |
+| parameters | Allows you to input parameters that CTFAK 2.0 will read. |
+| forcetype | Forces the kind of file type the file will be read as. Options: 'exe', 'apk', 'ccn', 'mfa' |
+| tool | Uses the name of a plugin (such as 'Decompiler') to run said tool as soon as it's done reading. |
+| closeonfinish | Closes CTFAK 2.0 after it finishes reading, or if you are using '-tool', after it finishes running the plugin. |
 
 # To-Do List
 |%| Task |Description
 |--|--|--|
 | 80% | Layer Effects | Shaders on layers. |
 | 90% | MFA2Pame | Converting an MFA into the same format as an exe for easy dumping. |
-| 60% | New Image Bank | Fixes certain 2.5+ games having broken images. |
+| 70% | New Image Bank | Fixes certain 2.5+ games having broken images. |
 | 0% | Native Lib to Linux | Allowing the native lib for CTFAK to run on Linux. |
-| 90% | New GUI | A brand new GUI found at [CTFAK/CTFAK.GUI](https://github.com/CTFAK/CTFAK.GUI). |
-| 0% | Klik & Play Support | Reading of applications made with Klik & Play. |
+| 1% | Klik & Play Support | Reading of applications made with Klik & Play. |
 | 0% | TGF Support | Reading of applications made with The Games Factory. |
 | 0% | TGF2 Support | Reading of applications made with The Games Factory 2. |
 | 0% | MMF 1.0 Support | Reading of applications made with Click & Create. |
@@ -133,4 +141,4 @@ All parameters should start with `-`.
 
 CTFAK 2.0 is licensed under [AGPL-3.0](https://github.com/CTFAK/CTFAK2.0/blob/master/LICENSE).
 
-Last Updated Feburary 24th, 2023.
+Last Updated April 21st, 2023.

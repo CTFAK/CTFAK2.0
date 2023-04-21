@@ -17,6 +17,7 @@ using CTFAK.MMFParser.EXE.Loaders;
 using Ionic.Zlib;
 using CTFAK.FileReaders;
 using CTFAK.Core.CCN.Chunks;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CTFAK.CCN
 {
@@ -101,6 +102,14 @@ namespace CTFAK.CCN
                 if (reader.Tell() >= reader.Size()) break;
                 var newChunk = new Chunk();
                 var chunkData = newChunk.Read(reader);
+                if (CTFAKCore.parameters.Contains("-onlyimages"))
+                {
+                    if (newChunk.Id != 26214 && // Image Bank
+                        newChunk.Id != 8763  && // Copyright
+                        newChunk.Id != 8750  && // Editor Filename
+                        newChunk.Id != 8740)    // App Name 
+                        continue;
+                }
                 if (newChunk.Id == 32639) break;
                 if (newChunk.Id == 8787 && !Settings.F3) Settings.gameType = Settings.GameType.TWOFIVEPLUS;
                 var chunkReader = new ByteReader(chunkData);
