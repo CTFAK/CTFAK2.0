@@ -117,7 +117,7 @@ public class FusionImage : ChunkLoader
                             ImageTranslator.Normal16BitToRGBA(imageData, Width, Height, Flags["Alpha"], Transparent);
                         break;
                     case 8:
-                        colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,Flags["RGBA"]);
+                        colorArray = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,Flags["RGBA"],Settings.F3);
                         break;
                 }
                 //Logger.Log($"Loading image {Handle} with mode {GraphicMode}");
@@ -443,7 +443,7 @@ public class FusionImage : ChunkLoader
                 GraphicMode = 4;
                 break;
             case 8:
-                imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,Flags["RGBA"]);
+                imageData = ImageTranslator.TwoFivePlusToRGBA(imageData, Width, Height, Flags["Alpha"],Transparent,Flags["RGBA"],Settings.F3);
                 imageData = ImageTranslator.RGBAToRGBMasked(imageData, Width, Height, Flags["Alpha"]);
                 GraphicMode = 4;
                 break;

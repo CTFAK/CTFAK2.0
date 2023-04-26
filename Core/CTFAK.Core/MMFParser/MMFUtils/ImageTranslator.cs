@@ -341,7 +341,7 @@ public static class ImageTranslator
         img.FromBitmap((Bitmap)Bitmap.FromStream(new MemoryStream(imageData)));
         return Normal24BitMaskedToRGBA(img.imageData,width,height,true,Color.Black);
     }
-    public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha,Color transparent,bool rgba)
+    public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha,Color transparent,bool rgba,bool flipRgb = false)
     {
         byte[] colorArray = new byte[width * height * 4];
         int stride = width * 4;
@@ -352,9 +352,18 @@ public static class ImageTranslator
             for (int x = 0; x < width; x++)
             {
                 int newPos = (y * stride) + (x * 4);
-                colorArray[newPos + 0] = imageData[position];
-                colorArray[newPos + 1] = imageData[position + 1];
-                colorArray[newPos + 2] = imageData[position + 2];
+                if (flipRgb)
+                {
+                    colorArray[newPos + 0] = imageData[position + 2];
+                    colorArray[newPos + 1] = imageData[position + 1];
+                    colorArray[newPos + 2] = imageData[position];
+                }
+                else
+                {
+                    colorArray[newPos + 0] = imageData[position];
+                    colorArray[newPos + 1] = imageData[position + 1];
+                    colorArray[newPos + 2] = imageData[position + 2];
+                }
                 colorArray[newPos + 3] = 255;
                 if (alpha)
                 {
@@ -372,6 +381,9 @@ public static class ImageTranslator
             position += pad * 4;
             
         }
+
+        if (position == imageData.Length)
+            return colorArray;
         if (alpha&&!rgba)
         {
             int aPad = GetPadding(width, 1, 4);

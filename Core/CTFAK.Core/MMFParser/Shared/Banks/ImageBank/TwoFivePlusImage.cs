@@ -18,7 +18,7 @@ public class
 {
     public override void Read(ByteReader reader)
     {
-        
+
         Handle = reader.ReadInt32();
         if (Settings.Build >= 284)
             Handle--;
@@ -30,12 +30,13 @@ public class
         Height = reader.ReadInt16();
         GraphicMode = reader.ReadByte();
         Flags.flag = reader.ReadByte();
-        reader.Skip(2);
+        var unk = reader.ReadInt16();
         HotspotX = reader.ReadInt16();
         HotspotY = reader.ReadInt16();
         ActionX = reader.ReadInt16();
         ActionY = reader.ReadInt16();
         Transparent = reader.ReadColor();
+
         var decompSizePlus = reader.ReadInt32();
         var rawImg = reader.ReadBytes(dataSize - 4);
         var task = new Task(() =>
@@ -46,10 +47,5 @@ public class
         });
         task.RunSynchronously();
         ImageBank.imageReadingTasks.Add(task);
-
-        
-        //PrepareForMfa();
-
-
     }
 }
