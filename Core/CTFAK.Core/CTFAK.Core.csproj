@@ -7,7 +7,6 @@
         <FileVersion>2.3</FileVersion>
         <NeutralLanguage>en</NeutralLanguage>
         <OutputType>Library</OutputType>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
         <RootNamespace>CTFAK</RootNamespace>
         <Configurations>Debug;Release</Configurations>

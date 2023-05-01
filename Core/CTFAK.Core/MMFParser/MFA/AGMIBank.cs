@@ -27,7 +27,7 @@ public class AGMIBank : ChunkLoader
         _paletteVersion = reader.ReadInt16();
         _paletteEntries = reader.ReadInt16();
         Palette = new List<Color>();
-        for (var i = 0; i < _paletteEntries; i++) Palette.Add(reader.ReadColor());
+        for (var i = 0; i < 256; i++) Palette.Add(reader.ReadColor());
 
         var count = reader.ReadInt32();
 

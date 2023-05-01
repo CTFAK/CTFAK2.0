@@ -9,9 +9,9 @@ namespace CTFAK.MMFParser.CCN.Chunks;
 [ChunkLoader(0x2226, "AppMenu")]
 public class AppMenu : ChunkLoader
 {
-    public List<short> AccelId;
-    public List<short> AccelKey;
-    public List<byte> AccelShift;
+    public List<short> AccelId = new List<short>();
+    public List<short> AccelKey = new List<short>();
+    public List<byte> AccelShift = new List<byte>();
     public List<AppMenuItem> Items = new();
 
 

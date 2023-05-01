@@ -61,6 +61,9 @@ public static class Decryption
         bytes.AddRange(KeyString(data1 ?? ""));
         bytes.AddRange(KeyString(data2 ?? ""));
         bytes.AddRange(KeyString(data3 ?? ""));
+        string combinedData = data1 + data2 + data3;
+        Console.WriteLine($"Data: combinedData");
+        Console.WriteLine("Total length: "+combinedData.Length);
         _decryptionKey = MakeKeyCombined(bytes.ToArray());
         InitDecryptionTable(_decryptionKey, Decryption.MagicChar);
         
