@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 using CTFAK.Utils;
 
 namespace CTFAK.Memory;
 
 public static class Decryption
 {
-    public static byte[] _decryptionKey;
+    public static byte[] DecryptionKey;
 
-    public static byte MagicChar = 54;
+    public const byte MagicChar = 54;
+
+    //private static byte* decodeBuffer;
+    private static readonly byte[] DecodeBuffer = new byte[256];
+    public static bool valid;
 
     public static byte[] KeyString(string str)
     {
@@ -20,17 +22,11 @@ public static class Decryption
         // this code is quite stupid, but i will not touch it for now
         var result = new List<byte>();
         result.Capacity = str.Length * 2;
-        foreach (char code in str)
+        foreach (var code in str)
         {
-            if ((code & 0xFF) != 0)
-            {
-                result.Add((byte)(code & 0xFF));
-            }
+            if ((code & 0xFF) != 0) result.Add((byte)(code & 0xFF));
 
-            if (((code >> 8) & 0xFF) != 0)
-            {
-                result.Add((byte)((code >> 8) & 0xFF));
-            }
+            if (((code >> 8) & 0xFF) != 0) result.Add((byte)((code >> 8) & 0xFF));
         }
 
         return result.ToArray();
@@ -38,13 +34,13 @@ public static class Decryption
 
     public static byte[] MakeKeyCombined(byte[] data)
     {
-        int dataLen = data.Length;
+        var dataLen = data.Length;
         Array.Resize(ref data, 256);
 
-        byte lastKeyByte = MagicChar;
-        byte v34 = MagicChar;
+        var lastKeyByte = MagicChar;
+        var v34 = MagicChar;
 
-        for (int i = 0; i <= dataLen; i++)
+        for (var i = 0; i <= dataLen; i++)
         {
             v34 = (byte)((v34 << 7) + (v34 >> 1));
             data[i] ^= v34;
@@ -61,15 +57,12 @@ public static class Decryption
         bytes.AddRange(KeyString(data1 ?? ""));
         bytes.AddRange(KeyString(data2 ?? ""));
         bytes.AddRange(KeyString(data3 ?? ""));
-        string combinedData = data1 + data2 + data3;
-        Console.WriteLine($"Data: combinedData");
-        Console.WriteLine("Total length: "+combinedData.Length);
-        _decryptionKey = MakeKeyCombined(bytes.ToArray());
-        InitDecryptionTable(_decryptionKey, Decryption.MagicChar);
-        
+        var combinedData = data1 + data2 + data3;
+        Console.WriteLine("Data: " + combinedData);
+        Console.WriteLine("Total length: " + combinedData.Length);
+        DecryptionKey = MakeKeyCombined(bytes.ToArray());
+        InitDecryptionTable(DecryptionKey, MagicChar);
     }
-
-
 
 
     public static byte[] DecodeMode3(byte[] chunkData, int chunkId, out int decompressed)
@@ -91,44 +84,51 @@ public static class Decryption
         }
     }
 
-    //private static byte* decodeBuffer;
-    private static byte[] decodeBuffer = new byte[256];
-    public static bool valid;
+    public static byte[] EncryptAndCompressMode3(byte[] chunkData, int chunkId)
+    {
+        var compressedData = Decompressor.CompressBlock(chunkData);
+        var decryptedWriter = new ByteWriter(new MemoryStream());
+        decryptedWriter.WriteInt32(compressedData.Length);
+
+        decryptedWriter.WriteBytes(compressedData);
+        var encryptedData = decryptedWriter.GetBuffer();
+        TransformChunk(encryptedData);
+        var anotherWriter = new ByteWriter(new MemoryStream());
+        anotherWriter.WriteInt32(encryptedData.Length - 12);
+        anotherWriter.WriteBytes(encryptedData);
+        return anotherWriter.GetBuffer();
+    }
 
     // Thx LAK
     // It's 0:40, I might revisit this part again when I don't feel as crappy
     // I might even just redo it with a single byte array with 256 elements
     // Revisiting this day after, I literally did just that. Wasn't hard at all
     // But hey, at least this works ;)
-    public static bool InitDecryptionTable(byte[] magic_key, byte magic_char)
+    public static bool InitDecryptionTable(byte[] magicKey, byte magicChar)
     {
         //decodeBuffer = (byte*)Marshal.AllocHGlobal(256);
-        for (int i = 0; i < 256; i++)
-        {
-            decodeBuffer[i] = (byte)i;
-        }
+        for (var i = 0; i < 256; i++) DecodeBuffer[i] = (byte)i;
 
-        Func<byte, byte> rotate = (byte value) => (byte)((value << 7) | (value >> 1));
+        Func<byte, byte> rotate = value => (byte)((value << 7) | (value >> 1));
 
-        byte accum = (byte)magic_char;
-        byte hash = (byte)magic_char;
+        var accum = magicChar;
+        var hash = magicChar;
 
-        bool never_reset_key = true;
+        var never_reset_key = true;
 
         byte i2 = 0;
         byte key = 0;
         for (uint i = 0; i < 256; ++i, ++key)
         {
-
             hash = rotate(hash);
 
             if (never_reset_key)
             {
-                accum += ((hash & 1) == 0) ? (byte)2 : (byte)3;
-                accum *= magic_key[key];
+                accum += (byte)((hash & 1) == 0 ? 2 : 3);
+                accum *= magicKey[key];
             }
 
-            if (hash == magic_key[key])
+            if (hash == magicKey[key])
             {
                 /*if (never_reset_key && !(accum == magic_key[key+1]))
                 {
@@ -138,37 +138,38 @@ public static class Decryption
                     //return false;
                 }*/
 
-                hash = rotate((byte)magic_char);
+                hash = rotate(magicChar);
                 key = 0;
 
                 never_reset_key = false;
             }
 
-            i2 += (byte)((hash ^ magic_key[key]) + decodeBuffer[i]);
+            i2 += (byte)((hash ^ magicKey[key]) + DecodeBuffer[i]);
 
-            (decodeBuffer[i2], decodeBuffer[i]) = (decodeBuffer[i], decodeBuffer[i2]);
+            (DecodeBuffer[i2], DecodeBuffer[i]) = (DecodeBuffer[i], DecodeBuffer[i2]);
         }
+
         valid = true;
         return true;
-        
     }
 
     public static bool TransformChunk(byte[] chunk)
     {
         if (!valid) return false;
-        byte[] tempBuf = new byte[256];
-        Array.Copy(decodeBuffer,tempBuf,256);
+        var tempBuf = new byte[256];
+        Array.Copy(DecodeBuffer, tempBuf, 256);
 
         byte i = 0;
         byte i2 = 0;
-        for (int j = 0; j < chunk.Length; j++)
+        for (var j = 0; j < chunk.Length; j++)
         {
             ++i;
-            i2 += (byte)tempBuf[i];
+            i2 += tempBuf[i];
             (tempBuf[i2], tempBuf[i]) = (tempBuf[i], tempBuf[i2]);
             var xor = tempBuf[(byte)(tempBuf[i] + tempBuf[i2])];
             chunk[j] ^= xor;
         }
+
         return true;
     }
 }
