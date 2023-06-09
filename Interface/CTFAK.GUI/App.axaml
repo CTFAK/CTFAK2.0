@@ -1,0 +1,13 @@
+﻿<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CTFAK.GUI.App">
+    <Application.Styles>
+        <FluentTheme DensityStyle="Compact"/>
+        <Style Selector="Window[WindowState=Maximized]">
+            <Setter Property="Padding" Value="8" />
+        </Style>
+    </Application.Styles>
+    <Application.Resources>
+        <SolidColorBrush Color="#ff6f00" x:Key="TabItemHeaderSelectedPipeFill" />
+    </Application.Resources>
+</Application>

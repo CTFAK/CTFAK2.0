@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
 namespace CTFAK.FileReaders;
 
-public class AutoFileReader:IFileReader
+public class AutoFileReader : IFileReader
 {
+    public IFileReader RealReader;
     public int Priority => 1;
     public string Name => "Auto";
-    public IFileReader RealReader;
+
     public GameData GetGameData()
     {
         return RealReader.GetGameData();
@@ -39,7 +39,7 @@ public class AutoFileReader:IFileReader
             RealReader.LoadGame(gamePath);
             return true;
         }
-        
+
         return false;
     }
 

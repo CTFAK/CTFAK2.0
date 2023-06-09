@@ -1,0 +1,33 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+        x:Class="CTFAK.GUI.FileSelectorWindow"
+        Title="Select File"
+        WindowState="Normal"
+        Background="#303035"
+        ExtendClientAreaToDecorationsHint="False"
+        CanResize="False"
+        Width="500"
+        Height="300">
+        
+        <Grid>
+                <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                        <TextBox Name="FilePath" Grid.Row="0" Grid.Column="0" Watermark="File path" HorizontalAlignment="Stretch"/>
+                        <Button Grid.Row="0" Grid.Column="1" Click="SelectPath_OnClick"><TextBlock Text="Select..."/></Button>
+                        
+                        <ListBox Name="FileReaders" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"></ListBox>
+                        
+                        <Button Name="LoadFileButton" IsEnabled="False" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Click="LoadFile_OnClick"><TextBlock Text="Open file" HorizontalAlignment="Center"/></Button>
+        </Grid>
+    
+</Window>

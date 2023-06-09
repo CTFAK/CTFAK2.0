@@ -1,12 +1,12 @@
 ﻿using System.Drawing;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
-using CTFAK.MMFParser.MFA;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class ObjectLoader : ChunkLoader
 {
+    public MFAObjectFlags AltFlags;
     public Color BackgroundColor;
     public Behaviours Behaviours;
     public MFAMovements Movements;
@@ -15,25 +15,24 @@ public class ObjectLoader : ChunkLoader
     public short[] Qualifiers = new short[8];
     public MFAValueList Strings;
     public MFAValueList Values;
-    public MFAObjectFlags AltFlags;
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
         // if(Qualifiers==null) throw new NullReferenceException("QUALIFIERS NULL");
-        Writer.WriteInt32(ObjectFlags);
-        Writer.WriteInt32(NewObjectFlags);
+        writer.WriteInt32(ObjectFlags);
+        writer.WriteInt32(NewObjectFlags);
         // var col = Color.FromArgb(255,BackgroundColor.R,BackgroundColor.G,BackgroundColor.B);
-        Writer.WriteColor(BackgroundColor);
+        writer.WriteColor(BackgroundColor);
 
-        for (var i = 0; i < 8; i++) Writer.WriteInt16(Qualifiers[i]);
-        Writer.WriteInt16(-1);
-        Values.Write(Writer);
-        Strings.Write(Writer);
-        Movements.Write(Writer);
-        Behaviours.Write(Writer);
+        for (var i = 0; i < 8; i++) writer.WriteInt16(Qualifiers[i]);
+        writer.WriteInt16(-1);
+        Values.Write(writer);
+        Strings.Write(writer);
+        Movements.Write(writer);
+        Behaviours.Write(writer);
 
-        Writer.WriteInt8(0); //FadeIn
-        Writer.WriteInt8(0); //FadeOut
+        writer.WriteInt8(0); //FadeIn
+        writer.WriteInt8(0); //FadeOut
     }
 
 

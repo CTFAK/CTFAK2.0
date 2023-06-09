@@ -2,7 +2,7 @@
 using System.Drawing;
 using CTFAK.Memory;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class MFACounter : ObjectLoader
 {
@@ -41,27 +41,27 @@ public class MFACounter : ObjectLoader
         Font = reader.ReadUInt32();
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        base.Write(Writer);
-        Writer.WriteInt32(Value);
-        Writer.WriteInt32(Minimum);
-        Writer.WriteInt32(Maximum);
-        Writer.WriteUInt32(DisplayType);
-        Writer.WriteUInt32(CountFlags);
-        Writer.WriteColor(Color1);
+        base.Write(writer);
+        writer.WriteInt32(Value);
+        writer.WriteInt32(Minimum);
+        writer.WriteInt32(Maximum);
+        writer.WriteUInt32(DisplayType);
+        writer.WriteUInt32(CountFlags);
+        writer.WriteColor(Color1);
         ;
-        Writer.WriteColor(Color2);
+        writer.WriteColor(Color2);
         ;
-        Writer.WriteUInt32(VerticalGradient);
-        Writer.WriteInt32(CountType);
-        Writer.WriteInt32(Width);
-        Writer.WriteInt32(Height);
-        Writer.WriteInt32(Images?.Count ?? 0);
+        writer.WriteUInt32(VerticalGradient);
+        writer.WriteInt32(CountType);
+        writer.WriteInt32(Width);
+        writer.WriteInt32(Height);
+        writer.WriteInt32(Images?.Count ?? 0);
         if (Images != null)
             foreach (var item in Images)
-                Writer.WriteUInt32((uint)item);
-        else Writer.WriteInt32(0);
-        Writer.WriteUInt32(Font);
+                writer.WriteUInt32((uint)item);
+        else writer.WriteInt32(0);
+        writer.WriteUInt32(Font);
     }
 }

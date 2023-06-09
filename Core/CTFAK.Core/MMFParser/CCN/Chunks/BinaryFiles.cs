@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CTFAK.Attributes;
 using CTFAK.Memory;
-using CTFAK.MFA;
+using CTFAK.MMFParser.MFA;
 
 namespace CTFAK.MMFParser.CCN.Chunks;
 
@@ -27,7 +27,7 @@ public class BinaryFile : ChunkLoader
 public class BinaryFiles : ChunkLoader
 {
     public int Count;
-    public List<BinaryFile> Files = new List<BinaryFile>();
+    public List<BinaryFile> Files = new();
 
     public override void Read(ByteReader reader)
     {

@@ -1,44 +1,44 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using CTFAK.Core.MFA;
-using CTFAK.FileReaders;
+using System.IO;
 using CTFAK.Memory;
-using CTFAK.MFA;
 using CTFAK.MMFParser.CCN;
+using CTFAK.MMFParser.MFA;
+using CTFAK.MMFParser.MMFUtils;
 using CTFAK.Utils;
 
-namespace CTFAK.EXE
+namespace CTFAK.FileReaders;
+
+public class MFAFileReader : IFileReader
 {
-    public class MFAFileReader : IFileReader
+    public GameData Game;
+    public MFAData MFA;
+    public string Name => "MFA";
+    public int Priority => 5;
+
+    public GameData GetGameData()
     {
-        public string Name => "MFA";
-        public int Priority => 5;
-        public GameData Game;
-        public MFAData MFA;
-        public GameData GetGameData()
-        {
-            return Game;
-        }
-        
-        public virtual bool LoadGame(string gamePath)
-        {
-            var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
-            MFA = new MFAData();
-            Settings.isMFA = true;
-            MFA.Read(reader);
-            Settings.isMFA = false;
-            Game = MFA2Pame.ConvertMFA2Pame(MFA);
-            return true;
-        }
+        return Game;
+    }
 
-        public Dictionary<int, Bitmap> GetIcons()
-        {
-            return new Dictionary<int, Bitmap>();
-        }
+    public virtual bool LoadGame(string gamePath)
+    {
+        var reader = new ByteReader(gamePath, FileMode.Open);
+        MFA = new MFAData();
+        Settings.isMFA = true;
+        MFA.Read(reader);
+        Settings.isMFA = false;
+        Game = Mfa2Pame.Convert(MFA);
+        return true;
+    }
 
-        public void PatchMethods()
-        {
-            Settings.gameType = Settings.GameType.NORMAL;
-        }
+    public Dictionary<int, Bitmap> GetIcons()
+    {
+        return new Dictionary<int, Bitmap>();
+    }
+
+    public void PatchMethods()
+    {
+        Settings.gameType = Settings.GameType.NORMAL;
     }
 }

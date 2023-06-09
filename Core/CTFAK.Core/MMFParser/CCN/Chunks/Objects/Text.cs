@@ -81,13 +81,13 @@ public class Paragraph : ChunkLoader
             var size = reader.ReadUInt16();
             FontHandle = reader.ReadUInt16();
             Color = reader.ReadColor();
-            Flags.flag = reader.ReadUInt16();
+            Flags.Flag = reader.ReadUInt16();
             Value = reader.ReadUniversal();
         }
         else
         {
             FontHandle = reader.ReadUInt16();
-            Flags.flag = reader.ReadUInt16();
+            Flags.Flag = reader.ReadUInt16();
             Color = reader.ReadColor();
             Value = reader.ReadUniversal();
         }

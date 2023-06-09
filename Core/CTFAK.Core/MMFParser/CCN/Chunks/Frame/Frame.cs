@@ -4,7 +4,7 @@ using System.Drawing;
 using CTFAK.Attributes;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN.Chunks.Objects;
-using CTFAK.MMFParser.Shared.Events;
+using CTFAK.MMFParser.Common.Events;
 using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.CCN.Chunks.Frame;
@@ -92,8 +92,7 @@ public class Frame : ChunkLoader
         "ToHide",
         "ToShow"
     });
-    
-    public int Width;
+
     public int Height;
     public int InkEffect;
     public int InkEffectValue;
@@ -104,7 +103,9 @@ public class Frame : ChunkLoader
     public Color RgbCoeff;
     public ShaderData ShaderData = new();
     public VirtualRect VirtualRect;
-    
+
+    public int Width;
+
 
     public override void Read(ByteReader reader)
     {
@@ -131,14 +132,14 @@ public class Frame : ChunkLoader
                         Width = chunkReader.ReadInt16();
                         Height = chunkReader.ReadInt16();
                         Background = chunkReader.ReadColor();
-                        Flags.flag = chunkReader.ReadUInt16();
+                        Flags.Flag = chunkReader.ReadUInt16();
                     }
                     else
                     {
                         Width = chunkReader.ReadInt32();
                         Height = chunkReader.ReadInt32();
                         Background = chunkReader.ReadColor();
-                        Flags.flag = chunkReader.ReadUInt32();
+                        Flags.Flag = chunkReader.ReadUInt32();
                     }
 
                     break;
@@ -396,7 +397,7 @@ public class Layer : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
-        Flags.flag = reader.ReadUInt32();
+        Flags.Flag = reader.ReadUInt32();
         XCoeff = reader.ReadSingle();
         YCoeff = reader.ReadSingle();
         NumberOfBackgrounds = reader.ReadInt32();
@@ -411,7 +412,7 @@ public class Layer : ChunkLoader
 
     public override void Write(ByteWriter writer)
     {
-        writer.WriteInt32((int)Flags.flag);
+        writer.WriteInt32((int)Flags.Flag);
         writer.WriteSingle(XCoeff);
         writer.WriteSingle(YCoeff);
         writer.WriteInt32(NumberOfBackgrounds);

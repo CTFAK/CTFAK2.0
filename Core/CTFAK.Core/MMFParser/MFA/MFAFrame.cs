@@ -3,9 +3,8 @@ using System.Drawing;
 using System.Linq;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
-using CTFAK.MMFParser.MFA;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFAFrame : ChunkLoader
 {
@@ -49,65 +48,65 @@ public class MFAFrame : ChunkLoader
     public int StampHandle;
     public string UnkString = "";
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.WriteInt32(Handle);
-        Writer.AutoWriteUnicode(Name);
-        Writer.WriteInt32(SizeX);
-        Writer.WriteInt32(SizeY);
-        Writer.WriteColor(Background);
+        writer.WriteInt32(Handle);
+        writer.AutoWriteUnicode(Name);
+        writer.WriteInt32(SizeX);
+        writer.WriteInt32(SizeY);
+        writer.WriteColor(Background);
 
-        Writer.WriteUInt32(Flags.flag);
-        Writer.WriteInt32(MaxObjects);
+        writer.WriteUInt32(Flags.Flag);
+        writer.WriteInt32(MaxObjects);
 
-        Writer.WriteInt32(0);
-        Writer.WriteInt32(12);
-        Writer.Skip(12);
+        writer.WriteInt32(0);
+        writer.WriteInt32(12);
+        writer.Skip(12);
 
 
-        Writer.WriteInt32(LastViewedX);
-        Writer.WriteInt32(LastViewedY);
-        Writer.WriteInt32(Palette.Count); //WTF HELP 
+        writer.WriteInt32(LastViewedX);
+        writer.WriteInt32(LastViewedY);
+        writer.WriteInt32(Palette.Count); //WTF HELP 
 
-        foreach (var item in Palette) Writer.WriteColor(item);
+        foreach (var item in Palette) writer.WriteColor(item);
 
-        Writer.WriteInt32(StampHandle);
-        Writer.WriteInt32(ActiveLayer);
-        Writer.WriteInt32(Layers.Count);
-        foreach (var layer in Layers) layer.Write(Writer);
+        writer.WriteInt32(StampHandle);
+        writer.WriteInt32(ActiveLayer);
+        writer.WriteInt32(Layers.Count);
+        foreach (var layer in Layers) layer.Write(writer);
 
         if (FadeIn != null)
         {
-            Writer.WriteInt8(1);
-            FadeIn.Write(Writer);
+            writer.WriteInt8(1);
+            FadeIn.Write(writer);
         }
         else
         {
-            Writer.Skip(1);
+            writer.Skip(1);
         }
 
         if (FadeOut != null)
         {
-            Writer.WriteInt8(1);
-            FadeOut.Write(Writer);
+            writer.WriteInt8(1);
+            FadeOut.Write(writer);
         }
         else
         {
-            Writer.Skip(1);
+            writer.Skip(1);
         }
 
 
-        Writer.WriteInt32(Items.Count);
-        foreach (var item in Items) item.Write(Writer);
+        writer.WriteInt32(Items.Count);
+        foreach (var item in Items) item.Write(writer);
 
-        Writer.WriteInt32(Folders.Count);
-        foreach (var item in Folders) item.Write(Writer);
+        writer.WriteInt32(Folders.Count);
+        foreach (var item in Folders) item.Write(writer);
 
-        Writer.WriteInt32(Instances.Count);
-        foreach (var item in Instances) item.Write(Writer);
+        writer.WriteInt32(Instances.Count);
+        foreach (var item in Instances) item.Write(writer);
 
-        Events.Write(Writer);
-        Chunks.Write(Writer);
+        Events.Write(writer);
+        Chunks.Write(writer);
     }
 
 
@@ -118,7 +117,7 @@ public class MFAFrame : ChunkLoader
         SizeX = reader.ReadInt32();
         SizeY = reader.ReadInt32();
         Background = reader.ReadColor();
-        Flags.flag = reader.ReadUInt32();
+        Flags.Flag = reader.ReadUInt32();
 
         MaxObjects = reader.ReadInt32();
 

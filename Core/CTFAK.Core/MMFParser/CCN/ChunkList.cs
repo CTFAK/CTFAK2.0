@@ -66,14 +66,7 @@ public class ChunkList
                         newChunkLoaderData.LoaderType = type;
                         newChunkLoaderData.ChunkId = attribute.ChunkId;
                         newChunkLoaderData.ChunkName = attribute.ChunkName;
-                        foreach (var method in type.GetMethods())
-                        {
-                            if (method.Name == "Handle")
-                                newChunkLoaderData.AfterHandler = method;
 
-                            if (method.GetCustomAttributes().Any(a => a.GetType() == typeof(LoaderHandleAttribute)))
-                                newChunkLoaderData.AfterHandler = method;
-                        }
 
                         Logger.Log(
                             $"Found chunk loader handler for chunk id {newChunkLoaderData.ChunkId} with name \"{newChunkLoaderData.ChunkName}\"");
@@ -84,8 +77,9 @@ public class ChunkList
                                        newChunkLoaderData.ChunkId);
                     }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError("Error white loading chunk loaders: "+ex);
             }
 #endif
     }
@@ -93,54 +87,52 @@ public class ChunkList
     private short GetChunkId(ChunkLoader loader)
     {
         foreach (var loaderData in KnownLoaders)
-        {
             if (loaderData.Value.LoaderType == loader.GetType())
-            {
                 return loaderData.Value.ChunkId;
-            }
-        }
 
         return -1;
     }
+
     public Chunk CreateChunk(short id, ChunkFlags flag = ChunkFlags.NotCompressed)
     {
         var newChk = new Chunk();
-        
-        newChk.Id = (short)id;
+
+        newChk.Id = id;
 
         newChk.Flag = flag;
         return newChk;
     }
-    public Chunk CreateChunk(ChunkLoader loader, ChunkFlags flag = ChunkFlags.NotCompressed, short id=-1)
+
+    public Chunk CreateChunk(ChunkLoader loader, ChunkFlags flag = ChunkFlags.NotCompressed, short id = -1)
     {
         var newChk = new Chunk();
         if (id != -1)
-        {
-            newChk.Id = (short)GetChunkId(loader);
-        }
-        else newChk.Id = (short)id;
+            newChk.Id = GetChunkId(loader);
+        else newChk.Id = id;
 
         newChk.Flag = flag;
         return newChk;
     }
 
-    public List<Chunk> Chunks;
+    public List<Chunk> Items = new();
 
     public delegate void OnChunkLoadedEvent(int chunkId, ChunkLoader loader);
 
     public delegate void HandleChunkEvent(int chunkId, ChunkLoader loader);
 
 
-    public void HandleChunk(int id, ChunkLoader chunk, object parent)
-    {
-        if (KnownLoaders.ContainsKey(id))
-            KnownLoaders[id].AfterHandler?.Invoke(chunk, new[] { parent });
-    }
-
-    public event HandleChunkEvent OnHandleChunk;
+    
     public event OnChunkLoadedEvent OnChunkLoaded;
 
     private int _chunkIndex;
+
+    public void Write(ByteWriter writer)
+    {
+        foreach (var chk in Items)
+        {
+            chk.Write(writer);
+        }
+    }
 
     public void Read(ByteReader reader)
     {
@@ -155,15 +147,16 @@ public class ChunkList
                 chunkData = newChunk.Read(reader);
                 if (newChunk.Id == 32639) break;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Logger.Log($"Error while read chunk {newChunk.Id} from file. \n{ex.Message}");
-
+                Logger.Log($"Error while reading chunk {newChunk.Id} from file.");
+                Logger.LogError(ex);
             }
             finally
             {
                 if (newChunk.Id == 8787) Settings.gameType |= Settings.GameType.TWOFIVEPLUS;
-                if (newChunk.Id == 8740 && newChunk.Flag == ChunkFlags.NotCompressed&&!Settings.Old) Settings.gameType = Settings.GameType.ANDROID; // kinda dumb but kinda smart at the same time
+                if (newChunk.Id == 8740 && newChunk.Flag == ChunkFlags.NotCompressed && !Settings.Old)
+                    Settings.gameType = Settings.GameType.ANDROID; // kinda dumb but kinda smart at the same time
 
                 if (KnownLoaders.TryGetValue(newChunk.Id, out var loaderData))
                 {
@@ -176,8 +169,10 @@ public class ChunkList
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError($"Error while reading chunk {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
-                        Logger.LogError($"Chunk data. Id: {newChunk.Id}. Flag: {newChunk.Flag}. Data size: {chunkData.Length}");
+                        Logger.LogError(
+                            $"Error while reading chunk {loaderData.ChunkName}\n{ex.Message}\n{ex.StackTrace}");
+                        Logger.LogError(
+                            $"Chunk data. Id: {newChunk.Id}. Flag: {newChunk.Flag}. Data size: {chunkData.Length}");
                         Console.WriteLine("Press enter to continue...");
                         Console.ReadLine();
                     }
@@ -185,6 +180,7 @@ public class ChunkList
                     try
                     {
                         OnChunkLoaded?.Invoke(newChunk.Id, newInstance);
+                        newChunk.Loader = newInstance;
                     }
                     catch (Exception ex)
                     {
@@ -200,7 +196,7 @@ public class ChunkList
             }
 
             _chunkIndex++;
-
+            Items.Add(newChunk);
             if (CTFAKCore.Parameters.Contains("-trace_chunks"))
             {
                 Directory.CreateDirectory("CHUNK_TRACE");
@@ -293,4 +289,3 @@ public class ChunkList
         { 32639, "Last" }
     };
 }
-

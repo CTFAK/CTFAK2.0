@@ -78,6 +78,7 @@ public class Program
     public static void Main(string[] args)
     {
         CTFAKCore.Init();
+        Directory.CreateDirectory("Plugins");
         ValidateBuildTime();
         var types = Assembly.GetAssembly(typeof(ExeFileReader)).GetTypes();
 

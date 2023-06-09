@@ -1,0 +1,65 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="CTFAK.GUI.MainWindow"
+        Title="CTFAK"
+        
+        WindowState="Normal"
+        Background="#303035"
+        ExtendClientAreaToDecorationsHint="True">
+        
+        <Grid>
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                
+                <StackPanel Grid.Row="0">
+                        <TextBlock Text="CTFAK 2.3" FontFamily="Castellar" FontSize="50" Foreground="#ff6f00"/>
+                </StackPanel>
+                
+                
+                <TabControl Grid.Row="1">
+                <TabItem Header="Game Loader">
+                        <TabControl>
+                                <TabItem Header="Main">
+                                        <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                                                        <Button VerticalAlignment="Top" Click="SelectFile_OnClick"><TextBlock Text="Load Game"/></Button>
+                                                        <TextBlock VerticalAlignment="Top" Name="GameInfoText"/>
+                                                </StackPanel>
+                                                <ListBox Name="ChunkDetails" Grid.Column="1">
+                           
+                                                </ListBox>
+                                                <TreeView Grid.Column="2" Name="ChunkTree"></TreeView>
+                                
+                                
+                                        </Grid>
+                                </TabItem>
+                                <TabItem Header="MFA Dump"></TabItem>
+                                <TabItem Header="Pack Data"></TabItem>
+                                <TabItem Header="Objects"></TabItem>
+                                <TabItem Header="Sounds"></TabItem>
+                        </TabControl>
+                        
+                </TabItem>
+                
+                <TabItem Header="Plugins"></TabItem>
+                <TabItem Header="Settings"></TabItem>
+        </TabControl>  
+                
+                <StackPanel Grid.Row="2">
+                        <TextBlock Name="StatusText" Text="Idle"/>
+                        <ProgressBar Name="StatusProgress" Value="50"/>
+                </StackPanel>
+        </Grid>
+        
+</Window>

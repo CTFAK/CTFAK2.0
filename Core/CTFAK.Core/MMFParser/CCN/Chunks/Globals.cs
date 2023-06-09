@@ -11,24 +11,21 @@ public class GlobalValues : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
-        try
-        {
-            var count = reader.ReadInt16();
-            var tempReaders = new List<ByteReader>();
-            for (var i = 0; i < count; i++) tempReaders.Add(new ByteReader(reader.ReadBytes(4)));
 
-            foreach (var glob in tempReaders)
-            {
-                var type = reader.ReadByte();
-                if (type == 2)
-                    Items.Add(glob.ReadSingle());
-                else if (type == 0) Items.Add(glob.ReadInt32());
-            }
-        }
-        catch
+        var count = reader.ReadInt16();
+        var tempReaders = new List<ByteReader>();
+        for (var i = 0; i < count; i++) tempReaders.Add(new ByteReader(reader.ReadBytes(4)));
+
+        foreach (var glob in tempReaders)
         {
+            var type = reader.ReadByte();
+            if (type == 2)
+                Items.Add(glob.ReadSingle());
+            else if (type == 0) Items.Add(glob.ReadInt32());
         }
+
     }
+    
 
     public override void Write(ByteWriter writer)
     {
@@ -43,19 +40,16 @@ public class GlobalStrings : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
-        try
+
+        var count = reader.ReadInt32();
+        for (var i = 0; i < count; i++)
         {
-            var count = reader.ReadInt32();
-            for (var i = 0; i < count; i++)
-            {
-                var str = reader.ReadWideString();
-                Items.Add(str);
-            }
+            var str = reader.ReadWideString();
+            Items.Add(str);
         }
-        catch
-        {
-        }
+
     }
+
 
     public override void Write(ByteWriter writer)
     {

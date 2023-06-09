@@ -1,12 +1,8 @@
-﻿#if RELEASE
-#define USE_IONIC
-#endif
+﻿//#define USE_IONIC
+
 using System.IO;
-using System.Net.Mail;
-using System.Runtime.InteropServices;
-using CTFAK.Utils;
 using Joveler.Compression.ZLib;
-using K4os.Compression.LZ4.Internal;
+//using Joveler.Compression.ZLib;
 
 namespace CTFAK.Memory;
 
@@ -21,6 +17,7 @@ public static class Decompressor
         writer.WriteBytes(compressed);
         return writer;
     }
+
     public static byte[] Decompress(ByteReader exeReader, out int decompressed)
     {
         var decompSize = exeReader.ReadInt32();
@@ -70,7 +67,7 @@ public static class Decompressor
         }
 #endif
     }
-    
+
 
     public static byte[] DecompressOld(ByteReader reader)
     {
@@ -84,35 +81,38 @@ public static class Decompressor
         return data;
     }
 
-    public static byte[] DecompressOldBlock(byte[] buff, int size, int decompSize, out int actual_size)
+    public static unsafe byte[] DecompressOldBlock(byte[] buff, int size, int decompSize, out int actualSize)
     {
-        var originalBuff = Marshal.AllocHGlobal(size);
-        Marshal.Copy(buff, 0, originalBuff, buff.Length);
-        var outputBuff = Marshal.AllocHGlobal(decompSize);
-        actual_size = NativeLib.decompressOld(originalBuff, size, outputBuff, decompSize);
-        Marshal.FreeHGlobal(originalBuff);
-        var data = new byte[decompSize];
-        Marshal.Copy(outputBuff, data, 0, decompSize);
-        Marshal.FreeHGlobal(outputBuff);
-        return data;
+        Tinflate.tinf_init();
+        var outputBuffer = new byte[200000];
+
+        fixed (byte* input = buff)
+        {
+            fixed (byte* output = outputBuffer)
+            {
+                var outputSize = (uint)decompSize;
+                var result = Tinflate.tinf_uncompress(output, &outputSize, input, (uint)size);
+                if (result > 0)
+                    actualSize = result;
+                else actualSize = (int)outputSize;
+            }
+        }
+
+
+        return outputBuffer;
     }
 
     public static byte[] CompressBlock(byte[] data)
     {
         var compOpts = new ZLibCompressOptions();
-        //compOpts.Level = ZLibCompLevel.Default;
         compOpts.Level = ZLibCompLevel.Default;
         var decompressedStream = new MemoryStream(data);
         var compressedStream = new MemoryStream();
-        byte[] compressedData = null;
-        var
-            zs = new ZLibStream(compressedStream, compOpts);
+        
+        var zs = new ZLibStream(compressedStream, compOpts);
         decompressedStream.CopyTo(zs);
         zs.Close();
-
-        compressedData = compressedStream.ToArray();
-        //Array.Resize<byte>(ref compressedData, (int)zs.TotalOut);
-
-        return compressedData;
+        
+        return compressedStream.ToArray();
     }
 }

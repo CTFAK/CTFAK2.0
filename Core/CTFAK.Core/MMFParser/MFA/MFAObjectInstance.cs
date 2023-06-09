@@ -1,7 +1,7 @@
 ﻿using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFAObjectInstance : ChunkLoader
 {
@@ -26,15 +26,15 @@ public class MFAObjectInstance : ChunkLoader
         ParentHandle = (uint)reader.ReadInt32();
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.WriteInt32(X);
-        Writer.WriteInt32(Y);
-        Writer.WriteUInt32(Layer);
-        Writer.WriteInt32(Handle);
-        Writer.WriteUInt32(Flags);
-        Writer.WriteUInt32(ParentType);
-        Writer.WriteUInt32(ItemHandle);
-        Writer.WriteInt32((int)ParentHandle);
+        writer.WriteInt32(X);
+        writer.WriteInt32(Y);
+        writer.WriteUInt32(Layer);
+        writer.WriteInt32(Handle);
+        writer.WriteUInt32(Flags);
+        writer.WriteUInt32(ParentType);
+        writer.WriteUInt32(ItemHandle);
+        writer.WriteInt32((int)ParentHandle);
     }
 }

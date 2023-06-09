@@ -25,7 +25,7 @@ public class Constants
     }
 
     // Do we need this? I don't really think we need this, but I'll leave this for now in case we need it in future
-    public enum Products 
+    public enum Products
     {
         MMF1 = 1,
         STD = 2,

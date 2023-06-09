@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using CTFAK.Memory;
-using CTFAK.MFA;
 using CTFAK.MMFParser.CCN;
 
 namespace CTFAK.MMFParser.MFA;
 
 public class MFAItemFolder : ChunkLoader
 {
-    public bool isRetard;
+    public bool IsHiddenFolder;
     public List<uint> Items = new();
     public string Name;
     public uint UnkHeader;
@@ -17,7 +16,7 @@ public class MFAItemFolder : ChunkLoader
         UnkHeader = reader.ReadUInt32();
         if (UnkHeader == 0x70000004)
         {
-            isRetard = false;
+            IsHiddenFolder = false;
             Name = reader.AutoReadUnicode();
             Items = new List<uint>();
             var count = reader.ReadUInt32();
@@ -25,27 +24,27 @@ public class MFAItemFolder : ChunkLoader
         }
         else
         {
-            isRetard = true;
+            IsHiddenFolder = true;
             Name = null;
             Items = new List<uint>();
             Items.Add(reader.ReadUInt32());
         }
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        if (isRetard)
+        if (IsHiddenFolder)
         {
-            Writer.WriteInt32(0x70000005);
-            Writer.WriteInt32((int)Items[0]);
+            writer.WriteInt32(0x70000005);
+            writer.WriteInt32((int)Items[0]);
         }
         else
         {
-            Writer.WriteInt32(0x70000004);
+            writer.WriteInt32(0x70000004);
             if (Name == null) Name = "";
-            Writer.AutoWriteUnicode(Name);
-            Writer.WriteInt32(Items.Count);
-            foreach (var item in Items) Writer.WriteUInt32(item);
+            writer.AutoWriteUnicode(Name);
+            writer.WriteInt32(Items.Count);
+            foreach (var item in Items) writer.WriteUInt32(item);
         }
     }
 }

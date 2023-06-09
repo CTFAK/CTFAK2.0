@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
-using CTFAK.Utils;
 
 namespace CTFAK.FileReaders;
 
 public class CCNFileReader : IFileReader
 {
-    public int Priority => 5;
     public GameData Game;
+    public int Priority => 5;
     public string Name => "CCN";
 
     public GameData GetGameData()
     {
         return Game;
     }
-
 
 
     public virtual bool LoadGame(string gamePath)
@@ -34,7 +31,4 @@ public class CCNFileReader : IFileReader
     {
         return new Dictionary<int, Bitmap>();
     }
-
- 
 }
-

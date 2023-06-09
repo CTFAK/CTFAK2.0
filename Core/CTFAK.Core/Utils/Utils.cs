@@ -15,7 +15,6 @@ public static class Utils
     }
 
 
-
     public static byte[] GetBuffer(this ByteWriter writer)
     {
         var buf = ((MemoryStream)writer.BaseStream).GetBuffer();
@@ -63,6 +62,23 @@ public static class Utils
             result[write++] = input[i, z];
 
         // Step 3: return the new array.
+        return result;
+    }
+
+    public static string ToPrettySize(this int value)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        var order = 0;
+        double len = value;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+
+// Adjust the format string to your preferences. For example "{0:0.#}{1}" would
+// show a single decimal place, and no space.
+        var result = string.Format("{0:0.##} {1}", len, sizes[order]);
         return result;
     }
 }

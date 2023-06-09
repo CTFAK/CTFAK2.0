@@ -4,22 +4,24 @@ using System.IO;
 using System.IO.Compression;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
-using CTFAK.MMFParser.Shared.Banks;
+using CTFAK.MMFParser.Common.Banks;
 using CTFAK.Utils;
 
 namespace CTFAK.FileReaders;
 
-public class ApkFileReader: IFileReader
+public class ApkFileReader : IFileReader
 {
-    public int Priority => 5;
     public static SoundBank AndroidSoundBank = new();
+    public CCNFileReader Ccn;
+    public int Priority => 5;
 
     public string Name => "APK";
-    public CCNFileReader Ccn;
+
     public GameData GetGameData()
     {
         return Ccn.Game;
     }
+
     public bool LoadGame(string gamePath)
     {
         Settings.gameType = Settings.GameType.ANDROID;
@@ -54,13 +56,10 @@ public class ApkFileReader: IFileReader
         Ccn = new CCNFileReader();
         Ccn.LoadGame(Path.GetTempPath() + "application.ccn");
         return true;
-
     }
 
     public Dictionary<int, Bitmap> GetIcons()
     {
         return new Dictionary<int, Bitmap>();
     }
-
-
 }

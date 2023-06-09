@@ -2,7 +2,7 @@
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFATransition : ChunkLoader
 {
@@ -27,16 +27,16 @@ public class MFATransition : ChunkLoader
         ParameterData = reader.ReadBytes(reader.ReadInt32());
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.AutoWriteUnicode(Module);
-        Writer.AutoWriteUnicode(Name);
-        Writer.WriteAscii(Id);
-        Writer.WriteAscii(TransitionId);
-        Writer.WriteInt32(Duration);
-        Writer.WriteInt32(Flags);
-        Writer.WriteColor(Color);
-        Writer.WriteInt32(ParameterData.Length);
-        Writer.WriteBytes(ParameterData);
+        writer.AutoWriteUnicode(Module);
+        writer.AutoWriteUnicode(Name);
+        writer.WriteAscii(Id);
+        writer.WriteAscii(TransitionId);
+        writer.WriteInt32(Duration);
+        writer.WriteInt32(Flags);
+        writer.WriteColor(Color);
+        writer.WriteInt32(ParameterData.Length);
+        writer.WriteBytes(ParameterData);
     }
 }

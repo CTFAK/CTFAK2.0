@@ -20,7 +20,7 @@ public static class NativeLib
 
 
     [DllImport(DllPath, EntryPoint = "decompressOld", CharSet = CharSet.Auto)]
-    public static extern int decompressOld(IntPtr source, int source_size, IntPtr output, int output_size);
+    public static extern int decompressOld(IntPtr source, int sourceSize, IntPtr output, int outputSize);
 
 
     [DllImport(DllPath, EntryPoint = "TranslateToRGBMasked", CharSet = CharSet.Auto)]

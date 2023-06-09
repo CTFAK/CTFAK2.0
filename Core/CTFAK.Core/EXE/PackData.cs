@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using CTFAK.Memory;
 using CTFAK.Utils;
-using Ionic.Zlib;
 
 namespace CTFAK.EXE;
 

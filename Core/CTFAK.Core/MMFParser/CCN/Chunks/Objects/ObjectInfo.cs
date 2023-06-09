@@ -130,7 +130,7 @@ public class ObjectInfo : ChunkLoader
             }
         }
 
-        if(CTFAKCore.Parameters.Contains("-debug"))
+        if (CTFAKCore.Parameters.Contains("-debug"))
             Logger.Log($"Found object: {Name} - {(Constants.ObjectType)ObjectType}");
         if (string.IsNullOrEmpty(Name))
             Name = $"{(Constants.ObjectType)ObjectType} {Handle}";
@@ -143,5 +143,4 @@ public class ObjectInfo : ChunkLoader
 
     //public int shaderId;
     //public List<ByteReader> effectItems;
-    
 }

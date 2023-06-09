@@ -3,7 +3,7 @@ using System.Drawing;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class MFAText : ObjectLoader
 {
@@ -33,17 +33,17 @@ public class MFAText : ObjectLoader
         }
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        base.Write(Writer);
-        Writer.WriteUInt32(Width);
-        Writer.WriteUInt32(Height);
-        Writer.WriteUInt32(Font);
-        Writer.WriteColor(Color);
-        Writer.WriteUInt32(Flags);
-        Writer.WriteInt32(0);
-        Writer.WriteUInt32((uint)Items.Count);
-        foreach (var paragraph in Items) paragraph.Write(Writer);
+        base.Write(writer);
+        writer.WriteUInt32(Width);
+        writer.WriteUInt32(Height);
+        writer.WriteUInt32(Font);
+        writer.WriteColor(Color);
+        writer.WriteUInt32(Flags);
+        writer.WriteInt32(0);
+        writer.WriteUInt32((uint)Items.Count);
+        foreach (var paragraph in Items) paragraph.Write(writer);
     }
 }
 
@@ -58,9 +58,9 @@ public class MFAParagraph : ChunkLoader
         Flags = reader.ReadUInt32();
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.AutoWriteUnicode(Value);
-        Writer.WriteUInt32(Flags);
+        writer.AutoWriteUnicode(Value);
+        writer.WriteUInt32(Flags);
     }
 }

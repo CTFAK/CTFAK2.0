@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using CTFAK.Memory;
-using CTFAK.MFA;
 using CTFAK.MMFParser.CCN;
 
 namespace CTFAK.MMFParser.MFA;
@@ -20,10 +19,10 @@ public class MFAValueList : ChunkLoader
         }
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.WriteInt32(Items.Count);
-        foreach (var item in Items) item.Write(Writer);
+        writer.WriteInt32(Items.Count);
+        foreach (var item in Items) item.Write(writer);
     }
 }
 
@@ -50,23 +49,23 @@ public class ValueItem : ChunkLoader
         }
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.AutoWriteUnicode(Name);
+        writer.AutoWriteUnicode(Name);
         if (Value is string)
         {
-            Writer.WriteInt32(2);
-            Writer.AutoWriteUnicode((string)Value);
+            writer.WriteInt32(2);
+            writer.AutoWriteUnicode((string)Value);
         }
         else if (Value is int)
         {
-            Writer.WriteInt32(0);
-            Writer.WriteInt32((int)Value);
+            writer.WriteInt32(0);
+            writer.WriteInt32((int)Value);
         }
         else if (Value is double || Value is float)
         {
-            Writer.WriteInt32(1);
-            Writer.WriteSingle((float)Value);
+            writer.WriteInt32(1);
+            writer.WriteSingle((float)Value);
         }
     }
 }

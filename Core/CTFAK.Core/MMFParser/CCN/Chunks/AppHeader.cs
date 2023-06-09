@@ -8,22 +8,12 @@ using CTFAK.Utils;
 namespace CTFAK.MMFParser.CCN.Chunks;
 
 [ChunkLoader(0x2223, "AppHeader")]
-//[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public class AppHeader : ChunkLoader
 {
     public Color BorderColor;
     public Controls Controls;
-    public int FrameRate;
-    public short GraphicsMode;
-    public int InitialLives;
-    public int InitialScore;
-    public int NumberOfFrames;
-    public int Size;
-    public int WindowHeight;
-    public int WindowsMenuIndex;
-    public int WindowWidth;
 
-    public BitDict Flags = new BitDict(new string[]
+    public BitDict Flags = new(new[]
     {
         "HeadingMaximized",
         "NoHeading",
@@ -43,7 +33,12 @@ public class AppHeader : ChunkLoader
         "OneFile"
     });
 
-    public BitDict NewFlags = new BitDict(new string[]
+    public int FrameRate;
+    public short GraphicsMode;
+    public int InitialLives;
+    public int InitialScore;
+
+    public BitDict NewFlags = new(new[]
     {
         "SamplesOverFrames",
         "RelocFiles",
@@ -63,7 +58,9 @@ public class AppHeader : ChunkLoader
         "RunWhileResizing"
     });
 
-    public BitDict OtherFlags = new BitDict(new string[]
+    public int NumberOfFrames;
+
+    public BitDict OtherFlags = new(new[]
     {
         "DebuggerShortcuts",
         "Unknown1",
@@ -83,14 +80,19 @@ public class AppHeader : ChunkLoader
         "Direct3D8or11"
     });
 
+    public int Size;
+    public int WindowHeight;
+    public int WindowsMenuIndex;
+    public int WindowWidth;
+
 
     public override void Read(ByteReader reader)
     {
         if (!Settings.Old) Size = reader.ReadInt32();
-        Flags.flag = (uint)reader.ReadInt16();
-        NewFlags.flag = (uint)reader.ReadInt16();
+        Flags.Flag = (uint)reader.ReadInt16();
+        NewFlags.Flag = (uint)reader.ReadInt16();
         GraphicsMode = reader.ReadInt16();
-        OtherFlags.flag = (uint)reader.ReadInt16();
+        OtherFlags.Flag = (uint)reader.ReadInt16();
         WindowWidth = reader.ReadInt16();
         WindowHeight = reader.ReadInt16();
         InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);

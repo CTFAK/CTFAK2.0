@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
 namespace CTFAK.FileReaders;

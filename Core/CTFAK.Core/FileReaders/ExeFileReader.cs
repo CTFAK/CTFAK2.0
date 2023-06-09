@@ -10,12 +10,35 @@ namespace CTFAK.FileReaders;
 
 public class ExeFileReader : IFileReader
 {
-    public int Priority => 5;
     public GameData Game;
     public Dictionary<int, Bitmap> Icons = new();
+    public int Priority => 5;
     public virtual string Name => "EXE";
 
-    public void loadIcons(string gamePath)
+    public virtual bool LoadGame(string gamePath)
+    {
+        CTFAKCore.CurrentReader = this;
+        Settings.gameType = Settings.GameType.NORMAL;
+        LoadIcons(gamePath);
+
+        var reader = new ByteReader(gamePath, FileMode.Open);
+        ReadPEHeader(reader);
+        LoadCcn(reader);
+        reader.Close();
+        return true;
+    }
+
+    public GameData GetGameData()
+    {
+        return Game;
+    }
+
+    public Dictionary<int, Bitmap> GetIcons()
+    {
+        return Icons;
+    }
+
+    public void LoadIcons(string gamePath)
     {
         var icoExt = new IconExtractor(gamePath);
         var icos = icoExt.GetAllIcons();
@@ -25,10 +48,9 @@ public class ExeFileReader : IFileReader
         if (!Icons.ContainsKey(48)) Icons.Add(48, Icons[32].ResizeImage(new Size(48, 48)));
         if (!Icons.ContainsKey(128)) Icons.Add(128, Icons[32].ResizeImage(new Size(128, 128)));
         if (!Icons.ContainsKey(256)) Icons.Add(256, Icons[32].ResizeImage(new Size(256, 256)));
-
     }
 
-    public void LoadCCN(ByteReader reader)
+    public void LoadCcn(ByteReader reader)
     {
         PackData packData = null;
         if (Settings.Old)
@@ -58,18 +80,6 @@ public class ExeFileReader : IFileReader
         Game.Read(reader);
         if (!Settings.Old) Game.PackData = packData;
     }
-    public virtual bool LoadGame(string gamePath)
-    {
-        CTFAKCore.CurrentReader = this;
-        Settings.gameType = Settings.GameType.NORMAL;
-        loadIcons(gamePath);
-        
-        var reader = new ByteReader(gamePath, FileMode.Open);
-        ReadPEHeader(reader);
-        LoadCCN(reader);
-        reader.Close();
-        return true;
-    }
 
     public int ReadPEHeader(ByteReader reader)
     {
@@ -83,17 +93,6 @@ public class ExeFileReader : IFileReader
         if (Settings.Old) Logger.Log($"1.5 game detected. First short: {firstShort.ToString("X")}");
         return (int)reader.Tell();
     }
-
-    public GameData GetGameData()
-    {
-        return Game;
-    }
-
-    public Dictionary<int, Bitmap> GetIcons()
-    {
-        return Icons;
-    }
-
 
 
     public int CalculateEntryPoint(ByteReader exeReader)
@@ -150,14 +149,15 @@ public class ExeFileReader : IFileReader
 public class UnpackedExeFileReader : ExeFileReader
 {
     public override string Name => "EXE (Unpacked)";
+
     public override bool LoadGame(string gamePath)
     {
         CTFAKCore.CurrentReader = this;
         Settings.gameType = Settings.GameType.NORMAL;
-        loadIcons(gamePath);
-        
-        var reader = new ByteReader(gamePath.Replace(".exe",".dat"), FileMode.Open);
-        LoadCCN(reader);
+        LoadIcons(gamePath);
+
+        var reader = new ByteReader(gamePath.Replace(".exe", ".dat"), FileMode.Open);
+        LoadCcn(reader);
         return true;
     }
 }

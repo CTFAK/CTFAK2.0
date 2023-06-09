@@ -1,62 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using CTFAK.CCN.Chunks;
-using CTFAK.CCN.Chunks.Banks;
 using CTFAK.EXE;
 using CTFAK.FileReaders;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN.Chunks;
 using CTFAK.MMFParser.CCN.Chunks.Frame;
 using CTFAK.MMFParser.CCN.Chunks.Objects;
-using CTFAK.MMFParser.Shared.Banks;
-using CTFAK.Shared.Banks.ImageBank;
+using CTFAK.MMFParser.Common.Banks;
 using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.CCN;
 
 public class GameData
 {
-    public short runtimeVersion;
-    public short runtimeSubversion;
-    public int productVersion;
-    public int productBuild;
-
     public string AboutText;
     public string Author = "";
-    public BinaryFiles BinaryFiles = new BinaryFiles();
+    public BinaryFiles BinaryFiles = new();
+    public ChunkList Chunks;
     public string Copyright;
     public string Doc;
-
     public string EditorFilename;
+    public bool ExeOnly;
     public ExtData ExtData;
     public Extensions Extensions;
 
+    public ExtendedHeader ExtHeader;
     public FontBank Fonts;
     public FrameHandles FrameHandles;
-
     public Dictionary<int, ObjectInfo> FrameItems = new();
 
     public List<Frame> Frames = new();
     public GlobalStrings GlobalStrings;
     public GlobalValues GlobalValues;
-
     public AppHeader Header;
-    public ExtendedHeader ExtHeader;
+
+
+    public Bitmap Icon32X;
+
     public ImageBank Images = new();
 
+
+    public ImageShapes ImageShapes;
     public AppMenu Menu;
     public MusicBank Music;
-    public ImageShapes ImageShapes;
-
     public string Name;
-    public Bitmap Icon32x;
-    public bool ExeOnly;
 
-    public PackData PackData;
+    public PackData PackData; //read-only. not actually stored in gamedata structure
+    public int productBuild;
+    public int productVersion;
+    public short runtimeSubversion;
+
+
+    public short runtimeVersion;
     public Shaders Shaders;
     public SoundBank Sounds;
     public string TargetFilename;
+
+
     public static event SaveHandler OnChunkLoaded;
     public static event SaveHandler OnFrameLoaded;
 
@@ -75,7 +76,7 @@ public class GameData
 
         if (CTFAKCore.Parameters.Contains("-android"))
             Settings.gameType |= Settings.GameType.ANDROID;
-        
+
         if (CTFAKCore.Parameters.Contains("-f3"))
         {
             Logger.Log("Forcing F3 mode");
@@ -90,9 +91,8 @@ public class GameData
 
         Logger.Log("Fusion Build: " + productBuild);
 
-        var chunkList = new ChunkList();
-
-        chunkList.OnChunkLoaded += (id, loader) =>
+        Chunks = new ChunkList();
+        Chunks.OnChunkLoaded += (id, loader) =>
         {
             switch (id)
             {
@@ -147,8 +147,7 @@ public class GameData
                     Extensions = loader as Extensions;
                     break;
                 case 8757: //AppIcon
-                    var Icon = loader as AppIcon;
-                    Icon32x = Icon.Icon;
+                    Icon32X = (loader as AppIcon).Icon;
                     break;
                 case 8758: //DemoVersion
                     break;
@@ -207,26 +206,26 @@ public class GameData
                     if (Settings.gameType == Settings.GameType.ANDROID)
                     {
                         Sounds = ApkFileReader.AndroidSoundBank;
-                        var AndroidSounds = loader as AndroidSoundBank;
-                        for (int i = 0; i < Sounds.Items.Count; i++)
-                            Sounds.Items[i].Name = AndroidSounds.Items[Sounds.Items[i].Handle].Name;
+                        var androidSounds = loader as AndroidSoundBank;
+                        for (var i = 0; i < Sounds.Items.Count; i++)
+                            Sounds.Items[i].Name = androidSounds.Items[Sounds.Items[i].Handle].Name;
                     }
                     else
+                    {
                         Sounds = loader as SoundBank;
+                    }
+
                     break;
                 case 8790: //TwoFivePlusProperties
                     FrameItems = TwoFilePlusContainer.Instance.ObjectsContainer;
                     break;
             }
         };
-        chunkList.Read(reader);
+        Chunks.Read(reader);
         // reading again if we encounter an F3 game that uses a separate chunk list for images and sounds
         // it's safe to just read again
         //chunkList.Read(reader); // turns out it's not
-        if (reader.Tell() < reader.Size())
-        {
-            chunkList.Read(reader); // turns out i actually gotta check some stuff
-        }
+        if (reader.Tell() < reader.Size()) Chunks.Read(reader); // turns out i actually gotta check some stuff
         if (CTFAKCore.Parameters.Contains("-debug"))
             Console.ReadLine();
     }
@@ -234,12 +233,10 @@ public class GameData
     public void Write(ByteWriter writer)
     {
         writer.WriteAscii(Settings.Unicode ? "PAMU" : "PAME");
-        writer.WriteInt32(3);
-        writer.WriteInt32(770);
-        writer.WriteInt32(0);
+        writer.WriteInt32(runtimeVersion);
+        writer.WriteInt32(runtimeSubversion);
+        writer.WriteInt32(productVersion);
         writer.WriteInt32(Settings.Build);
-        var chunkList = new ChunkList();
-        
-
+        Chunks.Write(writer);
     }
 }

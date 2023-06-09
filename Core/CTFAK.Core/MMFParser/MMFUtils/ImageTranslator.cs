@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using CTFAK.Shared.Banks.ImageBank;
+using CTFAK.MMFParser.Common.Banks;
 
-namespace CTFAK.MMFParser.Translation;
+namespace CTFAK.MMFParser.MMFUtils;
 
 public static class ImageTranslator
 {
@@ -19,18 +16,19 @@ public static class ImageTranslator
 
         return (int)Math.Ceiling(pad / (float)pointSize);
     }
-    
-    public static byte[] Normal24BitMaskedToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent,bool flipRgb = false)
+
+    public static byte[] Normal24BitMaskedToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent,
+        bool flipRgb = false)
     {
-        byte[] colorArray = new byte[width * height * 4];
-        int stride = width * 4;
-        int pad = GetPadding(width, 3);
-        int position = 0;
-        for (int y = 0; y < height; y++)
+        var colorArray = new byte[width * height * 4];
+        var stride = width * 4;
+        var pad = GetPadding(width, 3);
+        var position = 0;
+        for (var y = 0; y < height; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (var x = 0; x < width; x++)
             {
-                int newPos = (y * stride) + (x * 4);
+                var newPos = y * stride + x * 4;
                 if (flipRgb)
                 {
                     colorArray[newPos + 0] = imageData[position + 2];
@@ -43,14 +41,13 @@ public static class ImageTranslator
                     colorArray[newPos + 1] = imageData[position + 1];
                     colorArray[newPos + 2] = imageData[position + 2];
                 }
+
                 colorArray[newPos + 3] = 255;
                 if (!alpha)
-                {
                     if (colorArray[newPos + 0] == transparent.R && colorArray[newPos + 1] == transparent.G &&
                         colorArray[newPos + 2] == transparent.B)
                         colorArray[newPos + 3] = 0;
-                }
-                position += 3; 
+                position += 3;
             }
 
             position += pad * 3;
@@ -58,131 +55,135 @@ public static class ImageTranslator
 
         if (alpha)
         {
-            int aPad = GetPadding(width, 1, 4);
-            int aStride = width * 4;
-            for (int y = 0; y < height; y++)
+            var aPad = GetPadding(width, 1, 4);
+            var aStride = width * 4;
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    colorArray[(y * aStride) + (x * 4) + 3] = imageData[position];
+                    colorArray[y * aStride + x * 4 + 3] = imageData[position];
                     position += 1;
                 }
+
                 position += aPad;
             }
         }
-        
+
 
         return colorArray;
     }
-    public static byte[] Normal16BitToRGBA(byte[] imageData, int width, int height, bool alpha,Color transparent)
-    {
-        byte[] colorArray = new byte[width * height * 4];
-        int stride = width * 4;
-        int pad = GetPadding(width, 2);
-        int position = 0;
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                UInt16 newShort = (ushort) (imageData[position] | imageData[position + 1] << 8);
-                byte r = (byte) ((newShort & 63488) >> 11);
-                byte g = (byte) ((newShort & 2016) >> 5);
-                byte b = (byte) ((newShort & 31));
 
-                r=(byte) (r << 3);
-                g=(byte) (g << 2);
-                b=(byte) (b << 3);
-                int newPos = (y * stride) + (x * 4);
+    public static byte[] Normal16BitToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent)
+    {
+        var colorArray = new byte[width * height * 4];
+        var stride = width * 4;
+        var pad = GetPadding(width, 2);
+        var position = 0;
+        for (var y = 0; y < height; y++)
+        {
+            for (var x = 0; x < width; x++)
+            {
+                var newShort = (ushort)(imageData[position] | (imageData[position + 1] << 8));
+                var r = (byte)((newShort & 63488) >> 11);
+                var g = (byte)((newShort & 2016) >> 5);
+                var b = (byte)(newShort & 31);
+
+                r = (byte)(r << 3);
+                g = (byte)(g << 2);
+                b = (byte)(b << 3);
+                var newPos = y * stride + x * 4;
                 colorArray[newPos + 2] = r;
                 colorArray[newPos + 1] = g;
                 colorArray[newPos + 0] = b;
                 colorArray[newPos + 3] = 255;
                 if (!alpha)
-                {
                     if (colorArray[newPos + 2] == transparent.R && colorArray[newPos + 1] == transparent.G &&
                         colorArray[newPos + 0] == transparent.B)
                         colorArray[newPos + 3] = 0;
-                }
                 position += 2;
             }
 
             position += pad * 2;
         }
+
         if (alpha)
         {
-            int aPad = GetPadding(width, 1, 4);
-            int aStride = width * 4;
-            for (int y = 0; y < height; y++)
+            var aPad = GetPadding(width, 1, 4);
+            var aStride = width * 4;
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    colorArray[(y * aStride) + (x * 4) + 3] = imageData[position];
+                    colorArray[y * aStride + x * 4 + 3] = imageData[position];
                     position += 1;
                 }
+
                 position += aPad;
             }
         }
 
         return colorArray;
     }
+
     public static byte[] Normal15BitToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent)
     {
-        byte[] colorArray = new byte[width * height * 4];
-        int stride = width * 4;
-        int pad = GetPadding(width, 2);
-        int position = 0;
-        for (int y = 0; y < height; y++)
+        var colorArray = new byte[width * height * 4];
+        var stride = width * 4;
+        var pad = GetPadding(width, 2);
+        var position = 0;
+        for (var y = 0; y < height; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (var x = 0; x < width; x++)
             {
-                UInt16 newShort = (ushort) (imageData[position] | imageData[position + 1] << 8);
-                byte r = (byte) ((newShort & 31744) >> 10);
-                byte g = (byte) ((newShort & 992) >> 5);
-                byte b = (byte) ((newShort & 31));
+                var newShort = (ushort)(imageData[position] | (imageData[position + 1] << 8));
+                var r = (byte)((newShort & 31744) >> 10);
+                var g = (byte)((newShort & 992) >> 5);
+                var b = (byte)(newShort & 31);
 
-                r=(byte) (r << 3);
-                g=(byte) (g << 3);
-                b=(byte) (b << 3);
-                int newPos = (y * stride) + (x * 4);
+                r = (byte)(r << 3);
+                g = (byte)(g << 3);
+                b = (byte)(b << 3);
+                var newPos = y * stride + x * 4;
                 colorArray[newPos + 2] = r;
                 colorArray[newPos + 1] = g;
                 colorArray[newPos + 0] = b;
                 colorArray[newPos + 3] = 255;
                 if (!alpha)
-                {
                     if (colorArray[newPos + 2] == transparent.R && colorArray[newPos + 1] == transparent.G &&
                         colorArray[newPos + 0] == transparent.B)
                         colorArray[newPos + 3] = 0;
-                }
                 position += 2;
             }
 
             position += pad * 2;
         }
+
         if (alpha)
         {
-            int aPad = GetPadding(width, 1, 4);
-            int aStride = width * 4;
-            for (int y = 0; y < height; y++)
+            var aPad = GetPadding(width, 1, 4);
+            var aStride = width * 4;
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    colorArray[(y * aStride) + (x * 4) + 3] = imageData[position];
+                    colorArray[y * aStride + x * 4 + 3] = imageData[position];
                     position += 1;
                 }
+
                 position += aPad;
             }
         }
-        
-        return colorArray;
 
+        return colorArray;
     }
+
     public static byte[] Normal8BitToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var newImg = new FusionImage();
-        newImg.FromBitmap((Bitmap)Bitmap.FromStream(new MemoryStream(imageData)));
+        newImg.FromBitmap((Bitmap)Image.FromStream(new MemoryStream(imageData)));
         return newImg.imageData;
     }
+
     public static byte[] AndroidMode0ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -205,6 +206,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
+
     public static byte[] AndroidMode1ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -242,6 +244,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
+
     public static byte[] AndroidMode2ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -277,8 +280,10 @@ public static class ImageTranslator
 
             position += pad * 2;
         }
+
         return colorArray;
     }
+
     public static byte[] AndroidMode3ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -297,10 +302,11 @@ public static class ImageTranslator
             }
 
             position += pad;
-
         }
+
         return colorArray;
     }
+
     public static byte[] AndroidMode4ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -333,25 +339,29 @@ public static class ImageTranslator
 
             position += pad * 2;
         }
+
         return colorArray;
     }
+
     public static byte[] AndroidMode5ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var img = new FusionImage();
-        img.FromBitmap((Bitmap)Bitmap.FromStream(new MemoryStream(imageData)));
-        return Normal24BitMaskedToRGBA(img.imageData,width,height,true,Color.Black);
+        img.FromBitmap((Bitmap)Image.FromStream(new MemoryStream(imageData)));
+        return Normal24BitMaskedToRGBA(img.imageData, width, height, true, Color.Black);
     }
-    public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha,Color transparent,bool rgba,bool flipRgb = false)
+
+    public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent,
+        bool rgba, bool flipRgb = false)
     {
-        byte[] colorArray = new byte[width * height * 4];
-        int stride = width * 4;
-        int pad = GetPadding(width, 4);
-        int position = 0;
-        for (int y = 0; y < height; y++)
+        var colorArray = new byte[width * height * 4];
+        var stride = width * 4;
+        var pad = GetPadding(width, 4);
+        var position = 0;
+        for (var y = 0; y < height; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (var x = 0; x < width; x++)
             {
-                int newPos = (y * stride) + (x * 4);
+                var newPos = y * stride + x * 4;
                 if (flipRgb)
                 {
                     colorArray[newPos + 0] = imageData[position + 2];
@@ -364,10 +374,11 @@ public static class ImageTranslator
                     colorArray[newPos + 1] = imageData[position + 1];
                     colorArray[newPos + 2] = imageData[position + 2];
                 }
+
                 colorArray[newPos + 3] = 255;
                 if (alpha)
                 {
-                    colorArray[(y * stride) + (x * 4) + 3] = imageData[position + 3];
+                    colorArray[y * stride + x * 4 + 3] = imageData[position + 3];
                 }
                 else
                 {
@@ -375,72 +386,71 @@ public static class ImageTranslator
                         colorArray[newPos + 0] == transparent.B)
                         colorArray[newPos + 3] = 0;
                 }
+
                 position += 4;
             }
 
             position += pad * 4;
-            
         }
 
         if (position == imageData.Length)
             return colorArray;
-        if (alpha&&!rgba)
+        if (alpha && !rgba)
         {
-            int aPad = GetPadding(width, 1, 4);
-            int aStride = width * 4;
-            for (int y = 0; y < height; y++)
+            var aPad = GetPadding(width, 1, 4);
+            var aStride = width * 4;
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    colorArray[(y * aStride) + (x * 4) + 3] = imageData[position];
+                    colorArray[y * aStride + x * 4 + 3] = imageData[position];
                     position += 1;
                 }
+
                 position += aPad;
             }
         }
 
         return colorArray;
     }
+
     public static byte[] RGBAToRGBMasked(byte[] imageData, int width, int height, bool alpha)
     {
-        byte[] colorArray = new byte[width * height * 8];
-        int stride = width * 4;
-        int pad = GetPadding(width, 3);
-        int position = 0;
-        for (int y = 0; y < height; y++)
+        var colorArray = new byte[width * height * 8];
+        var stride = width * 4;
+        var pad = GetPadding(width, 3);
+        var position = 0;
+        for (var y = 0; y < height; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (var x = 0; x < width; x++)
             {
-                colorArray[position + 0] = imageData[(y * stride) + (x * 4)];
-                colorArray[position + 1] = imageData[(y * stride) + (x * 4) + 1];
-                colorArray[position + 2] = imageData[(y * stride) + (x * 4) + 2];
+                colorArray[position + 0] = imageData[y * stride + x * 4];
+                colorArray[position + 1] = imageData[y * stride + x * 4 + 1];
+                colorArray[position + 2] = imageData[y * stride + x * 4 + 2];
                 colorArray[position + 3] = 255;
                 position += 3;
             }
 
             position += pad * 3;
         }
-        
+
         if (alpha)
         {
-            int aPad = GetPadding(width, 1,4);
+            var aPad = GetPadding(width, 1, 4);
 
-            for (int y = 0; y < height; y++)
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    colorArray[position] = imageData[(y * stride) + (x * 4) + 3];
+                    colorArray[position] = imageData[y * stride + x * 4 + 3];
                     position += 1;
                 }
 
                 position += aPad;
             }
         }
-        Array.Resize(ref colorArray,position);
+
+        Array.Resize(ref colorArray, position);
         return colorArray;
-
-
     }
-
- 
 }

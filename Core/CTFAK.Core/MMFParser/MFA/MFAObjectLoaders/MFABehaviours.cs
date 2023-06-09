@@ -2,16 +2,16 @@
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class Behaviours : ChunkLoader
 {
     private readonly List<Behaviour> _items = new();
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.WriteInt32(_items.Count);
-        foreach (var behaviour in _items) behaviour.Write(Writer);
+        writer.WriteInt32(_items.Count);
+        foreach (var behaviour in _items) behaviour.Write(writer);
     }
 
     public override void Read(ByteReader reader)
@@ -31,11 +31,11 @@ internal class Behaviour : ChunkLoader
     public byte[] Data;
     public string Name = "ERROR";
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.AutoWriteUnicode(Name);
-        Writer.WriteUInt32((uint)Data.Length);
-        Writer.WriteBytes(Data);
+        writer.AutoWriteUnicode(Name);
+        writer.WriteUInt32((uint)Data.Length);
+        writer.WriteBytes(Data);
     }
 
     public override void Read(ByteReader reader)

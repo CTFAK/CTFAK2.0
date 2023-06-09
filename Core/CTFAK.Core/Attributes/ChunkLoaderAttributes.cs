@@ -1,5 +1,4 @@
 ﻿using System;
-using CTFAK.Utils;
 
 namespace CTFAK.Attributes;
 
@@ -11,23 +10,7 @@ public class ChunkLoaderAttribute : Attribute
 
     public ChunkLoaderAttribute(short chunkId, string chunkName)
     {
-        this.ChunkId = chunkId;
-        this.ChunkName = chunkName;
+        ChunkId = chunkId;
+        ChunkName = chunkName;
     }
-}
-
-[AttributeUsage(AttributeTargets.Method)]
-public class LoaderReadAttribute : Attribute
-{
-    public Settings.GameType AllowedGameTypes;
-
-    public LoaderReadAttribute(Settings.GameType allowedGameTypes = Settings.GameType.NORMAL)
-    {
-        this.AllowedGameTypes = allowedGameTypes;
-    }
-}
-
-[AttributeUsage(AttributeTargets.Method)]
-public class LoaderHandleAttribute : Attribute
-{
 }

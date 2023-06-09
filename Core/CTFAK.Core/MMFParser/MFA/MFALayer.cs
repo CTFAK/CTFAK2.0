@@ -1,7 +1,7 @@
 ﻿using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFALayer : ChunkLoader
 {
@@ -22,18 +22,18 @@ public class MFALayer : ChunkLoader
     public float XCoefficient;
     public float YCoefficient;
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.AutoWriteUnicode(Name);
-        Writer.WriteInt32((int)Flags.flag);
-        Writer.WriteSingle(XCoefficient);
-        Writer.WriteSingle(YCoefficient);
+        writer.AutoWriteUnicode(Name);
+        writer.WriteInt32((int)Flags.Flag);
+        writer.WriteSingle(XCoefficient);
+        writer.WriteSingle(YCoefficient);
     }
 
     public override void Read(ByteReader reader)
     {
         Name = reader.AutoReadUnicode();
-        Flags.flag = (uint)reader.ReadInt32();
+        Flags.Flag = (uint)reader.ReadInt32();
         XCoefficient = reader.ReadSingle();
         YCoefficient = reader.ReadSingle();
     }

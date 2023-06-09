@@ -2,7 +2,7 @@
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFAControls : ChunkLoader
 {

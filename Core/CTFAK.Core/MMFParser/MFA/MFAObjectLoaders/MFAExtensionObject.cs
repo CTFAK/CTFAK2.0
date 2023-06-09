@@ -1,10 +1,10 @@
-﻿using CTFAK.Memory;
+﻿using System.Diagnostics;
+using CTFAK.Memory;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class MFAExtensionObject : MFAAnimationObject
 {
-    private byte[] _unk;
     public byte[] ExtensionData;
     public int ExtensionId;
     public string ExtensionName;
@@ -29,32 +29,32 @@ public class MFAExtensionObject : MFAAnimationObject
 
         var newReader = new ByteReader(reader.ReadBytes((int)reader.ReadUInt32()));
         var dataSize = newReader.ReadInt32() - 20;
-        _unk = newReader.ReadBytes(4);
+        Trace.Assert(reader.ReadInt32()==-1,"Extension magic is not equal to -1");
         ExtensionVersion = newReader.ReadInt32();
         ExtensionId = newReader.ReadInt32();
         ExtensionPrivate = newReader.ReadInt32();
         ExtensionData = newReader.ReadBytes(dataSize);
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
         _isExt = true;
-        base.Write(Writer);
+        base.Write(writer);
         if (ExtensionType == -1)
         {
-            Writer.AutoWriteUnicode(ExtensionName);
-            Writer.AutoWriteUnicode(Filename);
-            Writer.WriteUInt32(Magic);
-            Writer.AutoWriteUnicode(SubType);
+            writer.AutoWriteUnicode(ExtensionName);
+            writer.AutoWriteUnicode(Filename);
+            writer.WriteUInt32(Magic);
+            writer.AutoWriteUnicode(SubType);
         }
 
-        if (ExtensionData == null) ExtensionData = new byte[1] { 0 };
-        Writer.WriteInt32(ExtensionData.Length + 20);
-        Writer.WriteInt32(ExtensionData.Length + 20);
-        Writer.WriteInt32(-1);
-        Writer.WriteInt32(ExtensionVersion);
-        Writer.WriteInt32(ExtensionId);
-        Writer.WriteInt32(ExtensionPrivate);
-        Writer.WriteBytes(ExtensionData);
+        if (ExtensionData == null) ExtensionData = new byte[] { 0 };
+        writer.WriteInt32(ExtensionData.Length + 20);
+        writer.WriteInt32(ExtensionData.Length + 20);
+        writer.WriteInt32(-1);
+        writer.WriteInt32(ExtensionVersion);
+        writer.WriteInt32(ExtensionId);
+        writer.WriteInt32(ExtensionPrivate);
+        writer.WriteBytes(ExtensionData);
     }
 }

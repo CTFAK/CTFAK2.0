@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
 using CTFAK.Memory;
-using CTFAK.MFA.MFAObjectLoaders;
 using CTFAK.MMFParser.CCN;
+using CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFAObjectInfo : ChunkLoader
 {
     public int AntiAliasing;
     public MFAChunkList Chunks;
     public int Flags;
+    public MFAObjectFlags FlagWriter;
     public int Handle;
     public int IconHandle;
     public int IconType;
@@ -20,27 +21,26 @@ public class MFAObjectInfo : ChunkLoader
     public string Name;
     public int ObjectType;
     public int Transparent;
-    public MFAObjectFlags FlagWriter;
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
         //Debug.Assert(ObjectType==2);
-        Writer.WriteInt32(ObjectType);
-        Writer.WriteInt32(Handle);
-        Writer.AutoWriteUnicode(Name);
-        Writer.WriteInt32(Transparent);
-        Writer.WriteInt32(InkEffect);
-        Writer.WriteUInt32(InkEffectParameter);
-        Writer.WriteInt32(AntiAliasing);
-        Writer.WriteInt32(Flags);
-        Writer.WriteInt32(1);
-        Writer.WriteInt32(IconHandle);
+        writer.WriteInt32(ObjectType);
+        writer.WriteInt32(Handle);
+        writer.AutoWriteUnicode(Name);
+        writer.WriteInt32(Transparent);
+        writer.WriteInt32(InkEffect);
+        writer.WriteUInt32(InkEffectParameter);
+        writer.WriteInt32(AntiAliasing);
+        writer.WriteInt32(Flags);
+        writer.WriteInt32(1);
+        writer.WriteInt32(IconHandle);
 
         if (FlagWriter != null)
-            FlagWriter.Write(Writer);
+            FlagWriter.Write(writer);
 
-        Chunks.Write(Writer);
-        Loader.Write(Writer);
+        Chunks.Write(writer);
+        Loader.Write(writer);
     }
 
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CTFAK.Memory;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class MFALives : ObjectLoader
 {
@@ -28,24 +28,24 @@ public class MFALives : ObjectLoader
         Height = reader.ReadInt32();
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        base.Write(Writer);
-        Writer.WriteInt32((int)Player);
+        base.Write(writer);
+        writer.WriteInt32((int)Player);
         if (!CTFAKCore.Parameters.Contains("-noimgs"))
         {
-            Writer.WriteInt32(Images.Count);
-            foreach (int i in Images)
-            {
-                Writer.WriteInt32(i);
-            }
+            writer.WriteInt32(Images.Count);
+            foreach (var i in Images) writer.WriteInt32(i);
         }
         else
-            Writer.WriteInt32(0);
-        Writer.WriteInt32(DisplayType);
-        Writer.WriteInt32(Flags);
-        Writer.WriteInt32(Font);
-        Writer.WriteInt32(Width);
-        Writer.WriteInt32(Height);
+        {
+            writer.WriteInt32(0);
+        }
+
+        writer.WriteInt32(DisplayType);
+        writer.WriteInt32(Flags);
+        writer.WriteInt32(Font);
+        writer.WriteInt32(Width);
+        writer.WriteInt32(Height);
     }
 }

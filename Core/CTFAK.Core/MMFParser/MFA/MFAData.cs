@@ -5,33 +5,32 @@ using System.Drawing;
 using System.IO;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN.Chunks;
-using CTFAK.MMFParser.MFA;
-using CTFAK.MMFParser.Shared.Banks;
+using CTFAK.MMFParser.Common.Banks;
 using CTFAK.Utils;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFAData
 {
-    public static readonly string FontBankId = "ATNF";
-    public static readonly string ImageBankId = "AGMI";
-    public static readonly string MusicBankId = "ASUM";
-    public static readonly string SoundBankId = "APMS";
+    public const string FontBankId = "ATNF";
+    public const string ImageBankId = "AGMI";
+    public const string MusicBankId = "ASUM";
+    public const string SoundBankId = "APMS";
     public string Aboutbox;
 
     public string Author;
 
-    public BinaryFiles binaryFiles = new();
+    public BinaryFiles BinaryFiles = new();
     public Color BorderColor;
     public string BuildPath = "";
     public int BuildType;
     public int BuildVersion;
-    public MFAChunkList Chunks = new MFAChunkList();
+    public MFAChunkList Chunks = new();
     public string CommandLine;
     public string Company;
     public MFAControls Controls;
     public string Copyright;
-    public List<Tuple<string, int>> CustomQuals = new List<Tuple<string, int>>();
+    public List<Tuple<string, int>> CustomQuals = new();
     public string Description;
 
     public BitDict DisplayFlags = new(new[]
@@ -73,7 +72,17 @@ public class MFAData
         "Unknown20"
     });
 
-    public BitDict GraphicFlags = new BitDict(new string[]
+    public List<Tuple<int, string, string, int, string>> Extensions = new();
+
+    public FontBank Fonts = new();
+    public int FrameRate;
+    public List<MFAFrame> Frames = new();
+    public byte[] GlobalEvents;
+    public MFAValueList GlobalStrings;
+
+    public MFAValueList GlobalValues;
+
+    public BitDict GraphicFlags = new(new[]
     {
         "MultiSamples",
         "MachineIndependentSpeed",
@@ -106,18 +115,8 @@ public class MFAData
         "Direct3D11",
         "PremultipliedAlpha",
         "DontOptimizeEvents",
-        "RecordSlowLoops",
+        "RecordSlowLoops"
     });
-
-    public List<Tuple<int, string, string, int, string>> Extensions = new List<Tuple<int, string, string, int, string>>();
-
-    public FontBank Fonts = new();
-    public int FrameRate;
-    public List<MFAFrame> Frames = new List<MFAFrame>();
-    public byte[] GlobalEvents;
-    public MFAValueList GlobalStrings;
-
-    public MFAValueList GlobalValues;
 
     public int GraphicMode;
 
@@ -130,11 +129,11 @@ public class MFAData
     public int InitialScore;
     public int LangId = 32;
     public AppMenu Menu;
-    public Dictionary<int, int> menuImages;
+    public Dictionary<int, int> MenuImages;
     public uint MenuSize;
+    public short MfaSubversion;
 
     public short MfaVersion;
-    public short MfaSubversion;
     public MusicBank Music = new();
 
     public string Name;
@@ -144,139 +143,139 @@ public class MFAData
     public SoundBank Sounds = new();
 
     public byte[] Stamp;
-    public string unknown_string; //Found in original mfa build 283 after help file
-    public string unknown_string_2; //Found in original mfa build 283 after build path
+    private string _unknownString; //Found in original mfa build 283 after help file
+    private string _unknownString2; //Found in original mfa build 283 after build path
     public string Version;
-    private int windowMenuIndex;
+    private int _windowMenuIndex;
 
     public int WindowX;
     public int WindowY;
 
-    public void Write(ByteWriter Writer)
+    public void Write(ByteWriter writer)
     {
-        Writer.WriteAscii("MFU2");
-        Writer.WriteInt16(MfaVersion);
-        Writer.WriteInt16(MfaSubversion);
-        Writer.WriteInt32(Product);
-        Writer.WriteInt32(BuildVersion);
-        Writer.WriteInt32(LangId);
-        Writer.AutoWriteUnicode(Name);
-        Writer.AutoWriteUnicode(Description);
-        Writer.AutoWriteUnicode(Path);
-        Writer.WriteUInt32((uint)Stamp.Length);
-        Writer.WriteBytes(Stamp);
+        writer.WriteAscii("MFU2");
+        writer.WriteInt16(MfaVersion);
+        writer.WriteInt16(MfaSubversion);
+        writer.WriteInt32(Product);
+        writer.WriteInt32(BuildVersion);
+        writer.WriteInt32(LangId);
+        writer.AutoWriteUnicode(Name);
+        writer.AutoWriteUnicode(Description);
+        writer.AutoWriteUnicode(Path);
+        writer.WriteUInt32((uint)Stamp.Length);
+        writer.WriteBytes(Stamp);
 
-        Writer.WriteAscii(FontBankId);
-        Fonts.Write(Writer);
+        writer.WriteAscii(FontBankId);
+        Fonts.Write(writer);
 
-        Writer.WriteAscii(SoundBankId);
-        Sounds.Write(Writer);
+        writer.WriteAscii(SoundBankId);
+        Sounds.Write(writer);
 
-        Writer.WriteAscii(MusicBankId);
+        writer.WriteAscii(MusicBankId);
         // music.Write();
 
-        Writer.WriteInt32(0); //someone is using musics lol?
+        writer.WriteInt32(0); //someone is using musics lol?
         //TODO: Do music
 
-        Writer.WriteAscii(ImageBankId);
-        Icons.Write(Writer);
+        writer.WriteAscii(ImageBankId);
+        Icons.Write(writer);
 
-        Writer.WriteAscii(ImageBankId);
-        Images.Write(Writer);
+        writer.WriteAscii(ImageBankId);
+        Images.Write(writer);
 
-        Writer.AutoWriteUnicode(Name);
-        Writer.AutoWriteUnicode(Author);
-        Writer.AutoWriteUnicode(Description);
-        Writer.AutoWriteUnicode(Copyright);
-        Writer.AutoWriteUnicode(Company);
-        Writer.AutoWriteUnicode(Version);
-        Writer.WriteInt32(WindowX);
-        Writer.WriteInt32(WindowY);
-        Writer.WriteColor(BorderColor);
-        Writer.WriteUInt32(DisplayFlags.flag);
-        Writer.WriteUInt32(GraphicFlags.flag);
-        Writer.AutoWriteUnicode(HelpFile);
-        Writer.AutoWriteUnicode(unknown_string);
-        Writer.WriteUInt32((uint)InitialScore);
-        Writer.WriteUInt32((uint)InitialLifes);
-        Writer.WriteInt32(FrameRate);
-        Writer.WriteInt32(BuildType);
-        Writer.AutoWriteUnicode(BuildPath ?? "");
-        Writer.AutoWriteUnicode(unknown_string_2);
-        Writer.AutoWriteUnicode(CommandLine);
-        Writer.AutoWriteUnicode(Aboutbox);
-        Writer.WriteInt32(0);
+        writer.AutoWriteUnicode(Name);
+        writer.AutoWriteUnicode(Author);
+        writer.AutoWriteUnicode(Description);
+        writer.AutoWriteUnicode(Copyright);
+        writer.AutoWriteUnicode(Company);
+        writer.AutoWriteUnicode(Version);
+        writer.WriteInt32(WindowX);
+        writer.WriteInt32(WindowY);
+        writer.WriteColor(BorderColor);
+        writer.WriteUInt32(DisplayFlags.Flag);
+        writer.WriteUInt32(GraphicFlags.Flag);
+        writer.AutoWriteUnicode(HelpFile);
+        writer.AutoWriteUnicode(_unknownString);
+        writer.WriteUInt32((uint)InitialScore);
+        writer.WriteUInt32((uint)InitialLifes);
+        writer.WriteInt32(FrameRate);
+        writer.WriteInt32(BuildType);
+        writer.AutoWriteUnicode(BuildPath ?? "");
+        writer.AutoWriteUnicode(_unknownString2);
+        writer.AutoWriteUnicode(CommandLine);
+        writer.AutoWriteUnicode(Aboutbox);
+        writer.WriteInt32(0);
 
-        binaryFiles.Write(Writer);
+        BinaryFiles.Write(writer);
 
-        Controls.Write(Writer);
+        Controls.Write(writer);
 
         if (Menu != null)
             using (var menuWriter = new ByteWriter(new MemoryStream()))
             {
                 Menu.Write(menuWriter);
 
-                Writer.WriteUInt32((uint)menuWriter.BaseStream.Position);
-                Writer.WriteWriter(menuWriter);
+                writer.WriteUInt32((uint)menuWriter.BaseStream.Position);
+                writer.WriteWriter(menuWriter);
             }
         else
-            Writer.WriteInt32(0);
+            writer.WriteInt32(0);
 
-        Writer.WriteInt32(windowMenuIndex);
-        Writer.WriteInt32(menuImages.Count);
-        foreach (var valuePair in menuImages)
+        writer.WriteInt32(_windowMenuIndex);
+        writer.WriteInt32(MenuImages.Count);
+        foreach (var valuePair in MenuImages)
         {
-            Writer.WriteInt32(valuePair.Key);
-            Writer.WriteInt32(valuePair.Value);
+            writer.WriteInt32(valuePair.Key);
+            writer.WriteInt32(valuePair.Value);
         }
 
-        GlobalValues.Write(Writer);
-        GlobalStrings.Write(Writer);
-        Writer.WriteInt32(GlobalEvents.Length);
-        Writer.WriteBytes(GlobalEvents);
-        Writer.WriteInt32(GraphicMode);
-        Writer.WriteUInt32((uint)IconImages.Count);
-        foreach (var iconImage in IconImages) Writer.WriteInt32(iconImage);
-        Writer.WriteInt32(CustomQuals.Count);
+        GlobalValues.Write(writer);
+        GlobalStrings.Write(writer);
+        writer.WriteInt32(GlobalEvents.Length);
+        writer.WriteBytes(GlobalEvents);
+        writer.WriteInt32(GraphicMode);
+        writer.WriteUInt32((uint)IconImages.Count);
+        foreach (var iconImage in IconImages) writer.WriteInt32(iconImage);
+        writer.WriteInt32(CustomQuals.Count);
         foreach (var customQual in CustomQuals)
         {
-            Writer.AutoWriteUnicode(customQual.Item1);
-            Writer.WriteInt32(customQual.Item2);
+            writer.AutoWriteUnicode(customQual.Item1);
+            writer.WriteInt32(customQual.Item2);
         }
 
-        Writer.WriteInt32(Extensions.Count);
+        writer.WriteInt32(Extensions.Count);
         foreach (var extension in Extensions)
         {
-            Writer.WriteInt32(extension.Item1);
-            Writer.AutoWriteUnicode(extension.Item3);
-            Writer.AutoWriteUnicode(extension.Item2);
-            Writer.WriteInt32(extension.Item4);
-            Writer.WriteInt16((short)(extension.Item5.Length - 1));
-            Writer.Skip(1);
-            Writer.WriteInt8(0x80);
+            writer.WriteInt32(extension.Item1);
+            writer.AutoWriteUnicode(extension.Item3);
+            writer.AutoWriteUnicode(extension.Item2);
+            writer.WriteInt32(extension.Item4);
+            writer.WriteInt16((short)(extension.Item5.Length - 1));
+            writer.Skip(1);
+            writer.WriteInt8(0x80);
             //Writer.WriteInt8(0x01);
-            Writer.Skip(2);
-            Writer.WriteUnicode(extension.Item5);
+            writer.Skip(2);
+            writer.WriteUnicode(extension.Item5);
         }
 
         //Writer.Skip(-2);
-        Writer.WriteInt32(Frames.Count); //frame
+        writer.WriteInt32(Frames.Count); //frame
 
-        var startPos = Writer.Tell() + 4 * Frames.Count + 4;
+        var startPos = writer.Tell() + 4 * Frames.Count + 4;
         //Console.WriteLine(startPos);
         var newWriter = new ByteWriter(new MemoryStream());
         foreach (var frame in Frames)
         {
-            Writer.WriteUInt32((uint)(startPos + newWriter.Tell()));
+            writer.WriteUInt32((uint)(startPos + newWriter.Tell()));
             frame.Write(newWriter);
         }
 
-        Writer.WriteUInt32((uint)(startPos + newWriter.Tell()));
+        writer.WriteUInt32((uint)(startPos + newWriter.Tell()));
 
-        Writer.WriteWriter(newWriter);
-        Chunks.Write(Writer);
-        Writer.Flush();
-        Writer.Close();
+        writer.WriteWriter(newWriter);
+        Chunks.Write(writer);
+        writer.Flush();
+        writer.Close();
         Console.WriteLine("Writing done");
     }
 
@@ -326,23 +325,23 @@ public class MFAData
         WindowX = reader.ReadInt32();
         WindowY = reader.ReadInt32();
         BorderColor = reader.ReadColor();
-        DisplayFlags.flag = reader.ReadUInt32();
-        GraphicFlags.flag = reader.ReadUInt32();
+        DisplayFlags.Flag = reader.ReadUInt32();
+        GraphicFlags.Flag = reader.ReadUInt32();
         HelpFile = reader.AutoReadUnicode();
-        unknown_string = reader.AutoReadUnicode();
+        _unknownString = reader.AutoReadUnicode();
 
         InitialScore = reader.ReadInt32();
         InitialLifes = reader.ReadInt32();
         FrameRate = reader.ReadInt32();
         BuildType = reader.ReadInt32();
         BuildPath = reader.AutoReadUnicode();
-        unknown_string_2 = reader.AutoReadUnicode();
+        _unknownString2 = reader.AutoReadUnicode();
         CommandLine = reader.AutoReadUnicode();
         Aboutbox = reader.AutoReadUnicode();
         reader.ReadUInt32();
 
-        binaryFiles = new BinaryFiles();
-        binaryFiles.Read(reader);
+        BinaryFiles = new BinaryFiles();
+        BinaryFiles.Read(reader);
 
         Controls = new MFAControls();
         Controls.Read(reader);
@@ -360,13 +359,13 @@ public class MFAData
 
         reader.Seek(MenuSize + currentPosition);
 
-        windowMenuIndex = reader.ReadInt32();
-        menuImages = new Dictionary<int, int>();
+        _windowMenuIndex = reader.ReadInt32();
+        MenuImages = new Dictionary<int, int>();
         var miCount = reader.ReadInt32();
         for (var i = 0; i < miCount; i++)
         {
             var id = reader.ReadInt32();
-            menuImages[id] = reader.ReadInt32();
+            MenuImages[id] = reader.ReadInt32();
         }
 
         GlobalValues = new MFAValueList();

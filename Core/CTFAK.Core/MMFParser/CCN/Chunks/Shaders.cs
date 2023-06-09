@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using CTFAK.Attributes;
 using CTFAK.Memory;
-using CTFAK.MMFParser.Translation;
+using CTFAK.MMFParser.MMFUtils;
 
 namespace CTFAK.MMFParser.CCN.Chunks;
 

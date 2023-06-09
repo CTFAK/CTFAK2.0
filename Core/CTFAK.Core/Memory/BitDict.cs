@@ -23,7 +23,7 @@ public class BitDict
         Keys = keys;
     }
 
-    public uint flag { get; set; }
+    public uint Flag { get; set; }
 
     public bool this[string key]
     {
@@ -34,16 +34,16 @@ public class BitDict
     public bool GetFlag(string key)
     {
         var pos = Array.IndexOf(Keys, key);
-        if (pos >= 0) return (flag & (uint)Math.Pow(2, pos)) != 0;
+        if (pos >= 0) return (Flag & (uint)Math.Pow(2, pos)) != 0;
         return false;
     }
 
     public void SetFlag(string key, bool value)
     {
         if (value)
-            flag |= (uint)Math.Pow(2, Array.IndexOf(Keys, key));
+            Flag |= (uint)Math.Pow(2, Array.IndexOf(Keys, key));
         else
-            flag &= ~(uint)Math.Pow(2, Array.IndexOf(Keys, key));
+            Flag &= ~(uint)Math.Pow(2, Array.IndexOf(Keys, key));
     }
 
     public static string ToDebugString<TKey, TValue>(IDictionary<TKey, TValue> dictionary)

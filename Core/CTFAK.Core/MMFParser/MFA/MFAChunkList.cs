@@ -3,10 +3,9 @@ using System.Drawing;
 using System.IO;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
-using CTFAK.MMFParser.CCN.Chunks;
 using CTFAK.Utils;
 
-namespace CTFAK.MFA;
+namespace CTFAK.MMFParser.MFA;
 
 public class MFAChunkList : ChunkLoader //This is used for MFA reading/writing
 {
@@ -44,10 +43,10 @@ public class MFAChunkList : ChunkLoader //This is used for MFA reading/writing
         return newChunk;
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        foreach (var chunk in Items) chunk.Write(Writer);
-        Writer.WriteInt8(0);
+        foreach (var chunk in Items) chunk.Write(writer);
+        writer.WriteInt8(0);
     }
 
     public override void Read(ByteReader reader)
@@ -147,14 +146,14 @@ public class ShaderSettings : MFAChunkLoader
         }
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.WriteInt8(RGBCoeff.B);
-        Writer.WriteInt8(RGBCoeff.G);
-        Writer.WriteInt8(RGBCoeff.R);
-        Writer.WriteInt8(Blend);
-        Writer.WriteInt32(Shaders.Count);
-        foreach (var shdr in Shaders) shdr.Write(Writer);
+        writer.WriteInt8(RGBCoeff.B);
+        writer.WriteInt8(RGBCoeff.G);
+        writer.WriteInt8(RGBCoeff.R);
+        writer.WriteInt8(Blend);
+        writer.WriteInt32(Shaders.Count);
+        foreach (var shdr in Shaders) shdr.Write(writer);
     }
 
     public class ShaderParameter : MFAChunkLoader
@@ -189,23 +188,23 @@ public class ShaderSettings : MFAChunkLoader
             }
         }
 
-        public override void Write(ByteWriter Writer)
+        public override void Write(ByteWriter writer)
         {
-            Writer.AutoWriteUnicode(Name);
-            Writer.WriteInt32(ValueType);
+            writer.AutoWriteUnicode(Name);
+            writer.WriteInt32(ValueType);
             switch (ValueType)
             {
                 case 0:
-                    Writer.WriteInt32((int)Value);
+                    writer.WriteInt32((int)Value);
                     break;
                 case 1:
-                    Writer.WriteSingle((float)Value);
+                    writer.WriteSingle((float)Value);
                     break;
                 case 2:
-                    Writer.WriteInt32((int)Value);
+                    writer.WriteInt32((int)Value);
                     break;
                 case 3:
-                    Writer.WriteInt32((int)Value);
+                    writer.WriteInt32((int)Value);
                     break;
             }
         }
@@ -228,11 +227,11 @@ public class ShaderSettings : MFAChunkLoader
             }
         }
 
-        public override void Write(ByteWriter Writer)
+        public override void Write(ByteWriter writer)
         {
-            Writer.AutoWriteUnicode(Name);
-            Writer.WriteInt32(Parameters.Count);
-            foreach (var param in Parameters) param.Write(Writer);
+            writer.AutoWriteUnicode(Name);
+            writer.WriteInt32(Parameters.Count);
+            foreach (var param in Parameters) param.Write(writer);
         }
     }
 }
@@ -252,17 +251,17 @@ public class FrameVirtualRect : MFAChunkLoader
         Bottom = reader.ReadInt32();
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        Writer.WriteInt32(Left);
-        Writer.WriteInt32(Top);
-        Writer.WriteInt32(Right);
-        Writer.WriteInt32(Bottom);
+        writer.WriteInt32(Left);
+        writer.WriteInt32(Top);
+        writer.WriteInt32(Right);
+        writer.WriteInt32(Bottom);
     }
 }
 
 public abstract class MFAChunkLoader
 {
     public abstract void Read(ByteReader reader);
-    public abstract void Write(ByteWriter Writer);
+    public abstract void Write(ByteWriter writer);
 }

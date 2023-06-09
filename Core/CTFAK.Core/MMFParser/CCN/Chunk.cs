@@ -17,30 +17,38 @@ public class Chunk
     public ChunkFlags Flag;
     public short Id;
 
+    public ChunkLoader Loader;
+
+    public int FileOffset { get; private set; }
+    public int FileSize { get; private set; }
+    public int UnpackedSize { get; private set; }
+
     public byte[] Read(ByteReader reader)
     {
+        FileOffset = (int)reader.Tell();
         Id = reader.ReadInt16();
 
         Flag = (ChunkFlags)reader.ReadInt16();
-        var fileSize = reader.ReadInt32();
-        var rawData = reader.ReadBytes(fileSize);
+        FileSize = reader.ReadInt32();
+        var rawData = reader.ReadBytes(FileSize);
         var dataReader = new ByteReader(rawData);
         byte[] chunkData = null;
         switch (Flag)
         {
             case ChunkFlags.Encrypted:
-                chunkData = dataReader.ReadBytes(fileSize);
+                chunkData = dataReader.ReadBytes(FileSize);
                 Decryption.TransformChunk(chunkData);
                 break;
             case ChunkFlags.CompressedAndEncrypted:
-                chunkData = Decryption.DecodeMode3(dataReader.ReadBytes(fileSize), Id, out _ /* We don't care about decompressed size */);
+                chunkData = Decryption.DecodeMode3(dataReader.ReadBytes(FileSize), Id,
+                    out _ /* We don't care about decompressed size */);
                 break;
             case ChunkFlags.Compressed:
                 if (Settings.Old)
                 {
                     var start = dataReader.Tell();
                     chunkData = Decompressor.DecompressOld(dataReader);
-                    dataReader.Seek(start + fileSize);
+                    dataReader.Seek(start + FileSize);
                 }
                 else
                 {
@@ -49,28 +57,26 @@ public class Chunk
 
                 break;
             case ChunkFlags.NotCompressed:
-                chunkData = dataReader.ReadBytes(fileSize);
+                chunkData = dataReader.ReadBytes(FileSize);
                 break;
         }
 
         if (chunkData == null)
-        {
             Logger.LogWarning($"Chunk data is null for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
-        }
-        if (chunkData?.Length == 0 && Id!=32639)
-        {
+        if (chunkData?.Length == 0 && Id != 32639)
             Logger.LogWarning($"Chunk data is empty for chunk {ChunkList.ChunkNames[Id]} with flag {Flag}");
-        }
-    
+
+        UnpackedSize = chunkData.Length;
         return chunkData;
     }
 
-    public void Write(ByteWriter fileWriter, ByteWriter dataWriter)
+    public void Write(ByteWriter writer)
     {
-        
-        fileWriter.WriteInt16(Id);
-        fileWriter.WriteInt16((short)Flag);
+        writer.WriteInt16(Id);
+        writer.WriteInt16((short)Flag);
         ByteWriter newWriter = null;
+        var dataWriter = new ByteWriter(new MemoryStream());
+        Loader.Write(dataWriter);
         switch (Flag)
         {
             case ChunkFlags.NotCompressed:
@@ -83,12 +89,11 @@ public class Chunk
                 newWriter = Decompressor.Compress(dataWriter.ToArray());
                 break;
             case ChunkFlags.CompressedAndEncrypted:
-                // TODO Implement
+                newWriter = new ByteWriter(Decryption.EncryptAndCompressMode3(dataWriter.ToArray(), Id));
                 break;
-
         }
-        fileWriter.WriteWriter(newWriter);
 
+        writer.WriteWriter(newWriter);
     }
 }
 

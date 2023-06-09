@@ -2,7 +2,7 @@
 using CTFAK.MMFParser.CCN.Chunks;
 using CTFAK.Utils;
 
-namespace CTFAK.MMFParser.Translation;
+namespace CTFAK.MMFParser.MMFUtils;
 
 public static class ShaderGenerator
 {

@@ -1,14 +1,14 @@
 ﻿using CTFAK.Memory;
 
-namespace CTFAK.MFA.MFAObjectLoaders;
+namespace CTFAK.MMFParser.MFA.MFAObjectLoaders;
 
 public class MFASubApplication : ObjectLoader
 {
-    public string fileName;
-    public int flaggyflag;
-    public int frameNum;
-    public int height;
-    public int width;
+    public string FileName;
+    public int Flaggyflag;
+    public int FrameNum;
+    public int Height;
+    public int Width;
 
     public override void Read(ByteReader reader)
     {
@@ -16,14 +16,14 @@ public class MFASubApplication : ObjectLoader
         reader.ReadInt32();
     }
 
-    public override void Write(ByteWriter Writer)
+    public override void Write(ByteWriter writer)
     {
-        base.Write(Writer);
-        Writer.AutoWriteUnicode(fileName);
-        Writer.WriteInt32(width);
-        Writer.WriteInt32(height);
-        Writer.WriteInt32(flaggyflag);
-        Writer.WriteInt32(frameNum);
+        base.Write(writer);
+        writer.AutoWriteUnicode(FileName);
+        writer.WriteInt32(Width);
+        writer.WriteInt32(Height);
+        writer.WriteInt32(Flaggyflag);
+        writer.WriteInt32(FrameNum);
         //Writer.WriteInt32(-1);
     }
 }

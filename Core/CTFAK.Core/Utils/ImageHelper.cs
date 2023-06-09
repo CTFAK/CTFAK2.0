@@ -168,7 +168,7 @@ public static class ImageHelper
         }
         else if (unk == 5)
         {
-            return (Bitmap)Bitmap.FromStream(new MemoryStream(imageData));
+            return (Bitmap)Image.FromStream(new MemoryStream(imageData));
             //File.WriteAllBytes($"{AppName}\\{Handle}-{unk}.jpg", imageData);
         }
         else

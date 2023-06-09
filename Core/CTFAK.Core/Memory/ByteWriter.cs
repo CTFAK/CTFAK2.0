@@ -108,10 +108,6 @@ public class ByteWriter : BinaryWriter
         Write(value);
     }
 
-    public void WriteString(string value)
-    {
-        Write(value);
-    }
 
     /*public void WriteUniversal(string value, bool addZero = false)
     {
@@ -119,10 +115,12 @@ public class ByteWriter : BinaryWriter
         else WriteAscii(value);
     }*/
 
-    public void WriteAscii(string value)
+    public void WriteAscii(string value, bool appendZero = false)
     {
         var bytes = Encoding.ASCII.GetBytes(value);
         for (var i = 0; i < bytes.Length; i++) WriteInt8(bytes[i]);
+
+        if (appendZero) WriteInt8(0);
     }
 
     public void WriteUnicode(string value, bool appendZero = false)
@@ -150,6 +148,6 @@ public class ByteWriter : BinaryWriter
 
     public byte[] ToArray()
     {
-        return (BaseStream as MemoryStream).ToArray();
+        return (BaseStream as MemoryStream)?.ToArray();
     }
 }

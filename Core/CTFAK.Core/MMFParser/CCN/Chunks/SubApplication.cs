@@ -14,7 +14,7 @@ public class SubApplication : ChunkLoader
 
     //Sub App stuff by -liz
     //This is stolen from XNA exporter and is absolutely useless
-    
+
     //Revisiting this a month later. I agree with myself from the past.
     //This is garbage and I should seriously rewrite this
     //TODO: Rewrite sub-applications
