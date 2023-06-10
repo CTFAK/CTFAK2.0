@@ -205,6 +205,7 @@ public class FusionImage : ChunkLoader
 
     public override void Read(ByteReader reader)
     {
+        // none of this is actually used for reading exes, ignore. it's still used for MFAs though, because I was too lazy to rewrite the MFA part
         var start = reader.Tell();
         var dataSize = 0;
         if (Settings.Android)

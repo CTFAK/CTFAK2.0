@@ -18,31 +18,35 @@ public partial class FileSelectorWindow : Window
         FileReaders = this.FindControl<ListBox>("FileReaders");
         FilePath = this.FindControl<TextBox>("FilePath");
         LoadFileButton = this.FindControl<Button>("LoadFileButton");
-        FilePath.TextChanged += (a, b) =>
+        if (!Design.IsDesignMode)
         {
-            LoadFileButton.IsEnabled = File.Exists(FilePath.Text);
-        };
-        var types = typeof(IFileReader).Assembly.GetTypes();
-        foreach (var type in types)
-        {
-            if (type.GetInterface(typeof(IFileReader).FullName) != null)
+            FilePath.TextChanged += (a, b) =>
             {
-                fileReaders.Add(Activator.CreateInstance(type) as IFileReader); 
+                LoadFileButton.IsEnabled = File.Exists(FilePath.Text);
+            };
+            var types = typeof(IFileReader).Assembly.GetTypes();
+            foreach (var type in types)
+            {
+                if (type.GetInterface(typeof(IFileReader).FullName) != null)
+                {
+                    fileReaders.Add(Activator.CreateInstance(type) as IFileReader); 
+                }
             }
-        }
 
-        fileReaders=fileReaders.OrderBy(a => a.Priority).ToList();
+            fileReaders=fileReaders.OrderBy(a => a.Priority).ToList();
         
-        foreach (var reader in fileReaders)
-        {
+            foreach (var reader in fileReaders)
+            {
             
-            var listItem = new TextBlock();
-            listItem.Text = reader.Name;
-            listItem.Tag = reader;
-            FileReaders.Items.Add(listItem);
-        }
+                var listItem = new TextBlock();
+                listItem.Text = reader.Name;
+                listItem.Tag = reader;
+                FileReaders.Items.Add(listItem);
+            }
 
-        FileReaders.SelectedIndex = 0;
+            FileReaders.SelectedIndex = 0;
+        }
+        
 
     }
 
@@ -57,9 +61,7 @@ public partial class FileSelectorWindow : Window
         var filters = new List<FilePickerFileType>();
         filters.Add(new FilePickerFileType("Fusion Game"){Patterns = new string[]{"*.ccn","*.exe","*.dat"}});
         var task = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions(){AllowMultiple = false, Title = "Select Fusion game", FileTypeFilter = filters});
-        
-        
-        Console.WriteLine("closed");
+
         FilePath.Text = task.Count>0 ? task[0].Path.LocalPath: string.Empty;
     }
 

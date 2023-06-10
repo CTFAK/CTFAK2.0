@@ -6,8 +6,10 @@
         <Style Selector="Window[WindowState=Maximized]">
             <Setter Property="Padding" Value="8" />
         </Style>
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     </Application.Styles>
     <Application.Resources>
         <SolidColorBrush Color="#ff6f00" x:Key="TabItemHeaderSelectedPipeFill" />
     </Application.Resources>
+    
 </Application>

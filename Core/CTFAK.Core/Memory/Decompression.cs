@@ -1,6 +1,8 @@
 ﻿//#define USE_IONIC
 
 using System.IO;
+using System.Runtime.CompilerServices;
+using Ionic.Zlib;
 using Joveler.Compression.ZLib;
 //using Joveler.Compression.ZLib;
 
@@ -30,7 +32,7 @@ public static class Decompressor
     {
         return new ByteReader(Decompress(exeReader, out decompressed));
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] DecompressBlock(byte[] data)
     {
 #if USE_IONIC
@@ -83,6 +85,7 @@ public static class Decompressor
 
     public static unsafe byte[] DecompressOldBlock(byte[] buff, int size, int decompSize, out int actualSize)
     {
+        // this doesn't work. i gotta rewrite the entire Tinflate.cs file
         Tinflate.tinf_init();
         var outputBuffer = new byte[200000];
 
@@ -111,6 +114,8 @@ public static class Decompressor
         
         var zs = new ZLibStream(compressedStream, compOpts);
         decompressedStream.CopyTo(zs);
+        decompressedStream.Close();
+        decompressedStream.Dispose();
         zs.Close();
         
         return compressedStream.ToArray();

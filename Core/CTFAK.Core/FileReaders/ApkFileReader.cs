@@ -62,4 +62,14 @@ public class ApkFileReader : IFileReader
     {
         return new Dictionary<int, Bitmap>();
     }
+
+    public void Close()
+    {
+        Ccn.Close();
+    }
+
+    public ByteReader GetFileReader()
+    {
+        return Ccn.GetFileReader();
+    }
 }

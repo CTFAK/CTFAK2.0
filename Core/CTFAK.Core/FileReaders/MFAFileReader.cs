@@ -16,6 +16,8 @@ public class MFAFileReader : IFileReader
     public string Name => "MFA";
     public int Priority => 5;
 
+    private ByteReader _reader;
+
     public GameData GetGameData()
     {
         return Game;
@@ -23,10 +25,10 @@ public class MFAFileReader : IFileReader
 
     public virtual bool LoadGame(string gamePath)
     {
-        var reader = new ByteReader(gamePath, FileMode.Open);
+        _reader = new ByteReader(gamePath, FileMode.Open);
         MFA = new MFAData();
         Settings.isMFA = true;
-        MFA.Read(reader);
+        MFA.Read(_reader);
         Settings.isMFA = false;
         Game = Mfa2Pame.Convert(MFA);
         return true;
@@ -35,6 +37,17 @@ public class MFAFileReader : IFileReader
     public Dictionary<int, Bitmap> GetIcons()
     {
         return new Dictionary<int, Bitmap>();
+    }
+
+    public void Close()
+    {
+        _reader.Close();
+        _reader.Dispose();
+    }
+
+    public ByteReader GetFileReader()
+    {
+        return _reader;
     }
 
     public void PatchMethods()

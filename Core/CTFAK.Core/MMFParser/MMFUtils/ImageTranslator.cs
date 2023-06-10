@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.CompilerServices;
 using CTFAK.MMFParser.Common.Banks;
 
 namespace CTFAK.MMFParser.MMFUtils;
 
 public static class ImageTranslator
 {
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static int GetPadding(int width, int pointSize, int bytes = 2, bool gaylord = false)
     {
         if (gaylord) return (bytes - width * pointSize % bytes) % bytes;
@@ -16,7 +18,7 @@ public static class ImageTranslator
 
         return (int)Math.Ceiling(pad / (float)pointSize);
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] Normal24BitMaskedToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent,
         bool flipRgb = false)
     {
@@ -72,7 +74,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] Normal16BitToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent)
     {
         var colorArray = new byte[width * height * 4];
@@ -124,7 +126,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] Normal15BitToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent)
     {
         var colorArray = new byte[width * height * 4];
@@ -176,14 +178,14 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] Normal8BitToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var newImg = new FusionImage();
         newImg.FromBitmap((Bitmap)Image.FromStream(new MemoryStream(imageData)));
         return newImg.imageData;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] AndroidMode0ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -206,7 +208,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] AndroidMode1ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -244,7 +246,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] AndroidMode2ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -283,7 +285,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] AndroidMode3ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -306,7 +308,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] AndroidMode4ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 4];
@@ -342,14 +344,14 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] AndroidMode5ToRGBA(byte[] imageData, int width, int height, bool alpha)
     {
         var img = new FusionImage();
         img.FromBitmap((Bitmap)Image.FromStream(new MemoryStream(imageData)));
         return Normal24BitMaskedToRGBA(img.imageData, width, height, true, Color.Black);
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] TwoFivePlusToRGBA(byte[] imageData, int width, int height, bool alpha, Color transparent,
         bool rgba, bool flipRgb = false)
     {
@@ -413,7 +415,7 @@ public static class ImageTranslator
 
         return colorArray;
     }
-
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] RGBAToRGBMasked(byte[] imageData, int width, int height, bool alpha)
     {
         var colorArray = new byte[width * height * 8];

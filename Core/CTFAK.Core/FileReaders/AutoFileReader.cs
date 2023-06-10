@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
 
 namespace CTFAK.FileReaders;
@@ -46,5 +47,15 @@ public class AutoFileReader : IFileReader
     public Dictionary<int, Bitmap> GetIcons()
     {
         return RealReader.GetIcons();
+    }
+
+    public void Close()
+    {
+        RealReader.Close();
+    }
+
+    public ByteReader GetFileReader()
+    {
+        return RealReader.GetFileReader();
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using CTFAK.Attributes;
 using CTFAK.Memory;
 using CTFAK.MMFParser.CCN;
@@ -71,6 +72,7 @@ public class SoundItem : SoundBase
     public uint References;
     public int Size;
 
+    //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public override void Read(ByteReader reader)
     {
         base.Read(reader);
@@ -86,7 +88,7 @@ public class SoundItem : SoundBase
         var res = reader.ReadInt32();
         var nameLenght = reader.ReadInt32();
 
-        ByteReader soundData = new(new byte[0]);
+        ByteReader soundData;
         if (IsCompressed && Flags != 33)
         {
             Size = reader.ReadInt32();
@@ -100,6 +102,8 @@ public class SoundItem : SoundBase
         Name = soundData.ReadWideString(nameLenght).Replace(" ", "");
         if (Flags == 33) soundData.Seek(0);
         Data = soundData.ReadBytes((int)soundData.Size());
+        soundData.Close();
+        soundData.Dispose();
     }
 
     public void AndroidRead(ByteReader soundData, string itemName)

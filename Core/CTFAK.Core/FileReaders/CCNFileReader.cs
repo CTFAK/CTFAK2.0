@@ -12,6 +12,8 @@ public class CCNFileReader : IFileReader
     public int Priority => 5;
     public string Name => "CCN";
 
+    private ByteReader _reader;
+
     public GameData GetGameData()
     {
         return Game;
@@ -20,15 +22,25 @@ public class CCNFileReader : IFileReader
 
     public virtual bool LoadGame(string gamePath)
     {
-        var reader = new ByteReader(gamePath, FileMode.Open);
+        _reader = new ByteReader(gamePath, FileMode.Open);
         Game = new GameData();
-        Game.Read(reader);
-        reader.Close();
+        Game.Read(_reader);
         return true;
     }
 
     public Dictionary<int, Bitmap> GetIcons()
     {
         return new Dictionary<int, Bitmap>();
+    }
+
+    public void Close()
+    {
+        _reader.Close();
+        _reader.Dispose();
+    }
+
+    public ByteReader GetFileReader()
+    {
+        return _reader;
     }
 }

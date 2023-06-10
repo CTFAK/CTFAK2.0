@@ -164,7 +164,10 @@ public class ChunkList
                     Logger.Log($"Reading chunk {newChunk.Id} using {loaderData.ChunkName} loader");
                     try
                     {
-                        newInstance.Read(new ByteReader(new MemoryStream(chunkData)));
+                        var chunkReader = new ByteReader(new MemoryStream(chunkData));
+                        newInstance.Read(chunkReader);
+                        chunkReader.Close();
+                        chunkReader.Dispose();
                         //File.WriteAllBytes($"Chunks\\{loaderData.ChunkName}-{reader.Tell()-newChunk.Size}.bin",chunkData);
                     }
                     catch (Exception ex)

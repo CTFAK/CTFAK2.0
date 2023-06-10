@@ -15,16 +15,17 @@ public class ExeFileReader : IFileReader
     public int Priority => 5;
     public virtual string Name => "EXE";
 
+    private ByteReader _reader;
+
     public virtual bool LoadGame(string gamePath)
     {
         CTFAKCore.CurrentReader = this;
         Settings.gameType = Settings.GameType.NORMAL;
         LoadIcons(gamePath);
 
-        var reader = new ByteReader(gamePath, FileMode.Open);
-        ReadPEHeader(reader);
-        LoadCcn(reader);
-        reader.Close();
+        _reader = new ByteReader(gamePath, FileMode.Open);
+        ReadPEHeader(_reader);
+        LoadCcn(_reader);
         return true;
     }
 
@@ -36,6 +37,17 @@ public class ExeFileReader : IFileReader
     public Dictionary<int, Bitmap> GetIcons()
     {
         return Icons;
+    }
+
+    public void Close()
+    {
+        _reader.Close();
+        _reader.Dispose();
+    }
+
+    public ByteReader GetFileReader()
+    {
+        return _reader;
     }
 
     public void LoadIcons(string gamePath)

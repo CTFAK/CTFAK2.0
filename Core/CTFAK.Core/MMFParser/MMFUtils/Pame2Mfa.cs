@@ -27,7 +27,7 @@ public class Pame2Mfa
     public static Dictionary<int, MFAObjectInfo> FrameItems;
     public int[] Progress = { };
 
-    public MFAData Convert(GameData game,Dictionary<int,Bitmap> icons=null)
+    public static MFAData Convert(GameData game,Dictionary<int,Bitmap> icons=null)
     {
         var mfa = new MFAData();
 
