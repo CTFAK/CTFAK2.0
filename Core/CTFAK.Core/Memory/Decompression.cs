@@ -111,7 +111,6 @@ public static class Decompressor
         compOpts.Level = ZLibCompLevel.Default;
         var decompressedStream = new MemoryStream(data);
         var compressedStream = new MemoryStream();
-        
         var zs = new ZLibStream(compressedStream, compOpts);
         decompressedStream.CopyTo(zs);
         decompressedStream.Close();

@@ -15,6 +15,7 @@ using CTFAK.MMFParser.CCN;
 using CTFAK.MMFParser.CCN.Chunks;
 using CTFAK.MMFParser.CCN.Chunks.Frame;
 using CTFAK.MMFParser.CCN.Chunks.Objects;
+using CTFAK.MMFParser.MFA;
 using CTFAK.MMFParser.MMFUtils;
 using CTFAK.Utils;
 using TextMateSharp.Grammars;
@@ -55,7 +56,7 @@ public partial class MainWindow : Window
         {
             CTFAKCore.Init();
             Directory.CreateDirectory("Plugins");
-            var files = Directory.GetFiles("Plugins");
+            var files = Directory.GetFiles("Plugins","*.dll");
             foreach (var file in files)
             {
                 var asm = Assembly.Load(File.ReadAllBytes(file));
@@ -64,11 +65,18 @@ public partial class MainWindow : Window
                 {
                     if (type.GetInterface(typeof(IPlugin).FullName)!=null)
                     {
-                        IPlugin plugin = Activator.CreateInstance(type) as IPlugin;
-                        var item = new TextBlock();
-                        item.Text = plugin.Name;
-                        item.Tag = plugin;
-                        PluginList.Items.Add(item);
+                        try
+                        {
+                            IPlugin plugin = Activator.CreateInstance(type) as IPlugin;
+                            var item = new TextBlock();
+                            item.Text = plugin.Name;
+                            item.Tag = plugin;
+                            PluginList.Items.Add(item);
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine("Exception");
+                        }
                     }
                 }
             }
@@ -277,15 +285,25 @@ public partial class MainWindow : Window
 
     private void DumpMfa_Click(object? sender, RoutedEventArgs e)
     {
+        
         var worker = new BackgroundWorker();
         worker.DoWork += (o, e) =>
         {
-            SetStatus("Dumping MFA",0);
-            var game = CurrentReader.GetGameData();
-            var mfa = Pame2Mfa.Convert(game, CurrentReader.GetIcons());
-            var dir = Path.Join("Dumps", game.Name ?? "Unknown game");
-            Directory.CreateDirectory(dir);
-            mfa.Write(new ByteWriter(Path.Join(dir,Path.GetFileNameWithoutExtension(game.EditorFilename != null && string.IsNullOrEmpty(game.EditorFilename) ? game.Name : game.EditorFilename )+".mfa"),FileMode.Create)); 
+            try
+            {
+                SetStatus("Dumping MFA",0);
+                var game = CurrentReader.GetGameData();
+                var mfa = Pame2Mfa.Convert(game, CurrentReader.GetIcons());
+                var dir = Path.Join("Dumps", game.Name ?? "Unknown game");
+                Directory.CreateDirectory(dir);
+                mfa.Write(new ByteWriter(Path.Join(dir,Path.GetFileNameWithoutExtension(game.EditorFilename != null && string.IsNullOrEmpty(game.EditorFilename) ? game.Name : game.EditorFilename )+".mfa"),FileMode.Create));
+
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         };
         worker.RunWorkerCompleted += (o, e) =>
         {

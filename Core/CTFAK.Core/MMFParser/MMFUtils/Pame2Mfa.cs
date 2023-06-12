@@ -30,14 +30,13 @@ public class Pame2Mfa
     public static MFAData Convert(GameData game,Dictionary<int,Bitmap> icons=null)
     {
         var mfa = new MFAData();
-
-
+        mfa.Read(new ByteReader("template.mfa",FileMode.Open));
+        mfa.Chunks.Items.Clear();
         mfa.Name = game.Name;
         mfa.LangId = 0; //8192;
         mfa.Description = "";
         mfa.Path = game.EditorFilename;
         mfa.Menu = game.Menu;
-        mfa.Stamp = new byte[0];
 
 
         //if (game.Fonts != null) mfa.Fonts = game.Fonts;
@@ -61,22 +60,7 @@ public class Pame2Mfa
         mfa.Images.Items = game.Images.Items;
         foreach (var key in mfa.Images.Items.Keys) mfa.Images.Items[key].IsMFA = true;
         mfa.GraphicMode = 4;
-
-        mfa.Icons.Items.Add(2,new FusionImage()); // 16x16
-        mfa.Icons.Items.Add(5,new FusionImage()); // 16x16
-        mfa.Icons.Items.Add(8,new FusionImage()); // 16x16
         
-        mfa.Icons.Items.Add(1,new FusionImage()); // 32x32
-        mfa.Icons.Items.Add(4,new FusionImage()); // 32x32
-        mfa.Icons.Items.Add(7,new FusionImage()); // 32x32
-        
-        mfa.Icons.Items.Add(0,new FusionImage()); // 48x48
-        mfa.Icons.Items.Add(3,new FusionImage()); // 48x48
-        mfa.Icons.Items.Add(6,new FusionImage()); // 48x48
-        
-        mfa.Icons.Items.Add(9,new FusionImage()); // 128x128
-        
-        mfa.Icons.Items.Add(10,new FusionImage()); // 256x256
         
         foreach (var item in mfa.Icons.Items)
             try
@@ -275,7 +259,7 @@ public class Pame2Mfa
                 mfaFlags["TimerBasedMovements"] = originalFlags["TimedMovements"];
                 newFrame.Flags = mfaFlags;
                 newFrame.MaxObjects = frame.Events?.MaxObjects ?? 10000;
-                newFrame.Password = "";
+                newFrame.Password = new byte[0];
                 newFrame.LastViewedX = 320;
                 newFrame.LastViewedY = 240;
                 // if (frame.Palette == null) continue; // this shouldn't be here. i have no idea how it got here
@@ -371,10 +355,10 @@ public class Pame2Mfa
 
                             // newInstance.Flags = ((instance.FrameItem.Properties.Loader as ObjectCommon)?.Preferences?.flag ?? (uint)instance.FrameItem.Flags);
                             //newInstance.Flags = (uint)instance.flags;
-                            newInstance.ParentType = (uint)instance.ParentType;
+                            newInstance.ParentType = instance.ParentType;
                             newInstance.ItemHandle = instance.ObjectInfo;
-                            newInstance.ParentHandle = (uint)instance.ParentHandle;
-                            newInstance.Layer = (uint)instance.Layer;
+                            newInstance.ParentHandle = instance.ParentHandle;
+                            newInstance.Layer = instance.Layer;
                             newInstances.Add(newInstance);
                         }
                         else

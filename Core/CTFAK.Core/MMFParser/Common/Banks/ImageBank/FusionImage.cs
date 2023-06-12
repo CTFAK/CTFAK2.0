@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CTFAK.Memory;
@@ -335,6 +336,7 @@ public class FusionImage : ChunkLoader
                 else if (Flags["LZX"])
                 {
                     var decompSize = decompressedReader.ReadInt32();
+                    
                     imageData = Decompressor.DecompressBlock(decompressedReader,
                         (int)(decompressedReader.Size() - decompressedReader.Tell()));
                 }
@@ -354,14 +356,13 @@ public class FusionImage : ChunkLoader
 
     public int WriteNew(ByteWriter writer)
     {
-        PrepareForMfa();
+        //PrepareForMfa();
         var start = writer.Tell();
 
         byte[] compressedImg = null;
         Flags["LZX"] = true;
 
         compressedImg = Decompressor.CompressBlock(imageData);
-
         writer.WriteInt32(Handle);
         writer.WriteInt32(Checksum); //4
         writer.WriteInt32(references); //8

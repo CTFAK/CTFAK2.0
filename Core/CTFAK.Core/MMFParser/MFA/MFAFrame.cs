@@ -42,7 +42,7 @@ public class MFAFrame : ChunkLoader
     public List<Color> Palette = new Color[256].ToList();
     public int PaletteSize;
 
-    public string Password;
+    public byte[] Password = new byte[12];
     public int SizeX;
     public int SizeY;
     public int StampHandle;
@@ -59,11 +59,11 @@ public class MFAFrame : ChunkLoader
         writer.WriteUInt32(Flags.Flag);
         writer.WriteInt32(MaxObjects);
 
-        writer.WriteInt32(0);
-        writer.WriteInt32(12);
-        writer.Skip(12);
-
-
+        writer.Skip(3);
+        writer.WriteInt8(128);
+        writer.WriteInt32(Password.Length);
+        writer.WriteBytes(Password);
+        
         writer.WriteInt32(LastViewedX);
         writer.WriteInt32(LastViewedY);
         writer.WriteInt32(Palette.Count); //WTF HELP 
@@ -121,8 +121,8 @@ public class MFAFrame : ChunkLoader
 
         MaxObjects = reader.ReadInt32();
 
-        reader.ReadInt32(); //garbage
-        var password = reader.ReadBytes(reader.ReadInt32());
+        reader.ReadInt32();
+        Password = reader.ReadBytes(reader.ReadInt32());
 
         LastViewedX = reader.ReadInt32();
         LastViewedY = reader.ReadInt32();

@@ -11,7 +11,7 @@ public class MFAText : ObjectLoader
     public uint Flags;
     public uint Font;
     public uint Height;
-    public List<MFAParagraph> Items;
+    public List<MFAParagraph> Items= new List<MFAParagraph>();
     public uint Width;
 
     public override void Read(ByteReader reader)
@@ -23,7 +23,6 @@ public class MFAText : ObjectLoader
         Color = reader.ReadColor();
         Flags = reader.ReadUInt32();
         reader.ReadUInt32();
-        Items = new List<MFAParagraph>();
         var parCount = reader.ReadUInt32();
         for (var i = 0; i < parCount; i++)
         {

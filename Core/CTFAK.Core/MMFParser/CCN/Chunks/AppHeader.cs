@@ -89,10 +89,10 @@ public class AppHeader : ChunkLoader
     public override void Read(ByteReader reader)
     {
         if (!Settings.Old) Size = reader.ReadInt32();
-        Flags.Flag = (uint)reader.ReadInt16();
-        NewFlags.Flag = (uint)reader.ReadInt16();
+        Flags.Flag = reader.ReadUInt16();
+        NewFlags.Flag = reader.ReadUInt16();
         GraphicsMode = reader.ReadInt16();
-        OtherFlags.Flag = (uint)reader.ReadInt16();
+        OtherFlags.Flag = reader.ReadUInt16();
         WindowWidth = reader.ReadInt16();
         WindowHeight = reader.ReadInt16();
         InitialScore = (int)(reader.ReadUInt32() ^ 0xffffffff);

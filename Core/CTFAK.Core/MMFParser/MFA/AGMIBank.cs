@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -61,7 +62,7 @@ public class AGMIBank : ChunkLoader
             });
             _imageWriteTasks.Add(writeTask);
             _imageWriters.Add(newWriter);
-            writeTask.Start();
+            writeTask.RunSynchronously();
         }
 
         foreach (var task in _imageWriteTasks) task.Wait();

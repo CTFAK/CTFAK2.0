@@ -28,7 +28,7 @@ public class MFAData
     public MFAChunkList Chunks = new();
     public string CommandLine;
     public string Company;
-    public MFAControls Controls;
+    public MFAControls Controls = new MFAControls();
     public string Copyright;
     public List<Tuple<string, int>> CustomQuals = new();
     public string Description;
@@ -77,10 +77,10 @@ public class MFAData
     public FontBank Fonts = new();
     public int FrameRate;
     public List<MFAFrame> Frames = new();
-    public byte[] GlobalEvents;
-    public MFAValueList GlobalStrings;
+    public byte[] GlobalEvents = new byte[0];
+    public MFAValueList GlobalStrings = new MFAValueList();
 
-    public MFAValueList GlobalValues;
+    public MFAValueList GlobalValues= new MFAValueList();
 
     public BitDict GraphicFlags = new(new[]
     {
@@ -122,14 +122,14 @@ public class MFAData
 
     public string HelpFile;
     public int IcoCount;
-    public List<int> IconImages;
+    public List<int> IconImages = new List<int>();
     public AGMIBank Icons = new();
     public AGMIBank Images = new();
     public int InitialLifes;
     public int InitialScore;
-    public int LangId = 32;
+    public int LangId = 8192;
     public AppMenu Menu;
-    public Dictionary<int, int> MenuImages;
+    public Dictionary<int, int> MenuImages = new Dictionary<int, int>();
     public uint MenuSize;
     public short MfaSubversion;
 
@@ -142,11 +142,11 @@ public class MFAData
     public int QualCount;
     public SoundBank Sounds = new();
 
-    public byte[] Stamp;
-    private string _unknownString; //Found in original mfa build 283 after help file
-    private string _unknownString2; //Found in original mfa build 283 after build path
+    public byte[] Stamp = new byte[0];
+    public string _unknownString; //Found in original mfa build 283 after help file
+    public string _unknownString2; //Found in original mfa build 283 after build path
     public string Version;
-    private int _windowMenuIndex;
+    public int _windowMenuIndex;
 
     public int WindowX;
     public int WindowY;
@@ -276,6 +276,7 @@ public class MFAData
         Chunks.Write(writer);
         writer.Flush();
         writer.Close();
+        writer.Dispose();
         Console.WriteLine("Writing done");
     }
 

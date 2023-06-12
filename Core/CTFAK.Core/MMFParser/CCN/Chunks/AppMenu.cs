@@ -88,15 +88,15 @@ public class AppMenu : ChunkLoader
 
 public class AppMenuItem : ChunkLoader
 {
-    public short Flags;
+    public ushort Flags;
     public short Id;
     public string Mnemonic;
     public string Name = "";
 
     public override void Read(ByteReader reader)
     {
-        Flags = reader.ReadInt16();
-        if (!ByteFlag.GetFlag((uint)Flags, 4)) Id = reader.ReadInt16();
+        Flags = reader.ReadUInt16();
+        if (!ByteFlag.GetFlag(Flags, 4)) Id = reader.ReadInt16();
 
         Name = reader.ReadWideString();
 
@@ -115,7 +115,7 @@ public class AppMenuItem : ChunkLoader
 
     public override void Write(ByteWriter writer)
     {
-        writer.WriteInt16(Flags);
+        writer.WriteUInt16(Flags);
         if (!ByteFlag.GetFlag((uint)Flags, 4)) writer.WriteInt16(Id);
 
         var mName = Name;

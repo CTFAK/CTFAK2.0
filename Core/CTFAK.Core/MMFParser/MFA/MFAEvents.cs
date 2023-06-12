@@ -131,7 +131,7 @@ public class MFAEvents : ChunkLoader
             }
             else if (name == EditorPositionData)
             {
-                if (reader.ReadUInt16() != 1) throw new NotImplementedException("Invalid chunkversion");
+                reader.ReadInt16();
                 X = reader.ReadUInt32();
                 Y = reader.ReadUInt32();
                 CaretType = reader.ReadUInt32();
@@ -140,7 +140,7 @@ public class MFAEvents : ChunkLoader
             }
             else if (name == EditorLineData)
             {
-                if (reader.ReadUInt16() != 1) throw new NotImplementedException("Invalid chunkversion");
+                reader.ReadInt16();
                 LineY = reader.ReadUInt32();
                 LineItemType = reader.ReadUInt32();
                 EventLine = reader.ReadUInt32();
