@@ -1,15 +1,16 @@
+using CTFAK.CCN.Chunks;
 using CTFAK.Memory;
 using CTFAK.MFA;
 
-namespace CTFAK.CCN.Chunks.Objects
+namespace CTFAK.Core.CCN.Chunks.Objects
 {
     public class SubApplication : ChunkLoader
     {
-        public int odCx;                        // Size (ignored)
+        public int odCx;
         public int odCy;
-        public short odVersion;                    // 0
+        public short odVersion;
         public short odNStartFrame;
-        public int odOptions;                    // Options
+        public int odOptions;
         public string odName;
 
         public override void Read(ByteReader reader)

@@ -74,8 +74,8 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             for (i = 0; i < nValues; i++)
             {
                 Multivar value = new Multivar();
-                value.Read(reader);
                 value.isDouble = (flags & maskDouble) != 0;
+                value.Read(reader);
                 maskGlobal <<= 4;
                 maskDouble <<= 4;
                 values[i] = value;

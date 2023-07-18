@@ -14,7 +14,6 @@ namespace CTFAK.FileReaders
         string Name { get; }
 
         GameData getGameData();
-        int ReadHeader(ByteReader reader);
         void LoadGame(string gamePath);
         Dictionary<int, Bitmap> getIcons();
         void PatchMethods();

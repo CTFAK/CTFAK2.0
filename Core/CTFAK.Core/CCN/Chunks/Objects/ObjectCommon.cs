@@ -1,4 +1,5 @@
-﻿using CTFAK.Memory;
+﻿using CTFAK.Core.CCN.Chunks.Objects;
+using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
@@ -129,7 +130,6 @@ namespace CTFAK.CCN.Chunks.Objects
                 var penisFlags = reader.ReadInt16();
                 if (penisFlags == 6) Flags["DoNotCreateAtStart"] = true;
 
-
                 var end = reader.Tell() + 8 * 2;
                 for (int i = 0; i < 8; i++)
                 {
@@ -181,7 +181,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 _fadeinOffset = reader.ReadUInt32();
                 _fadeoutOffset = reader.ReadUInt32();
             }
-            else if (Settings.TwoFivePlus)
+            else if (Settings.TwoFivePlus || Settings.F3 || Settings.Fusion3Seed)
             {
                 var size = reader.ReadInt32();
                 _animationsOffset = reader.ReadInt16();
@@ -281,7 +281,7 @@ namespace CTFAK.CCN.Chunks.Objects
                     _fadeinOffset = reader.ReadUInt32();
                     _fadeoutOffset = reader.ReadUInt32();
                 }
-                else if (Settings.Build == 288)
+                else if (Settings.Build == 288 || Settings.Build == 284)
                 {
                     var size = reader.ReadInt32();
                     //File.WriteAllBytes($"FNAFWorldTest\\{Utils.Utils.ClearName(Parent.name + "-" + Parent.handle)}.chunk", reader.ReadBytes(size - 4));

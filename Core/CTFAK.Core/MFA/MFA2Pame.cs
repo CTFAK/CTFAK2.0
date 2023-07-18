@@ -16,6 +16,7 @@ using static CTFAK.CCN.Chunks.Objects.ObjectInfo;
 using System.Xml.Linq;
 using System;
 using CTFAK.MFA.MFAObjectLoaders;
+using CTFAK.Core.CCN.Chunks;
 
 namespace CTFAK.Core.MFA
 {
@@ -40,7 +41,7 @@ namespace CTFAK.Core.MFA
             game.targetFilename = mfa.BuildPath;
             game.menu = mfa.Menu;
 
-            Logger.Log("Converting Header");
+            Logger.Log("Converting Headers");
             var MFAHeader = new AppHeader();
             MFAHeader.WindowWidth = mfa.WindowX;
             MFAHeader.WindowHeight = mfa.WindowY;
@@ -72,6 +73,12 @@ namespace CTFAK.Core.MFA
             MFAHeader.Controls = MFAControls;
             game.header = MFAHeader;
 
+            var MFAExtHeader = new ExtendedHeader();
+            MFAExtHeader.Flags["DisableIME"] = mfa.GraphicFlags["DisableIME"];
+            MFAExtHeader.Flags["ReduceCPUUsage"] = mfa.GraphicFlags["ReduceCPUUsage"];
+            MFAExtHeader.Flags["PremultipliedAlpha"] = mfa.GraphicFlags["PremultipliedAlpha"];
+            game.ExtHeader = MFAExtHeader;
+
             Logger.Log("Converting Fonts");
             if (mfa.Fonts != null)
                 game.Fonts = mfa.Fonts;
@@ -88,6 +95,8 @@ namespace CTFAK.Core.MFA
             Logger.Log("Converting Frames");
             var MFAFrames = new List<Frame>();
             var MFAFrameItems = new Dictionary<int, ObjectInfo>();
+            var MFAFrameHandles = new Dictionary<int, int>();
+            int handle = 0;
             foreach (var frame in mfa.Frames)
             {
                 Logger.Log($"Frame Found: {frame.Name}, {frame.SizeX}x{frame.SizeY}, {frame.Items.Count} objects.", true, ConsoleColor.Green);
@@ -113,6 +122,8 @@ namespace CTFAK.Core.MFA
                     MFAEvnts.NumberOfConditions.Add(evnt.NumberOfConditions);
 
                 newFrame.events = MFAEvnts;
+                MFAFrameHandles.Add(handle, handle);
+                handle++;
 
                 foreach (var item in frame.Items)
                 {
@@ -165,10 +176,10 @@ namespace CTFAK.Core.MFA
                     newItem.Flags = item.Flags;
                     newItem.InkEffect = item.InkEffect;
                     newItem.InkEffectValue = (int)item.InkEffectParameter;
-                    try
+                    /*try
                     {
-                        var shdrData = item.Chunks.GetOrCreateChunk<ShaderSettings>();
-                        newItem.rgbCoeff = shdrData.RGBCoeff;
+                        var shdrData = item.Chunks.GetOrCreateChunk<LayerShaderSettings>();
+                        newItem.RGBCoeff = shdrData.RGBCoeff;
                         newItem.blend = shdrData.Blend;
 
                         if (shdrData.Shaders != null)
@@ -187,9 +198,9 @@ namespace CTFAK.Core.MFA
                     }
                     catch
                     {
-                        newItem.rgbCoeff = Color.FromArgb(0, 255, 255, 255);
+                        newItem.RGBCoeff = Color.FromArgb(0, 255, 255, 255);
                         newItem.blend = 255;
-                    }
+                    }*/
                     
                     MFAFrameItems.Add(newItem.handle, newItem);
                 }
@@ -203,7 +214,7 @@ namespace CTFAK.Core.MFA
                     newItem.y = item.Y;
                     newItem.parentType = (short)item.ParentType;
                     newItem.layer = (short)item.Layer;
-                    newItem.flags = (short)item.Flags;
+                    //newItem.flags = (short)item.Flags;
                     newItem.parentHandle = (short)item.ParentHandle;
                     MFAObjects.Add(newItem);
                 }
@@ -234,9 +245,9 @@ namespace CTFAK.Core.MFA
                     MFAFadeIn.Color = frame.FadeIn.Color;
                     MFAFadeIn.ModuleFile = frame.FadeIn.Module;
                     MFAFadeIn.ParameterData = frame.FadeIn.ParameterData;
+                    newFrame.fadeIn = MFAFadeIn;
                 }
 
-                newFrame.fadeIn = MFAFadeIn;
 
                 if (frame.FadeOut != null)
                 {
@@ -247,9 +258,9 @@ namespace CTFAK.Core.MFA
                     MFAFadeOut.Color = frame.FadeOut.Color;
                     MFAFadeOut.ModuleFile = frame.FadeOut.Module;
                     MFAFadeOut.ParameterData = frame.FadeOut.ParameterData;
+                    newFrame.fadeOut = MFAFadeOut;
                 }
 
-                newFrame.fadeOut = MFAFadeOut;
 
                 var VirtualRect = frame.Chunks.GetOrCreateChunk<FrameVirtualRect>();
                 MFAVirtualRect.left = VirtualRect.Left;
@@ -263,6 +274,7 @@ namespace CTFAK.Core.MFA
             game.frames = MFAFrames;
             game.frameitems = MFAFrameItems;
             game.frameHandles = new FrameHandles();
+            game.frameHandles.Items = MFAFrameHandles;
 
             Logger.Log("Converting Extensions");
             var MFAExtensions = new CTFAK.CCN.Chunks.Extensions();

@@ -32,7 +32,7 @@ namespace CTFAK.MFA
     }
     public class ObjectFlag : ChunkLoader
     {
-        public string Name;
+        public string Name = "";
         public bool Value;
 
         public override void Read(ByteReader reader)

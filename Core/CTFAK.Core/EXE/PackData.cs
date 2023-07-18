@@ -31,17 +31,16 @@ namespace CTFAK.EXE
             var uheader = reader.ReadAscii(4);
             if (uheader == "PAMU")
             {
-                Logger.Log("Found PAMU header", false);
                 Settings.gameType = Settings.GameType.NORMAL;
                 Settings.Unicode = true;
             }
             else if (uheader == "PAME")
             {
-                Logger.Log("Found PAME header", false);
                 if (Settings.gameType != Settings.GameType.MMF15)
                     Settings.gameType = Settings.GameType.MMF2;
                 Settings.Unicode = false;
             }
+            Logger.Log($"Found {uheader} header", false);
             reader.Seek(start + 16);
 
             FormatVersion = reader.ReadUInt32();
@@ -51,7 +50,7 @@ namespace CTFAK.EXE
             check = reader.ReadInt32();
             Debug.Assert(check == 0);
 
-            uint count = reader.ReadUInt32();;
+            uint count = reader.ReadUInt32();
 
             long offset = reader.Tell();
             for (int i = 0; i < count; i++)
@@ -82,6 +81,7 @@ namespace CTFAK.EXE
         int _bingo = 0;
         public byte[] Data;
         public bool HasBingo;
+        public bool Compressed;
         public int size;
         public void Read(ByteReader exeReader)
         {
@@ -89,16 +89,14 @@ namespace CTFAK.EXE
             PackFilename = exeReader.ReadYuniversal(len);
             _bingo = exeReader.ReadInt32();
             size = exeReader.ReadInt32();
-            Data = exeReader.ReadBytes(size);
-            Logger.Log($"New packfile: {PackFilename}", false);
-            try
+            if (exeReader.PeekInt16() == -9608)
             {
-                //File.WriteAllBytes($"ExtDump\\{PackFilename}", ZlibStream.UncompressBuffer(Data));
+                Data = Decompressor.DecompressBlock(exeReader, size);
+                Compressed = true;
             }
-            catch
-            {
-                //File.WriteAllBytes($"ExtDump\\{PackFilename}", Data);
-            }
+            else
+                Data = exeReader.ReadBytes(size);
+            Logger.Log($"New packfile: {PackFilename}, Compressed: {Compressed}", false);
         }
     }
 }

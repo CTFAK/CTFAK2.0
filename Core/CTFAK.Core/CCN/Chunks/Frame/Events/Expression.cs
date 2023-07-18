@@ -79,7 +79,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Expressions
 
         public override string ToString()
         {
-            return $"Expression {ObjectType}=={Num}: {((ExpressionLoader)Loader)?.Value}";
+            return $"Object Type: {ObjectType}, Num: {Num}, Info: {ObjectInfo}, List: {ObjectInfoList}, Loader: {((ExpressionLoader)Loader).Value}, Unknown: {Unk1} {Unk2} {_unk}";
         }
     }
     public class ExpressionLoader:ChunkLoader

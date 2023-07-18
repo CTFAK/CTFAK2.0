@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CTFAK.CCN.Chunks;
+using TsudaKageyu;
+using System.Runtime.CompilerServices;
 
 namespace CTFAK.FileReaders
 {
@@ -17,25 +19,49 @@ namespace CTFAK.FileReaders
         public string Name => "Normal EXE";
 
         public GameData game;
-        public Dictionary<int, Bitmap> icons = new Dictionary<int, Bitmap>();
-        
+        public Dictionary<int, Bitmap> Icons = new Dictionary<int, Bitmap>();
+
 
         public void LoadGame(string gamePath)
         {
             CTFAKCore.currentReader = this;
             Settings.gameType = Settings.GameType.NORMAL;
             var icoExt = new IconExtractor(gamePath);
-            var icos = icoExt.GetAllIcons();
+            var icos = IconUtil.Split(icoExt.GetIcon(0));
+            
             foreach (var icon in icos)
             {
-                
-                icons.Add(icon.Width, icon.ToBitmap());
+                if (IconUtil.GetBitCount(icon) == 8)
+                    Icons.TryAdd(icon.Width + 1, icon.ToBitmap());
+                else
+                    Icons.TryAdd(icon.Width, icon.ToBitmap());
             }
 
-            if (!icons.ContainsKey(16)) icons.Add(16, icons[32].resizeImage(new Size(16, 16)));
-            if (!icons.ContainsKey(48)) icons.Add(48, icons[32].resizeImage(new Size(48, 48)));
-            if (!icons.ContainsKey(128)) icons.Add(128, icons[32].resizeImage(new Size(128, 128)));
-            if (!icons.ContainsKey(256)) icons.Add(256, icons[32].resizeImage(new Size(256, 256)));
+            // 256c 16x16
+            if (!Icons.ContainsKey(17))
+                Icons.Add(17, Icons.Last().Value.ResizeImage(new Size(16, 16)));
+            // 256c 32x32
+            if (!Icons.ContainsKey(33))
+                Icons.Add(33, Icons.Last().Value.ResizeImage(new Size(32, 32)));
+            // 256c 48x48
+            if (!Icons.ContainsKey(49))
+                Icons.Add(49, Icons.Last().Value.ResizeImage(new Size(48, 48)));
+
+            // 32-Bit 16x16
+            if (!Icons.ContainsKey(16))
+                Icons.Add(16, Icons.Last().Value.ResizeImage(new Size(16, 16)));
+            // 32-Bit 32x32
+            if (!Icons.ContainsKey(32))
+                Icons.Add(32, Icons.Last().Value.ResizeImage(new Size(32, 32)));
+            // 32-Bit 48x48
+            if (!Icons.ContainsKey(48))
+                Icons.Add(48, Icons.Last().Value.ResizeImage(new Size(48, 48)));
+            // 32-Bit 128x128
+            if (!Icons.ContainsKey(128))
+                Icons.Add(128, Icons.Last().Value.ResizeImage(new Size(128, 128)));
+            // 32-Bit 256x256
+            if (!Icons.ContainsKey(256))
+                Icons.Add(256, Icons.Last().Value.ResizeImage(new Size(256, 256)));
 
 
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
@@ -146,7 +172,7 @@ namespace CTFAK.FileReaders
 
         public Dictionary<int,Bitmap> getIcons()
         {
-            return icons;
+            return Icons;
         }
 
         public void PatchMethods()
@@ -157,7 +183,7 @@ namespace CTFAK.FileReaders
         {
             ExeFileReader reader = new ExeFileReader();
             reader.game = game;
-            reader.icons = icons;
+            reader.Icons = Icons;
             return reader;
         }
     }

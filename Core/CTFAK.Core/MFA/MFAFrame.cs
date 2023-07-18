@@ -48,7 +48,7 @@ namespace CTFAK.MFA
         public int ActiveLayer;
         public List<MFALayer> Layers = new List<MFALayer>();
         public MFAEvents Events;
-        public MFAChunkList Chunks;
+        public MFAChunks Chunks;
         public MFATransition FadeIn;
         public MFATransition FadeOut;
         public int PaletteSize;
@@ -212,7 +212,7 @@ namespace CTFAK.MFA
             Events.Read(reader);
 
 
-            Chunks = new MFAChunkList();
+            Chunks = new MFAChunks();
             // Chunks.Log = true;
             Chunks.Read(reader);
 

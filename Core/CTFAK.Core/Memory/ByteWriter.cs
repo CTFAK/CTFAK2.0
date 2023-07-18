@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CTFAK.Utils;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -112,6 +113,11 @@ namespace CTFAK.Memory
             byte[] data = ((MemoryStream)toWrite.BaseStream).GetBuffer();
             Array.Resize<byte>(ref data, (int)toWrite.Tell());
             this.WriteBytes(data);
+        }
+
+        public byte[] ToArray()
+        {
+            return this.GetBuffer();
         }
     }
 }

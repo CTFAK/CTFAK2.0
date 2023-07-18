@@ -360,7 +360,7 @@ namespace CTFAK.MFA
             else if (ObjectType == 2)//ShortcutItemType
             {
                 Code = reader.ReadAscii(4);
-                Logger.Log("Code: " + Code);
+                //Logger.Log("Code: " + Code);
                 if (Code == "OIC2")//IconBufferCode
                 {
                     IconBuffer = reader.AutoReadUnicode();

@@ -12,85 +12,37 @@ namespace CTFAK.Memory
 {
     public static class Decompressor
     {
+        public static ByteWriter Compress(byte[] buffer)
+        {
+            var writer = new ByteWriter(new MemoryStream());
+            var compressed = CompressBlock(buffer);
+            writer.WriteInt32(buffer.Length);
+            writer.WriteInt32(compressed.Length);
+            writer.WriteBytes(compressed);
+            return writer;
+        }
+
         public static byte[] Decompress(ByteReader exeReader, out int decompressed)
         {
-            Int32 decompSize = exeReader.ReadInt32();
-            Int32 compSize = exeReader.ReadInt32();
+            var decompSize = exeReader.ReadInt32();
+            var compSize = exeReader.ReadInt32();
             decompressed = decompSize;
-            return DecompressBlock(exeReader, compSize, decompSize);
+            return DecompressBlock(exeReader, compSize);
         }
 
-        public static ByteReader DecompressAsReader(ByteReader exeReader, out int decompressed) =>
-            new ByteReader(Decompress(exeReader, out decompressed));
-
-        public static byte[] DecompressBlock(byte[] data, int size, int decompSize)
+        public static ByteReader DecompressAsReader(ByteReader exeReader, out int decompressed)
         {
-            #if USE_IONIC
+            return new ByteReader(Decompress(exeReader, out decompressed));
+        }
+
+        public static byte[] DecompressBlock(byte[] data)
+        {
             return ZlibStream.UncompressBuffer(data);
-            #else
-            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
-
-            using (MemoryStream fsComp = new MemoryStream(data))
-            using (MemoryStream fsDecomp = new MemoryStream())
-            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
-            {
-                zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.ToArray();
-                return newData;
-            }
-            #endif
-        }
-        public static byte[] DecompressBlock(byte[] data, int size)
-        {
-            #if USE_IONIC
-            return ZlibStream.UncompressBuffer(data);
-            #else
-            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
-
-            using (MemoryStream fsComp = new MemoryStream(data))
-            using (MemoryStream fsDecomp = new MemoryStream())
-            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
-            {
-                zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.ToArray();
-                return newData;
-            }
-            #endif
-        }
-        public static byte[] DecompressBlock(ByteReader reader, int size, int decompSize)
-        {
-            #if USE_IONIC
-            return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
-            #else
-            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
-
-            using (MemoryStream fsComp = new MemoryStream(reader.ReadBytes(size)))
-            using (MemoryStream fsDecomp = new MemoryStream())
-            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
-            {
-                zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.ToArray();
-                return newData;
-            }
-            #endif
         }
 
         public static byte[] DecompressBlock(ByteReader reader, int size)
         {
-            #if USE_IONIC
             return ZlibStream.UncompressBuffer(reader.ReadBytes(size));
-            #else
-            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
-
-            using (MemoryStream fsComp = new MemoryStream(reader.ReadBytes(size)))
-            using (MemoryStream fsDecomp = new MemoryStream())
-            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
-            {
-                zs.CopyTo(fsDecomp);
-                var newData = fsDecomp.ToArray();
-                return newData;
-            }
-            #endif
         }
 
         public static byte[] DecompressOld(ByteReader reader)
@@ -99,39 +51,37 @@ namespace CTFAK.Memory
             var start = reader.Tell();
             var compressedSize = reader.Size();
             var buffer = reader.ReadBytes((int)compressedSize);
-            Int32 actualSize;
+            int actualSize;
             var data = DecompressOldBlock(buffer, (int)compressedSize, decompressedSize, out actualSize);
             reader.Seek(start + actualSize);
             return data;
         }
 
-        public static byte[] DecompressOldBlock(byte[] buff, int size, int decompSize, out Int32 actual_size)
+        public static byte[] DecompressOldBlock(byte[] buff, int size, int decompSize, out int actual_size)
         {
             var originalBuff = Marshal.AllocHGlobal(size);
             Marshal.Copy(buff, 0, originalBuff, buff.Length);
             var outputBuff = Marshal.AllocHGlobal(decompSize);
             actual_size = NativeLib.decompressOld(originalBuff, size, outputBuff, decompSize);
             Marshal.FreeHGlobal(originalBuff);
-            byte[] data = new byte[decompSize];
+            var data = new byte[decompSize];
             Marshal.Copy(outputBuff, data, 0, decompSize);
             Marshal.FreeHGlobal(outputBuff);
             return data;
         }
 
-        public static byte[] compress_block(byte[] data)
+        public static byte[] CompressBlock(byte[] data)
         {
-            ZLibCompressOptions compOpts = new ZLibCompressOptions();
+            var compOpts = new ZLibCompressOptions();
             compOpts.Level = ZLibCompLevel.Default;
-            MemoryStream decompressedStream = new MemoryStream(data);
-            MemoryStream compressedStream = new MemoryStream();
+            var decompressedStream = new MemoryStream(data);
+            var compressedStream = new MemoryStream();
             byte[] compressedData = null;
-            Joveler.Compression.ZLib.ZLibStream
-                zs = new Joveler.Compression.ZLib.ZLibStream(compressedStream, compOpts);
+            var zs = new ZLibStream(compressedStream, compOpts);
             decompressedStream.CopyTo(zs);
             zs.Close();
 
             compressedData = compressedStream.ToArray();
-            //Array.Resize<byte>(ref compressedData, (int)zs.TotalOut);
 
             return compressedData;
         }

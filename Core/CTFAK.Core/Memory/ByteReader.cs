@@ -51,6 +51,7 @@ namespace CTFAK.Memory
         public string ReadAscii(int length = -1)
         {
             string str = "";
+            if (Tell() >= Size()) return str;
             if (length >= 0)
             {
                 for (int i = 0; i < length; i++)
@@ -64,6 +65,7 @@ namespace CTFAK.Memory
                 while (b != 0)
                 {
                     str += Convert.ToChar(b);
+                    if (Tell() >= Size()) break;
                     b = ReadByte();
                 }
             }
@@ -75,7 +77,8 @@ namespace CTFAK.Memory
 
         public string ReadWideString(int length = -1)
         {
-            String str = "";
+            string str = "";
+            if (Tell() >= Size()) return str;
             if (length >= 0)
                 for (int i = 0; i < length; i++)
                     str += Convert.ToChar(ReadUInt16());
@@ -85,6 +88,7 @@ namespace CTFAK.Memory
                 while (b != 0)
                 {
                     str += Convert.ToChar(b);
+                    if (Tell() >= Size()) break;
                     b = ReadUInt16();
                 }
             }
@@ -99,16 +103,15 @@ namespace CTFAK.Memory
             else
                 return ReadAscii(len);
         }
+
         public Color ReadColor()
         {
-
             var r = ReadByte();
             var g = ReadByte();
             var b = ReadByte();
             var a = ReadByte();
 
             return Color.FromArgb(a, r, g, b);
-
         }
 
         public override byte[] ReadBytes(int count = -1)

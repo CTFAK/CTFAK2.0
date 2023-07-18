@@ -1,5 +1,6 @@
 ﻿using CTFAK.CCN.Chunks;
 using CTFAK.CCN.Chunks.Banks;
+using CTFAK.Core.CCN.Chunks.Banks.SoundBank;
 using CTFAK.Memory;
 using CTFAK.MMFParser.MFA.Loaders;
 using CTFAK.Utils;
@@ -150,13 +151,7 @@ namespace CTFAK.MFA
         public List<Tuple<int, string, string, int, string>> Extensions;
         public List<Tuple<string, int>> CustomQuals;
         public List<MFAFrame> Frames;
-        public MFAChunkList Chunks;
-
-
-
-
-
-
+        public MFAChunks Chunks;
 
         public void Write(ByteWriter Writer)
         {
@@ -456,7 +451,7 @@ namespace CTFAK.MFA
             }
 
             reader.Seek(nextOffset);
-            Chunks = new MFAChunkList();
+            Chunks = new MFAChunks();
             Chunks.Read(reader);
             reader.Dispose();
             return;

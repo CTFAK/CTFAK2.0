@@ -23,7 +23,7 @@ namespace CTFAK.MFA
         public int Flags;
         public int IconType;
         public int IconHandle;
-        public MFAChunkList Chunks;
+        public MFAChunks Chunks;
         public ChunkLoader Loader;
         public MFAObjectFlags FlagWriter;
 
@@ -70,7 +70,7 @@ namespace CTFAK.MFA
                 IconHandle = reader.ReadInt32();
             }
             else throw new InvalidDataException("invalid icon");
-            Chunks = new MFAChunkList();
+            Chunks = new MFAChunks();
             Chunks.Log = true;
             Chunks.Read(reader);
 

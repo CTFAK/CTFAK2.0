@@ -35,7 +35,7 @@ namespace CTFAK.CCN.Chunks.Objects
         }
         public class ShaderData
         {
-            public bool hasShader;
+            public bool hasShader = false;
             public string name;
             public int ShaderHandle;
             public List<ShaderParameter> parameters = new();
@@ -48,6 +48,13 @@ namespace CTFAK.CCN.Chunks.Objects
                 var newChunk = new Chunk();
                 var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
+                if (CTFAKCore.parameters.Contains("-onlyimages"))
+                {
+                    if (newChunk.Id != 17476 && // Header
+                        newChunk.Id != 17477 && // Name
+                        newChunk.Id != 17478)   // Properties
+                        continue;
+                }
                 if (newChunk.Id == 32639) break;
                 //Logger.Log("Object Chunk ID " + newChunk.Id);
                 switch (newChunk.Id)
@@ -57,17 +64,23 @@ namespace CTFAK.CCN.Chunks.Objects
                         ObjectType = chunkReader.ReadInt16();
                         Flags = chunkReader.ReadInt16();
                         chunkReader.Skip(2);
-                        InkEffect = chunkReader.ReadInt32();
-                        if(InkEffect != 1)
+                        InkEffect = chunkReader.ReadByte();
+                        if (InkEffect != 1)
                         {
+                            chunkReader.Skip(3);
                             var r = chunkReader.ReadByte();
                             var g = chunkReader.ReadByte();
                             var b = chunkReader.ReadByte();
-                            rgbCoeff = Color.FromArgb(0, r, g, b);
+                            rgbCoeff = Color.FromArgb(0, b, g, r);
                             blend = chunkReader.ReadByte();
                         }
                         else
+                        {
+                            var flag = chunkReader.ReadByte();
+                            chunkReader.Skip(2);
                             InkEffectValue = chunkReader.ReadByte();
+                            chunkReader.Skip(3);
+                        }
 
                         if (Settings.Old || Settings.gameType == Settings.GameType.MMF2)
                         {
@@ -86,7 +99,6 @@ namespace CTFAK.CCN.Chunks.Objects
                         properties?.Read(chunkReader);
                         break;
                     case 17480:
-                        shaderData.hasShader = true;
                         try
                         {
                             var shaderHandle = chunkReader.ReadInt32();
@@ -94,6 +106,7 @@ namespace CTFAK.CCN.Chunks.Objects
                             var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
                             shaderData.name = shdr.Name;
                             shaderData.ShaderHandle = shaderHandle;
+                            shaderData.hasShader = true;
 
                             for (int i = 0; i < numberOfParams; i++)
                             {

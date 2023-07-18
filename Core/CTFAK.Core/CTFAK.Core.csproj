@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="EXE\IconExtractor.cs.unused" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
     <PackageReference Include="Joveler.Compression.ZLib" Version="4.1.0" />
     <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
@@ -68,6 +72,10 @@
     <EmbeddedResource Include="Resources\XLua.png" />
     <EmbeddedResource Include="Resources\Perspective.png" />
     <EmbeddedResource Include="Resources\DateAndTime.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utils\IconExtractor\" />
   </ItemGroup>
 
 

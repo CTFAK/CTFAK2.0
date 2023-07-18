@@ -14,7 +14,8 @@ namespace CTFAK.MFA
         public int Y;
         public uint Layer;
         public int Handle;
-        public uint Flags;
+        public short Flags;
+        public short Instance;
         public uint ParentType;
         public uint ParentHandle;
         public uint ItemHandle;
@@ -25,7 +26,8 @@ namespace CTFAK.MFA
             Y = reader.ReadInt32();
             Layer = reader.ReadUInt32();
             Handle = reader.ReadInt32();
-            Flags = reader.ReadUInt32();
+            Flags = reader.ReadInt16();
+            Instance = reader.ReadInt16();
             ParentType = reader.ReadUInt32();
             ItemHandle = reader.ReadUInt32();
             ParentHandle = (uint)reader.ReadInt32();
@@ -37,7 +39,8 @@ namespace CTFAK.MFA
             Writer.WriteInt32(Y);
             Writer.WriteUInt32(Layer);
             Writer.WriteInt32(Handle);
-            Writer.WriteUInt32(Flags);
+            Writer.WriteInt16(Flags);
+            Writer.WriteInt16(Instance);
             Writer.WriteUInt32(ParentType);
             Writer.WriteUInt32(ItemHandle);
             Writer.WriteInt32((int)ParentHandle);

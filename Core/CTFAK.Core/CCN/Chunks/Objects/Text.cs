@@ -59,17 +59,12 @@ namespace CTFAK.CCN.Chunks.Objects
                     Items.Add(par);
                 } 
             }
-
-
-
         }
 
         public override void Write(ByteWriter Writer)
         {
             throw new System.NotImplementedException();
         }
-
-
     }
 
     public class Paragraph : ChunkLoader
@@ -106,7 +101,7 @@ namespace CTFAK.CCN.Chunks.Objects
                 FontHandle = reader.ReadUInt16();
                 Flags.flag = reader.ReadUInt16();
                 Color = reader.ReadColor();
-                Value = reader.ReadYuniversal(); 
+                Value = reader.ReadYuniversal();
             }
             
 

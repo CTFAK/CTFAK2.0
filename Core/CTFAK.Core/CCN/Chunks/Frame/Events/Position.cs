@@ -1,11 +1,12 @@
 ﻿using CTFAK.Memory;
 using CTFAK.Utils;
+using System;
 
 namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 {
     public class Position : ParameterCommon
     {
-        public int ObjectInfoParent;
+        public uint ObjectInfoParent;
         public short Flags;
         public int X;
         public int Y;
@@ -18,7 +19,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 
         public override void Read(ByteReader reader)
         {
-            ObjectInfoParent = reader.ReadInt16();
+            ObjectInfoParent = reader.ReadUInt16();
             Flags = reader.ReadInt16();
             X = reader.ReadInt16();
             Y = reader.ReadInt16();
@@ -28,11 +29,17 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             TypeParent = reader.ReadInt16();
             ObjectInfoList = reader.ReadInt16();
             Layer = reader.ReadInt16();
+
+            if (TypeParent == 2)
+            {
+                //ObjectInfoParent = (ushort)((32837 - ObjectInfoParent) / 23);
+                //TypeParent = 0;
+            }
         }
 
         public override void Write(ByteWriter Writer)
         {
-            Writer.WriteInt16((short) ObjectInfoParent);
+            Writer.WriteUInt16((ushort)ObjectInfoParent);
             Writer.WriteInt16(Flags);
             Writer.WriteInt16((short) X);
             Writer.WriteInt16((short) Y);
@@ -46,7 +53,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
 
         public override string ToString()
         {
-            return $"Object X:{X} Y:{Y} Angle:{Angle} Direction:{Direction} Parent:{ObjectInfoList}";
+            return $"Object Info: {ObjectInfoParent}, Flags: {Flags}, X:{X}, Y:{Y}, Slope: {Slope}, Angle:{Angle}, Direction:{Direction}, TypeParent: {TypeParent}, Parent: {ObjectInfoList}, Layer: {Layer}";
         }
     }
 }

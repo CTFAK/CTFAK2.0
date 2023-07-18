@@ -32,7 +32,7 @@ namespace CTFAK.MFA
     public class ValueItem : ChunkLoader
     {
         public object Value;
-        public string Name;
+        public string Name = "";
 
 
 

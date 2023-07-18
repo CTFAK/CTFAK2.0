@@ -1,4 +1,5 @@
-﻿using CTFAK.Memory;
+﻿using CTFAK.CCN.Chunks;
+using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CTFAK.CCN.Chunks.Banks
+namespace CTFAK.Core.CCN.Chunks.Banks.SoundBank
 {
     public class AndroidSoundBank : ChunkLoader
     {
@@ -39,7 +40,7 @@ namespace CTFAK.CCN.Chunks.Banks
             int i = 0;
             foreach (var item in Items)
                 i++;
-            
+
             writer.WriteInt32(i);
             foreach (var item in Items)
                 item.Write(writer);
@@ -74,7 +75,7 @@ namespace CTFAK.CCN.Chunks.Banks
             writer.WriteUInt32((uint)Handle);
             writer.WriteInt32(0);
             writer.WriteUInt32(0);
-            writer.WriteInt32(Data.Length + (Name.Length * 2));
+            writer.WriteInt32(Data.Length + Name.Length * 2);
             writer.WriteUInt32((uint)Flags);
             writer.WriteInt32(0);
             writer.WriteInt32(Name.Length);

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using CTFAK.CCN.Chunks;
+using CTFAK.Core.Utils;
 using CTFAK.Memory;
-using CTFAK.MMFParser.Translation;
 using CTFAK.Utils;
 
 namespace CTFAK.MMFParser.EXE.Loaders
@@ -29,7 +29,7 @@ namespace CTFAK.MMFParser.EXE.Loaders
                     reader.Seek(start + offset);
                     var shader = new Shader();
                     shader.Read(reader);
-                    ShaderList.Add(offsets.IndexOf(offset),shader);
+                    ShaderList.Add(offsets.IndexOf(offset), shader);
                 }
                 catch
                 {

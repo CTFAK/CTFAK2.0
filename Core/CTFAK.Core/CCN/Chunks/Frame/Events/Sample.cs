@@ -1,4 +1,4 @@
-﻿using CTFAK.CCN.Chunks.Banks;
+﻿using CTFAK.Core.CCN.Chunks.Banks.SoundBank;
 using CTFAK.Memory;
 using CTFAK.Utils;
 

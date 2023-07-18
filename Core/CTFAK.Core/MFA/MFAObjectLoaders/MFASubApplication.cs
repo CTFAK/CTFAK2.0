@@ -1,6 +1,8 @@
 ﻿using CTFAK.Memory;
+using CTFAK.MFA;
+using CTFAK.MFA.MFAObjectLoaders;
 
-namespace CTFAK.MFA.MFAObjectLoaders
+namespace CTFAK.Core.MFA.MFAObjectLoaders
 {
     public class MFASubApplication : ObjectLoader
     {

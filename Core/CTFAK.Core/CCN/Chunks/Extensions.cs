@@ -51,9 +51,9 @@ namespace CTFAK.CCN.Chunks
         public int MagicNumber;
         public int VersionLs;
         public int VersionMs;
-        public string Name;
+        public string Name = "";
         public string Ext;
-        public string SubType;
+        public string SubType = "";
 
 
         public override void Read(ByteReader reader)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using static CTFAK.CCN.Chunks.Objects.ObjectInfo;
@@ -20,7 +21,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public int y;
         public short parentType;
         public short layer;
-        public short flags;
+        public short instance;
         public short parentHandle;
         public override void Read(ByteReader reader)
         {
@@ -41,7 +42,7 @@ namespace CTFAK.CCN.Chunks.Frame
             parentHandle = reader.ReadInt16();
             if (Settings.Old || Settings.F3) return;
             layer = reader.ReadInt16();
-            flags = reader.ReadInt16();
+            instance = reader.ReadInt16();
         }
 
         public override void Write(ByteWriter writer)
@@ -107,7 +108,9 @@ namespace CTFAK.CCN.Chunks.Frame
         public ShaderData shaderData = new();
         public int InkEffect;
         public int InkEffectValue;
-        public Color rgbCoeff;
+        public short Effect;
+        public short EffectParam;
+        public Color RGBCoeff;
         public byte blend;
         public int randomSeed;
         public int movementTimer = 60;
@@ -120,6 +123,12 @@ namespace CTFAK.CCN.Chunks.Frame
                 var newChunk = new Chunk();
                 var chunkData = newChunk.Read(reader);
                 var chunkReader = new ByteReader(chunkData);
+                if (CTFAKCore.parameters.Contains("-onlyimages"))
+                {
+                    if (newChunk.Id != 13109 && // Name
+                        newChunk.Id != 13112)   // Object Instances
+                        continue;
+                }
                 //Logger.Log("Reading Frame Chunk: " + newChunk.Id);
                 if (ChunkList.ChunkNames.TryGetValue(newChunk.Id, out string chunkName))
                     Logger.Log($"Reading Chunk {newChunk.Id} ({chunkName})");
@@ -128,7 +137,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 if (newChunk.Id == 32639) break;
                 switch (newChunk.Id)
                 {
-                    case 13108: //Header
+                    case 13108: // Header
                         if (Settings.Old)
                         {
                             width = chunkReader.ReadInt16();
@@ -144,23 +153,19 @@ namespace CTFAK.CCN.Chunks.Frame
                             flags.flag = chunkReader.ReadUInt32();
                         }
                         break;
-                    case 13109: //Name
-                        
+                    case 13109: // Name
                         var frameName = new StringChunk();
                         frameName.Read(chunkReader);
-                        if (string.IsNullOrEmpty(frameName.value))
-                            name = "CORRUPTED FRAME";
-                        else
-                            name = frameName.value;
+                        name = frameName.value;
                         break;
-                    case 13110: //Password
+                    case 13110: // Password
                         break;
-                    case 13111: //Frame Palette
+                    case 13111: // Frame Palette
                         var pal = new FramePalette();
                         pal.Read(chunkReader);
                         palette = pal.Items;
                         break;
-                    case 13112: //Object Instances
+                    case 13112: // Object Instances
                         var count = chunkReader.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
@@ -170,187 +175,165 @@ namespace CTFAK.CCN.Chunks.Frame
                         }
                         break;
                     case 13113:
-                    case 13115: //Fade In
+                    case 13115: // Fade In
                         fadeIn = new Transition();
                         fadeIn.Read(chunkReader);
                         break;
                     case 13114:
-                    case 13116: //Fade Out
+                    case 13116: // Fade Out
                         fadeOut = new Transition();
                         fadeOut.Read(chunkReader);
                         break;
-                    case 13117: //Events
+                    case 13117: // Events
                         events = new Events();
                         if (!CTFAKCore.parameters.Contains("-noevnt"))
                             events.Read(chunkReader);
                         break;
-                    case 13118: //Play Header
+                    /*case 13118: // Play Header
                         break;
-                    case 13119: //Additional Items
+                    case 13119: // Additional Items
                         break;
-                    case 13120: //Additional Items Instances
-                        break;
-                    case 13121: //Layers
+                    case 13120: // Additional Items Instances
+                        break;*/
+                    case 13121: // Layers
                         layers = new Layers();
                         layers.Read(chunkReader);
                         break;
-                    case 13122: //Virtual Size
+                    case 13122: // Virtual Size
                         virtualRect = new VirtualRect();
                         virtualRect.Read(chunkReader);
                         break;
-                    case 13123: //Demo File Path
-                        break;
-                    case 13124: //Random Seed
+                    /*case 13123: // Demo File Path
+                        break;*/
+                    case 13124: // Random Seed
                         randomSeed = chunkReader.ReadInt16();
                         break;
-                    case 13125: //Layer Effects
-                        var start = chunkReader.Tell();
-                        var end = start + chunkReader.Size();
-                        if (start == end) break;
-
-                        int current = 0;
-                        while (true)
+                    case 13125: // Layer Effects
+                        var starte = chunkReader.Tell();
+                        for (int i = 0; i < layers.Items.Count; i++)
                         {
-                            if (chunkReader.Tell() == end ||
-                                layers.Items.Count <= current) break;
-                            var layer = layers.Items[current];
-                            layer.InkEffect = chunkReader.ReadInt32();
-                            if (layer.InkEffect != 1)
-                            {
-                                var b = chunkReader.ReadByte();
-                                var g = chunkReader.ReadByte();
-                                var r = chunkReader.ReadByte();
-                                layer.rgbCoeff = Color.FromArgb(0, r, g, b);
-                                layer.blend = chunkReader.ReadByte();
-                            }
-                            else
-                                layer.InkEffectValue = chunkReader.ReadByte();
-
-                            layer.shaderData.hasShader = true;
-                            try
-                            {
-
-                                var shaderHandle = chunkReader.ReadInt32();
-                                var numberOfParams = chunkReader.ReadInt32();
-                                var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
-                                layer.shaderData.name = shdr.Name;
-                                layer.shaderData.ShaderHandle = shaderHandle;
-
-                                for (int i = 0; i < numberOfParams; i++)
-                                {
-                                    var param = shdr.Parameters[i];
-                                    object paramValue;
-                                    switch (param.Type)
-                                    {
-                                        case 0:
-                                            paramValue = chunkReader.ReadInt32();
-                                            break;
-                                        case 1:
-                                            paramValue = chunkReader.ReadSingle();
-                                            break;
-                                        case 2:
-                                            paramValue = chunkReader.ReadInt32();
-                                            break;
-                                        case 3:
-                                            paramValue = chunkReader.ReadInt32(); //Image Handle
-                                            break;
-                                        default:
-                                            paramValue = "unknownType";
-                                            break;
-                                    }
-                                    layer.shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
-                                    {
-                                        Name = param.Name,
-                                        ValueType = param.Type,
-                                        Value = paramValue
-                                    });
-                                }
-                                //Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
-                            }
-                            catch // No Shader Found
-                            {
-                                layer.shaderData.hasShader = false;
-                                current++;
-                                break;
-                            }
-                            chunkReader.Seek(chunkReader.Tell() + 4);
-                            current++;
-                        }
-                        break;
-                    case 13126: //Options
-                        var frameAlpha = chunkReader.ReadInt32();
-                        var keyTimeOut = chunkReader.ReadInt32();
-                        break;
-                    case 13127: //Movement Timer Base
-                        movementTimer = chunkReader.ReadInt32();
-                        break;
-                    case 13128: //Mosaic Image Table
-                        break;
-                    case 13129: //Frame Effects
-                        InkEffect = chunkReader.ReadInt32();
-                        if (InkEffect != 1)
-                        {
-                            var b = chunkReader.ReadByte();
-                            var g = chunkReader.ReadByte();
-                            var r = chunkReader.ReadByte();
-                            rgbCoeff = Color.FromArgb(0, r, g, b);
-                            blend = chunkReader.ReadByte();
-                        }
-                        else
-                            InkEffectValue = chunkReader.ReadByte();
-
-                        shaderData.hasShader = true;
-                        try
-                        {
-                            var shaderHandle = chunkReader.ReadInt32();
-                            if (shaderHandle == 255) break;
+                            layers.Items[i].Effect = chunkReader.ReadInt16();
+                            layers.Items[i].EffectParam = chunkReader.ReadInt16();
+                            layers.Items[i].RGBCoeff = chunkReader.ReadColor();
+                            layers.Items[i].InkEffect = chunkReader.ReadInt32();
                             var numberOfParams = chunkReader.ReadInt32();
-                            var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[shaderHandle];
-                            shaderData.name = shdr.Name;
-                            shaderData.ShaderHandle = shaderHandle;
-
-                            for (int i = 0; i < numberOfParams; i++)
+                            var offset = chunkReader.ReadInt32();
+                            if (CTFAKCore.parameters.Contains("-chunk_info"))
                             {
-                                var param = shdr.Parameters[i];
+                                Logger.Log("Effect: " + layers.Items[i].Effect);
+                                Logger.Log("Effect Parameter: " + layers.Items[i].EffectParam);
+                                Logger.Log("RGB Coefficient: " + layers.Items[i].RGBCoeff);
+                                Logger.Log("Ink Effect: " + layers.Items[i].InkEffect);
+                                Logger.Log("Number Of Parameters: " + numberOfParams);
+                                Logger.Log("Offset: " + offset);
+                            }
+                            if (layers.Items[i].InkEffect == -1 || layers.Items[i].Effect <= 0)
+                                continue;
+                            layers.Items[i].shaderData.hasShader = true;
+                            var returnOffset = chunkReader.Tell();
+                            chunkReader.Seek(offset);
+                            var shdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[layers.Items[i].InkEffect];
+                            if (CTFAKCore.parameters.Contains("-chunk_info"))
+                                Logger.Log("Shader Name: " + shdr.Name);
+                            layers.Items[i].shaderData.name = shdr.Name;
+                            layers.Items[i].shaderData.ShaderHandle = layers.Items[i].InkEffect;
+
+                            for (int ii = 0; ii < numberOfParams; ii++)
+                            {
+                                var param = shdr.Parameters[ii];
                                 object paramValue;
                                 switch (param.Type)
                                 {
                                     case 0:
+                                    case 2:
+                                    case 3: //Image Handle
                                         paramValue = chunkReader.ReadInt32();
                                         break;
                                     case 1:
                                         paramValue = chunkReader.ReadSingle();
                                         break;
-                                    case 2:
-                                        paramValue = chunkReader.ReadInt32();
-                                        break;
-                                    case 3:
-                                        paramValue = chunkReader.ReadInt32(); //Image Handle
-                                        break;
                                     default:
                                         paramValue = "unknownType";
                                         break;
                                 }
-                                shaderData.parameters.Add(new ShaderParameter()
+                                layers.Items[i].shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
                                 {
                                     Name = param.Name,
                                     ValueType = param.Type,
                                     Value = paramValue
                                 });
                             }
-                            //Logger.Log($"Shader Handle: {shaderHandle}\nShader Name: {shdr.Name}\nNumber of Params: {numberOfParams}");
-                        }
-                        catch // No Shader Found
-                        {
-                            shaderData.hasShader = false;
+                            chunkReader.Seek(returnOffset);
                         }
                         break;
-                    case 13130: //iPhone Settings
+                    case 13126: // Options
+                        var frameAlpha = chunkReader.ReadInt32();
+                        var keyTimeOut = chunkReader.ReadInt32();
+                        break;
+                    case 13127: // Movement Timer Base
+                        movementTimer = chunkReader.ReadInt32();
+                        break;
+                    /*case 13128: // Mosaic Image Table
+                        break;*/
+                    case 13129: // Frame Effects
+                        Effect = chunkReader.ReadInt16();
+                        EffectParam = chunkReader.ReadInt16();
+                        RGBCoeff = chunkReader.ReadColor();
+                        InkEffect = chunkReader.ReadInt32();
+                        var FrmNumberOfParams = chunkReader.ReadInt32();
+                        if (CTFAKCore.parameters.Contains("-chunk_info"))
+                        {
+                            Logger.Log("Effect: " + Effect);
+                            Logger.Log("Effect Parameter: " + EffectParam);
+                            Logger.Log("RGB Coefficient: " + RGBCoeff);
+                            Logger.Log("Ink Effect: " + InkEffect);
+                            Logger.Log("Number Of Parameters: " + FrmNumberOfParams);
+                        }
+                        if (InkEffect == -1 || Effect <= 0)
+                            continue;
+                        shaderData.hasShader = true;
+                        var FrmShdr = CTFAKCore.currentReader.getGameData().shaders.ShaderList[InkEffect];
+                        shaderData.name = FrmShdr.Name;
+                        if (CTFAKCore.parameters.Contains("-chunk_info"))
+                            Logger.Log("Shader Name: " + FrmShdr.Name);
+                        shaderData.ShaderHandle = InkEffect;
+
+                        for (int i = 0; i < FrmNumberOfParams; i++)
+                        {
+                            if (FrmShdr.Parameters.Count <= i)
+                                continue;
+                            var param = FrmShdr.Parameters[i];
+                            object paramValue;
+                            switch (param.Type)
+                            {
+                                case 0:
+                                case 2:
+                                case 3: //Image Handle
+                                    paramValue = chunkReader.ReadInt32();
+                                    break;
+                                case 1:
+                                    paramValue = chunkReader.ReadSingle();
+                                    break;
+                                default:
+                                    paramValue = "unknownType";
+                                    break;
+                            }
+                            shaderData.parameters.Add(new ObjectInfo.ShaderParameter()
+                            {
+                                Name = param.Name,
+                                ValueType = param.Type,
+                                Value = paramValue
+                            });
+                        }
+                        break;
+                    case 13130: // iPhone Settings
                         var Joystick = chunkReader.ReadInt16();
                         var iPhoneOptions = chunkReader.ReadInt16();
                         break;
-                    case 13131: //Unknown
+                    /*case 13131: // Unknown
                         break;
+                    case 13132: // Unknown
+                        break;*/
                     default:
                         Logger.Log("No Reader for Frame Chunk " + newChunk.Id);
                         if (CTFAKCore.parameters.Contains("-dumpnewchunks"))
@@ -426,7 +409,9 @@ namespace CTFAK.CCN.Chunks.Frame
         public ShaderData shaderData = new();
         public int InkEffect;
         public int InkEffectValue;
-        public Color rgbCoeff;
+        public short Effect;
+        public short EffectParam;
+        public Color RGBCoeff;
         public byte blend;
 
         public override void Read(ByteReader reader)
@@ -436,7 +421,7 @@ namespace CTFAK.CCN.Chunks.Frame
             YCoeff = reader.ReadSingle();
             NumberOfBackgrounds = reader.ReadInt32();
             BackgroudIndex = reader.ReadInt32();
-            if (Settings.F3) reader.Skip(6);
+            if (Settings.Fusion3Seed) reader.Skip(6);
             Name = reader.ReadYuniversal();
             if (Settings.Android)
             {

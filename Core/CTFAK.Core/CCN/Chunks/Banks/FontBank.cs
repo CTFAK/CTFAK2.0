@@ -24,7 +24,7 @@ namespace CTFAK.CCN.Chunks.Banks
         public override void Read(ByteReader reader)
         {
 
-            if (Settings.Old) return;//TODO FIX FIX FIX
+            if ((Settings.Old || Settings.Fusion3Seed) && !Settings.isMFA) return;//TODO FIX FIX FIX
             var count = reader.ReadInt32();
             int offset = 0;
             if (Settings.Build > 284 && !Debug) offset = -1;
@@ -94,7 +94,7 @@ namespace CTFAK.CCN.Chunks.Banks
             compressedWriter.WriteInt32(References);
             compressedWriter.WriteInt32(0);
             Value.Write(compressedWriter);
-            if (Compressed) Writer.WriteBytes(Decompressor.compress_block(compressedWriter.GetBuffer()));
+            if (Compressed) Writer.WriteBytes(Decompressor.CompressBlock(compressedWriter.GetBuffer()));
             else Writer.WriteWriter(compressedWriter);
         }
 

@@ -1,4 +1,5 @@
-﻿using CTFAK.Memory;
+﻿using CTFAK.CCN.Chunks;
+using CTFAK.Memory;
 using CTFAK.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CTFAK.CCN.Chunks.Banks
+namespace CTFAK.Core.CCN.Chunks.Banks.SoundBank
 {
     public class SoundBank : ChunkLoader
     {
         public static event CTFAKCore.SaveHandler OnSoundLoaded;
-        
+
         public int NumOfItems = 0;
         public int References = 0;
-        public List<SoundItem> Items=new List<SoundItem>();
+        public List<SoundItem> Items = new List<SoundItem>();
         public bool IsCompressed = true;
 
         public override void Read(ByteReader reader)
@@ -26,11 +27,10 @@ namespace CTFAK.CCN.Chunks.Banks
 
             for (int i = 0; i < NumOfItems; i++)
             {
-                if (Settings.Android) continue;
-                if (Settings.Old) continue;
-                
+                if ((Settings.Android || Settings.Old || Settings.Fusion3Seed) && !Settings.isMFA) continue;
+
                 var item = new SoundItem();
-                
+
                 item.IsCompressed = IsCompressed;
                 item.Read(reader);
                 OnSoundLoaded?.Invoke(i, NumOfItems);
@@ -77,24 +77,25 @@ namespace CTFAK.CCN.Chunks.Banks
             base.Read(reader);
             var start = reader.Tell();
 
-            Handle = reader.ReadUInt32();
+            Handle = reader.ReadUInt32() - 1;
             Checksum = reader.ReadInt32();
 
             References = reader.ReadUInt32();
             var decompressedSize = reader.ReadInt32();
-            Flags = reader.ReadUInt32();
+            Flags = reader.ReadByte();
+            reader.Skip(3);
             var res = reader.ReadInt32();
             var nameLenght = reader.ReadInt32();
             ByteReader soundData = new(new byte[0]);
             if (IsCompressed && Flags != 33)
             {
                 Size = reader.ReadInt32();
-                soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size, decompressedSize));
+                soundData = new ByteReader(Decompressor.DecompressBlock(reader, Size));
             }
             else
                 soundData = new ByteReader(reader.ReadBytes(decompressedSize));
 
-            Name = soundData.ReadWideString(nameLenght).Trim((char)0);
+            Name = soundData.ReadWideString(nameLenght).Trim();
             if (Flags == 33) soundData.Seek(0);
             Data = soundData.ReadBytes((int)soundData.Size());
             //Logger.Log(Name + " || " + Handle);
@@ -110,27 +111,18 @@ namespace CTFAK.CCN.Chunks.Banks
 
         public override void Write(ByteWriter writer)
         {
-            writer.WriteUInt32((uint)Handle);
+            writer.WriteUInt32(Handle);
             writer.WriteInt32(Checksum);
             writer.WriteUInt32(References);
-            writer.WriteInt32(Data.Length + (Name.Length * 2));
+            writer.WriteInt32(Data.Length + Name.Length * 2);
             writer.WriteUInt32(Flags);
             writer.WriteInt32(0);
             writer.WriteInt32(Name.Length);
             writer.WriteUnicode(Name);
             // writer.BaseStream.Position -= 4;
 
-
             writer.WriteBytes(Data);
-
-
-
-
-
-
         }
-
-
     }
 
     public class OldSound : SoundBase
@@ -148,10 +140,9 @@ namespace CTFAK.CCN.Chunks.Banks
         private ushort _blockAlign;
         private ushort _bitsPerSample;
         private byte[] _data;
-        
+
         public override void Read(ByteReader reader)
         {
-
             _handle = reader.ReadUInt32();
             var start = reader.Tell();
             var newData = new ByteReader(Decompressor.DecompressOld(reader));
@@ -173,7 +164,6 @@ namespace CTFAK.CCN.Chunks.Banks
             var chunkSize = newData.ReadInt32();
             Debug.Assert(newData.Size() - newData.Tell() == chunkSize);
             _data = newData.ReadBytes(chunkSize);
-
         }
 
         public void CopyDataToSound(ref SoundItem result)
@@ -184,7 +174,6 @@ namespace CTFAK.CCN.Chunks.Banks
             result.Data = GetWav();
             result.Name = _name;
             result.Flags = _flags;
-
         }
 
         public byte[] GetWav()

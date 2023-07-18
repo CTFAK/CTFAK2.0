@@ -51,10 +51,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
                     animation.Write(Writer);
                 }
             }
-
         }
-
-
     }
 
     public class MFAAnimation : ChunkLoader
@@ -72,8 +69,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             }
         }
 
-
-
         public override void Read(ByteReader reader)
         {
             Name = reader.AutoReadUnicode();
@@ -85,15 +80,11 @@ namespace CTFAK.MFA.MFAObjectLoaders
                 direction.Read(reader);
                 Directions.Add(direction);
             }
-
-
-
         }
     }
 
     public class MFAAnimationDirection : ChunkLoader
     {
-        public string Name = "Animation-UNKNOWN";
         public int Index;
         public int MinSpeed;
         public int MaxSpeed;
@@ -129,7 +120,6 @@ namespace CTFAK.MFA.MFAObjectLoaders
             {
                 Frames.Add(reader.ReadInt32());
             }
-
         }
     }
 }

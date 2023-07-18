@@ -229,37 +229,34 @@ namespace CTFAK.CCN.Chunks.Objects
             {
                 var currentPosition = reader.Tell();
 
-                reader.Skip(1);
-                var size = reader.ReadByte();
                 var step = new MovementStep();
                 step.Read(reader);
                 Steps.Add(step);
-                reader.Seek(currentPosition + size);
             }
         }
 
         public override void Write(ByteWriter Writer)
         {
-            Writer.WriteInt16((short)Steps.Count);
-            Writer.WriteInt16(MinimumSpeed);
-            Writer.WriteInt16(MaximumSpeed);
-            Writer.WriteInt8(Loop);
-            Writer.WriteInt8(RepositionAtEnd);
-            Writer.WriteInt8(ReverseAtEnd);
+            Writer.WriteInt16((short)Steps.Count); // 22 | 1
+            Writer.WriteInt16(MinimumSpeed); // 0 | 1
+            Writer.WriteInt16(MaximumSpeed); // 100 | 50
+            Writer.WriteInt8(Loop); // 1 | 0
+            Writer.WriteInt8(RepositionAtEnd); // 1 | 0
+            Writer.WriteInt8(ReverseAtEnd); // 1 | 0
             Writer.WriteInt8(0);
+            int i = 0;
             foreach (MovementStep step in Steps)
             {
-                Writer.WriteInt8(0);
                 var newWriter = new ByteWriter(new MemoryStream());
                 step.Write(newWriter);
-                Writer.WriteInt8((byte)(newWriter.Size() + 2));
                 Writer.WriteWriter(newWriter);
             }
-
         }
     }
     public class MovementStep : MovementLoader
     {
+        public byte Flags;
+        public byte Size;
         public byte Speed;
         public byte Direction;
         public short DestinationX;
@@ -268,30 +265,27 @@ namespace CTFAK.CCN.Chunks.Objects
         public short Sinus;
         public short Length;
         public short Pause;
-        public string Name;
-
-
-
-
+        public byte[] Data;
 
         public override void Read(ByteReader reader)
         {
-
-                Speed = reader.ReadByte();
-                Direction = reader.ReadByte();
-                DestinationX = reader.ReadInt16();
-                DestinationY = reader.ReadInt16();
-                Cosinus = reader.ReadInt16();
-                Sinus = reader.ReadInt16();
-                Length = reader.ReadInt16();
-                Pause = reader.ReadInt16();
-                Name = reader.ReadAscii();
-            
-
+            Flags = reader.ReadByte();
+            Size = reader.ReadByte();
+            Speed = reader.ReadByte();
+            Direction = reader.ReadByte();
+            DestinationX = reader.ReadInt16();
+            DestinationY = reader.ReadInt16();
+            Cosinus = reader.ReadInt16();
+            Sinus = reader.ReadInt16();
+            Length = reader.ReadInt16();
+            Pause = reader.ReadInt16();
+            Data = reader.ReadBytes(Size - 16);
         }
 
         public override void Write(ByteWriter Writer)
         {
+            Writer.WriteInt8(Flags);
+            Writer.WriteInt8(Size);
             Writer.WriteInt8(Speed);
             Writer.WriteInt8(Direction);
             Writer.WriteInt16(DestinationX);
@@ -300,7 +294,7 @@ namespace CTFAK.CCN.Chunks.Objects
             Writer.WriteInt16(Sinus);
             Writer.WriteInt16(Length);
             Writer.WriteInt16(Pause);
-            Writer.WriteAscii(Name);
+            Writer.WriteBytes(Data);
         }
     }
     public class Ball : MovementLoader

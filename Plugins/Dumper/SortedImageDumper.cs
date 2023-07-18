@@ -1,4 +1,5 @@
 ﻿using CTFAK;
+using CTFAK.CCN;
 using CTFAK.CCN.Chunks.Frame;
 using CTFAK.CCN.Chunks.Objects;
 using CTFAK.FileReaders;
@@ -17,13 +18,11 @@ namespace Dumper
 {
     class SortedImageDumper : IFusionTool
     {
-        //Patched by Yunivers :3
-        //Broken multiple times by Yunivers ;3
+        // Patched by Yunivers :3
+        // Broken multiple times by Yunivers ;3
         public int[] Progress = new int[] { };
         int[] IFusionTool.Progress => Progress;
         public string Name => "Sorted Image Dumper";
-        public List<int> LostandFound = new();
-        int imageNumber = 1;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
         public void Execute(IFileReader reader)
@@ -34,11 +33,25 @@ namespace Dumper
             var images = reader.getGameData().Images.Items;
             var frames = reader.getGameData().frames;
             var objects = reader.getGameData().frameitems;
+            List<int> LostandFound = new();
+            int imageNumber = 1;
             float curframe = 0;
             float maxdone = 0;
             int objectsdone = 0;
 
-            Logger.Log($"2.5+?: {Settings.TwoFivePlus}");
+            if (Settings.TwoFivePlus)
+                Logger.Log($"2.5+\n");
+            if (Settings.F3 || Settings.Fusion3Seed)
+                Logger.Log($"Fusion 3" + (Settings.Fusion3Seed ? " Seeded" : "") + "\n");
+            if (Settings.Android)
+                Logger.Log($"Android\n");
+            if (Settings.isMFA)
+                Logger.Log($"MFA\n");
+            if (Settings.iOS)
+                Logger.Log($"iOS\n");
+            if (Settings.Old)
+                Logger.Log($"Old\n");
+            Console.WriteLine("");
 
             foreach (var frame in frames)
                 foreach (var instance in frame.objects)
@@ -77,7 +90,7 @@ namespace Dumper
                                     catch
                                     {
                                         if (CTFAKCore.parameters.Contains("-log"))
-                                            Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
+                                            Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).", false);
                                         retry++;
                                     }
                                 }
@@ -101,7 +114,7 @@ namespace Dumper
                                     catch
                                     {
                                         if (CTFAK.CTFAKCore.parameters.Contains("-log"))
-                                            Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
+                                            Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).", false);
                                         retry++;
                                     }
                                 }
@@ -110,7 +123,7 @@ namespace Dumper
                             }
                             else if (oi.properties is ObjectCommon common)
                             {
-                                if (Settings.TwoFivePlus && common.Identifier == "SPRI" || !Settings.TwoFivePlus && common.Parent.ObjectType == 2)
+                                if ((Settings.TwoFivePlus || Settings.F3 || Settings.Fusion3Seed) && common.Identifier == "SPRI" || !Settings.TwoFivePlus && common.Parent.ObjectType == 2)
                                 {
                                     int cntrAnims = 0;
                                     foreach (var anim in common.Animations?.AnimationDict)
@@ -160,7 +173,7 @@ namespace Dumper
                                                     catch
                                                     {
                                                         if (CTFAK.CTFAKCore.parameters.Contains("-log"))
-                                                            Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
+                                                            Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).", false);
                                                         retry++;
                                                     }
                                                 }
@@ -170,7 +183,7 @@ namespace Dumper
                                         }
                                     }
                                 }
-                                else if (Settings.TwoFivePlus && common.Identifier == "CNTR" && common.Counters != null ||
+                                else if ((Settings.TwoFivePlus || Settings.F3 || Settings.Fusion3Seed) && common.Identifier == "CNTR" && common.Counters != null ||
                                          !Settings.TwoFivePlus && common.Parent.ObjectType == 7 && common.Counters != null)
                                 {
                                     var counter = common.Counters;
@@ -194,7 +207,7 @@ namespace Dumper
                                                 catch
                                                 {
                                                     if (CTFAK.CTFAKCore.parameters.Contains("-log"))
-                                                        Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).");
+                                                        Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).", false);
                                                     retry++;
                                                 }
                                             }
@@ -204,14 +217,39 @@ namespace Dumper
                                         }
                                     }
                                 }
+                                else if (((Settings.TwoFivePlus || Settings.F3 || Settings.Fusion3Seed) && common.Identifier == "TEXT" || !Settings.TwoFivePlus && common.Parent.ObjectType == 3) && common.Text != null && CTFAKCore.parameters.Contains("-sorteddumpstrings"))
+                                {
+                                    Directory.CreateDirectory(objectFolder);
+                                    var paragraphs = common.Text;
+                                    while (retry < 5)
+                                    {
+                                        try
+                                        {
+                                            List<string> output = new List<string>();
+                                            foreach (var text in paragraphs.Items)
+                                                output.Add(text.Value);
+
+                                            File.WriteAllLines($"{objectFolder}Paragraphs.txt", output);
+                                            File.WriteAllLines($"{frameFolder}[UNSORTED]\\{oi.name}.txt", output);
+                                            retry = 5;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            if (CTFAK.CTFAKCore.parameters.Contains("-log"))
+                                                Logger.Log($"Failed to save \"{oi.name}\", retrying {5 - retry} more time(s).", false);
+                                            retry++;
+                                        }
+                                    }
+                                    retry = 0;
+                                }
                             }
 
                             if (oi.properties is ObjectCommon loggercommon)
-                                Logger.Log($"{frame.name} | {loggercommon.Identifier} {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
+                                Console.WriteLine($"{frame.name} | {loggercommon.Identifier} {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
                             else if (oi.properties is Backdrop)
-                                Logger.Log($"{frame.name} | BD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
+                                Console.WriteLine($"{frame.name} | BD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
                             else if (oi.properties is Quickbackdrop)
-                                Logger.Log($"{frame.name} | QBD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
+                                Console.WriteLine($"{frame.name} | QBD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
 
                             objectsdone++;
                             Progress = new int[2] { objectsdone, (int)maxdone };
@@ -224,11 +262,11 @@ namespace Dumper
                             else
                             {
                                 if (oi.properties is ObjectCommon loggercommon)
-                                    Logger.Log($"\n{frame.name} | {loggercommon.Identifier} {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%");
+                                    Console.WriteLine($"{frame.name} | {loggercommon.Identifier} {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
                                 else if (oi.properties is Backdrop)
-                                    Logger.Log($"\n{frame.name} | BD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%");
+                                    Console.WriteLine($"{frame.name} | BD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
                                 else if (oi.properties is Quickbackdrop)
-                                    Logger.Log($"\n{frame.name} | QBD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%");
+                                    Console.WriteLine($"{frame.name} | QBD {oi.name}\n{(int)(objectsdone / maxdone * 100.0)}%\n");
 
                                 objectsdone++;
                                 Progress = new int[2] { objectsdone, (int)maxdone };
@@ -259,8 +297,9 @@ namespace Dumper
                     if (LostandFound.Contains(savedvar)) continue;
                     Directory.CreateDirectory(lafFolder);
                     img.Value.bitmap.Save($"{lafFolder}{savedvar}.png");
-                    Logger.Log($"Lost and Found | Unknown Item [{savedvar}]\n");
                     LostandFound.Add(savedvar);
+
+                    Console.WriteLine($"Lost and Found | {img.Key}");
                 }
             }
             catch (Exception exc)
@@ -268,10 +307,6 @@ namespace Dumper
                 retrysave2++;
                 if (retrysave2 <= 10)
                     goto RETRY_SAVE2;
-                else
-                {
-                    Logger.Log($"Lost and Found | Unknown Item [{savedvar}]\n");
-                }
             }
         }
     }

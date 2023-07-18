@@ -14,7 +14,7 @@ using CTFAK.Utils;
 public class Program
 {
     public static IFileReader gameParser;
-    public static string builddate = "4/15/23";
+    public static string builddate = "7/17/23";
     public static bool didToolArg = false;
 
     public static void Main(string[] args)
@@ -146,7 +146,7 @@ public class Program
             foreach (string s in args)
                 if (foundtype)
                 {
-                    switch (s)
+                    switch (s.ToLower())
                     {
                         case "exe":
                             gameParser = new ExeFileReader();

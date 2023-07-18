@@ -198,7 +198,7 @@ namespace CTFAK.CCN.Chunks.Frame
                                 //I mean, I do respect people who actually develop Fusion (Yves and Francois), but whoever decided to do this thing is a fucking retard
 
                                 //2.01.2023 I should probably rewrite this part, because fixing and translating it there is kind of dumb if you ask me
-                                //11.03.2023 Yuni forced me to fix flags, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
+                                //11.03.2023 Yuni forced me to fix instance, so I'm back here again. I hate this fucking condition and I don't want to ever revisit it again anytime soon
                                 //12.03.2023 Turns out my fix didn't really work, so I'm back here again
 
                                 int cnt = 0;
@@ -249,8 +249,10 @@ namespace CTFAK.CCN.Chunks.Frame
                                     newParam.Value = (short)val.index;
                                     newCondition.Items.Add(new Parameter() { Code = 50, Loader = newParam });
                                     var exp = new ExpressionParameter() { Comparsion = (short)val.op };
-                                    exp.Items.Add(new Expression()
-                                    { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
+                                    if (val.isDouble)
+                                        exp.Items.Add(new Expression() { Loader = new DoubleExp() { Value = (double)val.value }, ObjectType = -1, Num = 23 });
+                                    else
+                                        exp.Items.Add(new Expression() { Loader = new LongExp() { Value = (int)val.value }, ObjectType = -1 });
                                     newCondition.Items.Add(new Parameter() { Code = 23, Loader = exp });
                                     Conditions.Add(newCondition);
                                     Events.IdentifierCounter++;
@@ -353,11 +355,11 @@ namespace CTFAK.CCN.Chunks.Frame
         {
             var num = cond.Num;
             //Alterable Values:
-            if (num == -42 && cond.ObjectType != -1) num = -27;
+            if ((num == -42 || num == -43) && cond.ObjectType != -1) num = -27;
             //Global Values
-                if(cond.ObjectType==-1)
-                if (num == -28||num == -29||num == -30||num == -31||num == -32||num == -33)
-                    num = -8;
+            if (cond.ObjectType == -1)
+            if (num == -28 || num == -29 || num == -30 || num == -31 || num == -32 || num == -33)
+                num = -8;
             cond.Num = num;
         }
         public static void FixActions(ref Action act)
@@ -368,9 +370,9 @@ namespace CTFAK.CCN.Chunks.Frame
             {
                 if (num == 27 || num == 28 || num == 29 || num == 30)
                     num = 3;
-                if (num == 31 || num == 32 || num == 33 || num == 34)
+                if (num == 35 || num == 32 || num == 33 || num == 34)
                     num = 4;
-                if (num == 35 || num == 36 || num == 37 || num == 38)
+                if (num == 31 || num == 36 || num == 37 || num == 38)
                     num = 5;
             }
             act.Num = num;
@@ -392,7 +394,7 @@ namespace CTFAK.CCN.Chunks.Frame
         public override void Write(ByteWriter Writer)
         {
             ByteWriter newWriter = new ByteWriter(new MemoryStream());
-            // Logger.Log($"{ObjectType}-{Num}-{ObjectInfo}-{ObjectInfoList}-{Flags}-{OtherFlags}-{Items.Count}-{DefType}-{Identifier}");
+            //Logger.Log($"{ObjectType}-{Num}-{ObjectInfo}-{ObjectInfoList}-{Flags}-{OtherFlags}-{Items.Count}-{DefType}-{Identifier}");
             newWriter.WriteInt16((short)ObjectType);
             newWriter.WriteInt16((short)Num);
             newWriter.WriteUInt16((ushort)ObjectInfo);
@@ -471,6 +473,7 @@ namespace CTFAK.CCN.Chunks.Frame
                 parameter.Write(newWriter);
             Writer.WriteUInt16((ushort)(newWriter.BaseStream.Position + 2));
             Writer.WriteWriter(newWriter);
+            //File.WriteAllBytes("AHAHA.bin", newWriter.GetBuffer());
         }
 
         public override void Read(ByteReader reader)
@@ -498,7 +501,10 @@ namespace CTFAK.CCN.Chunks.Frame
         }
         public override string ToString()
         {
-            return $"Action {ObjectType}-{Num}{(Items.Count > 0 ? "-" + Items[0].Loader.ToString() : " ")} Params: {Items.Count}";
+            string str = $"Action {ObjectType} : {Num} : {Flags} : {OtherFlags} : {DefType} : {ObjectInfo} : {ObjectInfoList} : Params: {NumberOfParameters}";
+            foreach (var param in Items)
+                str += " : " + param.Loader.ToString();
+            return str;
         }
     }
 

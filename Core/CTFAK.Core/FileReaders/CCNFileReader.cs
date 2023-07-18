@@ -18,11 +18,6 @@ namespace CTFAK.EXE
             return game;
         }
 
-        public int ReadHeader(ByteReader reader)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void LoadGame(string gamePath)
         {
             var reader = new ByteReader(gamePath, System.IO.FileMode.Open);
@@ -36,7 +31,7 @@ namespace CTFAK.EXE
 
         public Dictionary<int, Bitmap> getIcons()
         {
-            return new Dictionary<int, Bitmap>();
+            return ApkFileReader.androidIcons;
         }
 
         public void PatchMethods()

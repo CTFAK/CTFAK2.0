@@ -41,7 +41,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
     public class MFAMovement : ChunkLoader
     {
-        public string Name = "ERROR";
+        public string Name = "";
         public string Extension;
         public uint Identifier;
         public ushort Player;
@@ -54,16 +54,16 @@ namespace CTFAK.MFA.MFAObjectLoaders
 
         public override void Write(ByteWriter Writer)
         {
-            Writer.AutoWriteUnicode(Name);
-            Writer.AutoWriteUnicode(Extension);
-            Writer.WriteUInt32(Identifier);
+            Writer.AutoWriteUnicode(Name); // | Movement #0
+            Writer.AutoWriteUnicode(Extension); // |
+            Writer.WriteUInt32(Identifier); // 5 | 5
             var newWriter = new ByteWriter(new MemoryStream());
 
-            newWriter.WriteUInt16(Player);
-            newWriter.WriteUInt16(Type);
-            newWriter.WriteInt8(MovingAtStart);
+            newWriter.WriteUInt16(Player); // 0 | 0
+            newWriter.WriteUInt16(Type); // 5 | 5
+            newWriter.WriteInt8(MovingAtStart); // 1 | 1
             newWriter.Skip(3);
-            newWriter.WriteInt32(DirectionAtStart);
+            newWriter.WriteInt32(DirectionAtStart); // 1 | 1
 
             // newWriter.WriteBytes(extData);
 
@@ -71,7 +71,7 @@ namespace CTFAK.MFA.MFAObjectLoaders
             Loader?.Write(newWriter);
             newWriter.Skip(12);
             newWriter.WriteInt16(0);
-            Writer.WriteInt32((int)newWriter.Size());
+            Writer.WriteInt32((int)newWriter.Size()); // 684 | 86
             Writer.WriteWriter(newWriter);
 
 
