@@ -32,7 +32,7 @@ namespace CTFAK.MMFParser.EXE.Loaders.Events.Parameters
             int v4 = 0x3939;
             foreach (var c in name)
             {
-                v4 += Convert.ToInt16(c) ^ 0x7FFF;
+                v4 += (int)(c ^ (UInt16)0xFFFFU);
             }
 
             int v5 = 0;
