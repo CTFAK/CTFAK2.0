@@ -60,7 +60,7 @@ If you'd like to compile CTFAK anyway, right click the solution on the right and
 
 In the File Explorer go to `Interface\CTFAK.Cli\bin\Debug\net6.0-windows` and create a folder called `Plugins`, then go back to the solution folder and browse into `Plugins` and in both `CTFAK.Decompiler` and `Dumper`, browse to `bin\Debug\net6.0-windows`, and copy `CTFAK.Decompiler.dll`, `CTFAK.Decompiler.pdb`, `Dumper.dll`, and `Dumper.pdb` then paste them into the `Plugins` folder you created earlier.
 
-Finally, download [ctfakrequirements.zip](https://cdn.discordapp.com/attachments/956312557000462436/1041801617848143922/ctfakrequirements.zip) and extract the contents into the same folder you created `Plugins` in. To know you've extracted it properly, `template.mfa` should be found in the same folder as `CTFAK.Cli.exe`.
+Finally, download [ctfakrequirements.zip](https://github.com/CTFAK/.github/raw/main/ctfakrequirements.zip) and extract the contents into the same folder you created `Plugins` in. To know you've extracted it properly, `template.mfa` should be found in the same folder as `CTFAK.Cli.exe`.
 
 Now, you should be able to run `CTFAK.Cli.exe` without problems!
 
