@@ -24,20 +24,8 @@ CTFAK 2.0 was split between 2 branches; the [master](https://github.com/CTFAK/CT
 CTFAK 2.3 is more unstable than CTFAK 2.2, thus this README will only be referring to the 'master' branch, also known as CTFAK 2.2, which is the recommended version.
 
 # Installation
-## Dependencies
-CTFAK 2.0 required [.NET 6.0's Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
-
-After running the x64 installer, you may proceed with the installation.
-## Installing a precompiled artifact
-
-To install an artifact, you must be logged into a Github account, then you must make your way over to [Actions](https://github.com/CTFAK/CTFAK2.0/actions?query=branch%3Amaster), and from there select the latest workflow **marked with the word `master`**. On that page, if you scroll down you should find `Artifacts`, from there just click on `CTFAK` and it will start downloading.
-
 > [!NOTE]  
-> As actions expire after a while, you may need to compile CTFAK yourself. See [Compilation](https://github.com/CTFAK/CTFAK2.0#compilation)
-
-Once it's downloaded, extract the .zip file to an empty folder, and then in those contents, extract `ctfakrequirements.zip` into the same folder it's found in.
-
-To know you've extracted it properly, `template.mfa` should be found in the same folder as `CTFAK.Cli.exe`.
+> Due to unforseen circumstances, Actions are no longer being offered. See [Compilation](https://github.com/CTFAK/CTFAK2.0#compilation)
 
 # Compilation
 ## Dependencies
@@ -55,11 +43,7 @@ In Visual Studio 2022, under `Get started`, click `Clone a repository`, then pas
 
 ## Compiling CTFAK 2.0
 
-**Compiling CTFAK usually was not recommended.** Please go to [installation](https://github.com/CTFAK/CTFAK2.0#installation) to download CTFAK precompiled if possible.
-
-Compiling CTFAK would not get you newer features compared to the actions.
-
-If you'd like to compile CTFAK anyway, right click the solution on the right and press `Build Solution` or do it through the key bind `Control + Shift + B`, then right click the solution once again and press `Open Folder in File Explorer`.
+Right click the solution on the right and press `Build Solution` or do it through the key bind `Control + Shift + B`, then right click the solution once again and press `Open Folder in File Explorer`.
 
 In the File Explorer go to `Interface\CTFAK.Cli\bin\Debug\net6.0-windows` and create a folder called `Plugins`, then go back to the solution folder and browse into `Plugins` and in both `CTFAK.Decompiler` and `Dumper`, browse to `bin\Debug\net6.0-windows`, and copy `CTFAK.Decompiler.dll`, `CTFAK.Decompiler.pdb`, `Dumper.dll`, and `Dumper.pdb` then paste them into the `Plugins` folder you created earlier.
 
