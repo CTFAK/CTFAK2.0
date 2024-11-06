@@ -1,36 +1,39 @@
+> [!CAUTION]
+> CTFAK 2.0 is no longer being worked on and thus has been archived.
+
 # Welcome to CTFAK 2.0!
 By Kostya and Yunivers
 
 [Discord](https://www.discord.com/invite/wsH3KNtvvJ)
 | Table of Contents | Description |
 |--|--|
-| [What is CTFAK 2.0?](https://github.com/CTFAK/CTFAK2.0#what-is-ctfak-20) | A short description of what CTFAK 2.0 is and what it's used for. |
+| [What was CTFAK 2.0?](https://github.com/CTFAK/CTFAK2.0#what-was-ctfak-20) | A short description of what CTFAK 2.0 was and what it was used for. |
 | [Installation](https://github.com/CTFAK/CTFAK2.0#installation) | How to install a precompiled version of CTFAK 2.0. |
 | [Compilation](https://github.com/CTFAK/CTFAK2.0#compilation) | How to compile CTFAK 2.0 manually. |
 | [Usage](https://github.com/CTFAK/CTFAK2.0#usage) | How to use CTFAK 2.0. |
 | [Parameters](https://github.com/CTFAK/CTFAK2.0#parameters) | All CTFAK 2.0 parameters. |
 | [Command Arguments](https://github.com/CTFAK/CTFAK2.0#command-arguments) | All CTFAK 2.0 command arguments. |
-| [To-Do List](https://github.com/CTFAK/CTFAK2.0#to-do-list) | What needs to be done to mark CTFAK 2.0 as complete. |
 | [Full Credits](https://github.com/CTFAK/CTFAK2.0#full-credits) | Everyone who helped make CTFAK 2.0 a reality. |
 
-# What is CTFAK 2.0?
-CTFAK 2.0 (Standing for **C**lick**T**eam **F**usion **A**rmy **K**nife **2.0**) is a tool developed by Kostya with help from Yunivers which can be used to either decompile or dump assets of games made with the Clickteam Fusion 2.5 game engine.
+# What was CTFAK 2.0?
+CTFAK 2.0 (Standing for **C**lick**T**eam **F**usion **A**rmy **K**nife **2.0**) was a tool developed by Kostya with help from Yunivers which can be used to either decompile or dump assets of games made with the Clickteam Fusion 2.5 game engine.
 
-With CTFAK 2.0's plugin system, it's easy for anyone to make a plugin compatible with CTFAK 2.0 which allows you to do anything with the data read by CTFAK 2.0 including, but not limited to, converting the data to other game engines, programming your own dumping method to suit however you want to organize your data, or messing with the outputted data by modifying the `FTDecompile` plugin.
+With CTFAK 2.0's plugin system, it was easy for anyone to make a plugin compatible with CTFAK 2.0 which allows you to do anything with the data read by CTFAK 2.0 including, but not limited to, converting the data to other game engines, programming your own dumping method to suit however you want to organize your data, or messing with the outputted data by modifying the `FTDecompile` plugin.
 
-CTFAK 2.0 is currently split between 3 branches; the [master](https://github.com/CTFAK/CTFAK2.0/tree/master) branch, the [2.3](https://github.com/CTFAK/CTFAK2.0/tree/CTFAK-2.3) branch, and the [2.4](https://github.com/CTFAK/CTFAK2.0/tree/CTFAK-2.4) branch.
-
-**USAGE OF 2.3 AND 2.4 IS NOT RECOMMENDED**
-This README will only be referring to the 'master' branch, also known as CTFAK 2.2, which is the recommended version.
+CTFAK 2.0 was split between 2 branches; the [master](https://github.com/CTFAK/CTFAK2.0/tree/master) branch and the [2.3](https://github.com/CTFAK/CTFAK2.0/tree/CTFAK-2.3) branch.<br/>
+CTFAK 2.3 is more unstable than CTFAK 2.2, thus this README will only be referring to the 'master' branch, also known as CTFAK 2.2, which is the recommended version.
 
 # Installation
 ## Dependencies
-CTFAK 2.0 requires [.NET 6.0's Runtime, Core Runtime, and Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+CTFAK 2.0 required [.NET 6.0's Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
-After running the x64 installers for all 3 runtimes, you may proceed with the installation.
+After running the x64 installer, you may proceed with the installation.
 ## Installing a precompiled artifact
 
 To install an artifact, you must be logged into a Github account, then you must make your way over to [Actions](https://github.com/CTFAK/CTFAK2.0/actions?query=branch%3Amaster), and from there select the latest workflow **marked with the word `master`**. On that page, if you scroll down you should find `Artifacts`, from there just click on `CTFAK` and it will start downloading.
+
+> [!NOTE]  
+> As actions expire after a while, you may need to compile CTFAK yourself. See [Compilation](https://github.com/CTFAK/CTFAK2.0#compilation)
 
 Once it's downloaded, extract the .zip file to an empty folder, and then in those contents, extract `ctfakrequirements.zip` into the same folder it's found in.
 
@@ -38,9 +41,9 @@ To know you've extracted it properly, `template.mfa` should be found in the same
 
 # Compilation
 ## Dependencies
-CTFAK 2.0 requires [.NET 6.0's Runtime, Core Runtime, and Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+CTFAK 2.0 required [.NET 6.0's Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
-After running the x64 installers for all 3 runtimes, you may proceed with the compilation.
+After running the x64 installer, you may proceed with the compilation.
 
 ## Cloning the repo with Visual Studio 2022
 
@@ -52,9 +55,9 @@ In Visual Studio 2022, under `Get started`, click `Clone a repository`, then pas
 
 ## Compiling CTFAK 2.0
 
-**Compiling CTFAK is not recommended.** Please go to [installation](https://github.com/CTFAK/CTFAK2.0#installation) to download CTFAK precompiled.
+**Compiling CTFAK usually was not recommended.** Please go to [installation](https://github.com/CTFAK/CTFAK2.0#installation) to download CTFAK precompiled if possible.
 
-Compiling CTFAK does not get you newer features compared to the actions.
+Compiling CTFAK would not get you newer features compared to the actions.
 
 If you'd like to compile CTFAK anyway, right click the solution on the right and press `Build Solution` or do it through the key bind `Control + Shift + B`, then right click the solution once again and press `Open Folder in File Explorer`.
 
@@ -65,19 +68,18 @@ Finally, download [ctfakrequirements.zip](https://github.com/CTFAK/.github/raw/m
 Now, you should be able to run `CTFAK.Cli.exe` without problems!
 
 # Usage
-CTFAK 2.0 is very easy to use and requires little input from the user.
+CTFAK 2.0 was very easy to use and required little input from the user.
 
 To get started, open `CTFAK.Cli.exe` and drag in your Clickteam Fusion 2.5 exe, apk, ccn, dat, bin, or mfa file and press enter.
 
-In parameters, you can input anything listed in [Parameters](https://github.com/CTFAK/CTFAK2.0#parameters), but make sure to put a `-` before each one. If you don't want to input any parameters (which you normally shouldn't need to do) then you can leave it blank. After you've filled out your parameters, press enter.
+In parameters, you could input anything listed in [Parameters](https://github.com/CTFAK/CTFAK2.0#parameters), but make sure to put a `-` before each one. If you don't want to input any parameters (which you normally shouldn't need to do) then you can leave it blank. After you've filled out your parameters, press enter.
 
-If you're using a ccn, dat, or bin file it will bring up a prompt asking you to select a file reader. In any case, press `1` for CCN.
-
-After these steps, it will start reading the application. If it closes or gives an error during this process, run `CTFAK.Cli.exe` in command prompt, repeat the process, and then send the error in our [Discord](https://www.discord.com/invite/wsH3KNtvvJ) or [open an issue](https://github.com/CTFAK/CTFAK2.0/issues). 
+If you're using a `.ccn`, `.dat`, or `.bin` file it would bring up a prompt asking you to select a file reader. In any case, select CCN.
 
 If all goes according to plan, you should see a screen saying `Reading finished in _ seconds` along with some information about the game. From here you may run any plugins you have installed. Normal installations should have `Export as MFA`, `Dump Everything`, `Image Dumper`, `Sound Dumper`, `Packed Data Dumper`, and `Sorted Image Dumper`.
 
-If you run into any issues with those 6 plugins, you may send the error in our [Discord](https://www.discord.com/invite/wsH3KNtvvJ) or [open an issue](https://github.com/CTFAK/CTFAK2.0/issues). If the plugin is not on that list, we cannot troubleshoot it for you.
+> [!WARNING]  
+> Please do not report any issues. CTFAK 2.0 is no longer being worked on. Please do not bother us about it.
 
 Finally, you may close CTFAK 2.0 and find any outputs your plugins gave, in the `Dumps` folder.
 
@@ -116,19 +118,6 @@ All arguments should start with `-` and should be followed up by data wrapped in
 | tool | Uses the name of a plugin (such as 'Decompiler') to run said tool as soon as it's done reading. |
 | closeonfinish | Closes CTFAK 2.0 after it finishes reading, or if you are using '-tool', after it finishes running the plugin. |
 
-# To-Do List
-|%| Task |Description
-|--|--|--|
-| 80% | MFA2Pame | Converting an MFA into the same format as an exe for easy dumping. |
-| 0% | Native Lib to Linux | Allowing the native lib for CTFAK to run on Linux. |
-| 1% | Klik & Play Support | Reading of applications made with Klik & Play. |
-| 0% | TGF Support | Reading of applications made with The Games Factory. |
-| 0% | TGF2 Support | Reading of applications made with The Games Factory 2. |
-| 0% | MMF 1.0 Support | Reading of applications made with Click & Create. |
-| 0% | MMF 1.5 Support | Reading of applications made with Multimedia Fusion. |
-| 10% | MMF 2.0 Support | Reading of applications made with Multimedia Fusion 2. |
-| 45% | CTF 3.0 Support | Reading of applications made with Clickteam Fusion 3. |
-
 # Full Credits
 |Name| Credit for... |
 |--|--|
@@ -142,4 +131,4 @@ All arguments should start with `-` and should be followed up by data wrapped in
 
 CTFAK 2.0 is licensed under [AGPL-3.0](https://github.com/CTFAK/CTFAK2.0/blob/master/LICENSE).
 
-Last Updated July 17th, 2023.
+Readme Last Updated November 6th, 2024.
